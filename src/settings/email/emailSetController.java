@@ -12,6 +12,8 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Label;
 import javafx.scene.layout.VBox;
+import javafx.stage.DirectoryChooser;
+import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import objects.ESetting;
 import objects.Users;
@@ -31,7 +33,13 @@ public class emailSetController implements Initializable {
     private JFXTextField txt_pass;
 
     @FXML
+    private JFXTextField txt_fspath;
+
+    @FXML
     private JFXButton bnt_save;
+
+    @FXML
+    private JFXButton btn_choose;
 
     private ESetting eSetting;
 
@@ -51,20 +59,29 @@ public class emailSetController implements Initializable {
 
     }
 
+    @FXML
+    void onChoose(ActionEvent event) {
+        DirectoryChooser chooser = new DirectoryChooser();
+        chooser.setTitle("Select Folder");
+        String path = chooser.showDialog(new Stage()).getAbsolutePath();
+        txt_fspath.setText(path);
+    }
+
     public void saveChanges(ActionEvent actionEvent) {
 
-        String host, email, pass;
+        String host, email, pass, fspath;
 
         host = txt_host.getText();
         email = txt_email.getText();
         pass = txt_pass.getText();
+        fspath = txt_fspath.getText();
 
-        if (host.equals("") || pass.equals("") || email.equals("")) {
+        if (host.equals("") || pass.equals("") || email.equals("") || fspath.equals("")) {
             Toast.makeText((Stage) bnt_save.getScene().getWindow(), "Required fields are empty");
             return;
         }
 
-        ESetting es = new ESetting(host, email, pass);
+        ESetting es = new ESetting(host, email, pass, fspath + "\\Bits\\CRM\\Files\\");
         sql.saveEmailSettings(es);
 
     }

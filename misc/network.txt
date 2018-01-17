@@ -1,0 +1,1 @@
+localhost^3306^bits_crm^root^tahir123!@#

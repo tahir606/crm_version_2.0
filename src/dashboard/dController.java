@@ -58,7 +58,14 @@ public class dController implements Initializable {
         img_load = img_loader;
 
         fHelper = new fileHelper();
+
+        ESetting eSetting = fHelper.ReadESettings();
         sql = new mySqlConn();
+
+        if (eSetting == null) {
+            eSetting = sql.getEmailSettings();
+            fHelper.WriteESettings(eSetting);
+        }
 
         user = fHelper.ReadUserDetails();
         rightsList = user.getuRightsList();
@@ -81,13 +88,6 @@ public class dController implements Initializable {
     Thread emailThread;
 
     private void emailCtrl() {
-
-        ESetting eSetting = fHelper.ReadESettings();
-
-        if (eSetting == null) {
-            eSetting = sql.getEmailSettings();
-            fHelper.WriteESettings(eSetting);
-        }
 
         emailControl ec = new emailControl();
 

@@ -588,7 +588,7 @@ public class mySqlConn {
 
     public ESetting getEmailSettings() {
 
-        String query = "SELECT HOST, EMAIL, PASS FROM EMAIL_SETTINGS WHERE 1";
+        String query = "SELECT HOST, EMAIL, PASS, FSPATH FROM EMAIL_SETTINGS WHERE 1";
 
         Connection con = getConnection();
         try {
@@ -596,7 +596,7 @@ public class mySqlConn {
             ResultSet set = statement.executeQuery();
             ESetting eSetting;
             while (set.next()) {
-                eSetting = new ESetting(set.getString("HOST"), set.getString("EMAIL"), set.getString("PASS"));
+                eSetting = new ESetting(set.getString("HOST"), set.getString("EMAIL"), set.getString("PASS"), set.getString("FSPATH"));
                 return eSetting;
             }
 
@@ -613,7 +613,7 @@ public class mySqlConn {
 //        String query = "INSERT INTO EMAIL_SETTINGS(ECODE,HOST,EMAIL,PASS) " +
 //                " SELECT IFNULL(max(ECODE),0)+1,?,?,? from EMAIL_SETTINGS";
 
-        String query = "UPDATE EMAIL_SETTINGS SET HOST = ?,EMAIL = ?, PASS = ? WHERE ECODE = 1";
+        String query = "UPDATE EMAIL_SETTINGS SET HOST = ?,EMAIL = ?, PASS = ?, FSPATH = ? WHERE ECODE = 1";
 
         Connection con = getConnection();
         PreparedStatement statement = null;
@@ -623,6 +623,7 @@ public class mySqlConn {
             statement.setString(1, eSetting.getHost());
             statement.setString(2, eSetting.getEmail());
             statement.setString(3, eSetting.getPass());
+            statement.setString(4, eSetting.getFspath());
             statement.executeUpdate();
 
             statement.close();

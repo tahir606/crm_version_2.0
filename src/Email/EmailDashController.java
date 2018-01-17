@@ -139,26 +139,18 @@ public class EmailDashController implements Initializable {
                 JFXButton reload = new JFXButton();
                 reload.setMinSize(35, 30);
                 reload.setGraphic(new ImageView(new Image(getClass().getResourceAsStream("/res/img/refresh.png"))));
-                reload.addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler<MouseEvent>() {
-                    @Override
-                    public void handle(MouseEvent event) {
-                        if (selectedEmail != null) {
-                            loadEmails(selectedEmail);
-                        } else {
-                            loadEmails();
-                        }
+                reload.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
+                    if (selectedEmail != null) {
+                        loadEmails(selectedEmail);
+                    } else {
+                        loadEmails();
                     }
                 });
 
                 JFXButton filter = new JFXButton();
                 filter.setMinSize(35, 30);
                 filter.setGraphic(new ImageView(new Image(getClass().getResourceAsStream("/res/img/filter.png"))));
-                filter.addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler<MouseEvent>() {
-                    @Override
-                    public void handle(MouseEvent event) {
-                        inflateFilters();
-                    }
-                });
+                filter.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> inflateFilters());
 
 
                 Platform.runLater(() -> menu_email.getChildren().addAll(email, reload, filter));
@@ -169,57 +161,50 @@ public class EmailDashController implements Initializable {
 
 
         //Populating List
-        list_emails.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<Email>() {
-            //Creates the changes in the Details Section
-            @Override
-            public void changed(ObservableValue<? extends Email> observable, Email oldValue, Email newValue) {
-                selectedEmail = newValue;
-                populateDetails(selectedEmail);
-            }
+        //Creates the changes in the Details Section
+        list_emails.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
+            selectedEmail = newValue;
+            populateDetails(selectedEmail);
         });
 
         //Attaching listener to attaching combo box
-        combo_attach.valueProperty().addListener(new ChangeListener<FileDev>() {
-            @Override
-            public void changed(ObservableValue<? extends FileDev> observable, FileDev oldValue, FileDev newValue) {
-                if (newValue == null)
-                    return;
+        combo_attach.valueProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue == null)
+                return;
 
-                if (Desktop.isDesktopSupported()) {
-                    try {
-                        Desktop.getDesktop().open(newValue);
-                    } catch (IOException ex) {
-                        ex.printStackTrace();
-                    }
+            if (Desktop.isDesktopSupported()) {
+                try {
+                    Desktop.getDesktop().open(newValue);
+                } catch (IOException ex) {
+                    ex.printStackTrace();
                 }
             }
+
+            combo_attach.getSelectionModel().select(null);
         });
 
         //Attaching and Adding to the Respond Combo Boxes
         combo_respond.getItems().addAll("Respond", "Reply", "Forward");
         combo_respond.getSelectionModel().select(0);
-        combo_respond.valueProperty().addListener(new ChangeListener<String>() {
-            @Override
-            public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
-                if (newValue.equals("Respond")) {
-                    return;
-                }
-
-                Email sEmail = selectedEmail;
-
-
-                efrom = sEmail.getFromAddress()[0].toString();
-                subject = "RE: " + sEmail.getSubject();
-
-                if (newValue.equals("Reply")) {
-                    ReplyForward = 'R';
-                } else if (newValue.equals("Forward")) {
-                    ReplyForward = 'F';
-                    body = sEmail.getBody();
-                }
-                inflateEResponse();
-                combo_respond.getSelectionModel().select(0);
+        combo_respond.valueProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue.equals("Respond")) {
+                return;
             }
+
+            Email sEmail = selectedEmail;
+
+
+            efrom = sEmail.getFromAddress()[0].toString();
+            subject = "RE: " + sEmail.getSubject();
+
+            if (newValue.equals("Reply")) {
+                ReplyForward = 'R';
+            } else if (newValue.equals("Forward")) {
+                ReplyForward = 'F';
+                body = sEmail.getBody();
+            }
+            inflateEResponse();
+            combo_respond.getSelectionModel().select(0);
         });
 //        imgLoader.setVisible(false);
     }

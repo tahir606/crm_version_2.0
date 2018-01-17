@@ -23,7 +23,10 @@ public class emailControl {
 //    private static String EMAIL_ID = "sales@burhanisolutions.com.pk";
 //    private static String EMAIL_PASS = "burhanisales";
 
-    private static String F_ADD = "C:/Users/" + System.getProperty("user.name") + "/Bits/CRM/Files/";
+//    private static String F_ADD = "C:/Users/" + System.getProperty("user.name") + "/Bits/CRM/Files/";
+//    private static String FADD_FILE = "\\\\192.168.100.110\\g$\\Bits\\CRM\\";
+
+    private static String F_ADD = "";
 
     private static mySqlConn sqlConn = new mySqlConn();
 
@@ -33,6 +36,12 @@ public class emailControl {
     public emailControl() {
         fHelper = new fileHelper();
         ESETTING = fHelper.ReadESettings();
+        if (ESETTING != null) {
+            F_ADD = ESETTING.getFspath();
+//            System.out.println(F_ADD);
+            File f = new FileDev(F_ADD);
+            f.mkdirs();
+        }
     }
 
     public void RecieveEmail() {
@@ -119,7 +128,7 @@ public class emailControl {
             }
         }
 
-        if(ATTACH.equals(""))
+        if (ATTACH.equals(""))
             email.setAttch("No Attachments");
 
         SimpleDateFormat dt = new SimpleDateFormat("yyyyy-MM-dd hh:mm:ss");

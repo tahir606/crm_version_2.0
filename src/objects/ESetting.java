@@ -2,15 +2,16 @@ package objects;
 
 public class ESetting {
 
-    private String host,email,pass;
+    private String host, email, pass, fspath;
 
     public ESetting() {
     }
 
-    public ESetting(String host, String email, String pass) {
+    public ESetting(String host, String email, String pass, String fspath) {
         this.host = host;
         this.email = email;
         this.pass = pass;
+        this.fspath = fspath;
     }
 
     public String getHost() {
@@ -35,5 +36,13 @@ public class ESetting {
 
     public void setPass(String pass) {
         this.pass = pass;
+    }
+
+    public String getFspath() {
+        return fspath;
+    }
+
+    public void setFspath(String fspath) {
+        this.fspath = fspath;
     }
 }

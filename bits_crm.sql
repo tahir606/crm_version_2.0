@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Jan 13, 2018 at 03:42 PM
+-- Generation Time: Jan 17, 2018 at 03:27 PM
 -- Server version: 10.1.24-MariaDB
 -- PHP Version: 7.1.6
 
@@ -21,8 +21,6 @@ SET time_zone = "+00:00";
 --
 -- Database: `bits_crm`
 --
-CREATE DATABASE IF NOT EXISTS `bits_crm` DEFAULT CHARACTER SET latin1 COLLATE latin1_swedish_ci;
-USE `bits_crm`;
 
 DELIMITER $$
 --
@@ -73,15 +71,16 @@ CREATE TABLE `email_settings` (
   `ECODE` int(11) NOT NULL,
   `HOST` varchar(500) NOT NULL,
   `EMAIL` varchar(500) NOT NULL,
-  `PASS` varchar(500) NOT NULL
+  `PASS` varchar(500) NOT NULL,
+  `FSPATH` varchar(2000) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
 -- Dumping data for table `email_settings`
 --
 
-INSERT INTO `email_settings` (`ECODE`, `HOST`, `EMAIL`, `PASS`) VALUES
-(1, 'burhanisolutions.com.pk', 'sales@burhanisolutions.com.pk', 'burhanisales');
+INSERT INTO `email_settings` (`ECODE`, `HOST`, `EMAIL`, `PASS`, `FSPATH`) VALUES
+(1, 'burhanisolutions.com.pk', 'sales@burhanisolutions.com.pk', 'burhanisales', NULL);
 
 -- --------------------------------------------------------
 
@@ -123,7 +122,10 @@ INSERT INTO `email_store` (`EMNO`, `MSGNO`, `SBJCT`, `TOADD`, `FRADD`, `EBODY`, 
 (23, 14, 'check', '^sales@burhanisolutions.com.pk', '^tahir shakir <tahirshakir606@gmail.com>', '\ncheck imdex\r\n', 'No Attachments', '', 'N', 0, 0, '2018-01-05 04:30:11'),
 (24, 15, 'w', '^sales@burhanisolutions.com.pk', '^tahir shakir <tahirshakir606@gmail.com>', '\nwhasd\r\n', 'No Attachments', '', 'N', 0, 0, '2018-01-05 04:32:03'),
 (25, 1, 'No', '^\"sales@burhanisolutions.com.pk\" <sales@burhanisolutions.com.pk>', '^Tahir Shakir <tahir60652@gmail.com>', '\nJust just\r\nNo\r\n', 'No Attachments', '', 'N', NULL, 0, '2018-01-11 01:08:21'),
-(26, 2, 'Teset', '^sales@burhanisolutions.com.pk', '^tahir shakir <tahirshakir606@gmail.com>', '\ntest email\r\n', 'No Attachments', '', 'N', NULL, 0, '2018-01-11 04:28:06');
+(26, 2, 'Teset', '^sales@burhanisolutions.com.pk', '^tahir shakir <tahirshakir606@gmail.com>', '\ntest email\r\n', 'No Attachments', '', 'N', NULL, 0, '2018-01-11 04:28:06'),
+(27, 9, 'Checkking', '^sales@burhanisolutions.com.pk', '^tahir shakir <tahirshakir606@gmail.com>', '\nWhAAAAAt\r\n\nORACLE BUILD TOOLS INSTALL COMMANDS:\r\n\r\n	npm install --global --production windows-build-tools\r\n	npm config set msvs_version 2015 --global\r\n\r\nNode Server Error:\r\nPort 3000 already in use:\r\n\r\n	taskkill /F /IM node.exe  //Use CMD\r\n\r\nhttps://community.oracle.com/docs/DOC-931127', '\\\\192.168.100.110\\g$\\Bits\\CRM\\Notes.txt^', '', 'N', NULL, 0, '2018-01-17 05:38:54'),
+(28, 10, 'CHECK', '^sales@burhanisolutions.com.pk', '^tahir shakir <tahirshakir606@gmail.com>', '\nTAJIRASDAD\r\n\nlocalhost^3306^bits_crm^root^tahir123!@#', '\\\\192.168.100.110\\g$\\Bits\\CRM\\network.txt^', '', 'N', NULL, 0, '2018-01-17 05:49:24'),
+(29, 11, 'TEST ATT', '^sales@burhanisolutions.com.pk', '^tahir shakir <tahirshakir606@gmail.com>', '\n\r\n\nburhanisolutions.com.pk^sales@burhanisolutions.com.pk^burhanisales', '\\\\192.168.100.110\\g$\\Bits\\CRM\\eSet.txt^', '', 'N', NULL, 0, '2018-01-17 06:30:13');
 
 -- --------------------------------------------------------
 

@@ -241,7 +241,7 @@ public class filterController implements Initializable {
                     if (filters != 0) {
                         h = (HBox) e;
                     }
-                    if (filters > 1) {
+                    if (filters > 0) {
                         if (!e.getAccessibleText().equals("Order By")) {
                             whereClause = whereClause + " AND ";
                         }
