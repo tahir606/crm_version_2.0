@@ -12,6 +12,7 @@ import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.geometry.Insets;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
@@ -171,6 +172,11 @@ public class EmailDashController implements Initializable {
         combo_attach.valueProperty().addListener((observable, oldValue, newValue) -> {
             if (newValue == null)
                 return;
+            try {
+                combo_attach.valueProperty().set(null);
+            } catch (IndexOutOfBoundsException e) {
+                e.printStackTrace();
+            }
 
             if (Desktop.isDesktopSupported()) {
                 try {
@@ -179,8 +185,6 @@ public class EmailDashController implements Initializable {
                     ex.printStackTrace();
                 }
             }
-            System.out.println("Selecting null");
-            combo_attach.getSelectionModel().select(null);
         });
 
         //Attaching and Adding to the Respond Combo Boxes
@@ -348,13 +352,16 @@ public class EmailDashController implements Initializable {
 
             //----Emails
             vbox_from.getChildren().clear();  //Clearing
+            vbox_from.setSpacing(2.0);
             vbox_cc.getChildren().clear();    //Both VBoxes
+            vbox_cc.setSpacing(2.0);
 
             from = email.getFromAddress();
             cc = email.getCcAddress();
             for (Address f : from) {
                 try {
                     Label label = new Label(f.toString());
+                    label.setPadding(new Insets(2, 2, 2, 5));
                     vbox_from.getChildren().add(label);
                 } catch (NullPointerException ex) {
                     //Because null is saved
@@ -363,6 +370,7 @@ public class EmailDashController implements Initializable {
             for (Address c : cc) {
                 try {
                     Label label = new Label(c.toString());
+                    label.setPadding(new Insets(2, 5, 2, 5));
                     vbox_cc.getChildren().add(label);
                 } catch (NullPointerException ex) {
                     //Because null is saved

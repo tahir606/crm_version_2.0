@@ -450,7 +450,7 @@ public class mySqlConn {
         try {
             Connection con = getConnection();
             PreparedStatement statement = con.prepareStatement(query);
-//            System.out.println(query);
+            System.out.println(query);
             ResultSet set = statement.executeQuery();
             //-------------Creating Email-------------
             if (!set.isBeforeFirst()) {

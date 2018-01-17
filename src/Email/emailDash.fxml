@@ -22,11 +22,11 @@
     <center>
         <AnchorPane fx:id="anchor_details" prefHeight="425.0" prefWidth="359.0" styleClass="emailAnchorDetails" BorderPane.alignment="CENTER">
             <children>
-                <Label fx:id="label_locked" layoutX="132.0" layoutY="52.0" prefHeight="17.0" prefWidth="178.0" text="Locked By" />
+                <Label fx:id="label_locked" layoutX="132.0" layoutY="51.0" prefHeight="17.0" prefWidth="178.0" styleClass="lockedText" text="Locked By" />
                 <Label fx:id="label_ticket1" layoutX="14.0" layoutY="10.0" prefHeight="17.0" prefWidth="108.0" text="Ticket Number:" />
                 <Label fx:id="label_time1" layoutX="14.0" layoutY="31.0" prefHeight="17.0" prefWidth="94.0" text="Time Stamp:" />
                 <Label fx:id="label_locked1" layoutX="14.0" layoutY="51.0" prefHeight="17.0" prefWidth="92.0" text="Locked By:" />
-                <Label fx:id="label_ticket" layoutX="132.0" layoutY="11.0" prefHeight="17.0" prefWidth="178.0" text="Ticket Number" />
+                <Label fx:id="label_ticket" layoutX="132.0" layoutY="11.0" prefHeight="17.0" prefWidth="178.0" styleClass="normalText" text="Ticket Number" />
                 <Label fx:id="label_from" layoutX="14.0" layoutY="71.0" prefHeight="17.0" prefWidth="74.0" text="From:" />
                 <Label fx:id="label_cc" layoutX="14.0" layoutY="161.0" prefHeight="17.0" prefWidth="82.0" text="CC:" />
                 <ScrollPane layoutX="94.0" layoutY="80.0" prefHeight="74.0" prefWidth="248.0">
@@ -39,7 +39,7 @@
                         <VBox fx:id="vbox_cc" prefHeight="71.0" prefWidth="233.0" />
                     </content>
                 </ScrollPane>
-                <Label fx:id="label_time" layoutX="132.0" layoutY="32.0" prefHeight="17.0" prefWidth="178.0" text="Time Stamp" />
+                <Label fx:id="label_time" layoutX="132.0" layoutY="32.0" prefHeight="17.0" prefWidth="178.0" styleClass="normalText" text="Time Stamp" />
                 <TextArea fx:id="txt_subject" layoutX="32.0" layoutY="249.0" prefHeight="76.0" prefWidth="284.0" text="Subject" wrapText="true" />
                 <JFXButton fx:id="btn_lock" buttonType="RAISED" layoutX="45.0" layoutY="384.0" onAction="#onLock" styleClass="emailDetailsButton" text="Lock" />
                 <JFXButton fx:id="btn_solv" buttonType="RAISED" layoutX="104.0" layoutY="384.0" onAction="#onSolv" styleClass="emailDetailsButton" text="Solved" />

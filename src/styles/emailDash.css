@@ -2,6 +2,17 @@
     -fx-background-color: #e8e8e8;
 }
 
+.normalText {
+    -fx-font-size: 9pt;
+    -fx-text-fill: #005600;
+}
+
+.lockedText {
+    -fx-font-size: 9pt;
+    -fx-text-fill: #005600;
+    -fx-font-weight: bold;
+}
+
 .emailListview {
     -fx-focus-color: transparent;
     -fx-faint-focus-color: transparent;

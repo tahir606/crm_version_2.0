@@ -56,7 +56,7 @@ public class emailSetController implements Initializable {
         txt_host.setText(eSetting.getHost());
         txt_email.setText(eSetting.getEmail());
         txt_pass.setText(eSetting.getPass());
-
+        txt_fspath.setText(eSetting.getFspath());
     }
 
     @FXML
