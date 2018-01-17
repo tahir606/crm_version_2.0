@@ -179,7 +179,7 @@ public class EmailDashController implements Initializable {
                     ex.printStackTrace();
                 }
             }
-
+            System.out.println("Selecting null");
             combo_attach.getSelectionModel().select(null);
         });
 
