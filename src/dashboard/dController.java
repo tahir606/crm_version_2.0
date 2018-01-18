@@ -175,7 +175,7 @@ public class dController implements Initializable {
         JFXButton button = new JFXButton("");
         Image image = new Image(getClass().getResourceAsStream("/res/img/mail.png"));
         button.setPrefSize(menu_pane.getPrefWidth(), 40);
-//        button.getStyleClass().add("mailButton");
+        button.getStyleClass().add("btn");
         button.addEventHandler(MouseEvent.MOUSE_PRESSED, myEmailsEvent);
         button.setGraphic(new ImageView(image));
         menu_pane.getChildren().add(button);
@@ -223,6 +223,7 @@ public class dController implements Initializable {
         button.setPrefSize(menu_pane.getPrefWidth(), 40);
         button.addEventHandler(MouseEvent.MOUSE_PRESSED, myAdminEvent);
         button.setGraphic(new ImageView(image));
+        button.getStyleClass().add("btn");
         menu_pane.getChildren().add(button);
     }
 
@@ -233,6 +234,7 @@ public class dController implements Initializable {
         JFXButton logoutBtn = new JFXButton("");
         logoutBtn.setPrefSize(menu_pane.getPrefWidth(), 40);
         logoutBtn.setGraphic(new ImageView(image));
+        logoutBtn.getStyleClass().add("btn");
         menu_pane.getChildren().add(logoutBtn);
 
         logoutBtn.addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler<>() {
@@ -273,6 +275,7 @@ public class dController implements Initializable {
         JFXButton powerBtn = new JFXButton("");
         powerBtn.setPrefSize(menu_pane.getPrefWidth(), 40);
         powerBtn.setGraphic(new ImageView(image));
+        powerBtn.getStyleClass().add("btn");
         menu_pane.getChildren().add(powerBtn);
 
         powerBtn.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> System.exit(0));
@@ -291,6 +294,8 @@ public class dController implements Initializable {
         JFXButton homeBtn = new JFXButton("");
         homeBtn.setPrefSize(menu_pane.getPrefWidth(), 40);
         homeBtn.setGraphic(new ImageView(image));
+        homeBtn.getStyleClass().add("btn");
+
         menu_pane.getChildren().add(homeBtn);
 
         homeBtn.setOnAction(event -> inflateHome());

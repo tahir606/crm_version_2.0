@@ -40,11 +40,11 @@
                     </content>
                 </ScrollPane>
                 <Label fx:id="label_time" layoutX="132.0" layoutY="32.0" prefHeight="17.0" prefWidth="178.0" styleClass="normalText" text="Time Stamp" />
-                <TextArea fx:id="txt_subject" layoutX="32.0" layoutY="249.0" prefHeight="76.0" prefWidth="284.0" text="Subject" wrapText="true" />
+                <TextArea fx:id="txt_subject" editable="false" layoutX="32.0" layoutY="249.0" prefHeight="76.0" prefWidth="284.0" text="Subject" wrapText="true" />
                 <JFXButton fx:id="btn_lock" buttonType="RAISED" layoutX="45.0" layoutY="384.0" onAction="#onLock" styleClass="emailDetailsButton" text="Lock" />
                 <JFXButton fx:id="btn_solv" buttonType="RAISED" layoutX="104.0" layoutY="384.0" onAction="#onSolv" styleClass="emailDetailsButton" text="Solved" />
                 <JFXComboBox fx:id="combo_attach" layoutX="80.0" layoutY="343.0" prefHeight="25.0" prefWidth="188.0" promptText="Select Attachment" />
-            <JFXComboBox fx:id="combo_respond" layoutX="244.0" layoutY="381.0" prefHeight="24.0" prefWidth="89.0" />
+                <JFXComboBox fx:id="combo_respond" layoutX="244.0" layoutY="381.0" prefHeight="24.0" prefWidth="89.0" />
                 <JFXButton fx:id="btn_unlock" buttonType="RAISED" layoutX="44.0" layoutY="384.0" onAction="#unLock" styleClass="emailUnlockButton" text="Unlock" visible="false" />
             </children>
         </AnchorPane>

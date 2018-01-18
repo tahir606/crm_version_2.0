@@ -260,7 +260,7 @@ public class filterController implements Initializable {
                                 if (type.getSelectionModel().getSelectedItem() != null) {
                                     switch (type.getSelectionModel().getSelectedItem()) {
                                         case "All": {
-                                            emailClause = " 1";
+                                            emailClause = " 1 ";
                                             break;
                                         }
                                         case "My Emails": {
@@ -285,6 +285,8 @@ public class filterController implements Initializable {
                                             break;
                                         }
                                     }
+                                } else {
+                                    emailClause = " 1 ";
                                 }
                             }
                             whereClause = whereClause + emailClause;
@@ -292,12 +294,13 @@ public class filterController implements Initializable {
 
                         }
                         case "Order By": {          //-----------------------------------------------ORDER BY-------------------
-                            String order = " ORDER BY ";
+                            String order = "";
                             for (Node em : h.getChildren()) {
                                 switch (em.getAccessibleText()) {
                                     case ("value"): {
                                         JFXComboBox<String> types = (JFXComboBox<String>) em;
                                         if (types.getSelectionModel().getSelectedItem() != null) {
+                                            order = " ORDER BY ";
                                             switch (types.getSelectionModel().getSelectedItem()) {
                                                 case ("Ticket"): {
                                                     order = order + " EMNO ";
@@ -343,8 +346,8 @@ public class filterController implements Initializable {
                                     case ("fromDate"): {
                                         JFXDatePicker from = (JFXDatePicker) em;
                                         if (from.getValue() == null) {
-                                            Toast.makeText((Stage) btn_filters.getScene().getWindow(), "Date Value Cannot be " +
-                                                    "null");
+                                            Platform.runLater(() -> Toast.makeText((Stage) btn_filters.getScene().getWindow(), "Date Value Cannot be " +
+                                                    "null"));
                                             return;
                                         }
                                         dates = dates + " '" + from.getValue() + "' AND ";
@@ -353,11 +356,11 @@ public class filterController implements Initializable {
                                     case ("toDate"): {
                                         JFXDatePicker to = (JFXDatePicker) em;
                                         if (to.getValue() == null) {
-                                            Toast.makeText((Stage) btn_filters.getScene().getWindow(), "Date Value Cannot be " +
-                                                    "null");
+                                            Platform.runLater(() -> Toast.makeText((Stage) btn_filters.getScene().getWindow(), "Date Value Cannot be " +
+                                                    "null"));
                                             return;
                                         }
-                                        dates = dates + "TSTMP<'" + to.getValue()+"'";
+                                        dates = dates + "TSTMP<'" + to.getValue() + "'";
                                         break;
                                     }
                                 }
@@ -370,10 +373,10 @@ public class filterController implements Initializable {
 
                     }
                 }
-
-                if(!orderBy.equals("") && filters == 1) {
-                    whereClause = whereClause + " 1 ";
-                }
+//                System.out.println(filters);
+//                if (!orderBy.equals("") && filters == 1) {
+//                    whereClause = whereClause + " 1 ";
+//                }
 
                 fHelper.WriteFilter(whereClause + " " + orderBy);
 
@@ -382,7 +385,7 @@ public class filterController implements Initializable {
                 Platform.runLater(new Runnable() {
                     @Override
                     public void run() {
-                        Toast.makeText(stage,"Reload Emails for filters to take effect!");
+                        Toast.makeText(stage, "Reload Emails for filters to take effect!");
                     }
                 });
 

@@ -423,8 +423,8 @@ public class mySqlConn {
                     " Our IT department has started working to resolve your issue. " +
                     " We will notify you of any further development.";
 
-            eControl.sendEmail("Burhani Customer Relationship Manager", email.getFromAddress()[0].toString(), body,
-                    "", "", message);
+            eControl.sendEmail("Burhani Customer Relationship Manager", email.getFromAddress()[0].toString(), "", "",
+                    body, "", "", message);
             statementEMNO.close();
             set.close();
 
@@ -553,7 +553,7 @@ public class mySqlConn {
     public void solvEmail(Email email, String flag, Users user) {
 
         String query = " UPDATE EMAIL_STORE " +
-                " SET ESOLV = ? " +
+                " SET ESOLV = ?, LOCKD = ? " +
                 " WHERE EMNO = ? ";
 
         String query2 = "UPDATE USERS SET SOLV = " +
@@ -566,7 +566,8 @@ public class mySqlConn {
         try {
             statement = con.prepareStatement(query);
             statement.setString(1, flag);
-            statement.setInt(2, email.getEmailNo());
+            statement.setInt(2, 0);
+            statement.setInt(3, email.getEmailNo());
             statement.executeUpdate();
             statement.close();
 

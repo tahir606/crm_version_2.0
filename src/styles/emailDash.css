@@ -25,11 +25,23 @@
     -fx-background-insets: 2px;
 }
 
+.emailDetailsButton:hover {
+    -fx-background-color: #d3ffd6;
+    -fx-scale-y: 1.1;
+    -fx-scale-x: 1.1;
+}
+
 .emailUnlockButton {
     -fx-background-color: #ed8282;
     -fx-min-width: 60px;
     -fx-min-height: 25px;
     -fx-background-insets: 2px;
+}
+
+.emailUnlockButton:hover {
+    -fx-background-color: #ffbcbc;
+    -fx-scale-y: 1.1;
+    -fx-scale-x: 1.1;
 }
 
 .emailAnchorDetails {

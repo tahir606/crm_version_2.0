@@ -400,9 +400,11 @@ public class EmailDashController implements Initializable {
             }
 
             //----Ebody
+            anchor_body.getChildren().clear();
             TextArea eBody = new TextArea(email.getBody());
             eBody.setPrefSize(anchor_body.getWidth(), anchor_body.getHeight());
             anchor_body.getChildren().add(eBody);
+            eBody.setEditable(false);
             if (!anchor_body.isVisible()) {
                 anchor_body.setVisible(true);
             }

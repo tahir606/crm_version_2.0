@@ -19,6 +19,11 @@ public class EResponseController implements Initializable {
     @FXML
     private TextField txt_to;
     @FXML
+    private TextField txt_cc;
+    @FXML
+    private TextField txt_bcc;
+
+    @FXML
     private TextField txt_attach;
     @FXML
     private TextField txt_subject;
@@ -37,7 +42,7 @@ public class EResponseController implements Initializable {
 
     emailControl helper = new emailControl();
 
-    String Subject, Email, Body, Disclaimer, Attachment;
+    String Subject, Email, cc, bcc, Body, Disclaimer, Attachment;
 
     public EResponseController() {
     }
@@ -80,6 +85,8 @@ public class EResponseController implements Initializable {
         Subject = txt_subject.getText();
         Email = txt_to.getText();
         Body = txt_body.getText();
+        cc = txt_cc.getText();
+        bcc = txt_bcc.getText();
         Disclaimer = "\n\n\nRegards,\nBITS IT Department";
 
 
@@ -94,9 +101,9 @@ public class EResponseController implements Initializable {
         }
 
         if (file == null) {
-            helper.sendEmail(Subject, Email, Body, Disclaimer, "", null);
+            helper.sendEmail(Subject, Email, cc, bcc, Body, Disclaimer, "", null);
         } else {
-            helper.sendEmail(Subject, Email, Body, Disclaimer, file.getAbsolutePath(), null);
+            helper.sendEmail(Subject, Email, cc, bcc, Body, Disclaimer, file.getAbsolutePath(), null);
         }
 
         Stage stage = (Stage) btn_Send.getScene().getWindow();

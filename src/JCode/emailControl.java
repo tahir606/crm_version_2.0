@@ -193,8 +193,9 @@ public class emailControl {
 
     //-----------------Email Send
 
-    public void sendEmail(String Subject, String Email, String Body, String Disclaimer, String Attachment, Message
-            messageReply) {
+    public void sendEmail(String Subject, String Email, String cc, String bcc, String Body, String Disclaimer, String
+            Attachment, Message
+                                  messageReply) {
 
 
         Properties props = new Properties();
@@ -272,23 +273,24 @@ public class emailControl {
 
             //message.setText(multipart);
             message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(Email));
+            if (!cc.equals(""))
+                message.setRecipients(Message.RecipientType.CC, InternetAddress.parse(cc));
+            if (!bcc.equals(""))
+                message.setRecipients(Message.RecipientType.BCC, InternetAddress.parse(bcc));
 
             //Put Message Reply
             if (messageReply != null) {
                 message.setReplyTo(messageReply.getReplyTo());
             }
 
-            new Thread(new Runnable() {
-                @Override
-                public void run() {
-                    try {
-                        Transport.send(message);
-                        //System.out.println("Sent E-Mail to: " + Email);
-                    } catch (MessagingException ex) {
-                        ex.printStackTrace();
-                        trayHelper tray = new trayHelper();
-                        tray.displayNotification("Error", "Messaging Exception: Email Not Sent");
-                    }
+            new Thread(() -> {
+                try {
+                    Transport.send(message);
+                    //System.out.println("Sent E-Mail to: " + Email);
+                } catch (MessagingException ex) {
+                    ex.printStackTrace();
+                    trayHelper tray = new trayHelper();
+                    tray.displayNotification("Error", "Messaging Exception: Email Not Sent");
                 }
             }).start();
 
