@@ -618,7 +618,8 @@ public class mySqlConn {
 //        String query = "INSERT INTO EMAIL_SETTINGS(ECODE,HOST,EMAIL,PASS) " +
 //                " SELECT IFNULL(max(ECODE),0)+1,?,?,? from EMAIL_SETTINGS";
 
-        String query = "UPDATE EMAIL_SETTINGS SET HOST = ?,EMAIL = ?, PASS = ?, FSPATH = ? WHERE ECODE = 1";
+        String query = "UPDATE EMAIL_SETTINGS SET HOST = ?,EMAIL = ?, PASS = ?, FSPATH = ?," +
+                " AUTOCHK = ?, DISCCHK = ?, AUTOTXT = ?, DISCTXT = ? WHERE ECODE = 1";
 
         Connection con = getConnection();
         PreparedStatement statement = null;
@@ -629,6 +630,11 @@ public class mySqlConn {
             statement.setString(2, eSetting.getEmail());
             statement.setString(3, eSetting.getPass());
             statement.setString(4, eSetting.getFspath());
+            statement.setBoolean(5, eSetting.isAuto());
+            statement.setBoolean(6, eSetting.isDisc());
+            statement.setString(7, eSetting.getAutotext());
+            statement.setString(8, eSetting.getDisctext());
+
             statement.executeUpdate();
 
             statement.close();

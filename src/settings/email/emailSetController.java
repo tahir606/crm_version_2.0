@@ -56,6 +56,8 @@ public class emailSetController implements Initializable {
     private mySqlConn sql;
     private fileHelper fHelper;
 
+    private static String autoText, discText;
+
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         sql = new mySqlConn();
@@ -93,10 +95,14 @@ public class emailSetController implements Initializable {
 
         String host, email, pass, fspath;
 
+        boolean auto, disc;
+
         host = txt_host.getText();
         email = txt_email.getText();
         pass = txt_pass.getText();
         fspath = txt_fspath.getText();
+        auto = check_auto.isSelected();
+        disc = check_disclaimer.isSelected();
 
         if (host.equals("") || pass.equals("") || email.equals("") || fspath.equals("")) {
             Toast.makeText((Stage) bnt_save.getScene().getWindow(), "Required fields are empty");
@@ -104,6 +110,11 @@ public class emailSetController implements Initializable {
         }
 
         ESetting es = new ESetting(host, email, pass, fspath);
+        es.setAuto(auto);
+        es.setDisc(disc);
+        es.setAutotext(autoText);
+        es.setDisctext(discText);
+
         sql.saveEmailSettings(es);
 
     }
@@ -115,18 +126,18 @@ public class emailSetController implements Initializable {
         stage.setTitle("Auto Reply");
         AnchorPane pane = new AnchorPane();
         TextArea area = new TextArea();
-        area.setMinSize(500, 500);
+        area.setMinSize(400, 400);
         pane.getChildren().add(area);
-        stage.setScene(new Scene(pane, 500, 500));
+        stage.setScene(new Scene(pane, 400, 400));
         trayHelper tray = new trayHelper();
         tray.createIcon(stage);
         Platform.setImplicitExit(true);
 
         stage.setOnHiding(event -> {
             if (c == 1) {        //Auto Reply
-                System.out.println("Auto Reply");
+                autoText = area.getText();
             } else if (c == 2) {    //Disclaimer
-                System.out.println("Disclaimer");
+                discText = area.getText();
             }
         });
 

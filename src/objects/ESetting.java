@@ -2,7 +2,8 @@ package objects;
 
 public class ESetting {
 
-    private String host, email, pass, fspath;
+    private String host, email, pass, fspath, autotext, disctext;
+    private boolean auto, disc;
 
     public ESetting() {
     }
@@ -12,6 +13,15 @@ public class ESetting {
         this.email = email;
         this.pass = pass;
         this.fspath = fspath;
+    }
+
+    public ESetting(String host, String email, String pass, String fspath, boolean auto, boolean disc) {
+        this.host = host;
+        this.email = email;
+        this.pass = pass;
+        this.fspath = fspath;
+        this.auto = auto;
+        this.disc = disc;
     }
 
     public String getHost() {
@@ -44,5 +54,37 @@ public class ESetting {
 
     public void setFspath(String fspath) {
         this.fspath = fspath;
+    }
+
+    public boolean isAuto() {
+        return auto;
+    }
+
+    public void setAuto(boolean auto) {
+        this.auto = auto;
+    }
+
+    public boolean isDisc() {
+        return disc;
+    }
+
+    public void setDisc(boolean disc) {
+        this.disc = disc;
+    }
+
+    public String getAutotext() {
+        return autotext;
+    }
+
+    public void setAutotext(String autotext) {
+        this.autotext = autotext;
+    }
+
+    public String getDisctext() {
+        return disctext;
+    }
+
+    public void setDisctext(String disctext) {
+        this.disctext = disctext;
     }
 }

@@ -230,7 +230,8 @@ public class fileHelper {
             writer = new PrintWriter(
                     new File(FADD + "eSet.txt"));
 
-            writer.write(es.getHost() + "^" + es.getEmail() + "^" + es.getPass() + "^" + es.getFspath());
+            writer.write(es.getHost() + "^" + es.getEmail() + "^" + es.getPass() + "^" + es.getFspath() + "^" + es
+                    .isAuto() + "^" + es.isDisc());
 
             return true;
 
@@ -258,7 +259,7 @@ public class fileHelper {
 
             String[] ar = text.split("\\^");
 
-            return new ESetting(ar[0], ar[1], ar[2], ar[3]);
+            return new ESetting(ar[0], ar[1], ar[2], ar[3], Boolean.parseBoolean(ar[4]), Boolean.parseBoolean(ar[5]));
         } catch (Exception e) {
             e.printStackTrace();
             return null;
