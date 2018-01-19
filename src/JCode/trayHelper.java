@@ -102,7 +102,7 @@ public class trayHelper {
         tray.remove(trayIcon);
     }
 
-    public void displayNotification(String caption, String msg) {
+    public void displayNotification(String caption, String msg) throws NullPointerException {
         trayIcon.displayMessage(caption, msg, TrayIcon.MessageType.INFO);
     }
 

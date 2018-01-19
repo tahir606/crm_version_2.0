@@ -1,6 +1,7 @@
 package JCode;
 
 
+import com.sun.mail.util.MailConnectException;
 import objects.ESetting;
 import objects.Email;
 
@@ -8,10 +9,13 @@ import javax.activation.DataHandler;
 import javax.activation.DataSource;
 import javax.activation.FileDataSource;
 import javax.mail.*;
+import javax.mail.Authenticator;
+import javax.mail.PasswordAuthentication;
 import javax.mail.internet.*;
 import javax.mail.search.FlagTerm;
 import javax.mail.search.SearchTerm;
 import java.awt.*;
+import java.net.*;
 import java.util.List;
 import java.io.*;
 import java.text.SimpleDateFormat;
@@ -73,6 +77,8 @@ public class emailControl {
         } catch (MessagingException e) {
             e.printStackTrace();
             help.displayNotification("Error", "Mail Connect Exception");
+        } catch (Exception e)  {
+            e.printStackTrace();
         }
     }
 
@@ -298,6 +304,33 @@ public class emailControl {
             e.printStackTrace();
         }
 
+    }
+
+    public static boolean checkConnection() {
+        HttpURLConnection connection = null;
+        try {
+            URL u = new URL("http://www.google.com/");
+            connection = (HttpURLConnection) u.openConnection();
+            connection.setRequestMethod("HEAD");
+            int code = connection.getResponseCode();
+//            System.out.println("" + code);
+            return true;
+            // You can determine on HTTP return code received. 200 is success.
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+            return false;
+        } catch (IOException e) {
+            System.out.println("Unknown Host Exception");
+            return false;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+        finally {
+            if (connection != null) {
+                connection.disconnect();
+            }
+        }
     }
 
     private int[] convertIntegers(List<Integer> integers) {

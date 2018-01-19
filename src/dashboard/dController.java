@@ -49,7 +49,7 @@ public class dController implements Initializable {
     private static Users user;
     private ArrayList<Users.uRights> rightsList;
 
-    trayHelper tHelper = new trayHelper();
+    trayHelper tHelper;
 
     private static int currentPane;
 
@@ -58,6 +58,7 @@ public class dController implements Initializable {
         img_load = img_loader;
 
         fHelper = new fileHelper();
+        tHelper = new trayHelper();
 
         ESetting eSetting = fHelper.ReadESettings();
         sql = new mySqlConn();
@@ -92,14 +93,32 @@ public class dController implements Initializable {
         emailControl ec = new emailControl();
 
         emailThread = new Thread(() -> {
-            while (true) {
-                ec.RecieveEmail();
+
+            if (!emailControl.checkConnection()) {
                 try {
-                    Thread.sleep(1000);
+                    tHelper.displayNotification("Error!", "Internet not found! Trying again in 10 Seconds");
+                } catch (NullPointerException e) {
+                    System.out.println("Tray not up yet");
+                }
+                try {
+                    Thread.sleep(10000);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
+                emailThread.interrupt();
+                emailCtrl();
+            } else {
+                while (true) {
+                    ec.RecieveEmail();
+                    try {
+                        Thread.sleep(1000);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
             }
+
+
         });
 
         emailThread.start();
@@ -144,6 +163,14 @@ public class dController implements Initializable {
             @Override
             public void handle(Event event) {
                 img_loader.setVisible(true);
+
+                boolean connection = mySqlConn.pingHost("localhost", 3306, 2000);
+
+                if (!connection) {
+                    tHelper.displayNotification("Error", "Database Not Found!");
+                    return;
+                }
+
                 new Thread(new Runnable() {
                     @Override
                     public void run() {
