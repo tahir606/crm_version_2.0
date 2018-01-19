@@ -1,6 +1,7 @@
 package JCode;
 
 import objects.ESetting;
+import objects.Network;
 import objects.Users;
 
 import java.io.*;
@@ -37,17 +38,18 @@ public class fileHelper {
         }
     }
 
-    public String[] getNetworkDetails() {
+    public Network getNetworkDetails() {
         String text = "";
         InputStreamReader isReader = null;
         try {
             isReader = new InputStreamReader(
-                    this.getClass().getResourceAsStream("/res/network.txt"));
+                    new FileInputStream(
+                            new File(FADD + "network.txt")));
             BufferedReader br = new BufferedReader(isReader);
 
             text = br.readLine();
             String[] t = text.split("\\^");
-            return t;
+            return new Network(t[0], Integer.parseInt(t[1]), t[2], t[3], t[4]);
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         } catch (IOException e) {
@@ -61,6 +63,30 @@ public class fileHelper {
         }
         return null;
     }
+
+    public boolean WriteNetwork(Network network) {
+
+        String Details = network.getHost() + "^" + network.getPort() + "^" + network.getDbname() + "^"
+                + network.getRoot() + "^" + network.getPass();
+
+        PrintWriter writer = null;
+        try {
+            writer = new PrintWriter(
+                    new File(FADD + "network.txt"));
+
+            writer.write(Details);
+
+            return true;
+
+        } catch (IOException ex) {
+            ex.printStackTrace();
+            return false;
+        } finally {
+            writer.close();
+        }
+
+    }
+
 
     public boolean WriteUserDetails(Users user, ArrayList<Users.uRights> rights) {
 

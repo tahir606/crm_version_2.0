@@ -20,6 +20,7 @@ import javafx.scene.layout.*;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
 import objects.ESetting;
+import objects.Network;
 import objects.Users;
 
 import java.io.File;
@@ -47,6 +48,8 @@ public class dController implements Initializable {
     private fileHelper fHelper;
     private mySqlConn sql;
     private static Users user;
+    private static Network network;
+    private static ESetting eSetting;
     private ArrayList<Users.uRights> rightsList;
 
     trayHelper tHelper;
@@ -60,7 +63,8 @@ public class dController implements Initializable {
         fHelper = new fileHelper();
         tHelper = new trayHelper();
 
-        ESetting eSetting = fHelper.ReadESettings();
+        network = fHelper.getNetworkDetails();
+        eSetting = fHelper.ReadESettings();
         sql = new mySqlConn();
 
         if (eSetting == null) {
@@ -84,45 +88,6 @@ public class dController implements Initializable {
             emailCtrl();
 
         Platform.setImplicitExit(false);
-    }
-
-    Thread emailThread;
-
-    private void emailCtrl() {
-
-        emailControl ec = new emailControl();
-
-        emailThread = new Thread(() -> {
-
-            if (!emailControl.checkConnection()) {
-                try {
-                    tHelper.displayNotification("Error!", "Internet not found! Trying again in 10 Seconds");
-                } catch (NullPointerException e) {
-                    System.out.println("Tray not up yet");
-                }
-                try {
-                    Thread.sleep(10000);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-                emailThread.interrupt();
-                emailCtrl();
-            } else {
-                while (true) {
-                    ec.RecieveEmail();
-                    try {
-                        Thread.sleep(1000);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                }
-            }
-
-
-        });
-
-        emailThread.start();
-
     }
 
     private void DrawerPane() {
@@ -164,10 +129,11 @@ public class dController implements Initializable {
             public void handle(Event event) {
                 img_loader.setVisible(true);
 
-                boolean connection = mySqlConn.pingHost("localhost", 3306, 2000);
+                boolean connection = mySqlConn.pingHost(network.getHost(), network.getPort(), 2000);
 
                 if (!connection) {
                     tHelper.displayNotification("Error", "Database Not Found!");
+                    img_loader.setVisible(false);
                     return;
                 }
 
@@ -367,6 +333,60 @@ public class dController implements Initializable {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    Thread emailThread;
+
+    private void emailCtrl() {
+
+        emailControl ec = new emailControl();
+
+        emailThread = new Thread(() -> {
+            while (true) {
+                if (!mySqlConn.pingHost(network.getHost(), network.getPort(), 2000)) {          //MySQL Database Not Found!!
+                    try {
+                        tHelper.displayNotification("Error!", "Database Not Found!\n" +
+                                "Email Receiving has been stopped!\n" +
+                                "Will try again in 10 seconds");
+                    } catch (NullPointerException e) {
+                        System.out.println("Tray not up yet");
+                    }
+                    try {
+                        Thread.sleep(10000);    //Wait for ten seconds before trying again
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                    continue;
+                } else {
+                    if (!emailControl.checkConnection()) {          //Internet Not Working!!
+                        try {
+                            tHelper.displayNotification("Error!", "Internet Not Working!\n" +
+                                    "Will try again in 10 seconds!");
+                        } catch (NullPointerException e) {
+                            System.out.println("Tray not up yet");
+                        }
+                        try {
+                            Thread.sleep(10000);    //Wait for ten seconds before trying again
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+                        continue;
+                    } else {
+                        ec.RecieveEmail();
+                        try {
+                            Thread.sleep(1000);
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }
+
+            }
+
+        });
+
+        emailThread.start();
+
     }
 
 

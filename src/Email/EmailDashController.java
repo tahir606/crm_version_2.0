@@ -370,13 +370,15 @@ public class EmailDashController implements Initializable {
                     //Because null is saved
                 }
             }
-            for (Address c : cc) {
-                try {
-                    Label label = new Label(c.toString());
-                    label.setPadding(new Insets(2, 5, 2, 5));
-                    vbox_cc.getChildren().add(label);
-                } catch (NullPointerException ex) {
-                    //Because null is saved
+            if (cc != null) {
+                for (Address c : cc) {
+                    try {
+                        Label label = new Label(c.toString());
+                        label.setPadding(new Insets(2, 5, 2, 5));
+                        vbox_cc.getChildren().add(label);
+                    } catch (NullPointerException ex) {
+                        //Because null is saved
+                    }
                 }
             }
 

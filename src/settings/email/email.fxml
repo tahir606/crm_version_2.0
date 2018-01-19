@@ -1,16 +1,33 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import com.jfoenix.controls.JFXButton?>
+<?import com.jfoenix.controls.JFXCheckBox?>
 <?import com.jfoenix.controls.JFXTextField?>
 <?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.Font?>
 
 <AnchorPane prefHeight="359.0" prefWidth="945.0" stylesheets="@../../styles/settings.css" xmlns="http://javafx.com/javafx/9" xmlns:fx="http://javafx.com/fxml/1" fx:controller="settings.email.emailSetController">
     <children>
-        <JFXTextField fx:id="txt_host" focusColor="#006e0e" layoutX="81.0" layoutY="100.0" prefHeight="25.0" prefWidth="211.0" promptText="Domain" unFocusColor="BLACK"   />
-        <JFXTextField fx:id="txt_email" focusColor="#006e0e" layoutX="81.0" layoutY="152.0" prefHeight="25.0" prefWidth="211.0" promptText="Email" unFocusColor="BLACK"  />
-        <JFXTextField fx:id="txt_pass" focusColor="#006e0e" layoutX="81.0" layoutY="205.0" prefHeight="25.0" prefWidth="211.0" promptText="Password" unFocusColor="BLACK"  />
-      <JFXTextField fx:id="txt_fspath" focusColor="#006e0e" layoutX="358.0" layoutY="100.0" prefHeight="25.0" prefWidth="211.0" promptText="File System Path" unFocusColor="BLACK"  />
-        <JFXButton fx:id="bnt_save" buttonType="RAISED" layoutX="780.0" layoutY="286.0" onAction="#saveChanges" prefHeight="45.0" prefWidth="80.0" styleClass="hbox_menu" stylesheets="@../../styles/settings.css" text="Save" />
-      <JFXButton fx:id="btn_choose" buttonType="RAISED" layoutX="596.0" layoutY="100.0" onAction="#onChoose" prefHeight="45.0" prefWidth="82.0" styleClass="hbox_menu" text="Choose" />
+        <JFXTextField fx:id="txt_host" focusColor="#006e0e" layoutX="81.0" layoutY="45.0" prefHeight="25.0" prefWidth="211.0" promptText="Domain" unFocusColor="BLACK" />
+        <JFXTextField fx:id="txt_email" focusColor="#006e0e" layoutX="81.0" layoutY="85.0" prefHeight="25.0" prefWidth="211.0" promptText="Email" unFocusColor="BLACK" />
+        <JFXTextField fx:id="txt_pass" focusColor="#006e0e" layoutX="81.0" layoutY="125.0" prefHeight="25.0" prefWidth="211.0" promptText="Password" unFocusColor="BLACK" />
+      <JFXTextField fx:id="txt_fspath" focusColor="#006e0e" layoutX="81.0" layoutY="165.0" prefHeight="25.0" prefWidth="211.0" promptText="File System Path" unFocusColor="BLACK" />
+        <JFXButton fx:id="bnt_save" buttonType="RAISED" layoutX="822.0" layoutY="286.0" onAction="#saveChanges" prefHeight="45.0" prefWidth="80.0" styleClass="hbox_menu" stylesheets="@../../styles/settings.css" text="Save" />
+      <JFXButton fx:id="btn_choose" buttonType="RAISED" layoutX="320.0" layoutY="165.0" onAction="#onChoose" prefHeight="25.0" prefWidth="56.0" styleClass="hbox_menu" text="Choose">
+         <font>
+            <Font size="11.0" />
+         </font></JFXButton>
+      <JFXCheckBox fx:id="check_auto" checkedColor="#006e0e" layoutX="94.0" layoutY="227.0" text="Auto Reply" />
+      <JFXButton fx:id="btn_auto" buttonType="RAISED" layoutX="228.0" layoutY="223.0" onAction="#setAuto" prefHeight="25.0" prefWidth="103.0" styleClass="hbox_menu" text="Set Auto Reply">
+         <font>
+            <Font size="11.0" />
+         </font>
+      </JFXButton>
+      <JFXCheckBox fx:id="check_disclaimer" checkedColor="#006e0e" layoutX="94.0" layoutY="269.0" text="Disclaimer" />
+      <JFXButton fx:id="btn_disclaimer" buttonType="RAISED" layoutX="228.0" layoutY="267.0" onAction="#setDisclaimer" prefHeight="25.0" prefWidth="103.0" styleClass="hbox_menu" text="Set Disclaimer">
+         <font>
+            <Font size="11.0" />
+         </font>
+      </JFXButton>
     </children>
 </AnchorPane>

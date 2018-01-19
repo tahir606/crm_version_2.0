@@ -25,19 +25,22 @@ public class emailSetController implements Initializable {
 
     @FXML
     private JFXTextField txt_host;
-
     @FXML
     private JFXTextField txt_email;
-
     @FXML
     private JFXTextField txt_pass;
-
     @FXML
     private JFXTextField txt_fspath;
-
+    @FXML
+    private JFXCheckBox check_auto;
+    @FXML
+    private JFXButton btn_auto;
+    @FXML
+    private JFXCheckBox check_disclaimer;
+    @FXML
+    private JFXButton btn_disclaimer;
     @FXML
     private JFXButton bnt_save;
-
     @FXML
     private JFXButton btn_choose;
 
@@ -57,6 +60,17 @@ public class emailSetController implements Initializable {
         txt_email.setText(eSetting.getEmail());
         txt_pass.setText(eSetting.getPass());
         txt_fspath.setText(eSetting.getFspath());
+    }
+
+
+    @FXML
+    void setAuto(ActionEvent event) {
+
+    }
+
+    @FXML
+    void setDisclaimer(ActionEvent event) {
+
     }
 
     @FXML

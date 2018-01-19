@@ -2,12 +2,13 @@ package objects;
 
 public class Network {
 
-    private String host, port, dbname, root, pass;
+    private String host, dbname, root, pass;
+    private int port;
 
     public Network() {
     }
 
-    public Network(String host, String port, String dbname, String root, String pass) {
+    public Network(String host, int port, String dbname, String root, String pass) {
         this.host = host;
         this.port = port;
         this.dbname = dbname;
@@ -23,11 +24,11 @@ public class Network {
         this.host = host;
     }
 
-    public String getPort() {
+    public int getPort() {
         return port;
     }
 
-    public void setPort(String port) {
+    public void setPort(int port) {
         this.port = port;
     }
 

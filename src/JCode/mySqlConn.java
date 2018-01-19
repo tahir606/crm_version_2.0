@@ -2,6 +2,7 @@ package JCode;
 
 import objects.ESetting;
 import objects.Email;
+import objects.Network;
 import objects.Users;
 
 import javax.mail.Address;
@@ -31,10 +32,10 @@ public class mySqlConn {
     public mySqlConn() {
         fHelper = new fileHelper();
         eControl = new emailControl();
-        String[] network = fHelper.getNetworkDetails();
-        URL = "jdbc:mysql://" + network[0] + ":" + network[1] + "/" + network[2];
-        USER = network[3];
-        PASSWORD = network[4];
+        Network network = fHelper.getNetworkDetails();
+        URL = "jdbc:mysql://" + network.getHost() + ":" + network.getPort() + "/" + network.getDbname();
+        USER = network.getRoot();
+        PASSWORD = network.getPass();
 
         user = fHelper.ReadUserDetails();
     }
