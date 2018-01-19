@@ -1,0 +1,5 @@
+.homeText {
+    -fx-font-size: 11pt;
+    -fx-text-fill: #002b05;
+    -fx-font-weight: bold;
+}

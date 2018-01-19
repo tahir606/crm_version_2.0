@@ -1,0 +1,113 @@
+.hbox_menu {
+    -fx-background-color: #e8e8e8;
+}
+
+.normalText {
+    -fx-font-size: 9pt;
+    -fx-text-fill: #005600;
+}
+
+.lockedText {
+    -fx-font-size: 9pt;
+    -fx-text-fill: #005600;
+    -fx-font-weight: bold;
+}
+
+.emailListview {
+    -fx-focus-color: transparent;
+    -fx-faint-focus-color: transparent;
+}
+
+.emailDetailsButton {
+    -fx-background-color: #e2d5bc;
+    -fx-min-width: 60px;
+    -fx-min-height: 25px;
+    -fx-background-insets: 2px;
+}
+
+.emailDetailsButton:hover {
+    -fx-background-color: #d3ffd6;
+    -fx-scale-y: 1.1;
+    -fx-scale-x: 1.1;
+}
+
+.emailUnlockButton {
+    -fx-background-color: #ed8282;
+    -fx-min-width: 60px;
+    -fx-min-height: 25px;
+    -fx-background-insets: 2px;
+}
+
+.emailUnlockButton:hover {
+    -fx-background-color: #ffbcbc;
+    -fx-scale-y: 1.1;
+    -fx-scale-x: 1.1;
+}
+
+.emailAnchorDetails {
+    -fx-focus-color: transparent;
+    -fx-faint-focus-color: transparent;
+}
+
+.emailAnchorBody {
+    -fx-focus-color: transparent;
+    -fx-faint-focus-color: transparent;
+}
+
+.reloadMenuButton {
+    -fx-background-image: url(../../../../misc/refresh.png);
+    -fx-background-size: 24px 24px;
+    -fx-background-repeat: no-repeat;
+    -fx-background-position: center;
+}
+
+.newMenuButton {
+    -fx-background-image: url(../../../../misc/newmail.png);
+    -fx-background-size: 24px 24px;
+    -fx-background-repeat: no-repeat;
+    -fx-background-position: center;
+}
+
+.filterMenuButton {
+    -fx-background-image: url(../../../../misc/filter.png);
+    -fx-background-size: 24px 24px;
+    -fx-background-repeat: no-repeat;
+    -fx-background-position: center;
+}
+
+.pretty-list-view > .virtual-flow > .scroll-bar,
+.pretty-list-view > .virtual-flow > .scroll-bar .decrement-arrow,
+.pretty-list-view > .virtual-flow > .scroll-bar .increment-arrow,
+.pretty-list-view > .virtual-flow > .scroll-bar .decrement-button,
+.pretty-list-view > .virtual-flow > .scroll-bar .increment-button {
+    -fx-pref-width: 0;
+    -fx-pref-height: 0;
+}
+
+.pretty-list-view .pretty-scroll-bar:vertical .thumb {
+    -fx-background-insets: 0 2 0 0;
+}
+
+.pretty-list-view .pretty-scroll-bar:horizontal .thumb {
+    -fx-background-insets: 0 0 2 0;
+}
+
+.pretty-list-view .pretty-scroll-bar .decrement-arrow,
+.pretty-list-view .pretty-scroll-bar .increment-arrow {
+    -fx-pref-width: 0;
+    -fx-pref-height: 0;
+}
+
+.pretty-list-view .pretty-scroll-bar {
+    -fx-background-color: transparent;
+    -fx-pref-width: 12;
+    -fx-pref-height: 12;
+    -fx-padding: 2;
+}
+
+.pretty-list-view .pretty-scroll-bar .thumb {
+    -fx-background-color: rgba(0, 0, 0, .2);
+    -fx-background-radius: 1000;
+    -fx-pref-width: 12;
+    -fx-pref-height: 12;
+}
