@@ -44,7 +44,7 @@ public class settingsController implements Initializable {
     private void populateMenu() {
 
         EventHandler myEmailEvent = event -> {
-            inflating("email/email.fxml",1);
+            inflating("email/email.fxml", 1);
         };
 
         JFXButton emailSetting = new JFXButton();
@@ -52,11 +52,12 @@ public class settingsController implements Initializable {
         emailSetting.setPrefSize(40, menu_hbox.getHeight());
         emailSetting.setOnAction(myEmailEvent);
         emailSetting.setGraphic(new ImageView(image));
+        emailSetting.getStyleClass().add("btnMenu");
 
         //---------------------------------------------------Split-----------
 
         EventHandler myAdminEvent = event -> {
-            inflating("admin/admin.fxml",2);
+            inflating("admin/admin.fxml", 2);
         };
 
         JFXButton adminSetting = new JFXButton();
@@ -64,8 +65,9 @@ public class settingsController implements Initializable {
         adminSetting.setPrefSize(40, menu_hbox.getHeight());
         adminSetting.setOnAction(myAdminEvent);
         adminSetting.setGraphic(new ImageView(imageA));
+        adminSetting.getStyleClass().add("btnMenu");
 
-        menu_hbox.getChildren().addAll(emailSetting,adminSetting);
+        menu_hbox.getChildren().addAll(emailSetting, adminSetting);
 
     }
 

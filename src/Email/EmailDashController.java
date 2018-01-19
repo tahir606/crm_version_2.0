@@ -125,6 +125,7 @@ public class EmailDashController implements Initializable {
                 JFXButton email = new JFXButton();
                 email.setMinSize(35, 30);
                 email.setGraphic(new ImageView(new Image(getClass().getResourceAsStream("/res/img/newmail.png"))));
+                email.getStyleClass().add("btnMenu");
                 email.addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler<MouseEvent>() {
                     @Override
                     public void handle(MouseEvent event) {
@@ -140,6 +141,7 @@ public class EmailDashController implements Initializable {
                 JFXButton reload = new JFXButton();
                 reload.setMinSize(35, 30);
                 reload.setGraphic(new ImageView(new Image(getClass().getResourceAsStream("/res/img/refresh.png"))));
+                reload.getStyleClass().add("btnMenu");
                 reload.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
                     if (selectedEmail != null) {
                         loadEmails(selectedEmail);
@@ -151,6 +153,7 @@ public class EmailDashController implements Initializable {
                 JFXButton filter = new JFXButton();
                 filter.setMinSize(35, 30);
                 filter.setGraphic(new ImageView(new Image(getClass().getResourceAsStream("/res/img/filter.png"))));
+                filter.getStyleClass().add("btnMenu");
                 filter.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> inflateFilters());
 
 

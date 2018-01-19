@@ -81,7 +81,7 @@ public class emailSetController implements Initializable {
             return;
         }
 
-        ESetting es = new ESetting(host, email, pass, fspath + "\\Bits\\CRM\\Files\\");
+        ESetting es = new ESetting(host, email, pass, fspath);
         sql.saveEmailSettings(es);
 
     }
