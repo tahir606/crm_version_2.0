@@ -24,20 +24,19 @@ public class mySqlConn {
     private static String URL;
 
     private fileHelper fHelper;
-
-    private emailControl eControl;
+    private ESetting eSetting;
 
     private Users user;
 
     public mySqlConn() {
         fHelper = new fileHelper();
-        eControl = new emailControl();
         Network network = fHelper.getNetworkDetails();
         URL = "jdbc:mysql://" + network.getHost() + ":" + network.getPort() + "/" + network.getDbname();
         USER = network.getRoot();
         PASSWORD = network.getPass();
 
         user = fHelper.ReadUserDetails();
+        eSetting = getEmailSettings();
     }
 
     private Connection getConnection() {
@@ -392,8 +391,8 @@ public class mySqlConn {
             statement.executeUpdate();
 
             statement.close();
-
-            autoReply(con, email, message);
+            if (eSetting.isAuto())
+                autoReply(con, email, message);
 
         } catch (SQLException e) {
             e.printStackTrace();
@@ -403,6 +402,7 @@ public class mySqlConn {
     }
 
     private void autoReply(Connection con, Email email, Message message) {
+
         String queryEMNO = "SELECT emno FROM email_store" +
                 " WHERE msgno = ?" +
                 " AND sbjct = ? " +
@@ -421,13 +421,11 @@ public class mySqlConn {
             while (set.next()) {
                 emno = set.getInt(1);
             }
-            String body = "Thank you for contacting Burhani Customer Service \n" +
-                    " Your complaint has been successfully registered. \n \n " +
-                    " The Ticket Number that has been issued to you is:    " + emno + "\n \n" +
-                    " Our IT department has started working to resolve your issue. " +
-                    " We will notify you of any further development.";
+            String body = "The Ticket Number Issued to you is: " + emno + "\n" + eSetting.getAutotext();
 
-            eControl.sendEmail("Burhani Customer Relationship Manager", email.getFromAddress()[0].toString(), "", "",
+            emailControl.sendEmail("Burhani Customer Support - Ticket Number: " + emno, email.getFromAddress()[0]
+                            .toString(), "",
+                    "",
                     body, "", "", message);
             statementEMNO.close();
             set.close();

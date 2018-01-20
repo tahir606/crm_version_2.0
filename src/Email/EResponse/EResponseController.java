@@ -87,8 +87,8 @@ public class EResponseController implements Initializable {
         Body = txt_body.getText();
         cc = txt_cc.getText();
         bcc = txt_bcc.getText();
-        Disclaimer = "\n\n\nRegards,\nBITS IT Department";
-
+//        Disclaimer = "\n\n\nRegards,\nBITS IT Department";
+        Disclaimer = "";
 
         if (Email.equals("") || Body.equals("")) {
             Alert alert = new Alert(Alert.AlertType.WARNING, "Required Fields are Empty",

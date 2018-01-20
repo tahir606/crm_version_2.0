@@ -233,6 +233,9 @@ public class fileHelper {
             writer.write(es.getHost() + "^" + es.getEmail() + "^" + es.getPass() + "^" + es.getFspath() + "^" + es
                     .isAuto() + "^" + es.isDisc());
 
+            WriteAutoDisc(1, es);
+            WriteAutoDisc(2, es);
+
             return true;
 
         } catch (IOException ex) {
@@ -259,7 +262,12 @@ public class fileHelper {
 
             String[] ar = text.split("\\^");
 
-            return new ESetting(ar[0], ar[1], ar[2], ar[3], Boolean.parseBoolean(ar[4]), Boolean.parseBoolean(ar[5]));
+            ESetting es = new ESetting(ar[0], ar[1], ar[2], ar[3], Boolean.parseBoolean(ar[4]), Boolean.parseBoolean
+                    (ar[5]));
+
+            es.setAutotext(ReadAutoDisc(1).getAutotext());
+            es.setDisctext(ReadAutoDisc(2).getDisctext());
+            return es;
         } catch (Exception e) {
             e.printStackTrace();
             return null;
@@ -291,5 +299,103 @@ public class fileHelper {
             writer.close();
         }
     }
+
+    //-----------------Auto/Disc Settings----------------
+    public boolean WriteAutoDisc(int c, ESetting es) {
+
+        String f = "";
+
+        if (c == 1)
+            f = "auto";
+        else if (c == 2)
+            f = "disc";
+
+
+        PrintWriter writer = null;
+
+        try {
+            writer = new PrintWriter(
+                    new File(FADD + f + ".txt"));
+
+            if (c == 1)
+                writer.write(es.getAutotext());
+            else if (c == 2)
+                writer.write(es.getDisctext());
+
+            return true;
+
+        } catch (IOException ex) {
+            ex.printStackTrace();
+            return false;
+        } finally {
+            writer.close();
+        }
+    }
+
+    public ESetting ReadAutoDisc(int c) {
+
+        String f = "";
+
+        if (c == 1)
+            f = "auto";
+        else if (c == 2)
+            f = "disc";
+
+        String text = "";
+        InputStreamReader isReader = null;
+        try {
+            isReader =
+                    new InputStreamReader(new FileInputStream(new File(FADD + f + ".txt")));
+            BufferedReader br = new BufferedReader(isReader);
+
+            text = br.readLine();
+
+            ESetting e = new ESetting();
+
+            if (c == 1)
+                e.setAutotext(text);
+            else if (c == 2)
+                e.setDisctext(text);
+
+            return e;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        } finally {
+            try {
+                isReader.close();
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            }
+        }
+    }
+
+    public boolean DeleteAutoDisc(int c) {
+
+        String f = "";
+
+        if (c == 1)
+            f = "auto";
+        else if (c == 2)
+            f = "disc";
+
+        PrintWriter writer = null;
+
+        try {
+            writer = new PrintWriter(
+                    new File(FADD + f + ".txt"));
+
+            writer.write("");
+
+            return true;
+
+        } catch (IOException ex) {
+            ex.printStackTrace();
+            return false;
+        } finally {
+            writer.close();
+        }
+    }
+
 
 }

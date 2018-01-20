@@ -65,7 +65,11 @@ public class emailSetController implements Initializable {
         sql = new mySqlConn();
         fHelper = new fileHelper();
 
+//        eSetting = fHelper.ReadESettings();
         eSetting = sql.getEmailSettings();
+
+        autoText = eSetting.getAutotext();
+        discText = eSetting.getDisctext();
 
         txt_host.setText(eSetting.getHost());
         txt_email.setText(eSetting.getEmail());
@@ -144,9 +148,17 @@ public class emailSetController implements Initializable {
         Stage stage = new Stage();
         stage.initModality(Modality.APPLICATION_MODAL);
         stage.initStyle(StageStyle.UTILITY);
-        stage.setTitle("Auto Reply");
+        String title = (c == 1) ? "Auto Reply" : "Disclamier";
+        stage.setTitle(title);
         AnchorPane pane = new AnchorPane();
         TextArea area = new TextArea();
+
+        if (c == 1)         //Auto Reply
+            area.setText(autoText);
+        else if (c == 2)     //Disclaimer
+            area.setText(discText);
+
+
         area.setMinSize(400, 400);
         pane.getChildren().add(area);
         stage.setScene(new Scene(pane, 400, 400));
