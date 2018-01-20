@@ -593,7 +593,8 @@ public class mySqlConn {
 
     public ESetting getEmailSettings() {
 
-        String query = "SELECT HOST, EMAIL, PASS, FSPATH FROM EMAIL_SETTINGS WHERE 1";
+        String query = "SELECT HOST, EMAIL, PASS, FSPATH, AUTOCHK, DISCCHK, AUTOTXT, DISCTXT FROM EMAIL_SETTINGS " +
+                "WHERE 1";
 
         Connection con = getConnection();
         try {
@@ -601,7 +602,11 @@ public class mySqlConn {
             ResultSet set = statement.executeQuery();
             ESetting eSetting;
             while (set.next()) {
-                eSetting = new ESetting(set.getString("HOST"), set.getString("EMAIL"), set.getString("PASS"), set.getString("FSPATH"));
+                eSetting = new ESetting(set.getString("HOST"), set.getString("EMAIL"),
+                        set.getString("PASS"), set.getString("FSPATH"), set.getBoolean("AUTOCHK"),
+                        set.getBoolean("DISCCHK"));
+                eSetting.setAutotext(set.getString("AUTOTXT"));
+                eSetting.setDisctext(set.getString("DISCTXT"));
                 return eSetting;
             }
 
@@ -642,6 +647,9 @@ public class mySqlConn {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+
+        fHelper.DeleteESettings();
+        fHelper.WriteESettings(getEmailSettings());
 
     }
 

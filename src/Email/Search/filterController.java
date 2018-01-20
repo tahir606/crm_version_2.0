@@ -23,10 +23,8 @@ public class filterController implements Initializable {
 
     @FXML
     private VBox filters_vbox;
-
     @FXML
     private JFXButton btn_filters;
-
     @FXML
     private JFXComboBox<String> combo_filter;
 
@@ -365,15 +363,8 @@ public class filterController implements Initializable {
 
             Stage stage = (Stage) btn_filters.getScene().getWindow();
 
-            Platform.runLater(() -> Toast.makeText(stage, "Reload Emails for filters to take effect!"));
-
-            try {
-                Thread.sleep(1500);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-
             Platform.runLater(() -> {
+                Platform.runLater(() -> Toast.makeText(stage, "Reload Emails for filters to take effect!"));
                 dController.img_load.setVisible(false);
                 stage.close();
             });

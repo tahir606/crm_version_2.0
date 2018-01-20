@@ -16,6 +16,8 @@ import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
 import javafx.scene.layout.AnchorPane;
@@ -69,6 +71,8 @@ public class emailSetController implements Initializable {
         txt_email.setText(eSetting.getEmail());
         txt_pass.setText(eSetting.getPass());
         txt_fspath.setText(eSetting.getFspath());
+        check_auto.setSelected(eSetting.isAuto());
+        check_disclaimer.setSelected(eSetting.isDisc());
     }
 
 
@@ -109,13 +113,30 @@ public class emailSetController implements Initializable {
             return;
         }
 
-        ESetting es = new ESetting(host, email, pass, fspath);
-        es.setAuto(auto);
-        es.setDisc(disc);
-        es.setAutotext(autoText);
-        es.setDisctext(discText);
+        Alert alert2 = new Alert(Alert.AlertType.CONFIRMATION, "Are you sure you want to save changes? " +
+                " Your previous settings will be deleted.",
+                ButtonType.YES, ButtonType.NO);
+        alert2.showAndWait();
 
-        sql.saveEmailSettings(es);
+        if (alert2.getResult() == ButtonType.YES) {
+            ESetting es = new ESetting(host, email, pass, fspath);
+            es.setAuto(auto);
+            es.setDisc(disc);
+            es.setAutotext(autoText);
+            es.setDisctext(discText);
+
+            sql.saveEmailSettings(es);
+
+            new Thread(() -> {
+                Platform.runLater(() -> {
+                    Toast.makeText((Stage) btn_auto.getScene().getWindow(), "Restart the application for the changes" +
+                            " to be made!");
+                });
+            }).start();
+
+        } else {
+            return;
+        }
 
     }
 
