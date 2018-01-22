@@ -6,15 +6,11 @@ import JCode.fileHelper;
 import com.jfoenix.controls.*;
 import dashboard.dController;
 import javafx.application.Platform;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Insets;
 import javafx.scene.Node;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
@@ -27,10 +23,8 @@ public class filterController implements Initializable {
 
     @FXML
     private VBox filters_vbox;
-
     @FXML
     private JFXButton btn_filters;
-
     @FXML
     private JFXComboBox<String> combo_filter;
 
@@ -44,20 +38,12 @@ public class filterController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                combo_filter.getItems().addAll("Add Filters", "Email Type", "Order By", "Between Dates");
-                // "Between TimeStamps", "Between Tickets"
-                Platform.runLater(new Runnable() {
-                    @Override
-                    public void run() {
-                        combo_filter.getSelectionModel().select(0);
-                    }
-                });
+        new Thread(() -> {
+            combo_filter.getItems().addAll("Add Filters", "Email Type", "Order By", "Between Dates");
+            // "Between TimeStamps", "Between Tickets"
+            Platform.runLater(() -> combo_filter.getSelectionModel().select(0));
 
-                setUpFilterAdd();
-            }
+            setUpFilterAdd();
         }).start();
     }
 
@@ -67,100 +53,98 @@ public class filterController implements Initializable {
 
         Insets inset = new Insets(5, 2, 5, 1);
 
-        combo_filter.valueProperty().addListener(new ChangeListener<String>() {
-            @Override
-            public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
-                switch (newValue) {
-                    case "Email Type": {
-                        if (email == true) {
-                            makeToast();
-                            return;
-                        }
-                        HBox emailType = new HBox();
-                        emailType.setSpacing(10);
+        combo_filter.valueProperty().addListener((observable, oldValue, newValue) -> {
+            switch (newValue) {
+                case "Email Type": {
+                    if (email == true) {
+                        makeToast();
+                        return;
+                    }
+                    HBox emailType = new HBox();
+                    emailType.setSpacing(10);
 
-                        JFXComboBox<String> types = new JFXComboBox<>();
-                        types.getItems().addAll("All", "My Emails", "Solved", "UnSolved", "Locked", "Unlocked");
-                        types.setMinWidth(219);
-                        types.setPromptText("Set Email Type");
-                        types.setAccessibleText("emailType");
+                    JFXComboBox<String> types = new JFXComboBox<>();
+                    types.getItems().addAll("All", "My Emails", "Solved", "UnSolved", "Locked", "Unlocked");
+                    types.setMinWidth(219);
+                    types.setPromptText("Set Email Type");
+                    types.setAccessibleText("emailType");
 
-                        JFXButton del = deleteButton(emailType, newValue);
-                        emailType.getChildren().addAll(types, del);
+                    JFXButton del = deleteButton(emailType, newValue);
+                    emailType.getChildren().addAll(types, del);
 
-                        HBox.setMargin(types, inset);
-                        HBox.setMargin(del, inset);
+                    HBox.setMargin(types, inset);
+                    HBox.setMargin(del, inset);
 
-                        emailType.setAccessibleText(newValue);
+                    emailType.setAccessibleText(newValue);
 
-                        filters_vbox.getChildren().add(emailType);
-                        email = true;
+                    filters_vbox.getChildren().add(emailType);
+                    email = true;
+                    break;
+                }
+                case "Order By": {
+                    if (order == true) {
+                        makeToast();
                         break;
                     }
-                    case "Order By": {
-                        if (order == true) {
-                            makeToast();
-                            break;
-                        }
-                        HBox orderBy = new HBox();
-                        orderBy.setSpacing(10);
-                        orderBy.setAccessibleText("orderBy");
+                    HBox orderBy = new HBox();
+                    orderBy.setSpacing(10);
+                    orderBy.setAccessibleText("orderBy");
 
-                        JFXComboBox<String> types = new JFXComboBox<>();
-                        types.getItems().addAll("Ticket", "From", "Time");
-                        types.setMinWidth(100);
-                        types.setAccessibleText("value");
-                        types.setPromptText("Pick Value");
+                    JFXComboBox<String> types = new JFXComboBox<>();
+                    types.getItems().addAll("Ticket", "From", "Time");
+                    types.setMinWidth(100);
+                    types.setAccessibleText("value");
+                    types.setPromptText("Pick Value");
 
-                        JFXComboBox<String> asc = new JFXComboBox<>();
-                        asc.getItems().addAll("Ascending", "Descending");
-                        asc.setMinWidth(98);
-                        asc.setAccessibleText("ascdesc");
-                        asc.setPromptText("ASC/DESC");
+                    JFXComboBox<String> asc = new JFXComboBox<>();
+                    asc.getItems().addAll("Ascending", "Descending");
+                    asc.setMinWidth(98);
+                    asc.setAccessibleText("ascdesc");
+                    asc.setPromptText("ASC/DESC");
 
-                        JFXButton del = deleteButton(orderBy, newValue);
-                        orderBy.getChildren().addAll(types, asc, del);
+                    JFXButton del = deleteButton(orderBy, newValue);
+                    orderBy.getChildren().addAll(types, asc, del);
 
-                        HBox.setMargin(types, inset);
-                        HBox.setMargin(asc, inset);
-                        HBox.setMargin(del, inset);
+                    HBox.setMargin(types, inset);
+                    HBox.setMargin(asc, inset);
+                    HBox.setMargin(del, inset);
 
-                        orderBy.setAccessibleText(newValue);
+                    orderBy.setAccessibleText(newValue);
 
-                        filters_vbox.getChildren().add(orderBy);
-                        order = true;
+                    filters_vbox.getChildren().add(orderBy);
+                    order = true;
+                    break;
+                }
+                case "Between Dates": {
+                    if (date == true) {
+                        makeToast();
                         break;
                     }
-                    case "Between Dates": {
-                        if (date == true) {
-                            makeToast();
-                            break;
-                        }
 
-                        HBox btwDates = new HBox();
-                        btwDates.setSpacing(10);
+                    HBox btwDates = new HBox();
+                    btwDates.setSpacing(10);
 
-                        JFXDatePicker fromDate = new JFXDatePicker();
-                        fromDate.setPromptText("From");
-                        fromDate.setAccessibleText("fromDate");
+                    JFXDatePicker fromDate = new JFXDatePicker();
+                    fromDate.setPromptText("From");
+                    fromDate.setAccessibleText("fromDate");
 
-                        JFXDatePicker toDate = new JFXDatePicker();
-                        toDate.setPromptText("To");
-                        toDate.setAccessibleText("toDate");
+                    JFXDatePicker toDate = new JFXDatePicker();
+                    toDate.setPromptText("To");
+                    toDate.setAccessibleText("toDate");
 
-                        JFXButton del = deleteButton(btwDates, newValue);
-                        btwDates.getChildren().addAll(fromDate, toDate, del);
+                    JFXButton del = deleteButton(btwDates, newValue);
+                    btwDates.getChildren().addAll(fromDate, toDate, del);
 
-                        HBox.setMargin(fromDate, inset);
-                        HBox.setMargin(toDate, inset);
-                        HBox.setMargin(del, inset);
+                    HBox.setMargin(fromDate, inset);
+                    HBox.setMargin(toDate, inset);
+                    HBox.setMargin(del, inset);
 
-                        btwDates.setAccessibleText(newValue);
+                    btwDates.setAccessibleText(newValue);
 
-                        filters_vbox.getChildren().add(btwDates);
-                        date = true;
-                        break;
-                    }
+                    filters_vbox.getChildren().add(btwDates);
+                    date = true;
+                    break;
+                }
 //                    case "Between TimeStamps": {
 //                        if (time == true) {
 //                            makeToast();
@@ -215,11 +199,10 @@ public class filterController implements Initializable {
 //                        filters_vbox.getChildren().add(btwTicks);
 //                        break;
 //                    }
-                    default:
-                        break;
-                }
-                combo_filter.getSelectionModel().select(0);
+                default:
+                    break;
             }
+            combo_filter.getSelectionModel().select(0);
         });
     }
 
@@ -228,182 +211,164 @@ public class filterController implements Initializable {
 
         dController.img_load.setVisible(true);
 
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                int filters = -1;
-                String whereClause = " WHERE 1 ";
-                String orderBy = "";
+        new Thread(() -> {
+            int filters = -1;
+            String whereClause = " WHERE 1 ";
+            String orderBy = "";
 
-                for (Node e : filters_vbox.getChildren()) {
-                    filters++;
-                    HBox h = null;
-                    if (filters != 0) {
-                        h = (HBox) e;
-                    }
-                    if (filters > 0) {
-                        if (!e.getAccessibleText().equals("Order By")) {
-                            whereClause = whereClause + " AND ";
-                        }
-                    }
-                    switch (e.getAccessibleText()) {
-                        case "combo_filters": {
-                            break;
-                        }
-                        case "Email Type": {        //-----------------------------------------------EMAIL TYPE-----------------
-                            String emailClause = "";
-                            String flag;
-                            for (Node em : h.getChildren()) {
-                                if (em.getAccessibleText().equals("del"))
-                                    continue;
-                                JFXComboBox<String> type = (JFXComboBox<String>) em;
-                                if (type.getSelectionModel().getSelectedItem() != null) {
-                                    switch (type.getSelectionModel().getSelectedItem()) {
-                                        case "All": {
-                                            emailClause = " 1 ";
-                                            break;
-                                        }
-                                        case "My Emails": {
-                                            emailClause = " SOLVBY = " + user.getUCODE() + " " +
-                                                    " AND LOCKD = " + user.getUCODE();
-                                            break;
-                                        }
-                                        case "Solved": {
-                                            emailClause = " ESOLV = 'S'";
-                                            break;
-                                        }
-                                        case "UnSolved": {
-                                            emailClause = " ESOLV = 'N'";
-                                            break;
-                                        }
-                                        case "Locked": {
-                                            emailClause = " LOCKD != 0";
-                                            break;
-                                        }
-                                        case "Unlocked": {
-                                            emailClause = " LOCKD = 0";
-                                            break;
-                                        }
-                                    }
-                                } else {
-                                    emailClause = " 1 ";
-                                }
-                            }
-                            whereClause = whereClause + emailClause;
-                            break;
-
-                        }
-                        case "Order By": {          //-----------------------------------------------ORDER BY-------------------
-                            String order = "";
-                            for (Node em : h.getChildren()) {
-                                switch (em.getAccessibleText()) {
-                                    case ("value"): {
-                                        JFXComboBox<String> types = (JFXComboBox<String>) em;
-                                        if (types.getSelectionModel().getSelectedItem() != null) {
-                                            order = " ORDER BY ";
-                                            switch (types.getSelectionModel().getSelectedItem()) {
-                                                case ("Ticket"): {
-                                                    order = order + " EMNO ";
-                                                    break;
-                                                }
-                                                case ("From"): {
-                                                    order = order + " FRADD ";
-                                                    break;
-                                                }
-                                                case ("Time"): {
-                                                    order = order + " TSTMP ";
-                                                    break;
-                                                }
-                                            }
-                                        }
-                                        break;
-                                    }
-                                    case ("ascdesc"): {
-                                        JFXComboBox<String> asc = (JFXComboBox<String>) em;
-                                        if (asc.getSelectionModel().getSelectedItem() != null) {
-                                            switch (asc.getSelectionModel().getSelectedItem()) {
-                                                case ("Ascending"): {
-                                                    order = order + " ASC ";
-                                                    break;
-                                                }
-                                                case ("Descending"): {
-                                                    order = order + " DESC ";
-                                                    break;
-                                                }
-                                            }
-                                        }
-                                        break;
-                                    }
-                                }
-                            }
-                            orderBy = order;
-                            break;
-                        }
-                        case "Between Dates": {     //-------------------------------------Between Dates------------------------
-                            String dates = " TSTMP >=";
-                            for (Node em : h.getChildren()) {
-                                switch (em.getAccessibleText()) {
-                                    case ("fromDate"): {
-                                        JFXDatePicker from = (JFXDatePicker) em;
-                                        if (from.getValue() == null) {
-                                            Platform.runLater(() -> Toast.makeText((Stage) btn_filters.getScene().getWindow(), "Date Value Cannot be " +
-                                                    "null"));
-                                            return;
-                                        }
-                                        dates = dates + " '" + from.getValue() + "' AND ";
-                                        break;
-                                    }
-                                    case ("toDate"): {
-                                        JFXDatePicker to = (JFXDatePicker) em;
-                                        if (to.getValue() == null) {
-                                            Platform.runLater(() -> Toast.makeText((Stage) btn_filters.getScene().getWindow(), "Date Value Cannot be " +
-                                                    "null"));
-                                            return;
-                                        }
-                                        dates = dates + "TSTMP<'" + to.getValue() + "'";
-                                        break;
-                                    }
-                                }
-                            }
-                            whereClause = whereClause + dates;
-                            break;
-                        }
-                        default:
-                            break;
-
+            for (Node e : filters_vbox.getChildren()) {
+                filters++;
+                HBox h = null;
+                if (filters != 0) {
+                    h = (HBox) e;
+                }
+                if (filters > 0) {
+                    if (!e.getAccessibleText().equals("Order By")) {
+                        whereClause = whereClause + " AND ";
                     }
                 }
+                switch (e.getAccessibleText()) {
+                    case "combo_filters": {
+                        break;
+                    }
+                    case "Email Type": {        //-----------------------------------------------EMAIL TYPE-----------------
+                        String emailClause = "";
+                        String flag;
+                        for (Node em : h.getChildren()) {
+                            if (em.getAccessibleText().equals("del"))
+                                continue;
+                            JFXComboBox<String> type = (JFXComboBox<String>) em;
+                            if (type.getSelectionModel().getSelectedItem() != null) {
+                                switch (type.getSelectionModel().getSelectedItem()) {
+                                    case "All": {
+                                        emailClause = " 1 ";
+                                        break;
+                                    }
+                                    case "My Emails": {
+                                        emailClause = " SOLVBY = " + user.getUCODE() + " " +
+                                                " AND LOCKD = " + user.getUCODE();
+                                        break;
+                                    }
+                                    case "Solved": {
+                                        emailClause = " ESOLV = 'S'";
+                                        break;
+                                    }
+                                    case "UnSolved": {
+                                        emailClause = " ESOLV = 'N'";
+                                        break;
+                                    }
+                                    case "Locked": {
+                                        emailClause = " LOCKD != 0";
+                                        break;
+                                    }
+                                    case "Unlocked": {
+                                        emailClause = " LOCKD = 0";
+                                        break;
+                                    }
+                                }
+                            } else {
+                                emailClause = " 1 ";
+                            }
+                        }
+                        whereClause = whereClause + emailClause;
+                        break;
+
+                    }
+                    case "Order By": {          //-----------------------------------------------ORDER BY-------------------
+                        String order = "";
+                        for (Node em : h.getChildren()) {
+                            switch (em.getAccessibleText()) {
+                                case ("value"): {
+                                    JFXComboBox<String> types = (JFXComboBox<String>) em;
+                                    if (types.getSelectionModel().getSelectedItem() != null) {
+                                        order = " ORDER BY ";
+                                        switch (types.getSelectionModel().getSelectedItem()) {
+                                            case ("Ticket"): {
+                                                order = order + " EMNO ";
+                                                break;
+                                            }
+                                            case ("From"): {
+                                                order = order + " FRADD ";
+                                                break;
+                                            }
+                                            case ("Time"): {
+                                                order = order + " TSTMP ";
+                                                break;
+                                            }
+                                        }
+                                    }
+                                    break;
+                                }
+                                case ("ascdesc"): {
+                                    JFXComboBox<String> asc = (JFXComboBox<String>) em;
+                                    if (asc.getSelectionModel().getSelectedItem() != null) {
+                                        switch (asc.getSelectionModel().getSelectedItem()) {
+                                            case ("Ascending"): {
+                                                order = order + " ASC ";
+                                                break;
+                                            }
+                                            case ("Descending"): {
+                                                order = order + " DESC ";
+                                                break;
+                                            }
+                                        }
+                                    }
+                                    break;
+                                }
+                            }
+                        }
+                        orderBy = order;
+                        break;
+                    }
+                    case "Between Dates": {     //-------------------------------------Between Dates------------------------
+                        String dates = " TSTMP >=";
+                        for (Node em : h.getChildren()) {
+                            switch (em.getAccessibleText()) {
+                                case ("fromDate"): {
+                                    JFXDatePicker from = (JFXDatePicker) em;
+                                    if (from.getValue() == null) {
+                                        Platform.runLater(() -> Toast.makeText((Stage) btn_filters.getScene().getWindow(), "Date Value Cannot be " +
+                                                "null"));
+                                        return;
+                                    }
+                                    dates = dates + " '" + from.getValue() + "' AND ";
+                                    break;
+                                }
+                                case ("toDate"): {
+                                    JFXDatePicker to = (JFXDatePicker) em;
+                                    if (to.getValue() == null) {
+                                        Platform.runLater(() -> Toast.makeText((Stage) btn_filters.getScene().getWindow(), "Date Value Cannot be " +
+                                                "null"));
+                                        return;
+                                    }
+                                    dates = dates + "TSTMP<'" + to.getValue() + "'";
+                                    break;
+                                }
+                            }
+                        }
+                        whereClause = whereClause + dates;
+                        break;
+                    }
+                    default:
+                        break;
+
+                }
+            }
 //                System.out.println(filters);
 //                if (!orderBy.equals("") && filters == 1) {
 //                    whereClause = whereClause + " 1 ";
 //                }
 
-                fHelper.WriteFilter(whereClause + " " + orderBy);
+            fHelper.WriteFilter(whereClause + " " + orderBy);
 
-                Stage stage = (Stage) btn_filters.getScene().getWindow();
+            Stage stage = (Stage) btn_filters.getScene().getWindow();
 
-                Platform.runLater(new Runnable() {
-                    @Override
-                    public void run() {
-                        Toast.makeText(stage, "Reload Emails for filters to take effect!");
-                    }
-                });
+            Platform.runLater(() -> {
+                Platform.runLater(() -> Toast.makeText(stage, "Reload Emails for filters to take effect!"));
+                dController.img_load.setVisible(false);
+                stage.close();
+            });
 
-                try {
-                    Thread.sleep(1500);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-
-                Platform.runLater(new Runnable() {
-                    @Override
-                    public void run() {
-                        dController.img_load.setVisible(false);
-                        stage.close();
-                    }
-                });
-
-            }
         }).start();
 
     }
@@ -413,33 +378,30 @@ public class filterController implements Initializable {
         JFXButton del = new JFXButton("x");
         del.setMinSize(25, 25);
         del.setAccessibleText("del");
-        del.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent event) {
-                filters_vbox.getChildren().remove(hBox);
-                switch (option) {
-                    case "Email Type": {
-                        email = false;
-                        break;
-                    }
-                    case "Order By": {
-                        order = false;
-                        break;
-                    }
-                    case "Between Dates": {
-                        date = false;
-                        break;
-                    }
+        del.setOnAction(event -> {
+            filters_vbox.getChildren().remove(hBox);
+            switch (option) {
+                case "Email Type": {
+                    email = false;
+                    break;
+                }
+                case "Order By": {
+                    order = false;
+                    break;
+                }
+                case "Between Dates": {
+                    date = false;
+                    break;
+                }
 //                    case "Between TimeStamps": {
 //                        time = false;
 //                        break;
 //                    }
-                    default:
-                        break;
+                default:
+                    break;
 
-                }
-                event.consume();
             }
+            event.consume();
         });
 
         return del;

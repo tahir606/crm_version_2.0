@@ -249,8 +249,9 @@ public class adminController implements Initializable {
 
     public void deleteUser(ActionEvent actionEvent) {
 
+        System.out.println(userSel.getUCODE());
+        System.out.println(nUcode);
         if (userSel.getUCODE() == nUcode) {
-            Toast.makeText((Stage) btn_save.getScene().getWindow(), "Please Select User");
             return;
         }
 

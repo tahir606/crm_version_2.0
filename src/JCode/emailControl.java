@@ -32,14 +32,15 @@ public class emailControl {
 
     private static String F_ADD = "";
 
-    private static mySqlConn sqlConn = new mySqlConn();
+    private static mySqlConn sqlConn;
 
     private static ESetting ESETTING;
     private fileHelper fHelper;
 
     public emailControl() {
         fHelper = new fileHelper();
-        ESETTING = fHelper.ReadESettings();
+        sqlConn = new mySqlConn();
+        ESETTING = sqlConn.getEmailSettings();
         if (ESETTING != null) {
             F_ADD = ESETTING.getFspath();
 //            System.out.println(F_ADD);
@@ -77,7 +78,7 @@ public class emailControl {
         } catch (MessagingException e) {
             e.printStackTrace();
             help.displayNotification("Error", "Mail Connect Exception");
-        } catch (Exception e)  {
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
@@ -199,10 +200,19 @@ public class emailControl {
 
     //-----------------Email Send
 
-    public void sendEmail(String Subject, String Email, String cc, String bcc, String Body, String Disclaimer, String
-            Attachment, Message
-                                  messageReply) {
+    public static void sendEmail(String Subject, String Email, String cc, String bcc, String Body, String Disclaimer,
+                                 String Attachment, Message messageReply) {
 
+        String perDisc = null;
+
+        if (Disclaimer == null) {
+            Disclaimer = "";
+        }
+
+        if (ESETTING.isDisc())
+            perDisc = Disclaimer + "\n" + ESETTING.getDisctext();
+        else
+            perDisc = Disclaimer;
 
         Properties props = new Properties();
         props.put("mail.transport.protocol", "smtp");
@@ -241,7 +251,7 @@ public class emailControl {
             BodyPart messageBodyPart = new MimeBodyPart();
 
             // Now set the actual message
-            messageBodyPart.setText(Body + "\n" + Disclaimer);
+            messageBodyPart.setText(Body + "\n\n" + perDisc);
 
             // Create a multipar message
             Multipart multipart = new MimeMultipart();
@@ -325,8 +335,7 @@ public class emailControl {
         } catch (Exception e) {
             e.printStackTrace();
             return false;
-        }
-        finally {
+        } finally {
             if (connection != null) {
                 connection.disconnect();
             }

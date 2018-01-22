@@ -24,20 +24,19 @@ public class mySqlConn {
     private static String URL;
 
     private fileHelper fHelper;
-
-    private emailControl eControl;
+    private ESetting eSetting;
 
     private Users user;
 
     public mySqlConn() {
         fHelper = new fileHelper();
-        eControl = new emailControl();
         Network network = fHelper.getNetworkDetails();
         URL = "jdbc:mysql://" + network.getHost() + ":" + network.getPort() + "/" + network.getDbname();
         USER = network.getRoot();
         PASSWORD = network.getPass();
 
         user = fHelper.ReadUserDetails();
+        eSetting = getEmailSettings();
     }
 
     private Connection getConnection() {
@@ -392,8 +391,8 @@ public class mySqlConn {
             statement.executeUpdate();
 
             statement.close();
-
-            autoReply(con, email, message);
+            if (eSetting.isAuto())
+                autoReply(con, email, message);
 
         } catch (SQLException e) {
             e.printStackTrace();
@@ -403,6 +402,7 @@ public class mySqlConn {
     }
 
     private void autoReply(Connection con, Email email, Message message) {
+
         String queryEMNO = "SELECT emno FROM email_store" +
                 " WHERE msgno = ?" +
                 " AND sbjct = ? " +
@@ -421,13 +421,11 @@ public class mySqlConn {
             while (set.next()) {
                 emno = set.getInt(1);
             }
-            String body = "Thank you for contacting Burhani Customer Service \n" +
-                    " Your complaint has been successfully registered. \n \n " +
-                    " The Ticket Number that has been issued to you is:    " + emno + "\n \n" +
-                    " Our IT department has started working to resolve your issue. " +
-                    " We will notify you of any further development.";
+            String body = "The Ticket Number Issued to you is: " + emno + "\n" + eSetting.getAutotext();
 
-            eControl.sendEmail("Burhani Customer Relationship Manager", email.getFromAddress()[0].toString(), "", "",
+            emailControl.sendEmail("Burhani Customer Support - Ticket Number: " + emno, email.getFromAddress()[0]
+                            .toString(), "",
+                    "",
                     body, "", "", message);
             statementEMNO.close();
             set.close();
@@ -593,7 +591,8 @@ public class mySqlConn {
 
     public ESetting getEmailSettings() {
 
-        String query = "SELECT HOST, EMAIL, PASS, FSPATH FROM EMAIL_SETTINGS WHERE 1";
+        String query = "SELECT HOST, EMAIL, PASS, FSPATH, AUTOCHK, DISCCHK, AUTOTXT, DISCTXT FROM EMAIL_SETTINGS " +
+                "WHERE 1";
 
         Connection con = getConnection();
         try {
@@ -601,7 +600,11 @@ public class mySqlConn {
             ResultSet set = statement.executeQuery();
             ESetting eSetting;
             while (set.next()) {
-                eSetting = new ESetting(set.getString("HOST"), set.getString("EMAIL"), set.getString("PASS"), set.getString("FSPATH"));
+                eSetting = new ESetting(set.getString("HOST"), set.getString("EMAIL"),
+                        set.getString("PASS"), set.getString("FSPATH"), set.getBoolean("AUTOCHK"),
+                        set.getBoolean("DISCCHK"));
+                eSetting.setAutotext(set.getString("AUTOTXT"));
+                eSetting.setDisctext(set.getString("DISCTXT"));
                 return eSetting;
             }
 
@@ -618,7 +621,8 @@ public class mySqlConn {
 //        String query = "INSERT INTO EMAIL_SETTINGS(ECODE,HOST,EMAIL,PASS) " +
 //                " SELECT IFNULL(max(ECODE),0)+1,?,?,? from EMAIL_SETTINGS";
 
-        String query = "UPDATE EMAIL_SETTINGS SET HOST = ?,EMAIL = ?, PASS = ?, FSPATH = ? WHERE ECODE = 1";
+        String query = "UPDATE EMAIL_SETTINGS SET HOST = ?,EMAIL = ?, PASS = ?, FSPATH = ?," +
+                " AUTOCHK = ?, DISCCHK = ?, AUTOTXT = ?, DISCTXT = ? WHERE ECODE = 1";
 
         Connection con = getConnection();
         PreparedStatement statement = null;
@@ -629,6 +633,11 @@ public class mySqlConn {
             statement.setString(2, eSetting.getEmail());
             statement.setString(3, eSetting.getPass());
             statement.setString(4, eSetting.getFspath());
+            statement.setBoolean(5, eSetting.isAuto());
+            statement.setBoolean(6, eSetting.isDisc());
+            statement.setString(7, eSetting.getAutotext());
+            statement.setString(8, eSetting.getDisctext());
+
             statement.executeUpdate();
 
             statement.close();
@@ -636,6 +645,9 @@ public class mySqlConn {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+
+        fHelper.DeleteESettings();
+        fHelper.WriteESettings(getEmailSettings());
 
     }
 

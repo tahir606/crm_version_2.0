@@ -16,6 +16,8 @@ import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
 import javafx.scene.layout.AnchorPane;
@@ -56,17 +58,25 @@ public class emailSetController implements Initializable {
     private mySqlConn sql;
     private fileHelper fHelper;
 
+    private static String autoText, discText;
+
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         sql = new mySqlConn();
         fHelper = new fileHelper();
 
+//        eSetting = fHelper.ReadESettings();
         eSetting = sql.getEmailSettings();
+
+        autoText = eSetting.getAutotext();
+        discText = eSetting.getDisctext();
 
         txt_host.setText(eSetting.getHost());
         txt_email.setText(eSetting.getEmail());
         txt_pass.setText(eSetting.getPass());
         txt_fspath.setText(eSetting.getFspath());
+        check_auto.setSelected(eSetting.isAuto());
+        check_disclaimer.setSelected(eSetting.isDisc());
     }
 
 
@@ -93,18 +103,44 @@ public class emailSetController implements Initializable {
 
         String host, email, pass, fspath;
 
+        boolean auto, disc;
+
         host = txt_host.getText();
         email = txt_email.getText();
         pass = txt_pass.getText();
         fspath = txt_fspath.getText();
+        auto = check_auto.isSelected();
+        disc = check_disclaimer.isSelected();
 
         if (host.equals("") || pass.equals("") || email.equals("") || fspath.equals("")) {
             Toast.makeText((Stage) bnt_save.getScene().getWindow(), "Required fields are empty");
             return;
         }
 
-        ESetting es = new ESetting(host, email, pass, fspath);
-        sql.saveEmailSettings(es);
+        Alert alert2 = new Alert(Alert.AlertType.CONFIRMATION, "Are you sure you want to save changes? " +
+                " Your previous settings will be deleted.",
+                ButtonType.YES, ButtonType.NO);
+        alert2.showAndWait();
+
+        if (alert2.getResult() == ButtonType.YES) {
+            ESetting es = new ESetting(host, email, pass, fspath);
+            es.setAuto(auto);
+            es.setDisc(disc);
+            es.setAutotext(autoText);
+            es.setDisctext(discText);
+
+            sql.saveEmailSettings(es);
+
+            new Thread(() -> {
+                Platform.runLater(() -> {
+                    Toast.makeText((Stage) btn_auto.getScene().getWindow(), "Restart the application for the changes" +
+                            " to be made!");
+                });
+            }).start();
+
+        } else {
+            return;
+        }
 
     }
 
@@ -112,21 +148,29 @@ public class emailSetController implements Initializable {
         Stage stage = new Stage();
         stage.initModality(Modality.APPLICATION_MODAL);
         stage.initStyle(StageStyle.UTILITY);
-        stage.setTitle("Auto Reply");
+        String title = (c == 1) ? "Auto Reply" : "Disclamier";
+        stage.setTitle(title);
         AnchorPane pane = new AnchorPane();
         TextArea area = new TextArea();
-        area.setMinSize(500, 500);
+
+        if (c == 1)         //Auto Reply
+            area.setText(autoText);
+        else if (c == 2)     //Disclaimer
+            area.setText(discText);
+
+
+        area.setMinSize(400, 400);
         pane.getChildren().add(area);
-        stage.setScene(new Scene(pane, 500, 500));
+        stage.setScene(new Scene(pane, 400, 400));
         trayHelper tray = new trayHelper();
         tray.createIcon(stage);
         Platform.setImplicitExit(true);
 
         stage.setOnHiding(event -> {
             if (c == 1) {        //Auto Reply
-                System.out.println("Auto Reply");
+                autoText = area.getText();
             } else if (c == 2) {    //Disclaimer
-                System.out.println("Disclaimer");
+                discText = area.getText();
             }
         });
 
