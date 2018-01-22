@@ -4,6 +4,8 @@ import JCode.emailControl;
 import JCode.fileHelper;
 import JCode.mySqlConn;
 import JCode.trayHelper;
+import JSockets.JClient;
+import JSockets.JServer;
 import com.jfoenix.controls.JFXButton;
 import javafx.application.Platform;
 import javafx.event.Event;
@@ -28,6 +30,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.ResourceBundle;
+import java.util.Scanner;
 
 public class dController implements Initializable {
 
@@ -59,6 +62,17 @@ public class dController implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         img_load = img_loader;
+
+        Scanner scanner = new Scanner(System.in);
+        System.out.print("1. Server\n2. Client");
+        int c = scanner.nextInt();
+        if (c == 1) {
+            JServer js = new JServer();
+        } else {
+            JClient jc = new JClient();
+        }
+
+
 
         fHelper = new fileHelper();
         tHelper = new trayHelper();
