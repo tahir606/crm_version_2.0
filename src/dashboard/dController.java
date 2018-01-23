@@ -63,17 +63,6 @@ public class dController implements Initializable {
     public void initialize(URL location, ResourceBundle resources) {
         img_load = img_loader;
 
-        Scanner scanner = new Scanner(System.in);
-        System.out.print("1. Server\n2. Client");
-        int c = scanner.nextInt();
-        if (c == 1) {
-            JServer js = new JServer();
-        } else {
-            JClient jc = new JClient();
-        }
-
-
-
         fHelper = new fileHelper();
         tHelper = new trayHelper();
 
@@ -98,8 +87,12 @@ public class dController implements Initializable {
 
         inflateHomeonThread();
 
-        if (user.isEmail())
+        if (user.isEmail()) {
             emailCtrl();
+            JServer server = new JServer();
+        } else {
+            JClient client = new JClient();
+        }
 
         Platform.setImplicitExit(false);
     }

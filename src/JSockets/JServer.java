@@ -1,7 +1,9 @@
 package JSockets;
 
+import java.io.BufferedReader;
 import java.io.DataOutputStream;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
@@ -22,12 +24,6 @@ public class JServer {
         try {
             ss = new ServerSocket(2222);
             acceptSockets();
-            String c = "";
-            while (true) {
-                System.out.println("1. BroadcastMessage: ");
-                c = s.next();
-                broadcastMessages(c);
-            }
         } catch (IOException e) {
             e.printStackTrace();
         }

@@ -1,6 +1,7 @@
 package JCode;
 
 
+import JSockets.JServer;
 import com.sun.mail.util.MailConnectException;
 import objects.ESetting;
 import objects.Email;
@@ -109,6 +110,7 @@ public class emailControl {
 
         trayHelper th = new trayHelper();
         th.displayNotification("New Email", "Email Received From: " + fromAddress[0].toString());
+        JServer.broadcastMessages(fromAddress[0].toString());
 
         SUBJECT = message.getSubject();
         if (SUBJECT.equals(""))
