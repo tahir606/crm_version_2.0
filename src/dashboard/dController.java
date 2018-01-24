@@ -4,11 +4,7 @@ import JCode.emailControl;
 import JCode.fileHelper;
 import JCode.mySqlConn;
 import JCode.trayHelper;
-<<<<<<< HEAD
-import JSockets.JClients;
-=======
 import JSockets.JClient;
->>>>>>> cee20e9fc4ebca775e87beeaef5db36f6f0417cf
 import JSockets.JServer;
 import com.jfoenix.controls.JFXButton;
 import javafx.application.Platform;
@@ -65,16 +61,6 @@ public class dController implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         img_load = img_loader;
-
-        Scanner scanner = new Scanner(System.in);
-
-        System.out.println("Server or Client?");
-        String ch = scanner.next();
-        if (ch.equals("Server")) {
-            JServer server = new JServer();
-        } else {
-            JClients clients = new JClients();
-        }
 
         fHelper = new fileHelper();
         tHelper = new trayHelper();

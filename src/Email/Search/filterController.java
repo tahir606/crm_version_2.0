@@ -11,6 +11,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Insets;
 import javafx.scene.Node;
+import javafx.scene.control.DatePicker;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
@@ -123,21 +124,39 @@ public class filterController implements Initializable {
 
                     HBox btwDates = new HBox();
                     btwDates.setSpacing(10);
+                    try {
 
-                    JFXDatePicker fromDate = new JFXDatePicker();
-                    fromDate.setPromptText("From");
-                    fromDate.setAccessibleText("fromDate");
+                        DatePicker fromDate = new JFXDatePicker();
+                        fromDate.setPromptText("From");
+                        fromDate.setAccessibleText("fromDate");
 
-                    JFXDatePicker toDate = new JFXDatePicker();
-                    toDate.setPromptText("To");
-                    toDate.setAccessibleText("toDate");
+                        DatePicker toDate = new JFXDatePicker();
+                        toDate.setPromptText("To");
+                        toDate.setAccessibleText("toDate");
 
-                    JFXButton del = deleteButton(btwDates, newValue);
-                    btwDates.getChildren().addAll(fromDate, toDate, del);
+                        JFXButton del = deleteButton(btwDates, newValue);
+                        btwDates.getChildren().addAll(fromDate, toDate, del);
 
-                    HBox.setMargin(fromDate, inset);
-                    HBox.setMargin(toDate, inset);
-                    HBox.setMargin(del, inset);
+                        HBox.setMargin(fromDate, inset);
+                        HBox.setMargin(toDate, inset);
+                        HBox.setMargin(del, inset);
+
+                    } catch (Exception e) {
+//                        DatePicker fromDate = new DatePicker();
+//                        fromDate.setPromptText("From");
+//                        fromDate.setAccessibleText("fromDate");
+//
+//                        DatePicker toDate = new DatePicker();
+//                        toDate.setPromptText("To");
+//                        toDate.setAccessibleText("toDate");
+//
+//                        JFXButton del = deleteButton(btwDates, newValue);
+//                        btwDates.getChildren().addAll(fromDate, toDate, del);
+//
+//                        HBox.setMargin(fromDate, inset);
+//                        HBox.setMargin(toDate, inset);
+//                        HBox.setMargin(del, inset);
+                    }
 
                     btwDates.setAccessibleText(newValue);
 
