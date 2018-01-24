@@ -11,6 +11,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Insets;
 import javafx.scene.Node;
+import javafx.scene.control.DatePicker;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
@@ -124,11 +125,11 @@ public class filterController implements Initializable {
                     HBox btwDates = new HBox();
                     btwDates.setSpacing(10);
 
-                    JFXDatePicker fromDate = new JFXDatePicker();
+                    DatePicker fromDate = new JFXDatePicker();
                     fromDate.setPromptText("From");
                     fromDate.setAccessibleText("fromDate");
 
-                    JFXDatePicker toDate = new JFXDatePicker();
+                    DatePicker toDate = new JFXDatePicker();
                     toDate.setPromptText("To");
                     toDate.setAccessibleText("toDate");
 
