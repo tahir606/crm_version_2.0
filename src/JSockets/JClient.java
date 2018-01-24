@@ -22,6 +22,14 @@ public class JClient {
             network = fh.getNetworkDetails();
             th = new trayHelper();
             s = new Socket(network.getHost(), 9001);
+            startListening();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void startListening() {
+        try {
             dis = new DataInputStream(s.getInputStream());
             boolean isClientOpen = true;
             while (isClientOpen) {
