@@ -17,11 +17,9 @@ public class JServer {
     public static List<Socket> sockets = new ArrayList<>();
     private final static int MAX_CLIENTS = 10;
 
-    Scanner s = new Scanner(System.in);
-
     public JServer() {
         try {
-            ss = new ServerSocket(2222);
+            ss = new ServerSocket(9001);
             acceptSockets();
         } catch (IOException e) {
             e.printStackTrace();

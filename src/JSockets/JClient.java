@@ -21,7 +21,7 @@ public class JClient {
         try {
             network = fh.getNetworkDetails();
             th = new trayHelper();
-            s = new Socket(network.getHost(), 2222);
+            s = new Socket(network.getHost(), 9001);
             dis = new DataInputStream(s.getInputStream());
             boolean isClientOpen = true;
             while (isClientOpen) {
