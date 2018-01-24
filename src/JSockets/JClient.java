@@ -29,20 +29,22 @@ public class JClient {
     }
 
     private void startListening() {
-        try {
-            dis = new DataInputStream(s.getInputStream());
-            boolean isClientOpen = true;
-            while (isClientOpen) {
-                try {
-                    th.displayNotification("Email Received", "Email Received from " + dis.readUTF());
-                } catch (IOException e) {
-                    // The client may have closed the socket.
-                    isClientOpen = false;
+        new Thread(() -> {
+            try {
+                dis = new DataInputStream(s.getInputStream());
+                boolean isClientOpen = true;
+                while (isClientOpen) {
+                    try {
+                        th.displayNotification("Email Received", "Email Received from " + dis.readUTF());
+                    } catch (IOException e) {
+                        // The client may have closed the socket.
+                        isClientOpen = false;
+                    }
                 }
+            } catch (IOException e) {
+                e.printStackTrace();
             }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        }).start();
     }
 
 

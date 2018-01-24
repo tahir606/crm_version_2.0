@@ -51,6 +51,11 @@ public class JServer {
                 DataOutputStream dos = new DataOutputStream(s.getOutputStream());
                 dos.writeUTF(msg);
             } catch (IOException e) {
+                try {
+                    s.close();
+                } catch (IOException e1) {
+                    e1.printStackTrace();
+                }
                 e.printStackTrace();
             }
         }
