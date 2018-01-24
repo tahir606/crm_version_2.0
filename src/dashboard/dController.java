@@ -4,7 +4,11 @@ import JCode.emailControl;
 import JCode.fileHelper;
 import JCode.mySqlConn;
 import JCode.trayHelper;
+<<<<<<< HEAD
 import JSockets.JClients;
+=======
+import JSockets.JClient;
+>>>>>>> cee20e9fc4ebca775e87beeaef5db36f6f0417cf
 import JSockets.JServer;
 import com.jfoenix.controls.JFXButton;
 import javafx.application.Platform;
@@ -96,8 +100,12 @@ public class dController implements Initializable {
 
         inflateHomeonThread();
 
-        if (user.isEmail())
+        if (user.isEmail()) {
             emailCtrl();
+            JServer server = new JServer();
+        } else {
+            JClient client = new JClient();
+        }
 
         Platform.setImplicitExit(false);
     }
