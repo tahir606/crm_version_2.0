@@ -15,7 +15,7 @@ public class JServer {
     private DataOutputStream dos;
 
     public static List<Socket> sockets = new ArrayList<>();
-    private final static int MAX_CLIENTS = 10;
+//    private final static int MAX_CLIENTS = 10;
 
     public JServer() {
         try {
@@ -30,14 +30,14 @@ public class JServer {
         new Thread(() -> {
             while (true) {
                 try {
-                    if (sockets.size() < 10) {
+//                    if (sockets.size() < 10) {
                         Socket s = ss.accept();
                         sockets.add(s);
                         System.out.println("Socket Accepted");
-                    } else {
-                        System.out.println("Max Clients Limit Reached");
-                        break;
-                    }
+//                    } else {
+//                        System.out.println("Max Clients Limit Reached");
+//                        break;
+//                    }
                 } catch (IOException e) {
                     e.printStackTrace();
                 }

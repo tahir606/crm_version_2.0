@@ -88,9 +88,9 @@ public class dController implements Initializable {
 
         if (user.isEmail()) {
             emailCtrl();
-            JServer server = new JServer();
+            new Thread(() -> new JServer()).start();
         } else {
-            JClient client = new JClient();
+            new Thread(() -> new JClient()).start();
         }
 
         Platform.setImplicitExit(false);
