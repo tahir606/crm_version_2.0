@@ -54,6 +54,8 @@ public class dController implements Initializable {
     private static ESetting eSetting;
     private ArrayList<Users.uRights> rightsList;
 
+    public static boolean isConnected = false;
+
     trayHelper tHelper;
 
     private static int currentPane;

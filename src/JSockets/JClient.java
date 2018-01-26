@@ -2,49 +2,96 @@ package JSockets;
 
 import JCode.fileHelper;
 import JCode.trayHelper;
+import dashboard.dController;
 import objects.Network;
 
 import java.io.DataInputStream;
+import java.io.DataOutputStream;
 import java.io.IOException;
+import java.net.InetSocketAddress;
 import java.net.Socket;
 
 public class JClient {
 
-    Socket s;
+    static Socket socket;
     DataInputStream dis;
+    DataOutputStream dos;
 
     fileHelper fh = new fileHelper();
-    trayHelper th;
     Network network;
+    static trayHelper th;
+
+    private static boolean displayed = false;
 
     public JClient() {
         try {
+
             network = fh.getNetworkDetails();
             th = new trayHelper();
-            s = new Socket(network.getHost(), 9001);
+            socket = new Socket();
+            socket.connect(new InetSocketAddress(network.getHost(), 9001), 3000);
+            th.displayNotification("Alert!", "Connected to Email Receiver");
+            displayed = true;
             startListening();
-        } catch (IOException e) {
-            e.printStackTrace();
+        } catch (Exception e) {
+            System.out.println(e);
+            restartSocket();
         }
     }
 
     private void startListening() {
         new Thread(() -> {
             try {
-                dis = new DataInputStream(s.getInputStream());
-                boolean isClientOpen = true;
-                while (isClientOpen) {
+                dis = new DataInputStream(socket.getInputStream());
+                boolean isServerOpen = true;
+                while (isServerOpen) {
                     try {
                         th.displayNotification("Email Received", "Email Received from " + dis.readUTF());
                     } catch (IOException e) {
                         // The client may have closed the socket.
-                        isClientOpen = false;
+                        isServerOpen = false;
+                        restartSocket();
+                        System.out.println(e);
                     }
                 }
             } catch (IOException e) {
                 e.printStackTrace();
             }
         }).start();
+    }
+
+    public static void sendMessage(String msg) {
+        new Thread(() -> {
+            try {
+                DataOutputStream dos = new DataOutputStream(socket.getOutputStream());
+                boolean isServerOpen = true;
+                while (isServerOpen) {
+                    try {
+                        dos.writeUTF(msg);      //R is for reboot
+                    } catch (IOException e) {
+                        // The client may have closed the socket.
+                        isServerOpen = false;
+                        restartSocket();
+                        System.out.println(e);
+                    }
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }).start();
+    }
+
+    private static void restartSocket() {
+        if (!displayed) {
+            th.displayNotification("Alert!", "Software not connected to Email Receiver!\nTrying again in 5 seconds!");
+            displayed = true;
+        }
+        try {
+            Thread.sleep(5000);
+        } catch (InterruptedException e1) {
+            e1.printStackTrace();
+        }
+        new JClient();
     }
 
 

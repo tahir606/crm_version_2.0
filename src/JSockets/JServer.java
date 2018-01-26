@@ -1,5 +1,6 @@
 package JSockets;
 
+import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -33,6 +34,7 @@ public class JServer {
 //                    if (sockets.size() < 10) {
                         Socket s = ss.accept();
                         sockets.add(s);
+                        new JEchoThread(s).start();
                         System.out.println("Socket Accepted");
 //                    } else {
 //                        System.out.println("Max Clients Limit Reached");

@@ -127,7 +127,7 @@ public class emailControl {
             for (int partcounts = 0; partcounts < numberofparts; partcounts++) {
                 MimeBodyPart part = (MimeBodyPart) mimeMultipart.getBodyPart(partcounts);
                 if (Part.ATTACHMENT.equalsIgnoreCase(part.getDisposition())) {
-                    String filename = F_ADD + part.getFileName();
+                    String filename = F_ADD + "\\" + part.getFileName();
                     System.out.println(part.getFileName());
                     ATTACH += filename + "^";  //AttachFiles string is to be inserted into Database
                     part.saveFile(filename);
