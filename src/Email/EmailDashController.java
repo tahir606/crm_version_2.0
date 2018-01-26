@@ -1,6 +1,8 @@
 package Email;
 
 import JCode.*;
+import JSockets.JClient;
+import JSockets.JServer;
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXComboBox;
 import dashboard.dController;
@@ -482,7 +484,7 @@ public class EmailDashController implements Initializable {
                 Email email = selectedEmail;
                 sql.lockEmail(email, 1);
                 loadEmails(selectedEmail);
-
+                reloadInstances();
             }
         }).start();
     }
@@ -496,7 +498,7 @@ public class EmailDashController implements Initializable {
                 Email email = selectedEmail;
                 sql.lockEmail(email, 0);
                 loadEmails(email);
-
+                reloadInstances();
             }
         }).start();
     }
@@ -511,9 +513,15 @@ public class EmailDashController implements Initializable {
         if (alert.getResult() == ButtonType.YES) {
             sql.solvEmail(selectedEmail, "S", user); // S for solved
             loadEmails(selectedEmail);
+            reloadInstances();
         } else {
             return;
         }
+    }
+
+    private void reloadInstances() {
+        JClient.sendMessage("R");   //Function was made so that if ever this feature is not needed i can just
+                                         // comment this line
     }
 
 

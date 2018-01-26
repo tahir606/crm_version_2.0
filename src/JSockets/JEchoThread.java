@@ -1,5 +1,7 @@
 package JSockets;
 
+import Email.EmailDashController;
+
 import java.io.*;
 import java.net.Socket;
 
@@ -27,6 +29,8 @@ public class JEchoThread extends Thread {
                     socket.close();
                     return;
                 } else {
+                    if(line.equals("R"))    //Server has been asked to reload Emails
+                        EmailDashController.reload = true;
                     JServer.broadcastMessages(line);
                 }
             } catch (IOException e) {
