@@ -11,20 +11,18 @@ public class JEchoThread extends Thread {
     }
 
     public void run() {
-        InputStream inp = null;
+        DataInputStream inp = null;
         BufferedReader brinp = null;
         DataOutputStream out = null;
         try {
-            inp = socket.getInputStream();
-            brinp = new BufferedReader(new InputStreamReader(inp));
-            out = new DataOutputStream(socket.getOutputStream());
+            inp = new DataInputStream(socket.getInputStream());
         } catch (IOException e) {
             return;
         }
         String line;
         while (true) {
             try {
-                line = brinp.readLine();
+                line = inp.readUTF();
                 if ((line == null) || line.equalsIgnoreCase("QUIT")) {
                     socket.close();
                     return;

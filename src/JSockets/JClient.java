@@ -32,6 +32,7 @@ public class JClient {
             socket.connect(new InetSocketAddress(network.getHost(), 9001), 3000);
             th.displayNotification("Alert!", "Connected to Email Receiver");
             sendMessage("I love you");
+            sendMessage("I love you");
             displayed = true;
             startListening();
         } catch (Exception e) {
@@ -65,6 +66,7 @@ public class JClient {
     public static void sendMessage(String msg) {
         new Thread(() -> {
             try {
+                System.out.println(msg);
                 DataOutputStream dos = new DataOutputStream(socket.getOutputStream());
                 dos.writeUTF(msg);      //R is for reboot
 
