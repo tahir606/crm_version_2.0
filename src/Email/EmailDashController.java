@@ -97,7 +97,7 @@ public class EmailDashController implements Initializable {
     public static String efrom, subject, body;
 
     private static Email selectedEmail = null;
-    public volatile boolean reload = false;
+    public static volatile boolean reload = false;
 
     public EmailDashController() {
 
