@@ -66,19 +66,13 @@ public class JClient {
         new Thread(() -> {
             try {
                 DataOutputStream dos = new DataOutputStream(socket.getOutputStream());
-                boolean isServerOpen = true;
-                while (isServerOpen) {
-                    try {
-                        dos.writeUTF(msg);      //R is for reboot
-                    } catch (IOException e) {
-                        // The client may have closed the socket.
-                        isServerOpen = false;
-                        restartSocket();
-                        System.out.println(e);
-                    }
-                }
+                dos.writeUTF(msg);      //R is for reboot
+
             } catch (IOException e) {
+                // The client may have closed the socket.
+                restartSocket();
                 e.printStackTrace();
+//                System.out.println(e);
             }
         }).start();
     }
