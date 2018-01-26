@@ -95,6 +95,7 @@ public class EmailDashController implements Initializable {
     public static String efrom, subject, body;
 
     private static Email selectedEmail = null;
+    public static boolean reload;
 
     public EmailDashController() {
 
@@ -114,6 +115,7 @@ public class EmailDashController implements Initializable {
         user = fHelper.ReadUserDetails();
 
         loadEmails(); //Loading Emails into the list
+        listenForChanges();
 
         menu_email.setSpacing(10.0);
 
@@ -306,6 +308,17 @@ public class EmailDashController implements Initializable {
             });
 
             imgLoader.setVisible(false);
+        }).start();
+    }
+
+    public void listenForChanges() {      //Load Emails from outside the territory.
+        new Thread(() -> {
+            while (true) {
+                if (reload == true) {
+                    loadEmails(selectedEmail);
+                    reload = false;
+                }
+            }
         }).start();
     }
 

@@ -1,5 +1,6 @@
 package JSockets;
 
+import Email.EmailDashController;
 import JCode.fileHelper;
 import JCode.trayHelper;
 import dashboard.dController;
@@ -49,7 +50,11 @@ public class JClient {
                 boolean isServerOpen = true;
                 while (isServerOpen) {
                     try {
-                        th.displayNotification("Email Received", "Email Received from " + dis.readUTF());
+                        String d = dis.readUTF();
+                        if (d.equals("R"))
+                            EmailDashController.reload = true;
+                        else
+                            th.displayNotification("Email Received", "Email Received from " + d);
                     } catch (IOException e) {
                         // The client may have closed the socket.
                         isServerOpen = false;

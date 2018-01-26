@@ -27,7 +27,7 @@ public class JEchoThread extends Thread {
                     socket.close();
                     return;
                 } else {
-                    System.out.println(line);
+                    JServer.broadcastMessages(line);
                 }
             } catch (IOException e) {
                 e.printStackTrace();
