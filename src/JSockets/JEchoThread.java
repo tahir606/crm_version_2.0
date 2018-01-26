@@ -29,8 +29,10 @@ public class JEchoThread extends Thread {
                     socket.close();
                     return;
                 } else {
-                    if(line.equals("R"))    //Server has been asked to reload Emails
+                    if (line.equals("R")) {  //Server has been asked to reload Emails
                         EmailDashController.reload = true;
+                        System.out.println("Reloading my Self");
+                    }
                     JServer.broadcastMessages(line);
                 }
             } catch (IOException e) {

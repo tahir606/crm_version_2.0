@@ -51,6 +51,7 @@ public class JServer {
         for (Socket s : sockets) {
             try {
                 DataOutputStream dos = new DataOutputStream(s.getOutputStream());
+                System.out.println("Relaying reloading message to clients");
                 dos.writeUTF(msg);
             } catch (IOException e) {
                 try {

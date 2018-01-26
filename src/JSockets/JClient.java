@@ -49,8 +49,10 @@ public class JClient {
                 while (isServerOpen) {
                     try {
                         String d = dis.readUTF();
-                        if (d.equals("R"))
+                        if (d.equals("R")) {
                             EmailDashController.reload = true;
+                            System.out.println("Read Reloading Message");
+                        }
                         else
                             th.displayNotification("Email Received", "Email Received from " + d);
                     } catch (IOException e) {
