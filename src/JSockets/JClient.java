@@ -51,6 +51,7 @@ public class JClient {
                         String d = dis.readUTF();
                         if (d.equals("R")) {
                             EmailDashController.reload = true;
+                            System.out.println("Reload bool : " + EmailDashController.reload);
                             System.out.println("Read Reloading Message");
                         }
                         else

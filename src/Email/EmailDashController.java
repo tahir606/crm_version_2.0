@@ -97,7 +97,7 @@ public class EmailDashController implements Initializable {
     public static String efrom, subject, body;
 
     private static Email selectedEmail = null;
-    public static boolean reload;
+    public static boolean reload = false;
 
     public EmailDashController() {
 
@@ -317,8 +317,8 @@ public class EmailDashController implements Initializable {
         new Thread(() -> {
             while (true) {
                 if (reload == true) {
-                    loadEmails(selectedEmail);
                     System.out.println("Reloading EMails in EMAIL DASH CONTROLEER");
+                    loadEmails(selectedEmail);
                     reload = false;
                 }
             }
@@ -522,8 +522,7 @@ public class EmailDashController implements Initializable {
 
     private void reloadInstances() {
         JClient.sendMessage("R");   //Function was made so that if ever this feature is not needed i can just
-                                         // comment this line
-    }
+    }                                     // comment this line
 
 
 }
