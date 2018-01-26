@@ -1,5 +1,9 @@
 package JCode;
 
+import javafx.application.Platform;
+import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonType;
+import javafx.stage.Stage;
 import objects.ESetting;
 import objects.Email;
 import objects.Network;
@@ -47,6 +51,7 @@ public class mySqlConn {
                     URL, USER, PASSWORD);
             return con;
         } catch (Exception e) {
+            showAlertDialog();
             e.printStackTrace();
         }
 
@@ -549,7 +554,6 @@ public class mySqlConn {
             doRelease(con);
         }
 
-
     }
 
     public void solvEmail(Email email, String flag, Users user) {
@@ -657,6 +661,16 @@ public class mySqlConn {
             return true;
         } catch (IOException e) {
             return false; // Either timeout or unreachable or failed DNS lookup.
+        }
+    }
+
+    private void showAlertDialog() {
+        Alert alert2 = new Alert(Alert.AlertType.ERROR, "Cannot Connect to the Database!",
+                ButtonType.OK);
+        alert2.showAndWait();
+
+        if (alert2.getResult() == ButtonType.OK) {
+            System.exit(0);
         }
     }
 

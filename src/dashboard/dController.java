@@ -292,7 +292,7 @@ public class dController implements Initializable {
 
         Image image = new Image(this.getClass().getResourceAsStream("/res/img/home.png"));
 
-        JFXButton homeBtn = new JFXButton("");
+        JFXButton homeBtn = new JFXButton();
         homeBtn.setPrefSize(menu_pane.getPrefWidth(), 40);
         homeBtn.setGraphic(new ImageView(image));
         homeBtn.getStyleClass().add("btn");

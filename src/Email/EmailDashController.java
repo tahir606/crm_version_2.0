@@ -318,7 +318,10 @@ public class EmailDashController implements Initializable {
             while (true) {
                 if (reload == true) {
                     System.out.println("Reloading EMails in EMAIL DASH CONTROLEER");
-                    loadEmails(selectedEmail);
+                    if (selectedEmail == null)
+                        loadEmails();
+                    else
+                        loadEmails(selectedEmail);
                     reload = false;
                 }
             }
