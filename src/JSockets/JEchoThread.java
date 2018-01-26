@@ -29,8 +29,7 @@ public class JEchoThread extends Thread {
                     socket.close();
                     return;
                 } else {
-                    out.writeBytes(line + "\n\r");
-                    out.flush();
+                    System.out.println(line);
                 }
             } catch (IOException e) {
                 e.printStackTrace();

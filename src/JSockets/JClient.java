@@ -36,6 +36,7 @@ public class JClient {
             startListening();
         } catch (Exception e) {
             System.out.println(e);
+//            e.printStackTrace();
             restartSocket();
         }
     }

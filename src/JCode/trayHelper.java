@@ -102,8 +102,12 @@ public class trayHelper {
         tray.remove(trayIcon);
     }
 
-    public void displayNotification(String caption, String msg) throws NullPointerException {
-        trayIcon.displayMessage(caption, msg, TrayIcon.MessageType.INFO);
+    public void displayNotification(String caption, String msg) {
+        try {
+            trayIcon.displayMessage(caption, msg, TrayIcon.MessageType.INFO);
+        } catch (NullPointerException e) {
+            System.out.println(e);
+        }
     }
 
 }
