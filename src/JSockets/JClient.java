@@ -31,6 +31,7 @@ public class JClient {
             socket = new Socket();
             socket.connect(new InetSocketAddress(network.getHost(), 9001), 3000);
             th.displayNotification("Alert!", "Connected to Email Receiver");
+            sendMessage("I love you");
             displayed = true;
             startListening();
         } catch (Exception e) {
