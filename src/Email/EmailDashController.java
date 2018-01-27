@@ -318,9 +318,11 @@ public class EmailDashController implements Initializable {
             while (true) {
                 if (reload == true) {
                     System.out.println("Reloading EMails in EMAIL DASH CONTROLEER");
-                    if (selectedEmail == null)
+                    if (selectedEmail == null) {
                         loadEmails();
-                    else
+                        anchor_body.setVisible(false);
+                        anchor_details.setVisible(false);
+                    } else
                         loadEmails(selectedEmail);
                     reload = false;
                 }
@@ -524,7 +526,11 @@ public class EmailDashController implements Initializable {
     }
 
     private void reloadInstances() {
-        JClient.sendMessage("R");   //Function was made so that if ever this feature is not needed i can just
+        if (dController.isServer == true) {
+
+            JServer.broadcastMessages("R");
+        } else
+            JClient.sendMessage("R");   //Function was made so that if ever this feature is not needed i can just
     }                                     // comment this line
 
 //    public static boolean isReload() {

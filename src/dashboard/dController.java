@@ -54,7 +54,7 @@ public class dController implements Initializable {
     private static ESetting eSetting;
     private ArrayList<Users.uRights> rightsList;
 
-    public static boolean isConnected = false;
+    public static boolean isServer = false;
 
     trayHelper tHelper;
 
@@ -90,8 +90,10 @@ public class dController implements Initializable {
 
         if (user.isEmail()) {
             emailCtrl();
+            isServer = true;
             new Thread(() -> new JServer()).start();
         } else {
+            isServer = false;
             new Thread(() -> new JClient()).start();
         }
 

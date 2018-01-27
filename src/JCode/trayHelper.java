@@ -102,11 +102,27 @@ public class trayHelper {
         tray.remove(trayIcon);
     }
 
+    private static int times = 0;   //Notification will be tried 3 times
+
     public void displayNotification(String caption, String msg) {
+        if (times == 3) {
+            times = 0;
+            return;
+        }
         try {
             trayIcon.displayMessage(caption, msg, TrayIcon.MessageType.INFO);
+            times = 0;
         } catch (NullPointerException e) {
             System.out.println(e);
+            times++;
+            new Thread(() -> {
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException e1) {
+                    e1.printStackTrace();
+                }
+                displayNotification(caption, msg);
+            }).start();
         }
     }
 
