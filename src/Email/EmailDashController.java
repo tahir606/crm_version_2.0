@@ -96,7 +96,7 @@ public class EmailDashController implements Initializable {
     public static char ReplyForward;         //Where R is for reply and F is for Forward
     public static String efrom, subject, body;
 
-    private static Email selectedEmail = null;
+    private static volatile Email selectedEmail = null;
     public static volatile boolean reload = false;
 
     public EmailDashController() {
@@ -318,6 +318,11 @@ public class EmailDashController implements Initializable {
             while (true) {
                 if (reload == true) {
                     System.out.println("Reloading EMails in EMAIL DASH CONTROLEER");
+                    try {
+                        System.out.println(selectedEmail.getEmailNo());
+                    } catch (NullPointerException e) {
+                        e.printStackTrace();
+                    }
                     if (selectedEmail == null) {
                         loadEmails();
                         anchor_body.setVisible(false);
@@ -484,28 +489,21 @@ public class EmailDashController implements Initializable {
 
     public void onLock(ActionEvent actionEvent) {
         imgLoader.setVisible(true);
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                Email email = selectedEmail;
-                sql.lockEmail(email, 1);
-                loadEmails(selectedEmail);
-                reloadInstances();
-            }
+        new Thread(() -> {
+            sql.lockEmail(selectedEmail, 1);
+            loadEmails(selectedEmail);
+            reloadInstances();
         }).start();
     }
 
     @FXML
     public void unLock(ActionEvent actionEvent) {
         imgLoader.setVisible(true);
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                Email email = selectedEmail;
-                sql.lockEmail(email, 0);
-                loadEmails(email);
-                reloadInstances();
-            }
+        new Thread(() -> {
+            Email email = selectedEmail;
+            sql.lockEmail(email, 0);
+            loadEmails(email);
+            reloadInstances();
         }).start();
     }
 
@@ -527,7 +525,6 @@ public class EmailDashController implements Initializable {
 
     private void reloadInstances() {
         if (dController.isServer == true) {
-
             JServer.broadcastMessages("R");
         } else
             JClient.sendMessage("R");   //Function was made so that if ever this feature is not needed i can just
