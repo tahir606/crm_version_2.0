@@ -321,13 +321,15 @@ public class EmailDashController implements Initializable {
                     try {
                         System.out.println(selectedEmail.getEmailNo());
                     } catch (NullPointerException e) {
+//                        anchor_body.setVisible(false);
+//                        anchor_details.setVisible(false);
                         e.printStackTrace();
+                        continue;
                     }
-                    if (selectedEmail == null) {
-                        loadEmails();
-                        anchor_body.setVisible(false);
-                        anchor_details.setVisible(false);
-                    } else
+//                    if (selectedEmail == null) {
+//                        System.out.println("In here");
+//                        loadEmails();
+//                    } else
                         loadEmails(selectedEmail);
                     reload = false;
                 }
