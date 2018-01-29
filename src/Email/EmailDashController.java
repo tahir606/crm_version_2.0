@@ -324,13 +324,14 @@ public class EmailDashController implements Initializable {
 //                        anchor_body.setVisible(false);
 //                        anchor_details.setVisible(false);
                         e.printStackTrace();
+                        reload = false;
                         continue;
                     }
 //                    if (selectedEmail == null) {
 //                        System.out.println("In here");
 //                        loadEmails();
 //                    } else
-                        loadEmails(selectedEmail);
+                    loadEmails(selectedEmail);
                     reload = false;
                 }
             }
