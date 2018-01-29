@@ -25,7 +25,8 @@
                 <Label fx:id="label_locked" layoutX="132.0" layoutY="51.0" prefHeight="17.0" prefWidth="178.0" styleClass="lockedText" text="Locked By" />
                 <Label fx:id="label_ticket1" layoutX="14.0" layoutY="10.0" prefHeight="17.0" prefWidth="108.0" text="Ticket Number:" />
                 <Label fx:id="label_time1" layoutX="14.0" layoutY="31.0" prefHeight="17.0" prefWidth="94.0" text="Time Stamp:" />
-                <Label fx:id="label_locked1" layoutX="14.0" layoutY="51.0" prefHeight="17.0" prefWidth="92.0" text="Locked By:" />
+                <Label fx:id="title_locked" layoutX="14.0" layoutY="51.0" prefHeight="17.0" prefWidth="92.0"
+                       text="Locked By:" />
                 <Label fx:id="label_ticket" layoutX="132.0" layoutY="11.0" prefHeight="17.0" prefWidth="178.0" styleClass="normalText" text="Ticket Number" />
                 <Label fx:id="label_from" layoutX="14.0" layoutY="71.0" prefHeight="17.0" prefWidth="74.0" text="From:" />
                 <Label fx:id="label_cc" layoutX="14.0" layoutY="161.0" prefHeight="17.0" prefWidth="82.0" text="CC:" />

@@ -29,7 +29,6 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.ResourceBundle;
-import java.util.Scanner;
 
 public class dController implements Initializable {
 
@@ -384,7 +383,7 @@ public class dController implements Initializable {
                     } else {
                         ec.RecieveEmail();
                         try {
-                            Thread.sleep(1000);
+                            Thread.sleep(2000);
                         } catch (InterruptedException e) {
                             e.printStackTrace();
                         }

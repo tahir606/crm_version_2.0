@@ -13,6 +13,12 @@
     -fx-font-weight: bold;
 }
 
+.solvedText {
+    -fx-font-size: 9pt;
+    -fx-text-fill: #005456;
+    -fx-font-weight: bold;
+}
+
 .emailListview {
     -fx-focus-color: transparent;
     -fx-faint-focus-color: transparent;

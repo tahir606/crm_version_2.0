@@ -57,6 +57,9 @@ public class EmailDashController implements Initializable {
     private Label label_locked;
 
     @FXML
+    private Label title_locked;
+
+    @FXML
     private TextArea txt_subject;
 
     @FXML
@@ -130,16 +133,13 @@ public class EmailDashController implements Initializable {
                 email.setMinSize(35, 30);
                 email.setGraphic(new ImageView(new Image(getClass().getResourceAsStream("/res/img/newmail.png"))));
                 email.getStyleClass().add("btnMenu");
-                email.addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler<MouseEvent>() {
-                    @Override
-                    public void handle(MouseEvent event) {
-                        efrom = "";
-                        subject = "";
-                        body = "";
-                        ReplyForward = 'N'; //N for New.
+                email.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
+                    efrom = "";
+                    subject = "";
+                    body = "";
+                    ReplyForward = 'N'; //N for New.
 
-                        inflateEResponse();
-                    }
+                    inflateEResponse();
                 });
 
                 JFXButton reload = new JFXButton();
@@ -380,6 +380,7 @@ public class EmailDashController implements Initializable {
 //                        } catch (ParseException e) {
 //                            e.printStackTrace();
 //                        }
+            title_locked.setText("Locked By: ");
             label_time.setText(email.getTimestamp());
 
             //----Emails
@@ -412,6 +413,7 @@ public class EmailDashController implements Initializable {
             }
 
             label_locked.setText(email.getLockedByName());
+
             txt_subject.setText(email.getSubject());
             anchor_details.setVisible(true);
 
@@ -447,6 +449,11 @@ public class EmailDashController implements Initializable {
             //Buttons
             if (email.getSolvFlag() == 'S') {    //If Email is solved disable all buttons
 //                            System.out.println("If Email is solved disable all buttons");
+
+                title_locked.setText("Solved By: ");
+                label_locked.setText(email.getLockedByName());
+                label_locked.getStyleClass().add("solvedText");
+
                 btn_lock.setDisable(true);
                 btn_lock.setVisible(true);
                 btn_unlock.setDisable(true);
@@ -539,8 +546,11 @@ public class EmailDashController implements Initializable {
 //
 //    public void setReload(boolean reload) {
 //        this.reload = reload;
-//        if(reload == true) {
-//            loadEmails(selectedEmail);
+//        if (reload == true) {
+//            if (selectedEmail != null)
+//                loadEmails(selectedEmail);
+//            else
+//                loadEmails();
 //        }
 //    }
 }

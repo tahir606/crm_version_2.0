@@ -558,11 +558,11 @@ public class mySqlConn {
 
     public void solvEmail(Email email, String flag, Users user) {
 
-        String query = " UPDATE EMAIL_STORE " +
-                " SET ESOLV = ?, LOCKD = ? " +
+        String query = " UPDATE EMAIL_STORE " +     //Query to Update Email status to solve
+                " SET ESOLV = ?" +
                 " WHERE EMNO = ? ";
 
-        String query2 = "UPDATE USERS SET SOLV = " +
+        String query2 = "UPDATE USERS SET SOLV = " +        //Query to +1 solved
                 " ((select IFNULL(SOLV,0) + 1 AS SOLV from ( select SOLV from users where UCODE = ?) as x))" +
                 " WHERE UCODE = ?";
 
@@ -572,8 +572,7 @@ public class mySqlConn {
         try {
             statement = con.prepareStatement(query);
             statement.setString(1, flag);
-            statement.setInt(2, 0);
-            statement.setInt(3, email.getEmailNo());
+            statement.setInt(2, email.getEmailNo());
             statement.executeUpdate();
             statement.close();
 
@@ -665,13 +664,15 @@ public class mySqlConn {
     }
 
     private void showAlertDialog() {
-        Alert alert2 = new Alert(Alert.AlertType.ERROR, "Cannot Connect to the Database!",
-                ButtonType.OK);
-        alert2.showAndWait();
+        Platform.runLater(() -> {
+            Alert alert2 = new Alert(Alert.AlertType.ERROR, "Cannot Connect to the Database!",
+                    ButtonType.OK);
+            alert2.showAndWait();
 
-        if (alert2.getResult() == ButtonType.OK) {
-            System.exit(0);
-        }
+            if (alert2.getResult() == ButtonType.OK) {
+                System.exit(0);
+            }
+        });
     }
 
     private void doRelease(Connection con) {
