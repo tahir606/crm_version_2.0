@@ -52,8 +52,7 @@ public class Controller implements Initializable {
         error_message.setAlignment(Pos.CENTER);     //Setting Error Message Center
 
         img_loader.setImage(
-                new Image(
-                        new File(".\\misc\\loader.gif").toURI().toString()));     //Setting Loading Image to ImageView
+                new Image(getClass().getResourceAsStream("/res/img/loader.gif")));     //Setting Loading Image to ImageView
         img_loader.setVisible(false);
         Platform.setImplicitExit(false);
     }
@@ -66,12 +65,9 @@ public class Controller implements Initializable {
         if (users.equals("") || pass.equals("")) {
             error_message.setText("Incomplete Values");
         } else {
-            new Thread(new Runnable() {
-                @Override
-                public void run() {
-                    img_loader.setVisible(true);
-                    authenticateLogin(user_field.getText(), pass_field.getText());
-                }
+            new Thread(() -> {
+                img_loader.setVisible(true);
+                authenticateLogin(user_field.getText(), pass_field.getText());
             }).start();
         }
     }

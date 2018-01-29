@@ -28,59 +28,55 @@ public class trayHelper {
 
     public void createTrayIcon(Stage stage) {
 
-        if (tray != null) {
-            tray.remove(trayIcon);
-        }
-
-        image = new ImageIcon(this.getClass().getResource("/res/img/icon-tray.png")).getImage();
-
-        if (SystemTray.isSupported()) {
-            tray = SystemTray.getSystemTray();
-        }
-
-        stage.getIcons().add(new Image(getClass().getResourceAsStream("/res/img/icon.png")));
-
-
-        stage.setOnCloseRequest(event -> hide(stage));
-
-        final ActionListener closeListener = e -> {
-            Platform.exit();
-            System.exit(0);
-            tray.remove(trayIcon);
-        };
-
-        ActionListener showListener = new ActionListener() {
+        new Thread(new Runnable() {
             @Override
-            public void actionPerformed(ActionEvent e) {
-                Platform.runLater(new Runnable() {
-                    @Override
-                    public void run() {
-                        stage.show();
-                    }
-                });
+            public void run() {
+                if (tray != null) {
+                    tray.remove(trayIcon);
+                }
+
+                image = new ImageIcon(this.getClass().getResource("/res/img/icon-tray.png")).getImage();
+
+                if (SystemTray.isSupported()) {
+                    tray = SystemTray.getSystemTray();
+                }
+
+                Platform.runLater(() -> stage.getIcons().add(new Image(getClass().getResourceAsStream("/res/img/icon.png"))));
+
+
+
+                stage.setOnCloseRequest(event -> hide(stage));
+
+                final ActionListener closeListener = e -> {
+                    Platform.exit();
+                    System.exit(0);
+                    tray.remove(trayIcon);
+                };
+
+                ActionListener showListener = e -> Platform.runLater(() -> stage.show());
+
+                PopupMenu popup = new PopupMenu();
+
+                MenuItem showItem = new MenuItem("Open");
+                showItem.addActionListener(showListener);
+                popup.add(showItem);
+
+                MenuItem closeItem = new MenuItem("Close");
+                closeItem.addActionListener(closeListener);
+                popup.add(closeItem);
+
+                trayIcon = new TrayIcon(image, "BITS-CRM", popup);
+                trayIcon.setImageAutoSize(true);
+
+                trayIcon.addActionListener(showListener);
+
+                try {
+                    tray.add(trayIcon);
+                } catch (AWTException e) {
+                    e.printStackTrace();
+                }
             }
-        };
-
-        PopupMenu popup = new PopupMenu();
-
-        MenuItem showItem = new MenuItem("Open");
-        showItem.addActionListener(showListener);
-        popup.add(showItem);
-
-        MenuItem closeItem = new MenuItem("Close");
-        closeItem.addActionListener(closeListener);
-        popup.add(closeItem);
-
-        trayIcon = new TrayIcon(image, "BITS-CRM", popup);
-        trayIcon.setImageAutoSize(true);
-
-        trayIcon.addActionListener(showListener);
-
-        try {
-            tray.add(trayIcon);
-        } catch (AWTException e) {
-            e.printStackTrace();
-        }
+        }).start();
 
     }
 

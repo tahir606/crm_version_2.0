@@ -16,4 +16,5 @@
     <orderEntry type="library" name="javax.activation" level="project" />
     <orderEntry type="library" name="jsoup-1.10.1" level="project" />
   </component>
+  <jvm-options> -XX:+UseG1GC </jvm-options>
 </module>

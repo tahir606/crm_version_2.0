@@ -19,23 +19,26 @@ public class fileHelper {
 
     public void makeFolders() {
 
-        if (!new File(FADD + "text.txt").exists()) {
-            File file = new File(FADD);
-            file.mkdirs();
+        new Thread(() -> {
+            if (!new File(FADD + "text.txt").exists()) {
+                File file = new File(FADD);
+                file.mkdirs();
 
-            PrintWriter writer = null;
-            try {
-                writer = new PrintWriter(
-                        new File(FADD + "text.txt"));
+                PrintWriter writer = null;
+                try {
+                    writer = new PrintWriter(
+                            new File(FADD + "text.txt"));
 
-                writer.write("");
+                    writer.write("");
 
-            } catch (IOException ex) {
-                ex.printStackTrace();
-            } finally {
-                writer.close();
+                } catch (IOException ex) {
+                    ex.printStackTrace();
+                } finally {
+                    writer.close();
+                }
             }
-        }
+        }).start();
+
     }
 
     public Network getNetworkDetails() {
