@@ -28,7 +28,6 @@
     -fx-background-color: #e2d5bc;
     -fx-min-width: 60px;
     -fx-min-height: 25px;
-    -fx-background-insets: 2px;
 }
 
 .emailDetailsButton:hover {

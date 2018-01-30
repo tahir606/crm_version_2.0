@@ -438,6 +438,7 @@ public class EmailDashController implements Initializable {
             //----Ebody
             anchor_body.getChildren().clear();
             TextArea eBody = new TextArea(email.getBody());
+            eBody.setWrapText(true);
             eBody.setPrefSize(anchor_body.getWidth(), anchor_body.getHeight());
             anchor_body.getChildren().add(eBody);
             eBody.setEditable(false);
@@ -445,14 +446,12 @@ public class EmailDashController implements Initializable {
                 anchor_body.setVisible(true);
             }
 
-
             //Buttons
             if (email.getSolvFlag() == 'S') {    //If Email is solved disable all buttons
 //                            System.out.println("If Email is solved disable all buttons");
 
                 title_locked.setText("Solved By: ");
                 label_locked.setText(email.getLockedByName());
-                label_locked.getStyleClass().add("solvedText");
 
                 btn_lock.setDisable(true);
                 btn_lock.setVisible(true);

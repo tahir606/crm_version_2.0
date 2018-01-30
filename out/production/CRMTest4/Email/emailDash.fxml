@@ -22,11 +22,10 @@
     <center>
         <AnchorPane fx:id="anchor_details" prefHeight="425.0" prefWidth="359.0" styleClass="emailAnchorDetails" BorderPane.alignment="CENTER">
             <children>
-                <Label fx:id="label_locked" layoutX="132.0" layoutY="51.0" prefHeight="17.0" prefWidth="178.0" styleClass="lockedText" text="Locked By" />
+                <Label fx:id="label_locked" layoutX="132.0" layoutY="51.0" prefHeight="17.0" prefWidth="178.0" styleClass="solvedText" text="Locked By" />
                 <Label fx:id="label_ticket1" layoutX="14.0" layoutY="10.0" prefHeight="17.0" prefWidth="108.0" text="Ticket Number:" />
                 <Label fx:id="label_time1" layoutX="14.0" layoutY="31.0" prefHeight="17.0" prefWidth="94.0" text="Time Stamp:" />
-                <Label fx:id="title_locked" layoutX="14.0" layoutY="51.0" prefHeight="17.0" prefWidth="92.0"
-                       text="Locked By:" />
+                <Label fx:id="title_locked" layoutX="14.0" layoutY="51.0" prefHeight="17.0" prefWidth="92.0" text="Locked By:" />
                 <Label fx:id="label_ticket" layoutX="132.0" layoutY="11.0" prefHeight="17.0" prefWidth="178.0" styleClass="normalText" text="Ticket Number" />
                 <Label fx:id="label_from" layoutX="14.0" layoutY="71.0" prefHeight="17.0" prefWidth="74.0" text="From:" />
                 <Label fx:id="label_cc" layoutX="14.0" layoutY="161.0" prefHeight="17.0" prefWidth="82.0" text="CC:" />
@@ -41,12 +40,13 @@
                     </content>
                 </ScrollPane>
                 <Label fx:id="label_time" layoutX="132.0" layoutY="32.0" prefHeight="17.0" prefWidth="178.0" styleClass="normalText" text="Time Stamp" />
-                <TextArea fx:id="txt_subject" editable="false" layoutX="32.0" layoutY="249.0" prefHeight="76.0" prefWidth="284.0" text="Subject" wrapText="true" />
-                <JFXButton fx:id="btn_lock" buttonType="RAISED" layoutX="45.0" layoutY="384.0" onAction="#onLock" styleClass="emailDetailsButton" text="Lock" />
-                <JFXButton fx:id="btn_solv" buttonType="RAISED" layoutX="104.0" layoutY="384.0" onAction="#onSolv" styleClass="emailDetailsButton" text="Solved" />
-                <JFXComboBox fx:id="combo_attach" layoutX="80.0" layoutY="343.0" prefHeight="25.0" prefWidth="188.0" promptText="Select Attachment" />
-                <JFXComboBox fx:id="combo_respond" layoutX="244.0" layoutY="381.0" prefHeight="24.0" prefWidth="89.0" />
+                <TextArea fx:id="txt_subject" editable="false" layoutX="94.0" layoutY="249.0" prefHeight="74.0" prefWidth="248.0" text="Subject" wrapText="true" />
+                <JFXButton fx:id="btn_lock" buttonType="RAISED" layoutX="28.0" layoutY="380.0" onAction="#onLock" styleClass="emailDetailsButton" text="Lock" />
+                <JFXButton fx:id="btn_solv" buttonType="RAISED" layoutX="95.0" layoutY="380.0" onAction="#onSolv" styleClass="emailDetailsButton" text="Solved" />
+                <JFXComboBox fx:id="combo_attach" layoutX="80.0" layoutY="339.0" prefHeight="25.0" prefWidth="188.0" promptText="Select Attachment" />
+                <JFXComboBox fx:id="combo_respond" layoutX="244.0" layoutY="377.0" prefHeight="24.0" prefWidth="89.0" />
                 <JFXButton fx:id="btn_unlock" buttonType="RAISED" layoutX="44.0" layoutY="384.0" onAction="#unLock" styleClass="emailUnlockButton" text="Unlock" visible="false" />
+            <Label fx:id="label_cc1" layoutX="14.0" layoutY="257.0" prefHeight="17.0" prefWidth="82.0" text="Subject:" />
             </children>
         </AnchorPane>
     </center>
