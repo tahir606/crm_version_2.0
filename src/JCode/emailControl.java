@@ -137,9 +137,6 @@ public class emailControl {
             }
         }
 
-        if (ATTACH.equals(""))
-            email.setAttch("No Attachments");
-
         SimpleDateFormat dt = new SimpleDateFormat("yyyyy-MM-dd hh:mm:ss");
 
         //-------------------------------------Creating Email--------------------------------

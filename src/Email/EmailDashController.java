@@ -420,7 +420,7 @@ public class EmailDashController implements Initializable {
             //----Attachments
             combo_attach.getItems().clear();
 
-            if (!email.getAttch().equals("No Attachments")) {
+            if (!email.getAttch().equals("")) {
                 combo_attach.setDisable(false);
                 combo_attach.setPromptText("Open Attachment");
                 List<FileDev> attFiles = new ArrayList<>();
