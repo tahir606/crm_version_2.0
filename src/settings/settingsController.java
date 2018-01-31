@@ -47,9 +47,9 @@ public class settingsController implements Initializable {
             inflating("email/email.fxml", 1);
         };
 
-        JFXButton emailSetting = new JFXButton();
+        JFXButton emailSetting = new JFXButton("Email Settings");
         Image image = new Image(getClass().getResourceAsStream("/res/img/at.png"));
-        emailSetting.setPrefSize(40, menu_hbox.getHeight());
+        emailSetting.setPrefSize(120, menu_hbox.getHeight() - 2);
         emailSetting.setOnAction(myEmailEvent);
         emailSetting.setGraphic(new ImageView(image));
         emailSetting.getStyleClass().add("btnMenu");
@@ -60,9 +60,9 @@ public class settingsController implements Initializable {
             inflating("admin/admin.fxml", 2);
         };
 
-        JFXButton adminSetting = new JFXButton();
+        JFXButton adminSetting = new JFXButton("User Settings");
         Image imageA = new Image(getClass().getResourceAsStream("/res/img/users.png"));
-        adminSetting.setPrefSize(40, menu_hbox.getHeight());
+        adminSetting.setPrefSize(120, menu_hbox.getHeight() - 2);
         adminSetting.setOnAction(myAdminEvent);
         adminSetting.setGraphic(new ImageView(imageA));
         adminSetting.getStyleClass().add("btnMenu");

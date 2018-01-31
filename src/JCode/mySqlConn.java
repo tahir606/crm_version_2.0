@@ -17,7 +17,11 @@ import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.sql.*;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 public class mySqlConn {
@@ -470,6 +474,20 @@ public class mySqlConn {
                 email.setMsgNo(set.getInt("MSGNO"));
                 email.setSubject(set.getString("SBJCT"));
                 email.setTimestamp(set.getString("TSTMP"));
+
+                // Note, MM is months, not mm
+                DateFormat inputFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.S");
+                DateFormat outputFormat = new SimpleDateFormat("dd-MMM-yyyy HH:mm a");
+
+                Date date = null;
+                try {
+                    date = inputFormat.parse(email.getTimestamp());
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
+                String outputText = outputFormat.format(date);
+                email.setTimeFormatted(outputText);
+
                 email.setBody(set.getString("EBODY"));
                 email.setAttch(set.getString("ATTCH"));
                 email.setSolvFlag(set.getString("ESOLV").charAt(0));

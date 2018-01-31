@@ -102,7 +102,6 @@ public class EmailDashController implements Initializable {
     private static volatile Email selectedEmail = null;
     public static volatile boolean reload = false;
 
-
     public static ListView<Email> list_emailsF;
 
     public EmailDashController() {
@@ -125,15 +124,15 @@ public class EmailDashController implements Initializable {
 
         loadEmails(); //Loading Emails into the list
 
-        menu_email.setSpacing(10.0);
+//        menu_email.setSpacing(10.0);
 
         new Thread(new Runnable() {
             @Override
             public void run() {
                 //1) Populating Top Menu
                 //  a) Creating and adding listeners to Buttons
-                JFXButton email = new JFXButton();
-                email.setMinSize(35, 30);
+                JFXButton email = new JFXButton("New Email");
+                email.setMinSize(100, menu_email.getHeight() - 2);
                 email.setGraphic(new ImageView(new Image(getClass().getResourceAsStream("/res/img/newmail.png"))));
                 email.getStyleClass().add("btnMenu");
                 email.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
@@ -145,8 +144,8 @@ public class EmailDashController implements Initializable {
                     inflateEResponse();
                 });
 
-                JFXButton reload = new JFXButton();
-                reload.setMinSize(35, 30);
+                JFXButton reload = new JFXButton("Refresh");
+                reload.setMinSize(100, menu_email.getHeight() - 2);
                 reload.setGraphic(new ImageView(new Image(getClass().getResourceAsStream("/res/img/refresh.png"))));
                 reload.getStyleClass().add("btnMenu");
                 reload.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
@@ -157,8 +156,8 @@ public class EmailDashController implements Initializable {
                     }
                 });
 
-                JFXButton filter = new JFXButton();
-                filter.setMinSize(35, 30);
+                JFXButton filter = new JFXButton("Filters");
+                filter.setMinSize(120, menu_email.getHeight());
                 filter.setGraphic(new ImageView(new Image(getClass().getResourceAsStream("/res/img/filter.png"))));
                 filter.getStyleClass().add("btnMenu");
                 filter.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> inflateFilters());
@@ -345,28 +344,6 @@ public class EmailDashController implements Initializable {
         return emails;
     }
 
-//    private static List<Email> checkIfEmailsExistStatic() {
-//        List<Email> emails = sql.readAllEmails(fHelper.ReadFilter());
-//        if (emails == null) {
-//            emails = new ArrayList<>();
-//            Email nEm = new Email();
-//            nEm.setSubject("Emails Found");
-//            nEm.setEmailNo(0);
-//            nEm.setFromAddress(new Address[]{new InternetAddress()});
-//            emails.add(nEm);
-//
-//            list_emails.setDisable(true);
-//            anchor_details.setVisible(false);
-//            anchor_body.setVisible(false);
-//
-//        } else {
-//            list_emails.setDisable(false);
-//        }
-//
-//        return emails;
-//    }
-
-
     Address[] from, cc;
 
     private void populateDetails(Email email) {
@@ -378,15 +355,8 @@ public class EmailDashController implements Initializable {
                 return;
             }
 
-//                        DateFormat dFormat = DateFormat.getInstance();
-//                        Date date = null;
-//                        try {
-//                            date = dFormat.parse(email.getTimestamp());
-//                        } catch (ParseException e) {
-//                            e.printStackTrace();
-//                        }
             title_locked.setText("Locked By: ");
-            label_time.setText(email.getTimestamp());
+            label_time.setText(email.getTimeFormatted());
 
             //----Emails
             vbox_from.getChildren().clear();  //Clearing

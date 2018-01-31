@@ -11,7 +11,7 @@ public class Email {
 
     private int EmailNo, msgNo, lockd;
     private Address[] toAddress, fromAddress, ccAddress;
-    private String subject, timestamp, body, attch, lockedByName;
+    private String subject, timestamp, timeFormatted, body, attch, lockedByName;
     private char solvFlag, isAttch;
 
     public Email() {
@@ -120,6 +120,14 @@ public class Email {
 
     public void setTimestamp(String timestamp) {
         this.timestamp = timestamp;
+    }
+
+    public String getTimeFormatted() {
+        return timeFormatted;
+    }
+
+    public void setTimeFormatted(String timeFormatted) {
+        this.timeFormatted = timeFormatted;
     }
 
     public String getBody() {
