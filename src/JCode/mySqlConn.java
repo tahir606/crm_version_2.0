@@ -613,6 +613,8 @@ public class mySqlConn {
 
         } catch (SQLException e) {
             e.printStackTrace();
+        } catch (Exception e) {
+            e.printStackTrace();
         }
 
         return null;
@@ -664,15 +666,15 @@ public class mySqlConn {
     }
 
     private void showAlertDialog() {
-        Platform.runLater(() -> {
-            Alert alert2 = new Alert(Alert.AlertType.ERROR, "Cannot Connect to the Database!",
-                    ButtonType.OK);
-            alert2.showAndWait();
+//        Platform.runLater(() -> {
+        Alert alert2 = new Alert(Alert.AlertType.ERROR, "Cannot Connect to the Database!",
+                ButtonType.OK);
+        alert2.showAndWait();
 
-            if (alert2.getResult() == ButtonType.OK) {
-                System.exit(0);
-            }
-        });
+        if (alert2.getResult() == ButtonType.OK) {
+            System.exit(0);
+        }
+//        });
     }
 
     private void doRelease(Connection con) {

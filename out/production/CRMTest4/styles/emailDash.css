@@ -40,7 +40,6 @@
     -fx-background-color: #ed8282;
     -fx-min-width: 60px;
     -fx-min-height: 25px;
-    -fx-background-insets: 2px;
 }
 
 .emailUnlockButton:hover {

@@ -9,7 +9,7 @@
 
 <?import javafx.scene.control.TextArea?>
 <AnchorPane id="AnchorPane" prefHeight="455.0" prefWidth="486.0" stylesheets="@../../styles/eresponse.css"
-            xmlns="http://javafx.com/javafx/9" xmlns:fx="http://javafx.com/fxml/1"
+            xmlns:fx="http://javafx.com/fxml/1"
             fx:controller="Email.EResponse.EResponseController">
     <children>
         <JFXTextField fx:id="txt_to" layoutX="66.0" layoutY="14.0" prefHeight="25.0" prefWidth="298.0"/>

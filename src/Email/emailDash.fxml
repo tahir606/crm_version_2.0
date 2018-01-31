@@ -13,53 +13,72 @@
 
 <!--<?import JCode.StyledListView?>-->
 
-<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="450.0" prefWidth="945.0" stylesheets="@../styles/emailDash.css" xmlns="http://javafx.com/javafx/9" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Email.EmailDashController">
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="450.0"
+            prefWidth="945.0" stylesheets="@../styles/emailDash.css"
+            xmlns:fx="http://javafx.com/fxml/1" fx:controller="Email.EmailDashController">
     <center>
     </center>
     <right>
-        <AnchorPane fx:id="anchor_body" prefHeight="425.0" prefWidth="331.0" styleClass="emailAnchorBody" BorderPane.alignment="CENTER" />
+        <AnchorPane fx:id="anchor_body" prefHeight="425.0" prefWidth="331.0" styleClass="emailAnchorBody"
+                    BorderPane.alignment="CENTER"/>
     </right>
     <center>
-        <AnchorPane fx:id="anchor_details" prefHeight="425.0" prefWidth="359.0" styleClass="emailAnchorDetails" BorderPane.alignment="CENTER">
+        <AnchorPane fx:id="anchor_details" prefHeight="425.0" prefWidth="359.0" styleClass="emailAnchorDetails"
+                    BorderPane.alignment="CENTER">
             <children>
-                <Label fx:id="label_locked" layoutX="132.0" layoutY="51.0" prefHeight="17.0" prefWidth="178.0" styleClass="solvedText" text="Locked By" />
-                <Label fx:id="label_ticket1" layoutX="14.0" layoutY="10.0" prefHeight="17.0" prefWidth="108.0" text="Ticket Number:" />
-                <Label fx:id="label_time1" layoutX="14.0" layoutY="31.0" prefHeight="17.0" prefWidth="94.0" text="Time Stamp:" />
-                <Label fx:id="title_locked" layoutX="14.0" layoutY="51.0" prefHeight="17.0" prefWidth="92.0" text="Locked By:" />
-                <Label fx:id="label_ticket" layoutX="132.0" layoutY="11.0" prefHeight="17.0" prefWidth="178.0" styleClass="normalText" text="Ticket Number" />
-                <Label fx:id="label_from" layoutX="14.0" layoutY="71.0" prefHeight="17.0" prefWidth="74.0" text="From:" />
-                <Label fx:id="label_cc" layoutX="14.0" layoutY="161.0" prefHeight="17.0" prefWidth="82.0" text="CC:" />
+                <Label fx:id="label_locked" layoutX="132.0" layoutY="51.0" prefHeight="17.0" prefWidth="178.0"
+                       styleClass="solvedText" text="Locked By"/>
+                <Label fx:id="label_ticket1" layoutX="14.0" layoutY="10.0" prefHeight="17.0" prefWidth="108.0"
+                       text="Ticket Number:"/>
+                <Label fx:id="label_time1" layoutX="14.0" layoutY="31.0" prefHeight="17.0" prefWidth="94.0"
+                       text="Time Stamp:"/>
+                <Label fx:id="title_locked" layoutX="14.0" layoutY="51.0" prefHeight="17.0" prefWidth="92.0"
+                       text="Locked By:"/>
+                <Label fx:id="label_ticket" layoutX="132.0" layoutY="11.0" prefHeight="17.0" prefWidth="178.0"
+                       styleClass="normalText" text="Ticket Number"/>
+                <Label fx:id="label_from" layoutX="14.0" layoutY="71.0" prefHeight="17.0" prefWidth="74.0"
+                       text="From:"/>
+                <Label fx:id="label_cc" layoutX="14.0" layoutY="161.0" prefHeight="17.0" prefWidth="82.0" text="CC:"/>
                 <ScrollPane layoutX="94.0" layoutY="80.0" prefHeight="74.0" prefWidth="248.0">
                     <content>
-                        <VBox fx:id="vbox_from" prefHeight="71.0" prefWidth="233.0" />
+                        <VBox fx:id="vbox_from" prefHeight="71.0" prefWidth="233.0"/>
                     </content>
                 </ScrollPane>
                 <ScrollPane layoutX="94.0" layoutY="161.0" prefHeight="74.0" prefWidth="248.0">
                     <content>
-                        <VBox fx:id="vbox_cc" prefHeight="71.0" prefWidth="233.0" />
+                        <VBox fx:id="vbox_cc" prefHeight="71.0" prefWidth="233.0"/>
                     </content>
                 </ScrollPane>
-                <Label fx:id="label_time" layoutX="132.0" layoutY="32.0" prefHeight="17.0" prefWidth="178.0" styleClass="normalText" text="Time Stamp" />
-                <TextArea fx:id="txt_subject" editable="false" layoutX="94.0" layoutY="249.0" prefHeight="74.0" prefWidth="248.0" text="Subject" wrapText="true" />
-                <JFXButton fx:id="btn_lock" buttonType="RAISED" layoutX="28.0" layoutY="380.0" onAction="#onLock" styleClass="emailDetailsButton" text="Lock" />
-                <JFXButton fx:id="btn_solv" buttonType="RAISED" layoutX="95.0" layoutY="380.0" onAction="#onSolv" styleClass="emailDetailsButton" text="Solved" />
-                <JFXComboBox fx:id="combo_attach" layoutX="80.0" layoutY="339.0" prefHeight="25.0" prefWidth="188.0" promptText="Select Attachment" />
-                <JFXComboBox fx:id="combo_respond" layoutX="244.0" layoutY="377.0" prefHeight="24.0" prefWidth="89.0" />
-                <JFXButton fx:id="btn_unlock" buttonType="RAISED" layoutX="44.0" layoutY="384.0" onAction="#unLock" styleClass="emailUnlockButton" text="Unlock" visible="false" />
-            <Label fx:id="label_cc1" layoutX="14.0" layoutY="257.0" prefHeight="17.0" prefWidth="82.0" text="Subject:" />
+                <Label fx:id="label_time" layoutX="132.0" layoutY="32.0" prefHeight="17.0" prefWidth="178.0"
+                       styleClass="normalText" text="Time Stamp"/>
+                <TextArea fx:id="txt_subject" editable="false" layoutX="94.0" layoutY="249.0" prefHeight="74.0"
+                          prefWidth="248.0" text="Subject" wrapText="true"/>
+                <JFXButton fx:id="btn_lock" buttonType="RAISED" layoutX="28.0" layoutY="380.0" onAction="#onLock"
+                           styleClass="emailDetailsButton" text="Lock"/>
+                <JFXButton fx:id="btn_solv" buttonType="RAISED" layoutX="95.0" layoutY="380.0" onAction="#onSolv"
+                           styleClass="emailDetailsButton" text="Solved"/>
+                <JFXComboBox fx:id="combo_attach" layoutX="80.0" layoutY="339.0" prefHeight="25.0" prefWidth="188.0"
+                             promptText="Select Attachment"/>
+                <JFXComboBox fx:id="combo_respond" layoutX="244.0" layoutY="377.0" prefHeight="24.0" prefWidth="89.0"/>
+                <JFXButton fx:id="btn_unlock" buttonType="RAISED" layoutX="28.0" layoutY="380.0" onAction="#unLock"
+                           styleClass="emailUnlockButton" text="Unlock" visible="false"/>
+                <Label fx:id="label_cc1" layoutX="14.0" layoutY="257.0" prefHeight="17.0" prefWidth="82.0"
+                       text="Subject:"/>
             </children>
         </AnchorPane>
     </center>
     <left>
         <AnchorPane prefHeight="418.0" prefWidth="259.0" BorderPane.alignment="CENTER">
             <children>
-                <ListView fx:id="list_emails" layoutY="1.0" prefHeight="421.0" prefWidth="259.0" styleClass="emailListview" />
+                <ListView fx:id="list_emails" layoutY="1.0" prefHeight="421.0" prefWidth="259.0"
+                          styleClass="emailListview"/>
                 <!--<StyledListView fx:id="list_emails" prefHeight="425.0" prefWidth="259.0" styleClass="emailListview" />-->
             </children>
         </AnchorPane>
     </left>
     <top>
-        <HBox fx:id="menu_email" prefHeight="28.0" prefWidth="945.0" styleClass="hbox_menu" BorderPane.alignment="CENTER">
+        <HBox fx:id="menu_email" prefHeight="28.0" prefWidth="945.0" styleClass="hbox_menu"
+              BorderPane.alignment="CENTER">
             <children>
             </children>
         </HBox>

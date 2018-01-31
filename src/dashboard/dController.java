@@ -239,7 +239,7 @@ public class dController implements Initializable {
         logoutBtn.getStyleClass().add("btn");
         menu_pane.getChildren().add(logoutBtn);
 
-        logoutBtn.addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler<>() {
+        logoutBtn.addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent event) {
                 img_loader.setVisible(true);
@@ -353,13 +353,9 @@ public class dController implements Initializable {
         emailThread = new Thread(() -> {
             while (true) {
                 if (!mySqlConn.pingHost(network.getHost(), network.getPort(), 2000)) {          //MySQL Database Not Found!!
-                    try {
-                        tHelper.displayNotification("Error!", "Database Not Found!\n" +
-                                "Email Receiving has been stopped!\n" +
-                                "Will try again in 10 seconds");
-                    } catch (NullPointerException e) {
-                        System.out.println("Tray not up yet");
-                    }
+                    tHelper.displayNotification("Error!", "Database Not Found!\n" +
+                            "Email Receiving has been stopped!\n" +
+                            "Will try again in 10 seconds");
                     try {
                         Thread.sleep(10000);    //Wait for ten seconds before trying again
                     } catch (InterruptedException e) {
@@ -368,12 +364,8 @@ public class dController implements Initializable {
                     continue;
                 } else {
                     if (!emailControl.checkConnection()) {          //Internet Not Working!!
-                        try {
-                            tHelper.displayNotification("Error!", "Internet Not Working!\n" +
-                                    "Will try again in 10 seconds!");
-                        } catch (NullPointerException e) {
-                            System.out.println("Tray not up yet");
-                        }
+                        tHelper.displayNotification("Error!", "Internet Not Working!\n" +
+                                "Will try again in 10 seconds!");
                         try {
                             Thread.sleep(10000);    //Wait for ten seconds before trying again
                         } catch (InterruptedException e) {
@@ -383,7 +375,7 @@ public class dController implements Initializable {
                     } else {
                         ec.RecieveEmail();
                         try {
-                            Thread.sleep(2000);
+                            Thread.sleep(60000);
                         } catch (InterruptedException e) {
                             e.printStackTrace();
                         }

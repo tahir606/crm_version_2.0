@@ -102,14 +102,18 @@ public class EmailDashController implements Initializable {
     private static volatile Email selectedEmail = null;
     public static volatile boolean reload = false;
 
-    public EmailDashController() {
 
+    public static ListView<Email> list_emailsF;
+
+    public EmailDashController() {
     }
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
 
         imgLoader.setVisible(true);
+
+        list_emailsF = list_emails;
 
         anchor_details.setVisible(false);
 
@@ -120,7 +124,6 @@ public class EmailDashController implements Initializable {
         user = fHelper.ReadUserDetails();
 
         loadEmails(); //Loading Emails into the list
-        listenForChanges();
 
         menu_email.setSpacing(10.0);
 
@@ -258,34 +261,6 @@ public class EmailDashController implements Initializable {
         }
     }
 
-//    private void refreshAction() {
-//        imgLoader.setVisible(true);
-//        new Thread(new Runnable() {
-//            @Override
-//            public void run() {
-//                List<Email> newAdds = sql.readAllEmails();
-//                for (Email e : newAdds) {
-//                    boolean isThere = false;
-//                    for (Email i : list_emails.getItems()) {
-//                        if (e.getEmailNo() == i.getEmailNo()) {
-//                            isThere = true;
-//                            break;
-//                        }
-//                    }
-//                    if (isThere == false) {
-//                        Platform.runLater(new Runnable() {
-//                            @Override
-//                            public void run() {
-//                                list_emails.getItems().add(0, e);
-//                            }
-//                        });
-//                    }
-//                }
-//                imgLoader.setVisible(false);
-//            }
-//        }).start();
-//    }
-
     public void loadEmails() {
         new Thread(() -> Platform.runLater(() -> {
             list_emails.getItems().clear();
@@ -313,28 +288,37 @@ public class EmailDashController implements Initializable {
         }).start();
     }
 
-    public void listenForChanges() {      //Load Emails from outside the territory.
+    public static void loadEmailsStatic() {      //Load Emails from other controller
         new Thread(() -> {
-            while (true) {
-                if (reload == true) {
-                    System.out.println("Reloading EMails in EMAIL DASH CONTROLEER");
-                    try {
-                        System.out.println(selectedEmail.getEmailNo());
-                    } catch (NullPointerException e) {
-//                        anchor_body.setVisible(false);
-//                        anchor_details.setVisible(false);
-                        e.printStackTrace();
-                        reload = false;
-                        continue;
-                    }
-//                    if (selectedEmail == null) {
-//                        System.out.println("In here");
-//                        loadEmails();
-//                    } else
-                    loadEmails(selectedEmail);
-                    reload = false;
+            imgLoader.setVisible(true);
+
+            Email e = selectedEmail;
+
+            mySqlConn sql = new mySqlConn();
+            fileHelper helper = new fileHelper();
+
+            List<Email> emails = sql.readAllEmails(helper.ReadFilter());
+
+            Platform.runLater(() -> {
+                int index = -1;
+                list_emailsF.getItems().clear();
+                list_emailsF.getItems().addAll(emails);
+
+                if (selectedEmail == null) {
+                    imgLoader.setVisible(false);
+                    return;
                 }
-            }
+
+                for (Email email : list_emailsF.getItems()) {
+                    index++;
+                    if (email.getEmailNo() == e.getEmailNo()) {
+                        break;
+                    }
+                }
+                list_emailsF.getSelectionModel().select(index);
+            });
+
+            imgLoader.setVisible(false);
         }).start();
     }
 
@@ -360,6 +344,27 @@ public class EmailDashController implements Initializable {
 
         return emails;
     }
+
+//    private static List<Email> checkIfEmailsExistStatic() {
+//        List<Email> emails = sql.readAllEmails(fHelper.ReadFilter());
+//        if (emails == null) {
+//            emails = new ArrayList<>();
+//            Email nEm = new Email();
+//            nEm.setSubject("Emails Found");
+//            nEm.setEmailNo(0);
+//            nEm.setFromAddress(new Address[]{new InternetAddress()});
+//            emails.add(nEm);
+//
+//            list_emails.setDisable(true);
+//            anchor_details.setVisible(false);
+//            anchor_body.setVisible(false);
+//
+//        } else {
+//            list_emails.setDisable(false);
+//        }
+//
+//        return emails;
+//    }
 
 
     Address[] from, cc;

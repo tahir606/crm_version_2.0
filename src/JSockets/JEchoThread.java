@@ -30,7 +30,9 @@ public class JEchoThread extends Thread {
                     return;
                 } else {
                     if (line.equals("R")) {  //Server has been asked to reload Emails
-                        EmailDashController.reload = true;
+//                        EmailDashController.reload = true;
+//                        EmailDashController.list_emailsF.getItems().clear();
+                        EmailDashController.loadEmailsStatic();
                         System.out.println("Reload bool : " + EmailDashController.reload);
                         System.out.println("Reloading my Self");
                     }
