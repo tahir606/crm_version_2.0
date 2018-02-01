@@ -331,6 +331,7 @@ public class EmailDashController implements Initializable {
             nEm.setSubject("Emails Found");
             nEm.setEmailNo(0);
             nEm.setFromAddress(new Address[]{new InternetAddress()});
+            nEm.setAttch("");
             emails.add(nEm);
 
             list_emails.setDisable(true);
@@ -508,23 +509,14 @@ public class EmailDashController implements Initializable {
     }
 
     private void reloadInstances() {
-        if (dController.isServer == true) {
-            JServer.broadcastMessages("R");
-        } else
-            JClient.sendMessage("R");   //Function was made so that if ever this feature is not needed i can just
-    }                                     // comment this line
 
-//    public static boolean isReload() {
-//        return reload;
-//    }
-//
-//    public void setReload(boolean reload) {
-//        this.reload = reload;
-//        if (reload == true) {
-//            if (selectedEmail != null)
-//                loadEmails(selectedEmail);
-//            else
-//                loadEmails();
-//        }
-//    }
+        // comment this line
+        new Thread(() -> {
+            if (dController.isServer == true) {
+                JServer.broadcastMessages("R");
+            } else
+                JClient.sendMessage("R");   //Function was made so that if ever this feature is not needed i can just
+        }).start();
+
+    }
 }

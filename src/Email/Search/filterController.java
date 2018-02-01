@@ -65,7 +65,7 @@ public class filterController implements Initializable {
                     emailType.setSpacing(10);
 
                     JFXComboBox<String> types = new JFXComboBox<>();
-                    types.getItems().addAll("All", "My Emails", "Solved", "UnSolved", "Locked", "Unlocked");
+                    types.getItems().addAll("All", "My Emails", "Solved", "UnSolved", "Locked", "Unlocked", "Archived");
                     types.setMinWidth(219);
                     types.setPromptText("Set Email Type");
                     types.setAccessibleText("emailType");
@@ -235,6 +235,7 @@ public class filterController implements Initializable {
             String whereClause = " WHERE 1 ";
             String orderBy = "";
 
+            boolean a = false;  //If Asked to bring archived
             for (Node e : filters_vbox.getChildren()) {
                 filters++;
                 HBox h = null;
@@ -254,10 +255,13 @@ public class filterController implements Initializable {
                         String emailClause = "";
                         String flag;
                         for (Node em : h.getChildren()) {
-                            if (em.getAccessibleText().equals("del"))
+                            if (em.getAccessibleText().equals("del")) {
                                 continue;
+                            }
                             JFXComboBox<String> type = (JFXComboBox<String>) em;
                             if (type.getSelectionModel().getSelectedItem() != null) {
+
+
                                 switch (type.getSelectionModel().getSelectedItem()) {
                                     case "All": {
                                         emailClause = " 1 ";
@@ -265,7 +269,7 @@ public class filterController implements Initializable {
                                     }
                                     case "My Emails": {
                                         emailClause = " SOLVBY = " + user.getUCODE() + " " +
-                                                " AND LOCKD = " + user.getUCODE();
+                                                " OR LOCKD = " + user.getUCODE();
                                         break;
                                     }
                                     case "Solved": {
@@ -284,11 +288,18 @@ public class filterController implements Initializable {
                                         emailClause = " LOCKD = 0";
                                         break;
                                     }
+                                    case "Archived": {
+                                        a = true;
+                                        emailClause = " FREZE = 1 ";
+                                        break;
+                                    }
                                 }
                             } else {
                                 emailClause = " 1 ";
                             }
                         }
+
+
                         whereClause = whereClause + emailClause;
                         break;
 
@@ -373,10 +384,9 @@ public class filterController implements Initializable {
 
                 }
             }
-//                System.out.println(filters);
-//                if (!orderBy.equals("") && filters == 1) {
-//                    whereClause = whereClause + " 1 ";
-//                }
+
+            if (a == false)
+                whereClause = whereClause + " AND FREZE = 0";
 
             fHelper.WriteFilter(whereClause + " " + orderBy);
 
