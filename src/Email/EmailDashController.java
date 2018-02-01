@@ -162,8 +162,14 @@ public class EmailDashController implements Initializable {
                 filter.getStyleClass().add("btnMenu");
                 filter.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> inflateFilters());
 
+                JFXButton archive = new JFXButton("Archive Emails");
+                archive.setMinSize(120, menu_email.getHeight());
+                archive.setGraphic(new ImageView(new Image(getClass().getResourceAsStream("/res/img/archive.png"))));
+                archive.getStyleClass().add("btnMenu");
+                archive.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> inflateFilters());
 
-                Platform.runLater(() -> menu_email.getChildren().addAll(email, reload, filter));
+
+                Platform.runLater(() -> menu_email.getChildren().addAll(email, reload, filter, archive));
 
 
             }
@@ -250,6 +256,25 @@ public class EmailDashController implements Initializable {
             stage2.initModality(Modality.APPLICATION_MODAL);
             stage2.initStyle(StageStyle.UTILITY);
             stage2.setTitle("Filters");
+            stage2.setScene(new Scene(root1));
+            trayHelper tray = new trayHelper();
+            tray.createIcon(stage2);
+            Platform.setImplicitExit(true);
+            stage2.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    //OPENING THE FILTER
+    private void inflateArchive() {
+        try {
+            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("Archive/archive.fxml"));
+            Parent root1 = (Parent) fxmlLoader.load();
+            Stage stage2 = new Stage();
+            stage2.initModality(Modality.APPLICATION_MODAL);
+            stage2.initStyle(StageStyle.UTILITY);
+            stage2.setTitle("Archive");
             stage2.setScene(new Scene(root1));
             trayHelper tray = new trayHelper();
             tray.createIcon(stage2);

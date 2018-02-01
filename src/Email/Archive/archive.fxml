@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<?import com.jfoenix.controls.JFXButton?>
+<AnchorPane prefHeight="299.0" prefWidth="358.0" xmlns="http://javafx.com/javafx/9" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="Email.Archive.archiveController" stylesheets="@../../styles/eresponse.css">
+    <children>
+        <Label layoutX="118.0" layoutY="14.0" text="Archive Emails">
+            <font>
+                <Font name="System Bold" size="18.0"/>
+            </font>
+        </Label>
+        <VBox fx:id="filters_vbox" layoutX="28.0" layoutY="64.0" prefHeight="161.0" prefWidth="304.0">
+            <children>
+
+            </children>
+        </VBox>
+        <JFXButton fx:id="btn_archive" buttonType="RAISED" layoutX="140.0" layoutY="242.0" onAction="#setFilters"
+                   prefHeight="34.0" prefWidth="78.0" text="Archive Emails"/>
+    </children>
+</AnchorPane>
