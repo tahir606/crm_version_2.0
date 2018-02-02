@@ -178,7 +178,6 @@ public class EmailDashController implements Initializable {
             }
         }).start();
 
-
         //Populating List
         //Creates the changes in the Details Section
         list_emails.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {

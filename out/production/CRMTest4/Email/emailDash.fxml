@@ -13,7 +13,7 @@
 
 <!--<?import JCode.StyledListView?>-->
 
-<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="450.0" prefWidth="945.0" stylesheets="@../styles/emailDash.css" xmlns="http://javafx.com/javafx/9" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Email.EmailDashController">
+<BorderPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="450.0" prefWidth="945.0" stylesheets="@../styles/emailDash.css" xmlns="http://javafx.com/javafx/9" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Email.EmailDashController">
     <center>
     </center>
     <right>
@@ -59,7 +59,7 @@
         </AnchorPane>
     </left>
     <top>
-        <HBox fx:id="menu_email" prefHeight="28.0" prefWidth="945.0" styleClass="hbox_menu" BorderPane.alignment="CENTER">
+        <HBox fx:id="menu_email" prefHeight="28.0" prefWidth="945.0" styleClass="hbox_menu">
             <children>
             </children>
         </HBox>

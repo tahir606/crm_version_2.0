@@ -5,12 +5,12 @@
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.layout.VBox?>
 
-<AnchorPane fx:id="fx_anchor" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity"
-            prefHeight="450.0" prefWidth="1000.0" styleClass="background" stylesheets="@../styles/dashboard.css"
-            xmlns:fx="http://javafx.com/fxml/1"
-            fx:controller="dashboard.dController">
+<AnchorPane fx:id="fx_anchor" prefHeight="450.0" prefWidth="1000.0" styleClass="background"
+            stylesheets="@../styles/dashboard.css" xmlns="http://javafx.com/javafx/9"
+            xmlns:fx="http://javafx.com/fxml/1" fx:controller="dashboard.dController">
     <children>
-        <Pane fx:id="main_pane" layoutX="57.0" prefHeight="450.0" prefWidth="943.0"/>
+        <Pane fx:id="main_pane" layoutX="57.0" prefHeight="458.0" prefWidth="944.0" AnchorPane.bottomAnchor="0.0"
+              AnchorPane.leftAnchor="56.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0"/>
         <Pane fx:id="drawerPane" accessibleText="m_pane" layoutX="-10.0" layoutY="-8.0" prefHeight="466.0"
               prefWidth="63.0">
             <children>

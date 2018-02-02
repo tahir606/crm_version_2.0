@@ -67,13 +67,9 @@ public class dController implements Initializable {
         tHelper = new trayHelper();
 
         network = fHelper.getNetworkDetails();
-//        eSetting = fHelper.ReadESettings();
         sql = new mySqlConn();
 
-//        if (eSetting == null) {
         eSetting = sql.getEmailSettings();
-//            fHelper.WriteESettings(eSetting);
-//        }
 
         user = fHelper.ReadUserDetails();
         rightsList = user.getuRightsList();
@@ -389,6 +385,5 @@ public class dController implements Initializable {
         emailThread.start();
 
     }
-
 
 }
