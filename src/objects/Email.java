@@ -13,6 +13,7 @@ public class Email {
     private Address[] toAddress, fromAddress, ccAddress;
     private String subject, timestamp, timeFormatted, body, attch, lockedByName;
     private char solvFlag, isAttch;
+    private boolean freze;
 
     public Email() {
 
@@ -176,5 +177,13 @@ public class Email {
 
     public void setLockedByName(String lockedByName) {
         this.lockedByName = lockedByName;
+    }
+
+    public boolean isFreze() {
+        return freze;
+    }
+
+    public void setFreze(boolean freze) {
+        this.freze = freze;
     }
 }

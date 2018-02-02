@@ -7,18 +7,21 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="299.0" prefWidth="358.0" stylesheets="@../../styles/eresponse.css" xmlns="http://javafx.com/javafx/9" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Email.Search.filterController">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="299.0"
+            prefWidth="358.0" stylesheets="@../../styles/eresponse.css" xmlns="http://javafx.com/javafx/9"
+            xmlns:fx="http://javafx.com/fxml/1" fx:controller="Email.Search.filterController">
     <children>
         <Label layoutX="154.0" layoutY="14.0" text="Filters">
             <font>
-                <Font name="System Bold" size="18.0" />
+                <Font name="System Bold" size="18.0"/>
             </font>
         </Label>
         <VBox fx:id="filters_vbox" layoutX="53.0" layoutY="70.0" prefHeight="155.0" prefWidth="254.0">
             <children>
-                <JFXComboBox fx:id="combo_filter" accessibleText="combo_filters" prefHeight="25.0" prefWidth="254.0" />
+                <JFXComboBox fx:id="combo_filter" accessibleText="combo_filters" prefHeight="25.0" prefWidth="254.0"/>
             </children>
         </VBox>
-        <JFXButton fx:id="btn_filters" buttonType="RAISED" layoutX="140.0" layoutY="242.0" onAction="#setFilters" prefHeight="34.0" prefWidth="78.0" text="Set Filters" />
+        <JFXButton fx:id="btn_filters" buttonType="RAISED" layoutX="140.0" layoutY="242.0" onAction="#setFilters"
+                   prefHeight="34.0" prefWidth="78.0" text="Set Filters"/>
     </children>
 </AnchorPane>

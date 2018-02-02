@@ -13,7 +13,7 @@
 
 <!--<?import JCode.StyledListView?>-->
 
-<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="450.0" prefWidth="945.0" stylesheets="@../styles/emailDash.css" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/9" fx:controller="Email.EmailDashController">
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="450.0" prefWidth="945.0" stylesheets="@../styles/emailDash.css" xmlns="http://javafx.com/javafx/9" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Email.EmailDashController">
     <center>
     </center>
     <right>
@@ -45,7 +45,7 @@
                 <JFXButton fx:id="btn_solv" buttonType="RAISED" layoutX="95.0" layoutY="386.0" onAction="#onSolv" styleClass="emailDetailsButton" text="Solved" />
                 <JFXComboBox fx:id="combo_attach" layoutX="80.0" layoutY="339.0" prefHeight="25.0" prefWidth="188.0" promptText="Select Attachment" />
                 <JFXComboBox fx:id="combo_respond" layoutX="244.0" layoutY="383.0" prefHeight="24.0" prefWidth="89.0" />
-                <JFXButton fx:id="btn_unlock" buttonType="RAISED" layoutX="28.0" layoutY="380.0" onAction="#unLock" styleClass="emailUnlockButton" text="Unlock" visible="false" />
+                <JFXButton fx:id="btn_unlock" buttonType="RAISED" layoutX="28.0" layoutY="386.0" onAction="#unLock" styleClass="emailUnlockButton" text="Unlock" visible="false" />
                 <Label fx:id="label_cc1" layoutX="14.0" layoutY="257.0" prefHeight="17.0" prefWidth="82.0" text="Subject:" />
             </children>
         </AnchorPane>

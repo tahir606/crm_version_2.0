@@ -150,6 +150,7 @@ public class emailControl {
         email.setAttch(ATTACH);
         email.setSolvFlag('N');
         email.setLockd(0);
+        email.setFreze(false);
         System.out.println(email);
 
         sqlConn.insertEmail(email, message);

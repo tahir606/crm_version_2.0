@@ -377,8 +377,8 @@ public class mySqlConn {
 
     public void insertEmail(Email email, Message message) {
 
-        String query = "INSERT INTO email_store(EMNO,SBJCT,TOADD,FRADD,TSTMP,EBODY,ATTCH,CCADD,ESOLV,MSGNO,LOCKD) " +
-                " SELECT IFNULL(max(EMNO),0)+1,?,?,?,?,?,?,?,?,?,? from EMAIL_STORE";
+        String query = "INSERT INTO email_store(EMNO,SBJCT,TOADD,FRADD,TSTMP,EBODY,ATTCH,CCADD,ESOLV,MSGNO,LOCKD," +
+                "FREZE) SELECT IFNULL(max(EMNO),0)+1,?,?,?,?,?,?,?,?,?,?,? from EMAIL_STORE";
 
         Connection con = getConnection();
         PreparedStatement statement = null;
@@ -397,6 +397,7 @@ public class mySqlConn {
             statement.setString(8, String.valueOf(email.getSolvFlag()));
             statement.setInt(9, email.getMsgNo());
             statement.setInt(10, email.getLockd());
+            statement.setBoolean(11, email.isFreze());
             statement.executeUpdate();
 
             statement.close();
@@ -607,6 +608,25 @@ public class mySqlConn {
             doRelease(con);
         }
 
+    }
+
+    public void ArchiveEmail(String where) {    //Verb
+
+        String query = "UPDATE EMAIL_STORE SET FREZE = 1 WHERE ";
+
+        query = query + where;
+
+        Connection con = getConnection();
+        PreparedStatement statement = null;
+
+        try {
+            statement = con.prepareStatement(query);
+            statement.executeUpdate();
+
+            statement.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
 
     }
 

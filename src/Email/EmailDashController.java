@@ -7,6 +7,7 @@ import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXComboBox;
 import dashboard.dController;
 import javafx.application.Platform;
+import javafx.beans.binding.Bindings;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
@@ -19,9 +20,11 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.Label;
+import javafx.scene.control.MenuItem;
 import javafx.scene.control.TextArea;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.ContextMenuEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
@@ -162,11 +165,11 @@ public class EmailDashController implements Initializable {
                 filter.getStyleClass().add("btnMenu");
                 filter.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> inflateFilters());
 
-                JFXButton archive = new JFXButton("Archive Emails");
+                JFXButton archive = new JFXButton("Move to Archive");
                 archive.setMinSize(120, menu_email.getHeight());
                 archive.setGraphic(new ImageView(new Image(getClass().getResourceAsStream("/res/img/archive.png"))));
                 archive.getStyleClass().add("btnMenu");
-                archive.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> inflateFilters());
+                archive.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> inflateArchive());
 
 
                 Platform.runLater(() -> menu_email.getChildren().addAll(email, reload, filter, archive));
@@ -182,6 +185,18 @@ public class EmailDashController implements Initializable {
             selectedEmail = newValue;
             populateDetails(selectedEmail);
         });
+
+        //Right click menu
+        final ContextMenu contextMenu = new ContextMenu();
+        MenuItem editItem = new MenuItem("Move to Archive");
+        editItem.setOnAction(t -> {
+            Email selectedItem = list_emails.getSelectionModel().getSelectedItem();
+            sql.ArchiveEmail(" EMNO = " + selectedItem.getEmailNo());
+            loadEmails();
+        });
+        contextMenu.getItems().add(editItem);
+        list_emails.setContextMenu(contextMenu);
+        list_emails.setOnContextMenuRequested(event -> event.consume());
 
         //Attaching listener to attaching combo box
         combo_attach.valueProperty().addListener((observable, oldValue, newValue) -> {
@@ -289,6 +304,11 @@ public class EmailDashController implements Initializable {
         new Thread(() -> Platform.runLater(() -> {
             list_emails.getItems().clear();
             list_emails.getItems().addAll(checkIfEmailsExist());
+
+            anchor_body.setVisible(false);
+            anchor_details.setVisible(false);
+
+            imgLoader.setVisible(false);
         })).start();
     }
 
