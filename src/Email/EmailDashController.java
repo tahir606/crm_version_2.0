@@ -32,6 +32,7 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
+import javafx.stage.Window;
 import objects.Email;
 import objects.Users;
 
@@ -114,6 +115,8 @@ public class EmailDashController implements Initializable {
     public void initialize(URL location, ResourceBundle resources) {
 
         imgLoader.setVisible(true);
+
+
 
         list_emailsF = list_emails;
 
@@ -461,6 +464,10 @@ public class EmailDashController implements Initializable {
             eBody.setWrapText(true);
             eBody.setPrefSize(anchor_body.getWidth(), anchor_body.getHeight());
             anchor_body.getChildren().add(eBody);
+            AnchorPane.setLeftAnchor(eBody,0.0);
+            AnchorPane.setRightAnchor(eBody,0.0);
+            AnchorPane.setTopAnchor(eBody,0.0);
+            AnchorPane.setBottomAnchor(eBody,0.0);
             eBody.setEditable(false);
             if (!anchor_body.isVisible()) {
                 anchor_body.setVisible(true);

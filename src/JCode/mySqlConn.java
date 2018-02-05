@@ -4,10 +4,7 @@ import javafx.application.Platform;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
 import javafx.stage.Stage;
-import objects.ESetting;
-import objects.Email;
-import objects.Network;
-import objects.Users;
+import objects.*;
 
 import javax.mail.Address;
 import javax.mail.Message;
@@ -692,6 +689,71 @@ public class mySqlConn {
         fHelper.DeleteESettings();
         fHelper.WriteESettings(getEmailSettings());
 
+    }
+
+    public void addNewClient(Client client) {
+
+        String query = "INSERT INTO CLIENT_STORE(CL_ID,CL_NAME,CL_CMPNY,CL_EMAIL,CL_PHONE,CL_ADDR,CL_CITY" +
+                ",CL_COUNTRY,CL_WEBSITE,CL_TYPE) " +
+                " SELECT IFNULL(max(ECODE),0)+1,?,?,? from CLIENT_STORE";
+
+        Connection con = getConnection();
+        PreparedStatement statement = null;
+
+        try {
+            statement = con.prepareStatement(query);
+            statement.setInt(1, client.getCode());
+            statement.setString(2, client.getName());
+            statement.setString(3, client.getCompany());
+            statement.setString(4, client.getEmail());
+            statement.setString(5, client.getPhone());
+            statement.setString(6, client.getAddr());
+            statement.setString(7, client.getCity());
+            statement.setString(8, client.getCountry());
+            statement.setString(9, client.getWebsite());
+            statement.setInt(10, client.getType());
+
+            statement.executeUpdate();
+
+            statement.close();
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    public List<Client> getAllClients(String where) {
+        String query = "SELECT EMNO,MSGNO,SBJCT,FRADD,TOADD,CCADD,TSTMP,EBODY,ATTCH,ESOLV,LOCKD FROM EMAIL_STORE";
+
+        if (where == null) {
+            query = query + " ORDER BY EMNO DESC";
+        } else {
+            query = query + where;
+        }
+
+        List<Client> allEmails = new ArrayList<>();
+
+        try {
+            Connection con = getConnection();
+            PreparedStatement statement = con.prepareStatement(query);
+            System.out.println(query);
+            ResultSet set = statement.executeQuery();
+            //-------------Creating Email-------------
+            if (!set.isBeforeFirst()) {
+                return null;
+            }
+
+            while (set.next()) {
+
+            }
+
+            doRelease(con);
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+
+        return allEmails;
     }
 
     public static boolean pingHost(String host, int port, int timeout) {

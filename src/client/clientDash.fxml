@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+
+<BorderPane prefHeight="500.0" prefWidth="1100.0" stylesheets="@../styles/clients.css" xmlns="http://javafx.com/javafx/9" xmlns:fx="http://javafx.com/fxml/1">
+    <top>
+        <HBox fx:id="menu_client" prefHeight="28.0" prefWidth="945.0" styleClass="hbox_menu">
+            <children>
+            </children>
+        </HBox>
+    </top>
+   <right>
+      <AnchorPane fx:id="pane_client" prefHeight="472.0" prefWidth="1100.0" BorderPane.alignment="CENTER">
+         <children>
+            <Label layoutX="850.0" layoutY="88.0" styleClass="dashText" text="No, of Clients:" />
+            <Label fx:id="txt_clients" layoutX="978.0" layoutY="88.0" styleClass="dashText" text="0" />
+         </children>
+      </AnchorPane>
+   </right>
+
+</BorderPane>

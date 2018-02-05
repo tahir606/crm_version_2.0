@@ -1,23 +1,24 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.geometry.Insets?>
 <?import javafx.scene.image.ImageView?>
-<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.layout.VBox?>
 
-<AnchorPane fx:id="fx_anchor" prefHeight="450.0" prefWidth="1000.0" styleClass="background"
-            stylesheets="@../styles/dashboard.css" xmlns="http://javafx.com/javafx/9"
-            xmlns:fx="http://javafx.com/fxml/1" fx:controller="dashboard.dController">
-    <children>
-        <Pane fx:id="main_pane" layoutX="57.0" prefHeight="458.0" prefWidth="944.0" AnchorPane.bottomAnchor="0.0"
-              AnchorPane.leftAnchor="56.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0"/>
-        <Pane fx:id="drawerPane" accessibleText="m_pane" layoutX="-10.0" layoutY="-8.0" prefHeight="466.0"
-              prefWidth="63.0">
+<BorderPane fx:id="border_pane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="500.0" prefWidth="1200.0" styleClass="background" stylesheets="@../styles/dashboard.css" xmlns="http://javafx.com/javafx/9" xmlns:fx="http://javafx.com/fxml/1" fx:controller="dashboard.dController">
+    <left>
+        <Pane fx:id="drawerPane" accessibleText="m_pane" layoutX="-10.0" layoutY="-8.0" maxWidth="100.0" prefHeight="466.0" prefWidth="100.0">
             <children>
-                <ImageView fx:id="img_loader" fitHeight="22.0" fitWidth="24.0" layoutX="20.0" layoutY="14.0"
-                           pickOnBounds="true" preserveRatio="true"/>
-                <VBox fx:id="menu_pane" accessibleText="menu_box" layoutY="55.0" prefHeight="411.0" prefWidth="63.0"/>
+                <ImageView fx:id="img_loader" fitHeight="22.0" fitWidth="24.0" layoutX="20.0" layoutY="14.0" pickOnBounds="true" preserveRatio="true" />
+                <VBox fx:id="menu_pane" accessibleText="menu_box" layoutY="55.0" prefHeight="446.0" prefWidth="100.0" spacing="1.0">
+               <padding>
+                  <Insets left="3.0" />
+               </padding></VBox>
             </children>
         </Pane>
-    </children>
-</AnchorPane>
+    </left>
+    <center>
+        <!--<Pane fx:id="main_pane" layoutX="57.0" prefHeight="458.0" prefWidth="944.0" />-->
+    </center>
+</BorderPane>

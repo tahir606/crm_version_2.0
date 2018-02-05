@@ -1,5 +1,6 @@
 package dashboard;
 
+import Email.EmailDashController;
 import JCode.emailControl;
 import JCode.fileHelper;
 import JCode.mySqlConn;
@@ -13,6 +14,8 @@ import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.geometry.Pos;
+import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
@@ -32,17 +35,26 @@ import java.util.ResourceBundle;
 
 public class dController implements Initializable {
 
-    @FXML
-    private AnchorPane fx_anchor;
+//    @FXML
+//    private AnchorPane fx_anchor;
+//
+//    @FXML
+//    private Pane main_pane;
+//
+//    @FXML
+//    private VBox menu_pane;
+//
+//    @FXML
+//    private ImageView img_loader;
 
     @FXML
-    private Pane main_pane;
-
-    @FXML
-    private VBox menu_pane;
+    private BorderPane border_pane;
 
     @FXML
     private ImageView img_loader;
+
+    @FXML
+    private VBox menu_pane;
 
     public static ImageView img_load;
 
@@ -112,6 +124,10 @@ public class dController implements Initializable {
                         adminButton();
                         break;
                     }
+                    case 3: {
+                        clientButton();
+                        break;
+                    }
                 }
             }
 
@@ -145,39 +161,83 @@ public class dController implements Initializable {
                 new Thread(new Runnable() {
                     @Override
                     public void run() {
-                        try {
 
-                            if (currentPane == 2) {
-                                img_loader.setVisible(false);
-                                return;
-                            } else if (currentPane == 1) {
-                                Platform.runLater(() -> main_pane.getChildren().remove(home_pane));
-                            } else if (currentPane == 3) {
-                                Platform.runLater(() -> main_pane.getChildren().remove(settings_pane));
-                            }
-
-                            email_pane = FXMLLoader.load(getClass().getClassLoader().getResource("Email/emailDash.fxml"));
-                            Platform.runLater(() -> {
-                                main_pane.getChildren().add(email_pane);
-                                currentPane = 2;
-                                img_loader.setVisible(false);
-                            });
-                        } catch (IOException e) {
-                            e.printStackTrace();
+                        if (currentPane == 2) {
+                            img_loader.setVisible(false);
+                            return;
                         }
+
+                        Platform.runLater(() -> {
+                            try {
+                                border_pane.setCenter(FXMLLoader.load(getClass().getClassLoader().getResource("Email/emailDash.fxml")));
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
+                            currentPane = 2;
+                            img_loader.setVisible(false);
+                        });
                     }
                 }).start();
             }
         };
 
-        JFXButton button = new JFXButton("");
+        JFXButton button = new JFXButton("Email");
         Image image = new Image(getClass().getResourceAsStream("/res/img/mail.png"));
         button.setPrefSize(menu_pane.getPrefWidth(), 40);
         button.getStyleClass().add("btn");
         button.addEventHandler(MouseEvent.MOUSE_PRESSED, myEmailsEvent);
         button.setGraphic(new ImageView(image));
+        button.setAlignment(Pos.CENTER_LEFT);
         menu_pane.getChildren().add(button);
 
+    }
+
+    private void clientButton() {
+
+        EventHandler myClientsEvent = new EventHandler() {
+            @Override
+            public void handle(Event event) {
+                img_loader.setVisible(true);
+
+                boolean connection = mySqlConn.pingHost(network.getHost(), network.getPort(), 2000);
+
+                if (!connection) {
+                    tHelper.displayNotification("Error", "Database Not Found!");
+                    img_loader.setVisible(false);
+                    return;
+                }
+
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+
+                        if (currentPane == 4) {
+                            img_loader.setVisible(false);
+                            return;
+                        }
+
+                        Platform.runLater(() -> {
+                            try {
+                                border_pane.setCenter(FXMLLoader.load(getClass().getClassLoader().getResource("client/clientDash.fxml")));
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
+                            currentPane = 4;
+                            img_loader.setVisible(false);
+                        });
+                    }
+                }).start();
+            }
+        };
+
+        JFXButton button = new JFXButton("Client");
+        Image image = new Image(getClass().getResourceAsStream("/res/img/clients.png"));
+        button.setPrefSize(menu_pane.getPrefWidth(), 40);
+        button.getStyleClass().add("btn");
+        button.addEventHandler(MouseEvent.MOUSE_PRESSED, myClientsEvent);
+        button.setGraphic(new ImageView(image));
+        button.setAlignment(Pos.CENTER_LEFT);
+        menu_pane.getChildren().add(button);
     }
 
     Pane settings_pane = null;
@@ -191,37 +251,33 @@ public class dController implements Initializable {
                 new Thread(new Runnable() {
                     @Override
                     public void run() {
-                        try {
 
-                            if (currentPane == 3) {
-                                img_loader.setVisible(false);
-                                return;
-                            } else if (currentPane == 1) {
-                                Platform.runLater(() -> main_pane.getChildren().remove(home_pane));
-                            } else if (currentPane == 2) {
-                                Platform.runLater(() -> main_pane.getChildren().remove(email_pane));
-                            }
-
-                            settings_pane = FXMLLoader.load(getClass().getClassLoader().getResource("settings/settings.fxml"));
-                            Platform.runLater(() -> {
-                                main_pane.getChildren().add(settings_pane);
-                                currentPane = 3;
-                                img_loader.setVisible(false);
-                            });
-                        } catch (IOException e) {
-                            e.printStackTrace();
+                        if (currentPane == 3) {
+                            img_loader.setVisible(false);
+                            return;
                         }
+
+                        Platform.runLater(() -> {
+                            try {
+                                border_pane.setCenter(FXMLLoader.load(getClass().getClassLoader().getResource("settings/settings.fxml")));
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
+                            currentPane = 3;
+                            img_loader.setVisible(false);
+                        });
                     }
                 }).start();
             }
         };
 
-        JFXButton button = new JFXButton("");
+        JFXButton button = new JFXButton("Setting");
         Image image = new Image(getClass().getResourceAsStream("/res/img/admin.png"));
         button.setPrefSize(menu_pane.getPrefWidth(), 40);
         button.addEventHandler(MouseEvent.MOUSE_PRESSED, myAdminEvent);
         button.setGraphic(new ImageView(image));
         button.getStyleClass().add("btn");
+        button.setAlignment(Pos.CENTER_LEFT);
         menu_pane.getChildren().add(button);
     }
 
@@ -229,10 +285,11 @@ public class dController implements Initializable {
 
         Image image = new Image(getClass().getResourceAsStream("/res/img/logout.png"));
 
-        JFXButton logoutBtn = new JFXButton("");
+        JFXButton logoutBtn = new JFXButton("Logout");
         logoutBtn.setPrefSize(menu_pane.getPrefWidth(), 40);
         logoutBtn.setGraphic(new ImageView(image));
         logoutBtn.getStyleClass().add("btn");
+        logoutBtn.setAlignment(Pos.CENTER_LEFT);
         menu_pane.getChildren().add(logoutBtn);
 
         logoutBtn.addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler<MouseEvent>() {
@@ -270,10 +327,11 @@ public class dController implements Initializable {
 
         Image image = new Image(getClass().getResourceAsStream("/res/img/power-off.png"));
 
-        JFXButton powerBtn = new JFXButton("");
+        JFXButton powerBtn = new JFXButton("Power");
         powerBtn.setPrefSize(menu_pane.getPrefWidth(), 40);
         powerBtn.setGraphic(new ImageView(image));
         powerBtn.getStyleClass().add("btn");
+        powerBtn.setAlignment(Pos.CENTER_LEFT);
         menu_pane.getChildren().add(powerBtn);
 
         powerBtn.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> System.exit(0));
@@ -289,10 +347,11 @@ public class dController implements Initializable {
 
         Image image = new Image(this.getClass().getResourceAsStream("/res/img/home.png"));
 
-        JFXButton homeBtn = new JFXButton();
+        JFXButton homeBtn = new JFXButton("Home");
         homeBtn.setPrefSize(menu_pane.getPrefWidth(), 40);
         homeBtn.setGraphic(new ImageView(image));
         homeBtn.getStyleClass().add("btn");
+        homeBtn.setAlignment(Pos.CENTER_LEFT);
 
         menu_pane.getChildren().add(homeBtn);
 
@@ -303,26 +362,21 @@ public class dController implements Initializable {
         new Thread(new Runnable() {
             @Override
             public void run() {
-                try {
 
-                    if (currentPane == 1) {
-                        img_loader.setVisible(false);
-                        return;
-                    } else if (currentPane == 2) {
-                        Platform.runLater(() -> main_pane.getChildren().remove(email_pane));
-                    } else if (currentPane == 3) {
-                        Platform.runLater(() -> main_pane.getChildren().remove(settings_pane));
-                    }
-
-                    home_pane = FXMLLoader.load(getClass().getClassLoader().getResource("Home/Home.fxml"));
-                    Platform.runLater(() -> {
-                        main_pane.getChildren().add(home_pane);
-                        currentPane = 1;
-                        img_loader.setVisible(false);
-                    });
-                } catch (IOException e) {
-                    e.printStackTrace();
+                if (currentPane == 1) {
+                    img_loader.setVisible(false);
+                    return;
                 }
+
+                Platform.runLater(() -> {
+                    try {
+                        border_pane.setCenter(FXMLLoader.load(getClass().getClassLoader().getResource("Home/Home.fxml")));
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                    currentPane = 1;
+                    img_loader.setVisible(false);
+                });
             }
         }).start();
     }
@@ -330,8 +384,9 @@ public class dController implements Initializable {
     private void inflateHomeonThread() {
         try {
 
-            home_pane = FXMLLoader.load(getClass().getClassLoader().getResource("Home/Home.fxml"));
-            main_pane.getChildren().add(home_pane);
+            border_pane.setCenter(FXMLLoader.load(getClass().getClassLoader().getResource("Home/Home.fxml")));
+//            home_pane = FXMLLoader.load(getClass().getClassLoader().getResource("Home/Home.fxml"));
+//            main_pane.getChildren().add(home_pane);
             currentPane = 1;
             img_loader.setVisible(false);
 

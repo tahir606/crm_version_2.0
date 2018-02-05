@@ -4,6 +4,11 @@
     -fx-background-position: center;
 }
 
+.btn {
+    -fx-padding: 10;
+    -fx-font-size: 12;
+}
+
 .btn:hover {
     -fx-background-color: #ace2ac;
     -fx-scale-y: 1.1;
