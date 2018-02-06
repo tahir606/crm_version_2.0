@@ -723,21 +723,56 @@ public class mySqlConn {
 
     }
 
+    public void updateClients(Client client) {
+
+        String query = "UPDATE  client_store  SET  CL_NAME = ?, CL_CMPNY = ?," +
+                " CL_EMAIL = ?, CL_PHONE = ?, CL_ADDR = ?, CL_CITY = ?, CL_COUNTRY = ?," +
+                " CL_WEBSITE = ?, CL_TYPE = ? WHERE CL_ID = ?";
+
+        Connection con = getConnection();
+        PreparedStatement statement = null;
+
+        try {
+            statement = con.prepareStatement(query);
+            statement.setString(1, client.getName());
+            statement.setString(2, client.getCompany());
+            statement.setString(3, client.getEmail());
+            statement.setString(4, client.getPhone());
+            statement.setString(5, client.getAddr());
+            statement.setString(6, client.getCity());
+            statement.setString(7, client.getCountry());
+            statement.setString(8, client.getWebsite());
+            statement.setInt(9, client.getType());
+            statement.setInt(10, client.getCode());
+
+            statement.executeUpdate();
+            statement.close();
+
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            doRelease(con);
+        }
+
+
+    }
+
     public List<Client> getAllClients(String where) {
-        String query = "SELECT EMNO,MSGNO,SBJCT,FRADD,TOADD,CCADD,TSTMP,EBODY,ATTCH,ESOLV,LOCKD FROM EMAIL_STORE";
+        String query = "SELECT CL_ID,CL_NAME,CL_CMPNY,CL_EMAIL,CL_PHONE,CL_ADDR," +
+                "CL_CITY,CL_COUNTRY,CL_WEBSITE,CL_TYPE FROM CLIENT_STORE";
 
         if (where == null) {
-            query = query + " ORDER BY EMNO DESC";
+            query = query + " ORDER BY CL_ID DESC";
         } else {
             query = query + where;
         }
 
-        List<Client> allEmails = new ArrayList<>();
+        List<Client> allClients = new ArrayList<>();
 
         try {
             Connection con = getConnection();
             PreparedStatement statement = con.prepareStatement(query);
-            System.out.println(query);
             ResultSet set = statement.executeQuery();
             //-------------Creating Email-------------
             if (!set.isBeforeFirst()) {
@@ -745,7 +780,18 @@ public class mySqlConn {
             }
 
             while (set.next()) {
-
+                Client client = new Client();
+                client.setCode(set.getInt("CL_ID"));
+                client.setName(set.getString("CL_NAME"));
+                client.setCompany(set.getString("CL_CMPNY"));
+                client.setEmail(set.getString("CL_EMAIL"));
+                client.setPhone(set.getString("CL_PHONE"));
+                client.setAddr(set.getString("CL_ADDR"));
+                client.setCity(set.getString("CL_CITY"));
+                client.setCountry(set.getString("CL_COUNTRY"));
+                client.setWebsite(set.getString("CL_WEBSITE"));
+                client.setType(set.getInt("CL_TYPE"));
+                allClients.add(client);
             }
 
             doRelease(con);
@@ -753,7 +799,37 @@ public class mySqlConn {
             ex.printStackTrace();
         }
 
-        return allEmails;
+        return allClients;
+    }
+
+    public List<String> getClientTypes() {
+
+        String query = "SELECT CT_NAME FROM CLIENT_TYPE";
+
+        try {
+            Connection con = getConnection();
+            PreparedStatement statement = con.prepareStatement(query);
+            ResultSet set = statement.executeQuery();
+            //-------------Creating Email-------------
+            if (!set.isBeforeFirst()) {
+                return null;
+            }
+
+            List<String> types = new ArrayList<>();
+
+            while (set.next()) {
+                types.add(set.getString("CT_NAME"));
+            }
+
+            doRelease(con);
+
+            return types;
+
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+
+        return null;
     }
 
     public static boolean pingHost(String host, int port, int timeout) {
