@@ -695,7 +695,7 @@ public class mySqlConn {
 
         String query = "INSERT INTO CLIENT_STORE(CL_ID,CL_NAME,CL_CMPNY,CL_EMAIL,CL_PHONE,CL_ADDR,CL_CITY" +
                 ",CL_COUNTRY,CL_WEBSITE,CL_TYPE) " +
-                " SELECT IFNULL(max(ECODE),0)+1,?,?,? from CLIENT_STORE";
+                " SELECT IFNULL(max(CL_ID),0)+1,?,?,? from CLIENT_STORE";
 
         Connection con = getConnection();
         PreparedStatement statement = null;

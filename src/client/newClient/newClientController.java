@@ -5,10 +5,15 @@ import JCode.mySqlConn;
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXComboBox;
 import com.jfoenix.controls.JFXTextField;
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonType;
 import javafx.stage.Stage;
+import objects.Client;
+import objects.ESetting;
 
 import java.net.URL;
 import java.util.List;
@@ -60,6 +65,17 @@ public class newClientController implements Initializable {
         if (name.equals("") || email.equals("") || phone.equals("") || city.equals("") || country.equals("")) {
             Toast.makeText((Stage) btn_save.getScene().getWindow(), "Required Fields Are Empty");
             return;
+        } else {
+            Alert alert2 = new Alert(Alert.AlertType.CONFIRMATION, "Are you sure you want to add Client? ",
+                    ButtonType.YES, ButtonType.NO);
+            alert2.showAndWait();
+
+            if (alert2.getResult() == ButtonType.YES) {
+                Client client = new Client();
+                client.set
+            } else {
+                return;
+            }
         }
 
     }
