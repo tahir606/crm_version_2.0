@@ -724,7 +724,7 @@ public class mySqlConn {
 
     }
 
-    public void updateClients(Client client) {
+    public void updateClient(Client client) {
 
         String query = "UPDATE  client_store  SET  CL_NAME = ?, CL_CMPNY = ?," +
                 " CL_EMAIL = ?, CL_PHONE = ?, CL_ADDR = ?, CL_CITY = ?, CL_COUNTRY = ?," +
@@ -765,7 +765,7 @@ public class mySqlConn {
                 "CL_CITY,CL_COUNTRY,CL_WEBSITE,CL_TYPE,CL_JOINDATE FROM CLIENT_STORE";
 
         if (where == null) {
-            query = query + " ORDER BY CL_ID DESC";
+            query = query + " ORDER BY CL_ID";
         } else {
             query = query + where;
         }

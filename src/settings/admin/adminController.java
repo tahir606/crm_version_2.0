@@ -64,8 +64,8 @@ public class adminController implements Initializable {
 
     private Users userSel;
 
-    int nUcode = 0;
-    int UcodeisEmail = 0;
+    private int nUcode = 0;
+    private int UcodeisEmail = 0;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -82,8 +82,8 @@ public class adminController implements Initializable {
         usersList = sql.getAllUsers();
         rightsList = sql.getAllUserRights();
 
-        nUcode = usersList.get(usersList.size() - 1).getUCODE() + 1;
-        UcodeisEmail = getIsEmail((ArrayList<Users>) usersList);
+        nUcode = usersList.get(usersList.size() - 1).getUCODE() + 1;    //Get Ucode for new User
+        UcodeisEmail = getIsEmail((ArrayList<Users>) usersList);        //Check if this user is receiving email
 
         Users u = new Users();
         u.setUCODE(nUcode);
@@ -91,7 +91,7 @@ public class adminController implements Initializable {
         u.setUright("New");
         combo_users.getItems().add(u);
 
-        combo_users.getItems().addAll(sql.getAllUsers());
+        combo_users.getItems().addAll(usersList);
         comboListener();
         combo_users.getSelectionModel().select(0);
     }

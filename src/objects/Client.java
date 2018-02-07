@@ -8,6 +8,11 @@ public class Client {
     public Client() {
     }
 
+    @Override
+    public String toString() {
+        return Name;
+    }
+
     public int getCode() {
         return Code;
     }
