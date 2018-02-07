@@ -4,11 +4,14 @@
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.HBox?>
 
-<BorderPane prefHeight="359.0" prefWidth="945.0" stylesheets="@../styles/settings.css" xmlns="http://javafx.com/javafx/9" xmlns:fx="http://javafx.com/fxml/1" fx:controller="settings.settingsController">
-   <top>
-      <HBox fx:id="menu_hbox" prefHeight="28.0" prefWidth="945.0" styleClass="hbox_menu" BorderPane.alignment="CENTER" />
-   </top>
-   <center>
-      <AnchorPane fx:id="anchor_holder" prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER" />
-   </center>
+<BorderPane prefHeight="359.0" prefWidth="945.0" stylesheets="@../styles/settings.css"
+            xmlns="http://javafx.com/javafx/9" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="settings.settingsController">
+    <top>
+        <HBox fx:id="menu_hbox" prefHeight="28.0" prefWidth="945.0" styleClass="hbox_menu"
+              BorderPane.alignment="CENTER"/>
+    </top>
+    <center>
+        <AnchorPane fx:id="anchor_holder" prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER"/>
+    </center>
 </BorderPane>

@@ -691,43 +691,12 @@ public class mySqlConn {
 
     }
 
-    public void addNewClient(Client client) {
+    public void insertClient(Client client) {
+
 
         String query = "INSERT INTO CLIENT_STORE(CL_ID,CL_NAME,CL_CMPNY,CL_EMAIL,CL_PHONE,CL_ADDR,CL_CITY" +
-                ",CL_COUNTRY,CL_WEBSITE,CL_TYPE) " +
-                " SELECT IFNULL(max(CL_ID),0)+1,?,?,? from CLIENT_STORE";
-
-        Connection con = getConnection();
-        PreparedStatement statement = null;
-
-        try {
-            statement = con.prepareStatement(query);
-            statement.setInt(1, client.getCode());
-            statement.setString(2, client.getName());
-            statement.setString(3, client.getCompany());
-            statement.setString(4, client.getEmail());
-            statement.setString(5, client.getPhone());
-            statement.setString(6, client.getAddr());
-            statement.setString(7, client.getCity());
-            statement.setString(8, client.getCountry());
-            statement.setString(9, client.getWebsite());
-            statement.setInt(10, client.getType());
-
-            statement.executeUpdate();
-
-            statement.close();
-
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-
-    }
-
-    public void updateClients(Client client) {
-
-        String query = "UPDATE  client_store  SET  CL_NAME = ?, CL_CMPNY = ?," +
-                " CL_EMAIL = ?, CL_PHONE = ?, CL_ADDR = ?, CL_CITY = ?, CL_COUNTRY = ?," +
-                " CL_WEBSITE = ?, CL_TYPE = ? WHERE CL_ID = ?";
+                ",CL_COUNTRY,CL_WEBSITE,CL_TYPE, CL_JOINDATE) " +
+                " SELECT IFNULL(max(CL_ID),0)+1,?,?,?,?,?,?,?,?,?,? from CLIENT_STORE";
 
         Connection con = getConnection();
         PreparedStatement statement = null;
@@ -743,7 +712,40 @@ public class mySqlConn {
             statement.setString(7, client.getCountry());
             statement.setString(8, client.getWebsite());
             statement.setInt(9, client.getType());
-            statement.setInt(10, client.getCode());
+            statement.setString(10, client.getJoinDate());
+
+            statement.executeUpdate();
+
+            statement.close();
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    public void updateClients(Client client) {
+
+        String query = "UPDATE  client_store  SET  CL_NAME = ?, CL_CMPNY = ?," +
+                " CL_EMAIL = ?, CL_PHONE = ?, CL_ADDR = ?, CL_CITY = ?, CL_COUNTRY = ?," +
+                " CL_WEBSITE = ?, CL_TYPE = ?, CL_JOINDATE = ? WHERE CL_ID = ?";
+
+        Connection con = getConnection();
+        PreparedStatement statement = null;
+
+        try {
+            statement = con.prepareStatement(query);
+            statement.setString(1, client.getName());
+            statement.setString(2, client.getCompany());
+            statement.setString(3, client.getEmail());
+            statement.setString(4, client.getPhone());
+            statement.setString(5, client.getAddr());
+            statement.setString(6, client.getCity());
+            statement.setString(7, client.getCountry());
+            statement.setString(8, client.getWebsite());
+            statement.setInt(9, client.getType());
+            statement.setString(10, client.getJoinDate());
+            statement.setInt(11, client.getCode());
 
             statement.executeUpdate();
             statement.close();
@@ -760,7 +762,7 @@ public class mySqlConn {
 
     public List<Client> getAllClients(String where) {
         String query = "SELECT CL_ID,CL_NAME,CL_CMPNY,CL_EMAIL,CL_PHONE,CL_ADDR," +
-                "CL_CITY,CL_COUNTRY,CL_WEBSITE,CL_TYPE FROM CLIENT_STORE";
+                "CL_CITY,CL_COUNTRY,CL_WEBSITE,CL_TYPE,CL_JOINDATE FROM CLIENT_STORE";
 
         if (where == null) {
             query = query + " ORDER BY CL_ID DESC";
@@ -791,6 +793,7 @@ public class mySqlConn {
                 client.setCountry(set.getString("CL_COUNTRY"));
                 client.setWebsite(set.getString("CL_WEBSITE"));
                 client.setType(set.getInt("CL_TYPE"));
+                client.setJoinDate(set.getString("CL_JOINDATE"));
                 allClients.add(client);
             }
 

@@ -4,6 +4,7 @@ import JCode.Toast;
 import JCode.mySqlConn;
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXComboBox;
+import com.jfoenix.controls.JFXDatePicker;
 import com.jfoenix.controls.JFXTextField;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
@@ -38,7 +39,11 @@ public class newClientController implements Initializable {
     @FXML
     private JFXTextField txt_country;
     @FXML
+    private JFXDatePicker joining_date;
+    @FXML
     private JFXComboBox<String> combo_type;
+    @FXML
+    private JFXComboBox<Client> combo_client;
     @FXML
     private JFXButton btn_save;
 
@@ -50,6 +55,7 @@ public class newClientController implements Initializable {
         List<String> types = sql.getClientTypes();
 
         combo_type.getItems().setAll(types);
+        combo_type.getSelectionModel().select(0);
     }
 
     public void saveChanges(ActionEvent actionEvent) {
@@ -60,7 +66,10 @@ public class newClientController implements Initializable {
                 website = txt_website.getText(),
                 addr = txt_addr.getText(),
                 city = txt_city.getText(),
-                country = txt_country.getText();
+                country = txt_country.getText(),
+                jdate = String.valueOf(joining_date.getValue());
+
+        int type = combo_type.getSelectionModel().getSelectedIndex() + 1;
 
         if (name.equals("") || email.equals("") || phone.equals("") || city.equals("") || country.equals("")) {
             Toast.makeText((Stage) btn_save.getScene().getWindow(), "Required Fields Are Empty");
@@ -72,7 +81,29 @@ public class newClientController implements Initializable {
 
             if (alert2.getResult() == ButtonType.YES) {
                 Client client = new Client();
-                client.set
+                client.setName(name);
+                client.setCompany(company);
+                client.setEmail(email);
+                client.setPhone(phone);
+                client.setWebsite(website);
+                client.setAddr(addr);
+                client.setCity(city);
+                client.setCountry(country);
+                client.setJoinDate(jdate);
+                client.setType(type);
+
+                sql.insertClient(client);
+
+                txt_name.clear();
+                txt_company.clear();
+                txt_email.clear();
+                txt_phone.clear();
+                txt_website.clear();
+                txt_addr.clear();
+                txt_city.clear();
+                txt_country.clear();
+
+                combo_type.getSelectionModel().select(0);
             } else {
                 return;
             }

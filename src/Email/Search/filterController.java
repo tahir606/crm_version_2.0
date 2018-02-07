@@ -40,7 +40,7 @@ public class filterController implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         new Thread(() -> {
-            combo_filter.getItems().addAll("Add Filters", "Email Type", "Order By", "Between Dates");
+            combo_filter.getItems().addAll("Add Filters", "Email Type", "Sort By", "Between Dates");
             // "Between TimeStamps", "Between Tickets"
             Platform.runLater(() -> combo_filter.getSelectionModel().select(0));
 
@@ -85,7 +85,7 @@ public class filterController implements Initializable {
                     email = true;
                     break;
                 }
-                case "Order By": {
+                case "Sort By": {
                     if (order == true) {
                         makeToast();
                         break;

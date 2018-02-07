@@ -3,7 +3,7 @@ package objects;
 public class Client {
 
     private int Code, Type;
-    private String Name, Company, Email, Phone, Addr, City, Country, Website;
+    private String Name, Company, Email, Phone, Addr, City, Country, Website, JoinDate;
 
     public Client() {
     }
@@ -86,5 +86,13 @@ public class Client {
 
     public void setWebsite(String website) {
         Website = website;
+    }
+
+    public String getJoinDate() {
+        return JoinDate;
+    }
+
+    public void setJoinDate(String joinDate) {
+        JoinDate = joinDate;
     }
 }
