@@ -71,7 +71,7 @@ public class newClientController implements Initializable {
         combo_type.getItems().setAll(types);
 
         nClient = clientList.get(clientList.size() - 1).getCode() + 1; //Get CL_ID for new client
-        System.out.println(nClient);
+//        System.out.println(nClient);
 
         Client c = new Client();
         c.setCode(nClient);
@@ -89,8 +89,7 @@ public class newClientController implements Initializable {
 
         combo_client.getItems().addAll(clientList);
         combo_client.valueProperty().addListener((observable, oldValue, newValue) -> {
-            if (newValue.getCode() != nClient)
-                populateDetails(newValue);
+            populateDetails(newValue);
             clientSel = newValue;
         });
         combo_type.getSelectionModel().select(0);
@@ -99,10 +98,13 @@ public class newClientController implements Initializable {
 
     private void populateDetails(Client newValue) {
 
+        System.out.println("Populating");
+
         if (newValue == null || newValue.getName().equals(" + Create New"))
             txt_name.setText("");
         else
             txt_name.setText(newValue.getName());
+
         txt_company.setText(newValue.getCompany());
         txt_email.setText(newValue.getEmail());
         txt_phone.setText(newValue.getPhone());
@@ -112,6 +114,8 @@ public class newClientController implements Initializable {
         txt_country.setText(newValue.getCountry());
         if (newValue.getJoinDate() != null)
             joining_date.setValue(LocalDate.parse(newValue.getJoinDate()));
+        else
+            joining_date.setValue(null);
 
     }
 
@@ -137,37 +141,27 @@ public class newClientController implements Initializable {
             alert2.showAndWait();
 
             if (alert2.getResult() == ButtonType.YES) {
-                Client client = new Client();
-                client.setCode(nClient);
-                client.setName(name);
-                client.setCompany(company);
-                client.setEmail(email);
-                client.setPhone(phone);
-                client.setWebsite(website);
-                client.setAddr(addr);
-                client.setCity(city);
-                client.setCountry(country);
-                client.setJoinDate(jdate);
-                client.setType(type);
 
-                if (nClient == client.getCode())
-                    sql.updateClient(client);
-                else
-                    sql.insertClient(client);
+                clientSel.setName(name);
+                clientSel.setCompany(company);
+                clientSel.setEmail(email);
+                clientSel.setPhone(phone);
+                clientSel.setWebsite(website);
+                clientSel.setAddr(addr);
+                clientSel.setCity(city);
+                clientSel.setCountry(country);
+                clientSel.setJoinDate(jdate);
+                clientSel.setType(type);
 
-//                txt_name.clear();
-//                txt_company.clear();
-//                txt_email.clear();
-//                txt_phone.clear();
-//                txt_website.clear();
-//                txt_addr.clear();
-//                txt_city.clear();
-//                txt_country.clear();
-//                joining_date.setValue(null);
-
+                if (nClient == clientSel.getCode()) {
+                    System.out.println("Inserting");
+                    sql.insertClient(clientSel);
+                } else {
+                    System.out.println("Updating");
+                    sql.updateClient(clientSel);
+                }
                 init();
 
-//                combo_type.getSelectionModel().select(0);
             } else {
                 return;
             }
