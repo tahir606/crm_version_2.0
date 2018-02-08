@@ -694,7 +694,7 @@ public class mySqlConn {
     public void insertClient(Client client) {
 
 
-        String query = "INSERT INTO CLIENT_STORE(CL_ID,CL_NAME,CL_CMPNY,CL_EMAIL,CL_PHONE,CL_ADDR,CL_CITY" +
+        String query = "INSERT INTO CLIENT_STORE(CL_ID,CL_NAME,CL_OWNER,CL_EMAIL,CL_PHONE,CL_ADDR,CL_CITY" +
                 ",CL_COUNTRY,CL_WEBSITE,CL_TYPE, CL_JOINDATE) " +
                 " SELECT IFNULL(max(CL_ID),0)+1,?,?,?,?,?,?,?,?,?,? from CLIENT_STORE";
 
@@ -704,7 +704,7 @@ public class mySqlConn {
         try {
             statement = con.prepareStatement(query);
             statement.setString(1, client.getName());
-            statement.setString(2, client.getCompany());
+            statement.setString(2, client.getOwner());
             statement.setString(3, client.getEmail());
             statement.setString(4, client.getPhone());
             statement.setString(5, client.getAddr());
@@ -712,7 +712,10 @@ public class mySqlConn {
             statement.setString(7, client.getCountry());
             statement.setString(8, client.getWebsite());
             statement.setInt(9, client.getType());
-            statement.setString(10, client.getJoinDate());
+            if (client.getJoinDate().equals("null"))
+                statement.setString(10, client.getJoinDate());
+            else
+                statement.setString(10,null);
 
             statement.executeUpdate();
 
@@ -726,7 +729,7 @@ public class mySqlConn {
 
     public void updateClient(Client client) {
 
-        String query = "UPDATE  client_store  SET  CL_NAME = ?, CL_CMPNY = ?," +
+        String query = "UPDATE  client_store  SET  CL_NAME = ?, CL_OWNER = ?," +
                 " CL_EMAIL = ?, CL_PHONE = ?, CL_ADDR = ?, CL_CITY = ?, CL_COUNTRY = ?," +
                 " CL_WEBSITE = ?, CL_TYPE = ?, CL_JOINDATE = ? WHERE CL_ID = ?";
 
@@ -736,7 +739,7 @@ public class mySqlConn {
         try {
             statement = con.prepareStatement(query);
             statement.setString(1, client.getName());
-            statement.setString(2, client.getCompany());
+            statement.setString(2, client.getOwner());
             statement.setString(3, client.getEmail());
             statement.setString(4, client.getPhone());
             statement.setString(5, client.getAddr());
@@ -744,7 +747,10 @@ public class mySqlConn {
             statement.setString(7, client.getCountry());
             statement.setString(8, client.getWebsite());
             statement.setInt(9, client.getType());
-            statement.setString(10, client.getJoinDate());
+            if (client.getJoinDate().equals("null"))
+                statement.setString(10, client.getJoinDate());
+            else
+                statement.setString(10,null);
             statement.setInt(11, client.getCode());
 
             statement.executeUpdate();
@@ -761,7 +767,7 @@ public class mySqlConn {
     }
 
     public List<Client> getAllClients(String where) {
-        String query = "SELECT CL_ID,CL_NAME,CL_CMPNY,CL_EMAIL,CL_PHONE,CL_ADDR," +
+        String query = "SELECT CL_ID,CL_NAME,CL_OWNER,CL_EMAIL,CL_PHONE,CL_ADDR," +
                 "CL_CITY,CL_COUNTRY,CL_WEBSITE,CL_TYPE,CL_JOINDATE FROM CLIENT_STORE";
 
         if (where == null) {
@@ -785,7 +791,7 @@ public class mySqlConn {
                 Client client = new Client();
                 client.setCode(set.getInt("CL_ID"));
                 client.setName(set.getString("CL_NAME"));
-                client.setCompany(set.getString("CL_CMPNY"));
+                client.setOwner(set.getString("CL_OWNER"));
                 client.setEmail(set.getString("CL_EMAIL"));
                 client.setPhone(set.getString("CL_PHONE"));
                 client.setAddr(set.getString("CL_ADDR"));

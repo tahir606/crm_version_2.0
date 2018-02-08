@@ -21,8 +21,8 @@
                 </HBox>
                 <HBox prefHeight="30.0" prefWidth="200.0" spacing="10.0">
                     <children>
-                        <Label prefHeight="35.0" prefWidth="80.0" text="Company" />
-                        <JFXTextField fx:id="txt_company" focusColor="#006e0e" prefHeight="35.0" prefWidth="340.0" />
+                        <Label prefHeight="35.0" prefWidth="80.0" text="owner" />
+                        <JFXTextField fx:id="txt_owner" focusColor="#006e0e" prefHeight="35.0" prefWidth="340.0" />
                     </children>
                 </HBox>
                 <HBox prefHeight="15.0" prefWidth="200.0" spacing="10.0" />

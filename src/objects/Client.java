@@ -3,7 +3,7 @@ package objects;
 public class Client {
 
     private int Code, Type;
-    private String Name, Company, Email, Phone, Addr, City, Country, Website, JoinDate;
+    private String Name, owner, Email, Phone, Addr, City, Country, Website, JoinDate;
 
     public Client() {
     }
@@ -37,12 +37,12 @@ public class Client {
         Name = name;
     }
 
-    public String getCompany() {
-        return Company;
+    public String getOwner() {
+        return owner;
     }
 
-    public void setCompany(String company) {
-        Company = company;
+    public void setOwner(String owner) {
+        owner = owner;
     }
 
     public String getEmail() {

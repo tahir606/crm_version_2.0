@@ -25,7 +25,7 @@ public class newClientController implements Initializable {
     @FXML
     private JFXTextField txt_name;
     @FXML
-    private JFXTextField txt_company;
+    private JFXTextField txt_owner;
     @FXML
     private JFXTextField txt_email;
     @FXML
@@ -69,14 +69,17 @@ public class newClientController implements Initializable {
         types = sql.getClientTypes();
 
         combo_type.getItems().setAll(types);
-
-        nClient = clientList.get(clientList.size() - 1).getCode() + 1; //Get CL_ID for new client
+        try {
+            nClient = clientList.get(clientList.size() - 1).getCode() + 1; //Get CL_ID for new client
+        } catch (NullPointerException e) {
+            nClient = 1;
+        }
 //        System.out.println(nClient);
 
         Client c = new Client();
         c.setCode(nClient);
         c.setName(" + Create New");
-        c.setCompany("");
+        c.setOwner("");
         c.setEmail("");
         c.setPhone("");
         c.setWebsite("");
@@ -87,7 +90,8 @@ public class newClientController implements Initializable {
 
         combo_client.getItems().add(c);
 
-        combo_client.getItems().addAll(clientList);
+        if (nClient != 1)   //If there are no clients previously, else this throws a null pointer exception
+            combo_client.getItems().addAll(clientList);
         combo_client.valueProperty().addListener((observable, oldValue, newValue) -> {
             populateDetails(newValue);
             clientSel = newValue;
@@ -105,7 +109,7 @@ public class newClientController implements Initializable {
         else
             txt_name.setText(newValue.getName());
 
-        txt_company.setText(newValue.getCompany());
+        txt_owner.setText(newValue.getOwner());
         txt_email.setText(newValue.getEmail());
         txt_phone.setText(newValue.getPhone());
         txt_website.setText(newValue.getWebsite());
@@ -121,7 +125,7 @@ public class newClientController implements Initializable {
 
     public void saveChanges(ActionEvent actionEvent) {
         String name = txt_name.getText(),
-                company = txt_company.getText(),
+                owner = txt_owner.getText(),
                 email = txt_email.getText(),
                 phone = txt_phone.getText(),
                 website = txt_website.getText(),
@@ -143,7 +147,7 @@ public class newClientController implements Initializable {
             if (alert2.getResult() == ButtonType.YES) {
 
                 clientSel.setName(name);
-                clientSel.setCompany(company);
+                clientSel.setOwner(owner);
                 clientSel.setEmail(email);
                 clientSel.setPhone(phone);
                 clientSel.setWebsite(website);
