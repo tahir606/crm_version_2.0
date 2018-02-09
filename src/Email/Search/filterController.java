@@ -401,7 +401,8 @@ public class filterController implements Initializable {
             Stage stage = (Stage) btn_filters.getScene().getWindow();
 
             Platform.runLater(() -> {
-                Platform.runLater(() -> Toast.makeText(stage, "Reload Emails for filters to take effect!"));
+//                Platform.runLater(() -> Toast.makeText(stage, "Reload Emails for filters to take effect!"));
+                EmailDashController.loadEmailsStatic();
                 dController.img_load.setVisible(false);
                 stage.close();
             });

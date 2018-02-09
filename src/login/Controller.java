@@ -7,6 +7,7 @@ import com.jfoenix.controls.JFXPasswordField;
 import com.jfoenix.controls.JFXTextField;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -55,11 +56,27 @@ public class Controller implements Initializable {
                 new Image(getClass().getResourceAsStream("/res/img/loader.gif")));     //Setting Loading Image to ImageView
         img_loader.setVisible(false);
         Platform.setImplicitExit(false);
+
+        pass_field.setOnAction(event -> {
+            String users = user_field.getText(), pass = pass_field.getText();
+
+            if (users.equals("") || pass.equals("")) {
+                error_message.setText("Incomplete Values");
+            } else {
+                new Thread(() -> {
+                    img_loader.setVisible(true);
+                    authenticateLogin(user_field.getText(), pass_field.getText());
+                }).start();
+            }
+        });
     }
 
     @FXML
     void onLoginClick(ActionEvent event) {
+        loginAction();
+    }
 
+    private void loginAction() {
         String users = user_field.getText(), pass = pass_field.getText();
 
         if (users.equals("") || pass.equals("")) {

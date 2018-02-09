@@ -45,6 +45,7 @@ public class JServer {
 //                    }
                 } catch (IOException e) {
                     e.printStackTrace();
+                    break;
                 }
             }
         });
