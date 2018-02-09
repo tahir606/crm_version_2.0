@@ -103,7 +103,7 @@ public class EmailDashController implements Initializable {
     public static char ReplyForward;         //Where R is for reply and F is for Forward
     public static String efrom, subject, body;
 
-    private static volatile Email selectedEmail = null;
+    private static Email selectedEmail = null;
     public static volatile boolean reload = false;
 
     public static ListView<Email> list_emailsF;

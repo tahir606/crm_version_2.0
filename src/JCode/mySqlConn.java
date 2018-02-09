@@ -712,7 +712,7 @@ public class mySqlConn {
             statement.setString(7, client.getCountry());
             statement.setString(8, client.getWebsite());
             statement.setInt(9, client.getType());
-            if (client.getJoinDate().equals("null"))
+            if (!client.getJoinDate().equals("null"))
                 statement.setString(10, client.getJoinDate());
             else
                 statement.setString(10,null);
@@ -747,7 +747,7 @@ public class mySqlConn {
             statement.setString(7, client.getCountry());
             statement.setString(8, client.getWebsite());
             statement.setInt(9, client.getType());
-            if (client.getJoinDate().equals("null"))
+            if (!client.getJoinDate().equals("null"))
                 statement.setString(10, client.getJoinDate());
             else
                 statement.setString(10,null);

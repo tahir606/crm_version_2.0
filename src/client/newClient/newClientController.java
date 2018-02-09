@@ -63,8 +63,10 @@ public class newClientController implements Initializable {
     }
 
     private void init() {
-        combo_client.getItems().clear();
 
+        System.out.println("Initing");
+
+        combo_client.getItems().clear();
         clientList = sql.getAllClients(null);
         types = sql.getClientTypes();
 
@@ -92,6 +94,7 @@ public class newClientController implements Initializable {
 
         if (nClient != 1)   //If there are no clients previously, else this throws a null pointer exception
             combo_client.getItems().addAll(clientList);
+
         combo_client.valueProperty().addListener((observable, oldValue, newValue) -> {
             populateDetails(newValue);
             clientSel = newValue;
@@ -104,7 +107,9 @@ public class newClientController implements Initializable {
 
         System.out.println("Populating");
 
-        if (newValue == null || newValue.getName().equals(" + Create New"))
+        if (newValue == null)
+            return;
+        else if (newValue.getName().equals(" + Create New"))
             txt_name.setText("");
         else
             txt_name.setText(newValue.getName());
