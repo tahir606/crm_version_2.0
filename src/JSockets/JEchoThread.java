@@ -33,8 +33,6 @@ public class JEchoThread extends Thread {
 //                        EmailDashController.reload = true;
 //                        EmailDashController.list_emailsF.getItems().clear();
                         EmailDashController.loadEmailsStatic();
-                        System.out.println("Reload bool : " + EmailDashController.reload);
-                        System.out.println("Reloading my Self");
                     }
                     JServer.broadcastMessages(line);
                 }

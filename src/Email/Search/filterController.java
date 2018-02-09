@@ -250,7 +250,7 @@ public class filterController implements Initializable {
                     h = (HBox) e;
                 }
                 if (filters > 0) {
-                    if (!e.getAccessibleText().equals("Order By")) {
+                    if (!e.getAccessibleText().equals("Sort By")) {
                         whereClause = whereClause + " AND ";
                     }
                 }
@@ -311,7 +311,8 @@ public class filterController implements Initializable {
                         break;
 
                     }
-                    case "Order By": {          //-----------------------------------------------ORDER BY-------------------
+                    case "Sort By": {          //-----------------------------------------------ORDER
+                        // BY-------------------
                         String order = "";
                         for (Node em : h.getChildren()) {
                             switch (em.getAccessibleText()) {
@@ -421,7 +422,7 @@ public class filterController implements Initializable {
                     email = false;
                     break;
                 }
-                case "Order By": {
+                case "Sort By": {
                     order = false;
                     break;
                 }

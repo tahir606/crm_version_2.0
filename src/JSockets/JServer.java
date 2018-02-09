@@ -12,7 +12,7 @@ import java.util.Scanner;
 
 public class JServer {
 
-    private ServerSocket ss;
+    public static ServerSocket ss;
     private DataOutputStream dos;
 
     public static List<Socket> sockets = new ArrayList<>();
@@ -27,15 +27,18 @@ public class JServer {
         }
     }
 
+    static Thread listeningtoSocket;
+
     public void acceptSockets() {
-        new Thread(() -> {
+
+        listeningtoSocket = new Thread(() -> {
             while (true) {
                 try {
 //                    if (sockets.size() < 10) {
-                        Socket s = ss.accept();
-                        sockets.add(s);
-                        new JEchoThread(s).start();
-                        System.out.println("Socket Accepted");
+                    Socket s = ss.accept();
+                    sockets.add(s);
+                    new JEchoThread(s).start();
+                    System.out.println("Socket Accepted");
 //                    } else {
 //                        System.out.println("Max Clients Limit Reached");
 //                        break;
@@ -44,7 +47,18 @@ public class JServer {
                     e.printStackTrace();
                 }
             }
-        }).start();
+        });
+
+        listeningtoSocket.start();
+    }
+
+    public static void closeThread() {
+        listeningtoSocket.interrupt();
+        try {
+            ss.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     public static void broadcastMessages(String msg) {

@@ -139,6 +139,8 @@ public class newClientController implements Initializable {
                 country = txt_country.getText(),
                 jdate = String.valueOf(joining_date.getValue());
 
+        System.out.println(owner);
+
         int type = combo_type.getSelectionModel().getSelectedIndex() + 1;
 
         if (name.equals("") || email.equals("") || phone.equals("") || city.equals("") || country.equals("")) {

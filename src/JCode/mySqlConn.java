@@ -52,8 +52,8 @@ public class mySqlConn {
                     URL, USER, PASSWORD);
             return con;
         } catch (Exception e) {
-            showAlertDialog();
             e.printStackTrace();
+            showAlertDialog();
         }
 
         return null;
@@ -64,7 +64,8 @@ public class mySqlConn {
         String query = "SELECT UCODE, FNAME, URIGHT, ISEMAIL FROM USERS " +
                 "WHERE UNAME = ? " +
                 "AND UPASS = ? " +
-                "AND FREZE = ?";
+                "AND FREZE = ? " +
+                "AND ISLOG = false ";
 
         Connection con = getConnection();
 
@@ -90,6 +91,8 @@ public class mySqlConn {
 
             if (user.getUCODE() == '\0') {
                 return false;
+            } else {
+                setLogin(con, user.getUCODE(), true);
             }
 
             user.setUNAME(username);
@@ -101,6 +104,35 @@ public class mySqlConn {
         }
 
         return false;
+    }
+
+    public void setLogin(Connection con, int Ucode, boolean log) {
+        String query = "UPDATE USERS SET ISLOG = ? WHERE UCODE = ?";
+
+        boolean newCon = false; //If con has been initialized (In case of logout)
+
+        if (con == null) {
+            newCon = true;
+            con = getConnection();
+        }
+
+        PreparedStatement statement = null;
+
+        try {
+            statement = con.prepareStatement(query);
+            statement.setBoolean(1, log);
+            statement.setInt(2, Ucode);
+
+            statement.executeUpdate();
+
+            statement.close();
+
+            if (newCon == true)
+                doRelease(con);
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
     public boolean getRights(Users user, Connection con) {
@@ -293,7 +325,7 @@ public class mySqlConn {
 
         if (choice == 0) {          //New
             query = " INSERT INTO USERS( UCODE ,  FNAME ,  UNAME ,  Email ,  UPASS ,  URIGHT ,  FREZE , " +
-                    "  ISEMAIL ) SELECT IFNULL(max(UCODE),0)+1,?,?,?,?,?,?,? from USERS";
+                    "  ISEMAIL, ISLOG ) SELECT IFNULL(max(UCODE),0)+1,?,?,?,?,?,?,?,? from USERS";
         } else if (choice == 1) {   //Update
             query = "UPDATE USERS SET  FNAME =?, UNAME =?, Email =?, " +
                     " UPASS =?, URIGHT =?, FREZE =?, ISEMAIL =? WHERE UCODE = ? ";
@@ -323,6 +355,8 @@ public class mySqlConn {
             }
             if (choice == 1)
                 statement.setInt(8, user.getUCODE());
+            else
+                statement.setBoolean(8, false);
 
             statement.executeUpdate();
             statement = null;
@@ -715,7 +749,7 @@ public class mySqlConn {
             if (!client.getJoinDate().equals("null"))
                 statement.setString(10, client.getJoinDate());
             else
-                statement.setString(10,null);
+                statement.setString(10, null);
 
             statement.executeUpdate();
 
@@ -736,6 +770,8 @@ public class mySqlConn {
         Connection con = getConnection();
         PreparedStatement statement = null;
 
+        System.out.println("Client Owner: " + client.getOwner());
+
         try {
             statement = con.prepareStatement(query);
             statement.setString(1, client.getName());
@@ -750,7 +786,7 @@ public class mySqlConn {
             if (!client.getJoinDate().equals("null"))
                 statement.setString(10, client.getJoinDate());
             else
-                statement.setString(10,null);
+                statement.setString(10, null);
             statement.setInt(11, client.getCode());
 
             statement.executeUpdate();

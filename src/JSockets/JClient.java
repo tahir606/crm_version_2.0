@@ -14,7 +14,7 @@ import java.net.Socket;
 
 public class JClient {
 
-    static Socket socket;
+    public static Socket socket;
     DataInputStream dis;
     DataOutputStream dos;
 
@@ -26,7 +26,6 @@ public class JClient {
 
     public JClient() {
         try {
-
             network = fh.getNetworkDetails();
             th = new trayHelper();
             socket = new Socket();
@@ -52,8 +51,6 @@ public class JClient {
                         if (d.equals("R")) {
 //                            EmailDashController.reload = true;
                             EmailDashController.loadEmailsStatic();
-                            System.out.println("Reload bool : " + EmailDashController.reload);
-                            System.out.println("Read Reloading Message");
                         }
                         else
                             th.displayNotification("Email Received", "Email Received from " + d);

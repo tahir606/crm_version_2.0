@@ -24,7 +24,7 @@ public class Main extends Application {
             Parent root = FXMLLoader.load(getClass().getResource("login/login.fxml"));
             primaryStage.setTitle("Login- BITS-CRM");
             primaryStage.setScene(new Scene(root, 900, 400));
-            primaryStage.setResizable(false);
+//            primaryStage.setResizable(false);
             tray.createTrayIcon(primaryStage);
             tray.createIcon(primaryStage);
             primaryStage.show();

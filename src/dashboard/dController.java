@@ -296,6 +296,19 @@ public class dController implements Initializable {
             @Override
             public void handle(MouseEvent event) {
                 img_loader.setVisible(true);
+
+                sql.setLogin(null, user.getUCODE(), false);
+
+                if (isServer == true) {
+                    JServer.closeThread();
+                } else {
+                    try {
+                        JClient.socket.close();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+
                 Stage dash = (Stage) menu_pane.getScene().getWindow();
                 dash.close();
 

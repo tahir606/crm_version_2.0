@@ -42,7 +42,7 @@ public class Client {
     }
 
     public void setOwner(String owner) {
-        owner = owner;
+        this.owner = owner;
     }
 
     public String getEmail() {

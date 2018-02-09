@@ -52,27 +52,22 @@ public class EmailDashController implements Initializable {
     private AnchorPane anchor_body;
     @FXML
     private AnchorPane anchor_details;
-
     @FXML
     private Label label_ticket;
     @FXML
     private Label label_time;
     @FXML
     private Label label_locked;
-
     @FXML
     private Label title_locked;
-
     @FXML
     private TextArea txt_subject;
-
     @FXML
     private JFXButton btn_lock;
     @FXML
     private JFXButton btn_solv;
     @FXML
     private JFXButton btn_unlock;
-
     @FXML
     private JFXComboBox<String> combo_respond;
 
@@ -107,6 +102,9 @@ public class EmailDashController implements Initializable {
     public static volatile boolean reload = false;
 
     public static ListView<Email> list_emailsF;
+    private static AnchorPane anchor_detailsF;
+    private static AnchorPane anchor_bodyF;
+
 
     public EmailDashController() {
     }
@@ -116,9 +114,9 @@ public class EmailDashController implements Initializable {
 
         imgLoader.setVisible(true);
 
-
-
         list_emailsF = list_emails;
+        anchor_detailsF = anchor_details;
+        anchor_bodyF = anchor_body;
 
         anchor_details.setVisible(false);
 
@@ -338,6 +336,8 @@ public class EmailDashController implements Initializable {
         new Thread(() -> {
             imgLoader.setVisible(true);
 
+            System.out.println("Loading EMails Static");
+
             Email e = selectedEmail;
 
             mySqlConn sql = new mySqlConn();
@@ -352,6 +352,8 @@ public class EmailDashController implements Initializable {
 
                 if (selectedEmail == null) {
                     imgLoader.setVisible(false);
+                    anchor_detailsF.setVisible(false);
+                    anchor_bodyF.setVisible(false);
                     return;
                 }
 
@@ -464,10 +466,10 @@ public class EmailDashController implements Initializable {
             eBody.setWrapText(true);
             eBody.setPrefSize(anchor_body.getWidth(), anchor_body.getHeight());
             anchor_body.getChildren().add(eBody);
-            AnchorPane.setLeftAnchor(eBody,0.0);
-            AnchorPane.setRightAnchor(eBody,0.0);
-            AnchorPane.setTopAnchor(eBody,0.0);
-            AnchorPane.setBottomAnchor(eBody,0.0);
+            AnchorPane.setLeftAnchor(eBody, 0.0);
+            AnchorPane.setRightAnchor(eBody, 0.0);
+            AnchorPane.setTopAnchor(eBody, 0.0);
+            AnchorPane.setBottomAnchor(eBody, 0.0);
             eBody.setEditable(false);
             if (!anchor_body.isVisible()) {
                 anchor_body.setVisible(true);
