@@ -20,7 +20,6 @@ public class Main extends Application {
 
         fHelper.makeFolders();
 
-
         if (fHelper.getNetworkDetails() == null) {
             Parent root = FXMLLoader.load(getClass().getResource("settings/network/networkSet.fxml"));
             primaryStage.setTitle("Network Settings- BITS-CRM");

@@ -28,19 +28,6 @@
                 <HBox prefHeight="15.0" prefWidth="200.0" spacing="10.0" />
                 <HBox prefHeight="30.0" prefWidth="200.0" spacing="10.0">
                     <children>
-                        <Label prefHeight="35.0" prefWidth="80.0" text="Email*" />
-                        <JFXTextField fx:id="txt_email" focusColor="#006e0e" prefHeight="35.0" prefWidth="340.0" />
-                    </children>
-                </HBox>
-                <HBox prefHeight="30.0" prefWidth="200.0" spacing="10.0">
-                    <children>
-                        <Label prefHeight="35.0" prefWidth="80.0" text="Phone*" />
-                        <JFXTextField fx:id="txt_phone" focusColor="#006e0e" prefHeight="35.0" prefWidth="340.0" />
-                    </children>
-                </HBox>
-                <HBox prefHeight="15.0" prefWidth="200.0" spacing="10.0" />
-                <HBox prefHeight="30.0" prefWidth="200.0" spacing="10.0">
-                    <children>
                         <Label prefHeight="35.0" prefWidth="80.0" text="Website" />
                         <JFXTextField fx:id="txt_website" focusColor="#006e0e" prefHeight="35.0" prefWidth="340.0" />
                     </children>
@@ -74,6 +61,13 @@
                         <JFXComboBox fx:id="combo_type" focusColor="#006e0e" prefHeight="30.0" prefWidth="176.0" />
                     </children>
                 </HBox>
+            <HBox prefHeight="15.0" prefWidth="200.0" spacing="10.0" />
+            <HBox prefHeight="35.0" prefWidth="200.0" spacing="10.0">
+               <children>
+                  <JFXButton fx:id="btn_email" prefHeight="47.0" prefWidth="59.0" style="-fx-background-color: #9bc685;" text="Email" />
+                  <JFXButton fx:id="btn_phone" prefHeight="82.0" prefWidth="62.0" style="-fx-background-color: #9bc685;" text="Phone" />
+               </children>
+            </HBox>
             </children>
         </VBox>
         <JFXComboBox fx:id="combo_client" layoutX="713.0" layoutY="48.0" prefHeight="25.0" prefWidth="255.0" />
