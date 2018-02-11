@@ -1,5 +1,12 @@
 package JCode;
 
+import javafx.application.Platform;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 import objects.ESetting;
 import objects.Network;
 import objects.Users;
@@ -54,18 +61,36 @@ public class fileHelper {
             String[] t = text.split("\\^");
             return new Network(t[0], Integer.parseInt(t[1]), t[2], t[3], t[4]);
         } catch (FileNotFoundException e) {
-            e.printStackTrace();
+            System.out.println(e);
+//            askForNetwork();
         } catch (IOException e) {
             e.printStackTrace();
+        } catch (NullPointerException e) {
+            e.printStackTrace();
+            return null;
         } finally {
             try {
                 isReader.close();
-            } catch (IOException ex) {
-
+            } catch (Exception ex) {
+                System.out.println(ex);
             }
         }
         return null;
     }
+
+//    private void askForNetwork() {
+//        try {
+//            Stage primaryStage = new Stage();
+//            Parent root = FXMLLoader.load(getClass().getResource("../settings/network/networkSet.fxml"));
+//            primaryStage.setTitle("Dashboard- BITS-CRM");
+//            primaryStage.setScene(new Scene(root, 1200, 500));
+////            primaryStage.setResizable(false);
+////            .createIcon(primaryStage);
+//            primaryStage.show();
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
+//    }
 
     public boolean WriteNetwork(Network network) {
 

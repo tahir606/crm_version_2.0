@@ -36,6 +36,8 @@ public class mySqlConn {
     public mySqlConn() {
         fHelper = new fileHelper();
         Network network = fHelper.getNetworkDetails();
+        if (network == null)
+            return;
         URL = "jdbc:mysql://" + network.getHost() + ":" + network.getPort() + "/" + network.getDbname();
         USER = network.getRoot();
         PASSWORD = network.getPass();

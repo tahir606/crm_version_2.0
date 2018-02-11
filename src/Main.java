@@ -20,12 +20,20 @@ public class Main extends Application {
 
         fHelper.makeFolders();
 
-        if (fHelper.ReadUserDetails() == null) {
+
+        if (fHelper.getNetworkDetails() == null) {
+            Parent root = FXMLLoader.load(getClass().getResource("settings/network/networkSet.fxml"));
+            primaryStage.setTitle("Network Settings- BITS-CRM");
+            primaryStage.setScene(new Scene(root, 600, 400));
+            primaryStage.setResizable(false);
+            tray.createIcon(primaryStage);
+            primaryStage.show();
+        } else if (fHelper.ReadUserDetails() == null) {
             Parent root = FXMLLoader.load(getClass().getResource("login/login.fxml"));
             primaryStage.setTitle("Login- BITS-CRM");
             primaryStage.setScene(new Scene(root, 900, 400));
 //            primaryStage.setResizable(false);
-            tray.createTrayIcon(primaryStage);
+//            tray.createTrayIcon(primaryStage);
             tray.createIcon(primaryStage);
             primaryStage.show();
         } else {
