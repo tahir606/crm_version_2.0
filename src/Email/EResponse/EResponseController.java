@@ -2,6 +2,7 @@ package Email.EResponse;
 
 import Email.EmailDashController;
 import JCode.emailControl;
+import com.jfoenix.controls.JFXTextField;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -9,6 +10,7 @@ import javafx.scene.control.*;
 import javafx.scene.text.Text;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
+import org.controlsfx.control.textfield.TextFields;
 
 import java.io.File;
 import java.net.URL;
@@ -49,6 +51,8 @@ public class EResponseController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+
+//        TextFields.bindAutoCompletion(txt_to, str);
 
         txt_subject.setText(EmailDashController.subject);
         if (EmailDashController.ReplyForward == 'R') {

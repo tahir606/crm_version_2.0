@@ -67,7 +67,20 @@ public class settingsController implements Initializable {
         adminSetting.setGraphic(new ImageView(imageA));
         adminSetting.getStyleClass().add("btnMenu");
 
-        menu_hbox.getChildren().addAll(emailSetting, adminSetting);
+        //---------------------------------------------------Split-----------
+
+        EventHandler myNetworkEvent = event -> {
+            inflating("network/networkSet.fxml", 3);
+        };
+
+        JFXButton networkSetting = new JFXButton("Network Settings");
+        Image imageN = new Image(getClass().getResourceAsStream("/res/img/network.png"));
+        networkSetting.setPrefSize(120, menu_hbox.getHeight() - 2);
+        networkSetting.setOnAction(myNetworkEvent);
+        networkSetting.setGraphic(new ImageView(imageN));
+        networkSetting.getStyleClass().add("btnMenu");
+
+        menu_hbox.getChildren().addAll(emailSetting, adminSetting, networkSetting);
 
     }
 

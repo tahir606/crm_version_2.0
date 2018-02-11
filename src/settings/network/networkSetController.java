@@ -28,6 +28,8 @@ public class networkSetController implements Initializable {
     @FXML
     private JFXButton btn_save;
 
+    public static boolean fromMain;     //To check if network setting is from main or not
+
     fileHelper fHelper;
     trayHelper tHelper;
 
@@ -56,37 +58,43 @@ public class networkSetController implements Initializable {
 
         if (ping) {
             fHelper.WriteNetwork(new Network(ip, Integer.parseInt(port), DB_NAME, USER, PASS));
-            Stage stage = (Stage) btn_save.getScene().getWindow();
-            stage.close();
 
-            Stage primaryStage = new Stage();
+            if (fromMain == true) {
 
-            if (fHelper.ReadUserDetails() == null) {
-                Parent root = null;
-                try {
-                    root = FXMLLoader.load(getClass().getResource("../../login/login.fxml"));
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-                primaryStage.setTitle("Login- BITS-CRM");
-                primaryStage.setScene(new Scene(root, 900, 400));
+                Stage stage = (Stage) btn_save.getScene().getWindow();
+                stage.close();
+
+                Stage primaryStage = new Stage();
+
+                if (fHelper.ReadUserDetails() == null) {
+                    Parent root = null;
+                    try {
+                        root = FXMLLoader.load(getClass().getResource("../../login/login.fxml"));
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                    primaryStage.setTitle("Login- BITS-CRM");
+                    primaryStage.setScene(new Scene(root, 900, 400));
 //            primaryStage.setResizable(false);
 //                tHelper.createTrayIcon(primaryStage);
-                tHelper.createIcon(primaryStage);
-                primaryStage.show();
-            } else {
-                Parent root = null;
-                try {
-                    root = FXMLLoader.load(getClass().getResource("../../dashboard/dashboard.fxml"));
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-                primaryStage.setTitle("Dashboard- BITS-CRM");
-                primaryStage.setScene(new Scene(root, 1200, 500));
+                    tHelper.createIcon(primaryStage);
+                    primaryStage.show();
+                } else {
+                    Parent root = null;
+                    try {
+                        root = FXMLLoader.load(getClass().getResource("../../dashboard/dashboard.fxml"));
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                    primaryStage.setTitle("Dashboard- BITS-CRM");
+                    primaryStage.setScene(new Scene(root, 1200, 500));
 //            primaryStage.setResizable(false);
-                tHelper.createTrayIcon(primaryStage);
-                tHelper.createIcon(primaryStage);
-                primaryStage.show();
+                    tHelper.createTrayIcon(primaryStage);
+                    tHelper.createIcon(primaryStage);
+                    primaryStage.show();
+                }
+            } else if (fromMain == false) {
+                fHelper.WriteNetwork(new Network(ip, Integer.parseInt(port), DB_NAME, USER, PASS));
             }
         } else
             Toast.makeText((Stage) btn_save.getScene().getWindow(), "Not able to connect to server!");
