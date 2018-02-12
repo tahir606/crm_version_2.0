@@ -64,8 +64,8 @@
             <HBox prefHeight="15.0" prefWidth="200.0" spacing="10.0" />
             <HBox prefHeight="35.0" prefWidth="200.0" spacing="10.0">
                <children>
-                  <JFXButton fx:id="btn_email" prefHeight="47.0" prefWidth="59.0" style="-fx-background-color: #9bc685;" text="Email" />
-                  <JFXButton fx:id="btn_phone" prefHeight="82.0" prefWidth="62.0" style="-fx-background-color: #9bc685;" text="Phone" />
+                  <JFXButton fx:id="btn_email" onAction="#inflateEmail" prefHeight="47.0" prefWidth="59.0" style="-fx-background-color: #9bc685;" text="Email" />
+                  <JFXButton fx:id="btn_phone" onAction="#inflatePhone" prefHeight="82.0" prefWidth="62.0" style="-fx-background-color: #9bc685;" text="Phone" />
                </children>
             </HBox>
             </children>

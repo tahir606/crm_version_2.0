@@ -1,11 +1,7 @@
 package objects;
 
-import JCode.FileDev;
 
 import javax.mail.Address;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 
 public class Email {
 

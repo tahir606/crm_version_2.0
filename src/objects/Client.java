@@ -1,9 +1,13 @@
 package objects;
 
+import client.newClient.newClientController;
+
 public class Client {
 
     private int Code, Type;
     private String Name, owner, Email, Phone, Addr, City, Country, Website, JoinDate;
+    private String[] emails = new String[newClientController.noOfFields],
+            phones = new String[newClientController.noOfFields];
 
     public Client() {
     }
@@ -59,6 +63,22 @@ public class Client {
 
     public void setPhone(String phone) {
         Phone = phone;
+    }
+
+    public String[] getEmails() {
+        return emails;
+    }
+
+    public void setEmails(String[] emails) {
+        this.emails = emails;
+    }
+
+    public String[] getPhones() {
+        return phones;
+    }
+
+    public void setPhones(String[] phones) {
+        this.phones = phones;
     }
 
     public String getAddr() {

@@ -2,14 +2,21 @@ package client.newClient;
 
 import JCode.Toast;
 import JCode.mySqlConn;
+import JCode.trayHelper;
 import com.jfoenix.controls.*;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
+import javafx.scene.control.TextArea;
+import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.VBox;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 import objects.Client;
 import objects.ESetting;
 import objects.Users;
@@ -27,9 +34,9 @@ public class newClientController implements Initializable {
     @FXML
     private JFXTextField txt_owner;
     @FXML
-    private JFXTextField txt_email;
+    private JFXButton btn_email;
     @FXML
-    private JFXTextField txt_phone;
+    private JFXButton btn_phone;
     @FXML
     private JFXTextField txt_website;
     @FXML
@@ -115,8 +122,8 @@ public class newClientController implements Initializable {
             txt_name.setText(newValue.getName());
 
         txt_owner.setText(newValue.getOwner());
-        txt_email.setText(newValue.getEmail());
-        txt_phone.setText(newValue.getPhone());
+//        txt_email.setText(newValue.getEmail());
+//        txt_phone.setText(newValue.getPhone());
         txt_website.setText(newValue.getWebsite());
         txt_addr.setText(newValue.getAddr());
         txt_city.setText(newValue.getCity());
@@ -131,8 +138,8 @@ public class newClientController implements Initializable {
     public void saveChanges(ActionEvent actionEvent) {
         String name = txt_name.getText(),
                 owner = txt_owner.getText(),
-                email = txt_email.getText(),
-                phone = txt_phone.getText(),
+//                email = txt_email.getText(),
+//                phone = txt_phone.getText(),
                 website = txt_website.getText(),
                 addr = txt_addr.getText(),
                 city = txt_city.getText(),
@@ -143,7 +150,7 @@ public class newClientController implements Initializable {
 
         int type = combo_type.getSelectionModel().getSelectedIndex() + 1;
 
-        if (name.equals("") || email.equals("") || phone.equals("") || city.equals("") || country.equals("")) {
+        if (name.equals("") || city.equals("") || country.equals("")) {
             Toast.makeText((Stage) btn_save.getScene().getWindow(), "Required Fields Are Empty");
             return;
         } else {
@@ -155,8 +162,8 @@ public class newClientController implements Initializable {
 
                 clientSel.setName(name);
                 clientSel.setOwner(owner);
-                clientSel.setEmail(email);
-                clientSel.setPhone(phone);
+//                clientSel.setEmail(email);
+//                clientSel.setPhone(phone);
                 clientSel.setWebsite(website);
                 clientSel.setAddr(addr);
                 clientSel.setCity(city);
@@ -178,5 +185,57 @@ public class newClientController implements Initializable {
             }
         }
 
+    }
+
+    public void inflateEmail(ActionEvent actionEvent) {
+        inflateBOX(1);
+    }
+
+    public void inflatePhone(ActionEvent actionEvent) {
+        inflateBOX(2);
+    }
+
+    public static int noOfFields = 5;
+
+    private static String[] Emails = new String[noOfFields];
+    private static String[] Phones = new String[noOfFields];
+
+    private void inflateBOX(int c) {
+        Stage stage = new Stage();
+        stage.initModality(Modality.APPLICATION_MODAL);
+        stage.initStyle(StageStyle.UTILITY);
+        String title = (c == 1) ? "Email" : "Phone";
+        stage.setTitle(title);
+        VBox pane = new VBox();
+        pane.setMinWidth(200);
+        for (int i = 0; i < noOfFields; i++) {
+            JFXTextField txt_data = new JFXTextField();
+            txt_data.setMinWidth(pane.getWidth());
+            pane.getChildren().add(txt_data);
+        }
+
+//        if (c == 1)         //Auto Reply
+//            area.setText(autoText);
+//        else if (c == 2)     //Disclaimer
+//            area.setText(discText);
+
+        stage.setScene(new Scene(pane));
+        trayHelper tray = new trayHelper();
+        tray.createIcon(stage);
+        Platform.setImplicitExit(true);
+
+        stage.setOnHiding(event -> {
+            if (c == 1) {           //Email
+                for (int i = 0; i < noOfFields; i++) {
+                    Emails[i] = ((JFXTextField) pane.getChildren().get(i)).getText();
+                }
+            } else if (c == 2) {    //Phone
+                for (int i = 0; i < noOfFields; i++) {
+                    Phones[i] = ((JFXTextField) pane.getChildren().get(i)).getText();
+                }
+            }
+        });
+
+        stage.show();
     }
 }
