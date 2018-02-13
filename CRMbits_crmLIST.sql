@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Feb 12, 2018 at 06:51 PM
+-- Generation Time: Feb 13, 2018 at 07:10 PM
 -- Server version: 10.1.24-MariaDB
 -- PHP Version: 7.1.6
 
@@ -22,13 +22,51 @@ SET time_zone = "+00:00";
 -- Database: `bits_crm`
 --
 
+DELIMITER $$
+--
+-- Functions
+--
+CREATE DEFINER=`root`@`localhost` FUNCTION `getConcatList` (`rootId` INT(11)) RETURNS VARCHAR(1000) CHARSET latin1 BEGIN
+DECLARE sParentList VARCHAR (1000) ;
+DECLARE sParentTemp VARCHAR(1000); 
+SET sParentTemp =CAST(rootId AS CHAR); 
+WHILE sParentTemp IS NOT NULL DO 
+IF (sParentList IS NOT NULL) THEN 
+SET sParentList = CONCAT(sParentTemp,'-',sParentList); 
+ELSE 
+SET sParentList = CONCAT(sParentTemp); 
+END IF; 
+SELECT GROUP_CONCAT(RCODE) INTO sParentTemp FROM Rights_chart WHERE UCODE = rootId; 
+END WHILE; 
+RETURN sParentList; 
+END$$
+
+CREATE DEFINER=`root`@`localhost` FUNCTION `hierarchy_sys_connect_by_path` (`delimiter` TEXT, `node` INT) RETURNS TEXT CHARSET latin1 READS SQL DATA
+BEGIN
+     DECLARE _path TEXT;
+ DECLARE _cpath TEXT;
+        DECLARE _id INT;
+    DECLARE EXIT HANDLER FOR NOT FOUND RETURN _path;
+    SET _id = COALESCE(node, @id);
+      SET _path = _id;
+    LOOP
+                SELECT  parent
+              INTO    _id
+         FROM    t_hierarchy
+         WHERE   id = _id
+                    AND COALESCE(id <> @start_with, TRUE);
+              SET _path = CONCAT(_id, delimiter, _path);
+  END LOOP;
+END$$
+
+DELIMITER ;
+
 -- --------------------------------------------------------
 
 --
 -- Table structure for table `email_settings`
 --
 
-DROP TABLE IF EXISTS `email_settings`;
 CREATE TABLE `email_settings` (
   `ECODE` int(11) NOT NULL,
   `HOST` varchar(500) NOT NULL,
@@ -54,7 +92,6 @@ INSERT INTO `email_settings` (`ECODE`, `HOST`, `EMAIL`, `PASS`, `FSPATH`, `AUTOC
 -- Table structure for table `email_store`
 --
 
-DROP TABLE IF EXISTS `email_store`;
 CREATE TABLE `email_store` (
   `EMNO` int(11) NOT NULL,
   `MSGNO` int(11) NOT NULL,
@@ -103,10 +140,52 @@ INSERT INTO `email_store` (`EMNO`, `MSGNO`, `SBJCT`, `TOADD`, `FRADD`, `EBODY`, 
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `rights_chart`
+--
+
+CREATE TABLE `rights_chart` (
+  `RCODE` int(11) NOT NULL,
+  `UCODE` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Dumping data for table `rights_chart`
+--
+
+INSERT INTO `rights_chart` (`RCODE`, `UCODE`) VALUES
+(1, 3),
+(2, 3),
+(1, 2),
+(2, 2),
+(1, 4);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `rights_list`
+--
+
+CREATE TABLE `rights_list` (
+  `RCODE` int(11) NOT NULL,
+  `RNAME` varchar(100) NOT NULL,
+  `FREZE` char(1) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Dumping data for table `rights_list`
+--
+
+INSERT INTO `rights_list` (`RCODE`, `RNAME`, `FREZE`) VALUES
+(1, 'Email Viewer', 'N'),
+(2, 'General Settings', 'N'),
+(3, 'Clients', 'N');
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `users`
 --
 
-DROP TABLE IF EXISTS `users`;
 CREATE TABLE `users` (
   `UCODE` int(11) NOT NULL,
   `FNAME` varchar(200) NOT NULL,
@@ -140,6 +219,13 @@ INSERT INTO `users` (`UCODE`, `FNAME`, `UNAME`, `Email`, `UPASS`, `NOTE`, `URIGH
 --
 ALTER TABLE `email_store`
   ADD PRIMARY KEY (`EMNO`);
+
+--
+-- Indexes for table `rights_list`
+--
+ALTER TABLE `rights_list`
+  ADD PRIMARY KEY (`RCODE`),
+  ADD UNIQUE KEY `RCODE` (`RCODE`);
 
 --
 -- Indexes for table `users`
