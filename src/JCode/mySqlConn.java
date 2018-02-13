@@ -38,7 +38,7 @@ public class mySqlConn {
         Network network = fHelper.getNetworkDetails();
         if (network == null)
             return;
-        URL = "jdbc:mysql://" + network.getHost() + ":" + network.getPort() + "/" + network.getDbname();
+        URL = "jdbc:mysql://" + network.getHost() + ":" + network.getPort() + "/" + network.getDbname() + "?allowMultiQueries=true";
         USER = network.getRoot();
         PASSWORD = network.getPass();
 
@@ -729,7 +729,6 @@ public class mySqlConn {
 
     public void insertClient(Client client) {
 
-
         String query = "INSERT INTO CLIENT_STORE(CL_ID,CL_NAME,CL_OWNER,CL_EMAIL,CL_PHONE,CL_ADDR,CL_CITY" +
                 ",CL_COUNTRY,CL_WEBSITE,CL_TYPE, CL_JOINDATE) " +
                 " SELECT IFNULL(max(CL_ID),0)+1,?,?,?,?,?,?,?,?,?,? from CLIENT_STORE";
@@ -755,7 +754,7 @@ public class mySqlConn {
 
             statement.executeUpdate();
 
-            statement.close();
+            EmailsPhoneInsertion(con, statement, client);
 
         } catch (SQLException e) {
             e.printStackTrace();
@@ -792,8 +791,8 @@ public class mySqlConn {
             statement.setInt(11, client.getCode());
 
             statement.executeUpdate();
-            statement.close();
 
+            EmailsPhoneInsertion(con, statement, client);
 
         } catch (SQLException e) {
             e.printStackTrace();
@@ -802,6 +801,48 @@ public class mySqlConn {
         }
 
 
+    }
+
+    private void EmailsPhoneInsertion(Connection con, PreparedStatement statement, Client client) {
+
+        String deleteEmails = "DELETE FROM EMAIL_LIST WHERE CL_ID = ?";
+
+        String emailList = "INSERT INTO EMAIL_LIST(EM_ID,EM_NAME,CL_ID) " +
+                "SELECT IFNULL(max(EM_ID),0)+1,?,? from EMAIL_LIST";
+
+        String phoneList = "INSERT INTO EMAIL_LIST(EM_ID,EM_NAME,CL_ID) " +
+                "SELECT IFNULL(max(EL_ID),0)+1,?,? from EMAIL_LIST";
+
+        statement = null;   //Deleting
+
+        try {
+
+            statement = con.prepareStatement(deleteEmails);
+            statement.setInt(1, client.getCode());
+            statement.executeUpdate();
+            System.out.println("Deleted Emails");
+            //Adding Emails
+            String[] emails = client.getEmails();
+            System.out.println("Printing emails");
+            System.out.println(emails.toString());
+
+            for (int i = 0; i < emails.length; i++) {   //Inserting Emailss
+                statement = null;
+
+                if (emails[i] == null)
+                    continue;
+
+                statement = con.prepareStatement(emailList);
+                statement.setString(1, emails[i]);
+                statement.setInt(2, client.getCode());
+                statement.executeUpdate();
+            }
+            if (statement != null)
+                statement.close();
+            doRelease(con);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
     public List<Client> getAllClients(String where) {
@@ -847,6 +888,10 @@ public class mySqlConn {
         }
 
         return allClients;
+    }
+
+    public String[] getClientEmails() {
+        
     }
 
     public List<String> getClientTypes() {

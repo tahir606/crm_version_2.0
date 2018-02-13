@@ -8,12 +8,15 @@ import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.TextArea;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
+import javafx.scene.paint.Paint;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
@@ -71,8 +74,6 @@ public class newClientController implements Initializable {
 
     private void init() {
 
-        System.out.println("Initing");
-
         combo_client.getItems().clear();
         clientList = sql.getAllClients(null);
         types = sql.getClientTypes();
@@ -96,6 +97,8 @@ public class newClientController implements Initializable {
         c.setCity("");
         c.setCountry("");
         c.setType(1);
+        c.setEmails(new String[noOfFields]);
+        c.setPhones(new String[noOfFields]);
 
         combo_client.getItems().add(c);
 
@@ -162,8 +165,8 @@ public class newClientController implements Initializable {
 
                 clientSel.setName(name);
                 clientSel.setOwner(owner);
-//                clientSel.setEmail(email);
-//                clientSel.setPhone(phone);
+//                clientSel.setEmails(Emails);
+//                clientSel.setPhones(Phones);
                 clientSel.setWebsite(website);
                 clientSel.setAddr(addr);
                 clientSel.setCity(city);
@@ -197,10 +200,11 @@ public class newClientController implements Initializable {
 
     public static int noOfFields = 5;
 
-    private static String[] Emails = new String[noOfFields];
-    private static String[] Phones = new String[noOfFields];
-
     private void inflateBOX(int c) {
+
+        String[] Emails = clientSel.getEmails();
+        String[] Phones = clientSel.getPhones();
+
         Stage stage = new Stage();
         stage.initModality(Modality.APPLICATION_MODAL);
         stage.initStyle(StageStyle.UTILITY);
@@ -211,13 +215,18 @@ public class newClientController implements Initializable {
         for (int i = 0; i < noOfFields; i++) {
             JFXTextField txt_data = new JFXTextField();
             txt_data.setMinWidth(pane.getWidth());
+            txt_data.setPadding(new Insets(2, 2, 2, 2));
+            txt_data.setFocusColor(Paint.valueOf("#006e0e"));
             pane.getChildren().add(txt_data);
         }
 
-//        if (c == 1)         //Auto Reply
-//            area.setText(autoText);
-//        else if (c == 2)     //Disclaimer
-//            area.setText(discText);
+        //On inflating
+        for (int i = 0; i < noOfFields; i++) {
+            if (c == 1)        //Email
+                ((JFXTextField) pane.getChildren().get(i)).setText(Emails[i]);
+            else if (c == 2)    //Phone
+                ((JFXTextField) pane.getChildren().get(i)).setText(Phones[i]);
+        }
 
         stage.setScene(new Scene(pane));
         trayHelper tray = new trayHelper();
@@ -225,15 +234,16 @@ public class newClientController implements Initializable {
         Platform.setImplicitExit(true);
 
         stage.setOnHiding(event -> {
-            if (c == 1) {           //Email
-                for (int i = 0; i < noOfFields; i++) {
+            for (int i = 0; i < noOfFields; i++) {
+                if (c == 1)        //Email
                     Emails[i] = ((JFXTextField) pane.getChildren().get(i)).getText();
-                }
-            } else if (c == 2) {    //Phone
-                for (int i = 0; i < noOfFields; i++) {
+                else if (c == 2)    //Phone
                     Phones[i] = ((JFXTextField) pane.getChildren().get(i)).getText();
-                }
             }
+            if (c == 1)
+                clientSel.setEmails(Emails);
+            else if (c == 2)
+                clientSel.setPhones(Phones);
         });
 
         stage.show();
