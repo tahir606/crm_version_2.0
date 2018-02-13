@@ -212,6 +212,7 @@ public class newClientController implements Initializable {
         stage.setTitle(title);
         VBox pane = new VBox();
         pane.setMinWidth(200);
+        pane.setMinHeight(130);
         for (int i = 0; i < noOfFields; i++) {
             JFXTextField txt_data = new JFXTextField();
             txt_data.setMinWidth(pane.getWidth());
@@ -235,10 +236,15 @@ public class newClientController implements Initializable {
 
         stage.setOnHiding(event -> {
             for (int i = 0; i < noOfFields; i++) {
-                if (c == 1)        //Email
-                    Emails[i] = ((JFXTextField) pane.getChildren().get(i)).getText();
-                else if (c == 2)    //Phone
-                    Phones[i] = ((JFXTextField) pane.getChildren().get(i)).getText();
+                String t = ((JFXTextField) pane.getChildren().get(i)).getText();
+                if (t != null) {
+                    if (!t.equals("")) {
+                        if (c == 1)        //Email
+                            Emails[i] = t;
+                        else if (c == 2)    //Phone
+                            Phones[i] = t;
+                    }
+                }
             }
             if (c == 1)
                 clientSel.setEmails(Emails);

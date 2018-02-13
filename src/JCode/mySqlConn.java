@@ -1,5 +1,6 @@
 package JCode;
 
+import client.newClient.newClientController;
 import javafx.application.Platform;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
@@ -807,28 +808,25 @@ public class mySqlConn {
 
         String deleteEmails = "DELETE FROM EMAIL_LIST WHERE CL_ID = ?";
 
+        String deletePhones = "DELETE FROM PHONE_LIST WHERE CL_ID = ?";
+
         String emailList = "INSERT INTO EMAIL_LIST(EM_ID,EM_NAME,CL_ID) " +
                 "SELECT IFNULL(max(EM_ID),0)+1,?,? from EMAIL_LIST";
 
-        String phoneList = "INSERT INTO EMAIL_LIST(EM_ID,EM_NAME,CL_ID) " +
-                "SELECT IFNULL(max(EL_ID),0)+1,?,? from EMAIL_LIST";
+        String phoneList = "INSERT INTO PHONE_LIST(PH_ID,PH_NUM,CL_ID) " +
+                "SELECT IFNULL(max(PH_ID),0)+1,?,? from PHONE_LIST";
 
-        statement = null;   //Deleting
 
         try {
-
+            statement = null;
             statement = con.prepareStatement(deleteEmails);
             statement.setInt(1, client.getCode());
             statement.executeUpdate();
-            System.out.println("Deleted Emails");
             //Adding Emails
             String[] emails = client.getEmails();
-            System.out.println("Printing emails");
-            System.out.println(emails.toString());
 
             for (int i = 0; i < emails.length; i++) {   //Inserting Emailss
                 statement = null;
-
                 if (emails[i] == null)
                     continue;
 
@@ -837,6 +835,26 @@ public class mySqlConn {
                 statement.setInt(2, client.getCode());
                 statement.executeUpdate();
             }
+
+            statement = null;
+            statement = con.prepareStatement(deletePhones);
+            statement.setInt(1, client.getCode());
+            statement.executeUpdate();
+
+            //Adding Phones
+            String[] phones = client.getPhones();
+
+            for (int i = 0; i < phones.length; i++) {   //Inserting Emailss
+                statement = null;
+                if (phones[i] == null)
+                    continue;
+
+                statement = con.prepareStatement(phoneList);
+                statement.setString(1, phones[i]);
+                statement.setInt(2, client.getCode());
+                statement.executeUpdate();
+            }
+
             if (statement != null)
                 statement.close();
             doRelease(con);
@@ -849,11 +867,15 @@ public class mySqlConn {
         String query = "SELECT CL_ID,CL_NAME,CL_OWNER,CL_EMAIL,CL_PHONE,CL_ADDR," +
                 "CL_CITY,CL_COUNTRY,CL_WEBSITE,CL_TYPE,CL_JOINDATE FROM CLIENT_STORE";
 
+
         if (where == null) {
             query = query + " ORDER BY CL_ID";
         } else {
             query = query + where;
         }
+
+        String emails = "SELECT EM_NAME FROM EMAIL_LIST WHERE CL_ID = ?";
+        String phones = "SELECT PH_NUM FROM PHONE_LIST WHERE CL_ID = ?";
 
         List<Client> allClients = new ArrayList<>();
 
@@ -879,6 +901,35 @@ public class mySqlConn {
                 client.setWebsite(set.getString("CL_WEBSITE"));
                 client.setType(set.getInt("CL_TYPE"));
                 client.setJoinDate(set.getString("CL_JOINDATE"));
+
+                //Get all Emails
+                PreparedStatement st = con.prepareStatement(emails);
+                st.setInt(1, client.getCode());
+                ResultSet setArray = st.executeQuery();
+
+                String[] dataArr = new String[newClientController.noOfFields];
+                int c = 0;
+                while (setArray.next()) {
+                    dataArr[c] = setArray.getString("EM_NAME");
+                    c++;
+                }
+                client.setEmails(dataArr);
+
+                //Get all Phone Numbers
+                st = null;
+                st = con.prepareStatement(phones);
+                st.setInt(1, client.getCode());
+                setArray = null;
+                setArray = st.executeQuery();
+
+                dataArr = new String[newClientController.noOfFields];
+                c = 0;
+                while (setArray.next()) {
+                    dataArr[c] = setArray.getString("PH_NUM");
+                    c++;
+                }
+                client.setPhones(dataArr);
+
                 allClients.add(client);
             }
 
@@ -890,9 +941,9 @@ public class mySqlConn {
         return allClients;
     }
 
-    public String[] getClientEmails() {
-        
-    }
+//    public String[] getClientEmails() {
+//
+//    }
 
     public List<String> getClientTypes() {
 
