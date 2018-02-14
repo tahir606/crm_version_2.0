@@ -43,11 +43,9 @@ public class settingsController implements Initializable {
 
     private void populateMenu() {
 
-        EventHandler myEmailEvent = event -> {
-            inflating("email/email.fxml", 1);
-        };
+        EventHandler myEmailEvent = event -> inflating("email/email.fxml", 1);
 
-        JFXButton emailSetting = new JFXButton("Email Settings");
+        JFXButton emailSetting = new JFXButton("Email");
         Image image = new Image(getClass().getResourceAsStream("/res/img/at.png"));
         emailSetting.setPrefSize(120, menu_hbox.getHeight() - 2);
         emailSetting.setOnAction(myEmailEvent);
@@ -56,11 +54,9 @@ public class settingsController implements Initializable {
 
         //---------------------------------------------------Split-----------
 
-        EventHandler myAdminEvent = event -> {
-            inflating("admin/admin.fxml", 2);
-        };
+        EventHandler myAdminEvent = event -> inflating("admin/admin.fxml", 2);
 
-        JFXButton adminSetting = new JFXButton("User Settings");
+        JFXButton adminSetting = new JFXButton("User");
         Image imageA = new Image(getClass().getResourceAsStream("/res/img/users.png"));
         adminSetting.setPrefSize(120, menu_hbox.getHeight() - 2);
         adminSetting.setOnAction(myAdminEvent);
@@ -69,11 +65,9 @@ public class settingsController implements Initializable {
 
         //---------------------------------------------------Split-----------
 
-        EventHandler myNetworkEvent = event -> {
-            inflating("network/networkSet.fxml", 3);
-        };
+        EventHandler myNetworkEvent = event -> inflating("network/networkSet.fxml", 3);
 
-        JFXButton networkSetting = new JFXButton("Network Settings");
+        JFXButton networkSetting = new JFXButton("Network");
         Image imageN = new Image(getClass().getResourceAsStream("/res/img/network.png"));
         networkSetting.setPrefSize(120, menu_hbox.getHeight() - 2);
         networkSetting.setOnAction(myNetworkEvent);

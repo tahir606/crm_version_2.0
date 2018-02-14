@@ -22,7 +22,6 @@
 }
 
 .btnMenu:hover {
-    -fx-background-color: #396042;
     -fx-scale-y: 1.12;
     -fx-scale-x: 1.12;
 }
