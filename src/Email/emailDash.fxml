@@ -81,7 +81,7 @@
         </AnchorPane>
     </left>
     <top>
-        <HBox fx:id="menu_email" prefHeight="28.0" prefWidth="945.0" styleClass="hbox_menu">
+        <HBox fx:id="menu_email" prefHeight="34.0" prefWidth="945.0" styleClass="hbox_menu">
             <children>
             </children>
         </HBox>

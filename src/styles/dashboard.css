@@ -15,8 +15,14 @@
     -fx-scale-x: 1.1;
 }
 
+.btnMenu {
+    -fx-text-fill: #ffffff;
+    -fx-font-size: 10pt;
+    -fx-font-weight: bold;
+}
+
 .btnMenu:hover {
-    -fx-background-color: #e8e8e8;
+    -fx-background-color: #396042;
     -fx-scale-y: 1.12;
     -fx-scale-x: 1.12;
 }
