@@ -52,7 +52,11 @@ public class EResponseController implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
 
-//        TextFields.bindAutoCompletion(txt_to, str);
+        String[] emails = EmailDashController.EMAILS_LIST;
+
+        TextFields.bindAutoCompletion(txt_to, emails);
+        TextFields.bindAutoCompletion(txt_cc, emails);
+        TextFields.bindAutoCompletion(txt_bcc, emails);
 
         txt_subject.setText(EmailDashController.subject);
         if (EmailDashController.ReplyForward == 'R') {

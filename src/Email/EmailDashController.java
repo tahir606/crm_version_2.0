@@ -105,8 +105,10 @@ public class EmailDashController implements Initializable {
     private static AnchorPane anchor_detailsF;
     private static AnchorPane anchor_bodyF;
 
+    public static String[] EMAILS_LIST;
 
     public EmailDashController() {
+
     }
 
     @Override
@@ -241,6 +243,9 @@ public class EmailDashController implements Initializable {
             combo_respond.getSelectionModel().select(0);
         });
 //        imgLoader.setVisible(false);
+
+        pullingEmails();
+
     }
 
     //OPENING RESPONSE STAGE
@@ -570,6 +575,13 @@ public class EmailDashController implements Initializable {
             } else
                 JClient.sendMessage("R");   //Function was made so that if ever this feature is not needed i can just
         }).start();
+
+    }
+
+    //Pulling all email IDs from database
+    public void pullingEmails() {
+
+        new Thread(() -> EMAILS_LIST = sql.getAllEmailIDs(null)).start();
 
     }
 }

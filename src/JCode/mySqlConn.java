@@ -975,6 +975,47 @@ public class mySqlConn {
         return null;
     }
 
+    public String[] getAllEmailIDs(String where) {
+        String query = "SELECT EM_NAME FROM EMAIL_LIST ";
+
+        if (where == null)
+            query = query + " ORDER BY EM_NAME";
+        else
+            query = query + where;
+
+        Connection con = null;
+        try {
+            con = getConnection();
+            PreparedStatement statement = con.prepareStatement(query);
+            ResultSet set = statement.executeQuery();
+            //-------------Creating Email-------------
+            if (!set.isBeforeFirst()) {
+                return null;
+            }
+
+            set.last();
+            int size = set.getRow();
+            set.beforeFirst();
+
+            String[] ems = new String[size];
+
+            int c = 0;
+            while (set.next()) {
+                ems[c] = set.getString("EM_NAME");
+                c++;
+            }
+
+            return ems;
+
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        } finally {
+            doRelease(con);
+        }
+
+        return null;
+    }
+
     public static boolean pingHost(String host, int port, int timeout) {
         try (Socket socket = new Socket()) {
             socket.connect(new InetSocketAddress(host, port), timeout);
@@ -999,7 +1040,8 @@ public class mySqlConn {
     private void doRelease(Connection con) {
 
         try {
-            con.close();
+            if (con != null)
+                con.close();
         } catch (SQLException e) {
             e.printStackTrace();
         }

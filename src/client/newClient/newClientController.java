@@ -235,21 +235,24 @@ public class newClientController implements Initializable {
         Platform.setImplicitExit(true);
 
         stage.setOnHiding(event -> {
+
+            String array[] = new String[noOfFields];
+
             for (int i = 0; i < noOfFields; i++) {
                 String t = ((JFXTextField) pane.getChildren().get(i)).getText();
                 if (t != null) {
                     if (!t.equals("")) {
                         if (c == 1)        //Email
-                            Emails[i] = t;
+                            array[i] = t;
                         else if (c == 2)    //Phone
-                            Phones[i] = t;
+                            array[i] = t;
                     }
                 }
             }
             if (c == 1)
-                clientSel.setEmails(Emails);
+                clientSel.setEmails(array);
             else if (c == 2)
-                clientSel.setPhones(Phones);
+                clientSel.setPhones(array);
         });
 
         stage.show();
