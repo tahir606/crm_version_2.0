@@ -47,7 +47,7 @@ public class settingsController implements Initializable {
 
         JFXButton emailSetting = new JFXButton("Email");
         Image image = new Image(getClass().getResourceAsStream("/res/img/at.png"));
-        emailSetting.setPrefSize(120, menu_hbox.getHeight() - 2);
+        emailSetting.setPrefSize(100, menu_hbox.getHeight());
         emailSetting.setOnAction(myEmailEvent);
         emailSetting.setGraphic(new ImageView(image));
         emailSetting.getStyleClass().add("btnMenu");
@@ -58,7 +58,7 @@ public class settingsController implements Initializable {
 
         JFXButton adminSetting = new JFXButton("User");
         Image imageA = new Image(getClass().getResourceAsStream("/res/img/users.png"));
-        adminSetting.setPrefSize(120, menu_hbox.getHeight() - 2);
+        adminSetting.setPrefSize(100, menu_hbox.getHeight());
         adminSetting.setOnAction(myAdminEvent);
         adminSetting.setGraphic(new ImageView(imageA));
         adminSetting.getStyleClass().add("btnMenu");
@@ -69,7 +69,7 @@ public class settingsController implements Initializable {
 
         JFXButton networkSetting = new JFXButton("Network");
         Image imageN = new Image(getClass().getResourceAsStream("/res/img/network.png"));
-        networkSetting.setPrefSize(120, menu_hbox.getHeight() - 2);
+        networkSetting.setPrefSize(100, menu_hbox.getHeight());
         networkSetting.setOnAction(myNetworkEvent);
         networkSetting.setGraphic(new ImageView(imageN));
         networkSetting.getStyleClass().add("btnMenu");

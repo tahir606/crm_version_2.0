@@ -7,7 +7,7 @@
 
 <BorderPane fx:id="main_pane" prefHeight="500.0" prefWidth="1100.0" stylesheets="@../styles/clients.css" xmlns="http://javafx.com/javafx/9" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.clientDashController">
     <top>
-        <HBox fx:id="menu_client" prefHeight="28.0" prefWidth="945.0" styleClass="hbox_menu">
+        <HBox fx:id="menu_client" prefHeight="34.0" prefWidth="945.0" styleClass="hbox_menu">
             <children>
             </children>
         </HBox>

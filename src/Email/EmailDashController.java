@@ -138,7 +138,7 @@ public class EmailDashController implements Initializable {
                 //1) Populating Top Menu
                 //  a) Creating and adding listeners to Buttons
                 JFXButton email = new JFXButton("New Email");
-                email.setMinSize(100, menu_email.getHeight() - 2);
+                email.setMinSize(100, menu_email.getHeight());
                 email.setGraphic(new ImageView(new Image(getClass().getResourceAsStream("/res/img/newmail.png"))));
                 email.getStyleClass().add("btnMenu");
                 email.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
@@ -151,7 +151,7 @@ public class EmailDashController implements Initializable {
                 });
 
                 JFXButton reload = new JFXButton("Refresh");
-                reload.setMinSize(100, menu_email.getHeight() - 2);
+                reload.setMinSize(100, menu_email.getHeight());
                 reload.setGraphic(new ImageView(new Image(getClass().getResourceAsStream("/res/img/refresh.png"))));
                 reload.getStyleClass().add("btnMenu");
                 reload.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
@@ -163,13 +163,13 @@ public class EmailDashController implements Initializable {
                 });
 
                 JFXButton filter = new JFXButton("Filters");
-                filter.setMinSize(120, menu_email.getHeight());
+                filter.setMinSize(100, menu_email.getHeight());
                 filter.setGraphic(new ImageView(new Image(getClass().getResourceAsStream("/res/img/filter.png"))));
                 filter.getStyleClass().add("btnMenu");
                 filter.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> inflateFilters());
 
                 JFXButton archive = new JFXButton("Move to Archive");
-                archive.setMinSize(120, menu_email.getHeight());
+                archive.setMinSize(1, menu_email.getHeight());
                 archive.setGraphic(new ImageView(new Image(getClass().getResourceAsStream("/res/img/archive.png"))));
                 archive.getStyleClass().add("btnMenu");
                 archive.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> inflateArchive());

@@ -863,6 +863,24 @@ public class mySqlConn {
         }
     }
 
+    public int getNoClients() {
+        String query = "SELECT COUNT(CL_ID) FROM CLIENT_STORE WHERE CL_TYPE = 1";
+
+        try {
+            Connection con = getConnection();
+            PreparedStatement statement = con.prepareStatement(query);
+            ResultSet set = statement.executeQuery();
+
+            while (set.next())
+                return set.getInt(1);
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return 0;
+    }
+
     public List<Client> getAllClients(String where) {
         String query = "SELECT CL_ID,CL_NAME,CL_OWNER,CL_EMAIL,CL_PHONE,CL_ADDR," +
                 "CL_CITY,CL_COUNTRY,CL_WEBSITE,CL_TYPE,CL_JOINDATE FROM CLIENT_STORE";

@@ -1,3 +1,10 @@
+.hbox_menu {
+    -fx-background-color: #396042;
+    -fx-text-fill: #ffffff;
+    -fx-font-size: 8pt;
+    -fx-font-weight: 900;
+}
+
 .dashboardButton {
     -fx-background-size: 25px 25px;
     -fx-background-repeat: no-repeat;
@@ -17,11 +24,12 @@
 
 .btnMenu {
     -fx-text-fill: #ffffff;
-    -fx-font-size: 10pt;
+    -fx-font-size: 10.5pt;
     -fx-font-weight: bold;
 }
 
 .btnMenu:hover {
+    -fx-background-color: #699673;
     -fx-scale-y: 1.12;
     -fx-scale-x: 1.12;
 }
