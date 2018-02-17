@@ -36,5 +36,6 @@
 
 
 .background {
-    -fx-background-color: #e8fcde;
+/* e8fcde */
+    -fx-background-color: #fcfcfc;
 }

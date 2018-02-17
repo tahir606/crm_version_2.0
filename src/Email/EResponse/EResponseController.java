@@ -10,8 +10,12 @@ import javafx.scene.control.*;
 import javafx.scene.text.Text;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
+import objects.Email;
 import org.controlsfx.control.textfield.TextFields;
 
+import javax.mail.Address;
+import javax.mail.internet.AddressException;
+import javax.mail.internet.InternetAddress;
 import java.io.File;
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -108,11 +112,39 @@ public class EResponseController implements Initializable {
             }
         }
 
-        if (file == null) {
-            helper.sendEmail(Subject, Email, cc, bcc, Body, Disclaimer, "", null);
-        } else {
-            helper.sendEmail(Subject, Email, cc, bcc, Body, Disclaimer, file.getAbsolutePath(), null);
+
+        objects.Email em = new Email();
+
+        try {
+            Address to = new InternetAddress(Email);
+            em.setToAddress(new Address[]{to});
+        } catch (AddressException e) {
+            e.printStackTrace();
         }
+
+        if (!cc.equals("")) {
+            try {
+                Address ccAdd = new InternetAddress(cc);
+                em.setCcAddress(new Address[]{ccAdd});
+            } catch (AddressException e) {
+                e.printStackTrace();
+            }
+        } else if (!bcc.equals("")) {
+            try {
+                Address bccAdd = new InternetAddress(bcc);
+                em.setBccAddress(new Address[]{bccAdd});
+            } catch (AddressException e) {
+                e.printStackTrace();
+            }
+        }
+
+        em.setSubject(Subject);
+        em.setBody(Body);
+        em.setDisclaimer(Disclaimer);
+        if (file != null)
+            em.setAttch(file.getAbsolutePath());
+
+        helper.sendEmail(em, null);
 
         Stage stage = (Stage) btn_Send.getScene().getWindow();
         stage.close();

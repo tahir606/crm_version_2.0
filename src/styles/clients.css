@@ -3,3 +3,15 @@
     -fx-text-fill: #002b05;
     -fx-font-weight: bold;
 }
+
+
+/*.btnMenu {
+    -fx-font-size: 9pt;
+    -fx-font-weight: bold;
+}
+
+.btnMenu:hover {
+   /* -fx-background-color: #699673;
+    -fx-scale-y: 1.12;
+    -fx-scale-x: 1.12;
+}*/

@@ -445,6 +445,8 @@ public class mySqlConn {
 
     }
 
+    public static String autoReplySubject = "Burhani Customer Support - Ticket Number: ";
+
     private void autoReply(Connection con, Email email, Message message) {
 
         String queryEMNO = "SELECT emno FROM email_store" +
@@ -467,10 +469,12 @@ public class mySqlConn {
             }
             String body = "The Ticket Number Issued to you is: " + emno + "\n" + eSetting.getAutotext();
 
-            emailControl.sendEmail("Burhani Customer Support - Ticket Number: " + emno, email.getFromAddress()[0]
-                            .toString(), "",
-                    "",
-                    body, "", "", message);
+            Email e = new Email();
+            e.setSubject(autoReplySubject + emno);
+            e.setToAddress(new Address[]{email.getFromAddress()[0]});
+            e.setBody(body);
+
+            emailControl.sendEmail(e, message);
             statementEMNO.close();
             set.close();
 
@@ -579,6 +583,139 @@ public class mySqlConn {
 
         return allEmails;
     }
+
+    public void insertEmailSent(Email email) {
+        String query = "INSERT INTO EMAIL_SENT(ES_NO,ES_TO,ES_FR,ES_CC,ES_BCC,ES_SUBJ,ES_BODY,ES_DATE,ES_ATTCH" +
+                ") SELECT IFNULL(max(ES_NO),0)+1,?,?,?,?,?,?,?,? from EMAIL_SENT";
+
+        Connection con = getConnection();
+        PreparedStatement statement = null;
+
+        System.out.println(email.getTimestamp());
+
+        try {
+            statement = con.prepareStatement(query);
+            statement.setString(1, email.getToAddressString());
+            statement.setString(2, email.getFromAddressString());
+            statement.setString(3, email.getCcAddressString());
+            statement.setString(4, email.getBccAddressString());
+            statement.setString(5, email.getSubject());
+            statement.setString(6, email.getBody());
+            statement.setString(7, email.getTimestamp());
+            statement.setString(8, email.getAttch());
+            statement.executeUpdate();
+
+            statement.close();
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public List<Email> readAllEmailsSent(String where) {
+
+        String query = "SELECT ES_NO,ES_SUBJ,ES_FR,ES_TO,ES_CC,ES_BCC,ES_DATE,ES_BODY,ES_ATTCH FROM " +
+                "EMAIL_SENT";
+
+        if (where == null) {
+            query = query + " ORDER BY ES_NO DESC";
+        } else {
+            query = query + where;
+        }
+
+        List<Email> allEmails = new ArrayList<>();
+
+        try {
+            Connection con = getConnection();
+            PreparedStatement statement = con.prepareStatement(query);
+            System.out.println(query);
+            ResultSet set = statement.executeQuery();
+            //-------------Creating Email-------------
+            if (!set.isBeforeFirst()) {
+                return null;
+            }
+
+            while (set.next()) {
+                Email email = new Email();
+                email.setEmailNo(set.getInt("ES_NO"));
+                email.setSubject(set.getString("ES_SUBJ"));
+                email.setTimestamp(set.getString("ES_DATE"));
+
+                // Note, MM is months, not mm
+                DateFormat inputFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.S");
+                DateFormat outputFormat = new SimpleDateFormat("dd-MMM-yyyy HH:mm a");
+
+                Date date = null;
+                try {
+                    date = inputFormat.parse(email.getTimestamp());
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
+                String outputText = outputFormat.format(date);
+                email.setTimeFormatted(outputText);
+
+                email.setBody(set.getString("ES_BODY"));
+                email.setAttch(set.getString("ES_ATTCH"));
+
+                //------From Address
+                String[] from = set.getString("ES_FR").split("\\^");
+                Address[] fromAddress = new Address[from.length];
+                for (int i = 1, j = 0; i < from.length; i++, j++) {
+                    try {
+                        fromAddress[j] = new InternetAddress(from[i]);
+                    } catch (AddressException e) {
+                        e.printStackTrace();
+                    }
+                }
+                email.setFromAddress(fromAddress);
+
+                //-----To Address
+                String[] to = set.getString("ES_TO").split("\\^");
+                Address[] toAddress = new Address[to.length];
+                for (int i = 1, j = 0; i < to.length; i++, j++) {
+                    try {
+                        toAddress[j] = new InternetAddress(to[i]);
+                    } catch (AddressException e) {
+                        e.printStackTrace();
+                    }
+                }
+                email.setToAddress(toAddress);
+
+                //----- CC Address
+                String[] cc = set.getString("ES_CC").split("\\^");
+                Address[] ccAddress = new Address[cc.length];
+                for (int i = 1, j = 0; i < cc.length; i++, j++) {
+                    try {
+                        ccAddress[j] = new InternetAddress(cc[i]);
+                    } catch (AddressException e) {
+                        e.printStackTrace();
+                    }
+                }
+                email.setCcAddress(ccAddress);
+
+                //----- CC Address
+                String[] bcc = set.getString("ES_BCC").split("\\^");
+                Address[] bccAddress = new Address[bcc.length];
+                for (int i = 1, j = 0; i < bcc.length; i++, j++) {
+                    try {
+                        bccAddress[j] = new InternetAddress(bcc[i]);
+                    } catch (AddressException e) {
+                        e.printStackTrace();
+                    }
+                }
+                email.setBccAddress(bccAddress);
+
+                allEmails.add(email);
+            }
+
+            doRelease(con);
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+
+        return allEmails;
+    }
+
 
     public void lockEmail(Email email, int op) {        //0 Unlock 1 Lock
 

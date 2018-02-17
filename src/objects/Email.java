@@ -6,8 +6,8 @@ import javax.mail.Address;
 public class Email {
 
     private int EmailNo, msgNo, lockd;
-    private Address[] toAddress, fromAddress, ccAddress;
-    private String subject, timestamp, timeFormatted, body, attch, lockedByName;
+    private Address[] toAddress, fromAddress, ccAddress, bccAddress;
+    private String subject, timestamp, timeFormatted, body, attch, lockedByName, disclaimer;
     private char solvFlag, isAttch;
     private boolean freze;
 
@@ -103,6 +103,26 @@ public class Email {
         this.ccAddress = ccAddress;
     }
 
+    public Address[] getBccAddress() {
+        return bccAddress;
+    }
+
+    public String getBccAddressString() {
+        String s = "";
+        try {
+            for (Address ad : bccAddress) {
+                s = s + "^" + ad;
+            }
+        } catch (NullPointerException e) {
+            return "";
+        }
+        return s;
+    }
+
+    public void setBccAddress(Address[] bccAddress) {
+        this.bccAddress = bccAddress;
+    }
+
     public String getSubject() {
         return subject;
     }
@@ -133,6 +153,14 @@ public class Email {
 
     public void setBody(String body) {
         this.body = body;
+    }
+
+    public String getDisclaimer() {
+        return disclaimer;
+    }
+
+    public void setDisclaimer(String disclaimer) {
+        this.disclaimer = disclaimer;
     }
 
     public String getAttch() {

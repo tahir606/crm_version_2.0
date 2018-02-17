@@ -17,6 +17,8 @@ import javax.mail.search.FlagTerm;
 import javax.mail.search.SearchTerm;
 import java.awt.*;
 import java.net.*;
+import java.text.DateFormat;
+import java.text.ParseException;
 import java.util.List;
 import java.io.*;
 import java.text.SimpleDateFormat;
@@ -200,19 +202,18 @@ public class emailControl {
 
     //-----------------Email Send
 
-    public static void sendEmail(String Subject, String Email, String cc, String bcc, String Body, String Disclaimer,
-                                 String Attachment, Message messageReply) {
+    public static void sendEmail(Email email, Message messageReply) {
 
         String perDisc = null;
 
-        if (Disclaimer == null) {
-            Disclaimer = "";
+        if (email.getDisclaimer() == null) {
+            email.setDisclaimer("");
         }
 
         if (ESETTING.isDisc())
-            perDisc = Disclaimer + "\n" + ESETTING.getDisctext();
+            perDisc = email.getDisclaimer() + "\n" + ESETTING.getDisctext();
         else
-            perDisc = Disclaimer;
+            perDisc = email.getDisclaimer();
 
         Properties props = new Properties();
         props.put("mail.transport.protocol", "smtp");
@@ -221,9 +222,18 @@ public class emailControl {
         props.put("mail.smtp.host", ESETTING.getHost());
         props.put("mail.smtp.port", "26");
 
+        InternetAddress ia = null;
+        try {
+            ia = new InternetAddress(ESETTING.getEmail());
+        } catch (AddressException e) {
+            e.printStackTrace();
+        }
+
+        email.setFromAddress(new Address[]{ia});
+
         InternetAddress emailAddr;
         try {
-            emailAddr = new InternetAddress(Email);
+            emailAddr = new InternetAddress(email.getFromAddress()[0].toString());
             emailAddr.validate();
         } catch (AddressException ex) {
             System.out.println("Invalid Email ID");
@@ -245,13 +255,13 @@ public class emailControl {
 
 
             // Set Subject: header field
-            message.setSubject(Subject);
+            message.setSubject(email.getSubject());
 
             // Create the message part
             BodyPart messageBodyPart = new MimeBodyPart();
 
             // Now set the actual message
-            messageBodyPart.setText(Body + "\n\n" + perDisc);
+            messageBodyPart.setText(email.getBody() + "\n\n" + perDisc);
 
             // Create a multipar message
             Multipart multipart = new MimeMultipart();
@@ -259,19 +269,23 @@ public class emailControl {
             // Set text message part
             multipart.addBodyPart(messageBodyPart);
 
-            if (!Attachment.equals("")) {
+//            if (email == null)
+//                return;
+
+            if (email.getAttch() == null) {
+            } else if (!email.getAttch().equals("")) {
                 // Part two is attachment
                 messageBodyPart = new MimeBodyPart();
 
                 BodyPart attachment = new MimeBodyPart();
 
-                File s = new File(Attachment);
+                File s = new File(email.getAttch());
 
                 if (s.exists()) {
-                    DataSource source = new FileDataSource(Attachment);
+                    DataSource source = new FileDataSource(email.getAttch());
                     attachment.setDataHandler(new DataHandler(source));
 
-                    attachment.setFileName(Attachment);
+                    attachment.setFileName(email.getAttch());
                     //System.out.println(Attachment);
 
                 } else {
@@ -288,21 +302,28 @@ public class emailControl {
             message.saveChanges();
 
             //message.setText(multipart);
-            message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(Email));
-            if (!cc.equals(""))
-                message.setRecipients(Message.RecipientType.CC, InternetAddress.parse(cc));
-            if (!bcc.equals(""))
-                message.setRecipients(Message.RecipientType.BCC, InternetAddress.parse(bcc));
+            message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(email.getToAddress()[0].toString()));
+            if (email.getCcAddress() == null) { //Just to check if its null
+            } else if (!email.getCcAddress()[0].toString().equals(""))
+                message.setRecipients(Message.RecipientType.CC, InternetAddress.parse(email.getCcAddress()[0].toString()));
+            if (email.getBccAddress() == null) { //Just to check if its null
+            } else if (!email.getBccAddress()[0].toString().equals(""))
+                message.setRecipients(Message.RecipientType.BCC, InternetAddress.parse(email.getBccAddress()[0].toString()));
 
             //Put Message Reply
             if (messageReply != null) {
                 message.setReplyTo(messageReply.getReplyTo());
             }
 
+            String timeStamp = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.S").format(Calendar.getInstance().getTime());
+            email.setTimestamp(timeStamp);
+
             new Thread(() -> {
                 try {
                     Transport.send(message);
-                    //System.out.println("Sent E-Mail to: " + Email);
+                    System.out.println("Sent E-Mail to: " + email.getToAddress()[0].toString());
+                    if (!message.getSubject().contains(mySqlConn.autoReplySubject))
+                        sqlConn.insertEmailSent(email);
                 } catch (MessagingException ex) {
                     ex.printStackTrace();
                     trayHelper tray = new trayHelper();
