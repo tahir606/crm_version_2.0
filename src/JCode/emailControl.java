@@ -139,7 +139,9 @@ public class emailControl {
             }
         }
 
-        SimpleDateFormat dt = new SimpleDateFormat("yyyyy-MM-dd hh:mm:ss");
+        System.out.println(message.getSentDate());
+        SimpleDateFormat dt = new SimpleDateFormat("yyyyy-MM-dd HH:mm:ss.S");
+        System.out.println(dt.format(message.getSentDate()));
 
         //-------------------------------------Creating Email--------------------------------
         email.setMsgNo(message.getMessageNumber());

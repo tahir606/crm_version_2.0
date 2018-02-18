@@ -516,7 +516,7 @@ public class mySqlConn {
 
                 // Note, MM is months, not mm
                 DateFormat inputFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.S");
-                DateFormat outputFormat = new SimpleDateFormat("dd-MMM-yyyy HH:mm a");
+                DateFormat outputFormat = new SimpleDateFormat("dd-MMM-yyyy hh:mm a");
 
                 Date date = null;
                 try {
@@ -643,7 +643,7 @@ public class mySqlConn {
 
                 // Note, MM is months, not mm
                 DateFormat inputFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.S");
-                DateFormat outputFormat = new SimpleDateFormat("dd-MMM-yyyy HH:mm a");
+                DateFormat outputFormat = new SimpleDateFormat("dd-MMM-yyyy hh:mm a");
 
                 Date date = null;
                 try {

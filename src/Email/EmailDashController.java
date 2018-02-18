@@ -174,8 +174,14 @@ public class EmailDashController implements Initializable {
                 archive.getStyleClass().add("btnMenu");
                 archive.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> inflateArchive());
 
+                JFXButton sentMail = new JFXButton("Sent Mail");
+                sentMail.setMinSize(1, menu_email.getHeight());
+                sentMail.setGraphic(new ImageView(new Image(getClass().getResourceAsStream("/res/img/sentmail.png"))));
+                sentMail.getStyleClass().add("btnMenu");
+                sentMail.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> inflatesentMail());
 
-                Platform.runLater(() -> menu_email.getChildren().addAll(email, reload, filter, archive));
+
+                Platform.runLater(() -> menu_email.getChildren().addAll(email, reload, filter, archive, sentMail));
 
 
             }
@@ -286,7 +292,7 @@ public class EmailDashController implements Initializable {
         }
     }
 
-    //OPENING THE FILTER
+    //OPENING THE Archive
     private void inflateArchive() {
         try {
             FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("Archive/archive.fxml"));
@@ -295,6 +301,25 @@ public class EmailDashController implements Initializable {
             stage2.initModality(Modality.APPLICATION_MODAL);
             stage2.initStyle(StageStyle.UTILITY);
             stage2.setTitle("Archive");
+            stage2.setScene(new Scene(root1));
+            trayHelper tray = new trayHelper();
+            tray.createIcon(stage2);
+            Platform.setImplicitExit(true);
+            stage2.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    //OPENING THE Archive
+    private void inflatesentMail() {
+        try {
+            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("SentMail/sent.fxml"));
+            Parent root1 = (Parent) fxmlLoader.load();
+            Stage stage2 = new Stage();
+            stage2.initModality(Modality.APPLICATION_MODAL);
+            stage2.initStyle(StageStyle.UTILITY);
+            stage2.setTitle("Sent Mail");
             stage2.setScene(new Scene(root1));
             trayHelper tray = new trayHelper();
             tray.createIcon(stage2);
