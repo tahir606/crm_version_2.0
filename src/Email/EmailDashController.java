@@ -72,6 +72,8 @@ public class EmailDashController implements Initializable {
     private JFXComboBox<String> combo_respond;
 
     @FXML
+    private VBox category_box;
+    @FXML
     private VBox vbox_from;
     @FXML
     private VBox vbox_cc;
@@ -127,6 +129,8 @@ public class EmailDashController implements Initializable {
         eCon = new emailControl();
 
         user = fHelper.ReadUserDetails();
+
+        populateCategoryBoxes();
 
         loadEmails(); //Loading Emails into the list
 
@@ -252,6 +256,36 @@ public class EmailDashController implements Initializable {
 
         pullingEmails();
 
+    }
+
+    private void populateCategoryBoxes() {
+
+        JFXButton allMail = new JFXButton("All Mails");
+        allMail.setMinHeight(50);
+        allMail.setMinWidth(60);
+//        allMail.setStyle("-fx-background-color: #000000;");
+//        sentMail.setGraphic(new ImageView(new Image(getClass().getResourceAsStream("/res/img/sentmail.png"))));
+//        allMail.getStyleClass().add("btnMenu");
+        allMail.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> inflatesentMail());
+
+        JFXButton tickets = new JFXButton("Tickets");
+        tickets.setMinHeight(50);
+        tickets.setMinWidth(60);
+//        allMail.setStyle("-fx-background-color: #000000;");
+//        sentMail.setGraphic(new ImageView(new Image(getClass().getResourceAsStream("/res/img/sentmail.png"))));
+//        allMail.getStyleClass().add("btnMenu");
+        tickets.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> inflatesentMail());
+
+
+        JFXButton sentMail = new JFXButton("Sent Mail");
+        sentMail.setMinHeight(50);
+        sentMail.setMinWidth(60);
+//        allMail.setStyle("-fx-background-color: #000000;");
+//        sentMail.setGraphic(new ImageView(new Image(getClass().getResourceAsStream("/res/img/sentmail.png"))));
+//        allMail.getStyleClass().add("btnMenu");
+        sentMail.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> inflatesentMail());
+
+        category_box.getChildren().addAll(allMail, tickets, sentMail);
     }
 
     //OPENING RESPONSE STAGE
