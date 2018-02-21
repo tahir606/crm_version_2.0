@@ -585,8 +585,8 @@ public class mySqlConn {
     }
 
     public void insertEmailSent(Email email) {
-        String query = "INSERT INTO EMAIL_SENT(ES_NO,ES_TO,ES_FR,ES_CC,ES_BCC,ES_SUBJ,ES_BODY,ES_DATE,ES_ATTCH" +
-                ") SELECT IFNULL(max(ES_NO),0)+1,?,?,?,?,?,?,?,? from EMAIL_SENT";
+        String query = "INSERT INTO EMAIL_SENT(EMNO,SBJCT,FRADD,TOADD,CCADD,BCCADD,TSTMP,EBODY,ATTCH,UCODE,FREZE" +
+                ") SELECT IFNULL(max(EMNO),0)+1,?,?,?,?,?,?,?,?,?,? from EMAIL_SENT";
 
         Connection con = getConnection();
         PreparedStatement statement = null;
@@ -595,14 +595,16 @@ public class mySqlConn {
 
         try {
             statement = con.prepareStatement(query);
-            statement.setString(1, email.getToAddressString());
+            statement.setString(1, email.getSubject());
             statement.setString(2, email.getFromAddressString());
-            statement.setString(3, email.getCcAddressString());
-            statement.setString(4, email.getBccAddressString());
-            statement.setString(5, email.getSubject());
-            statement.setString(6, email.getBody());
-            statement.setString(7, email.getTimestamp());
+            statement.setString(3, email.getToAddressString());
+            statement.setString(4, email.getCcAddressString());
+            statement.setString(5, email.getBccAddressString());
+            statement.setString(6, email.getTimestamp());
+            statement.setString(7, email.getBody());
             statement.setString(8, email.getAttch());
+            statement.setInt(9, user.getUCODE());
+            statement.setBoolean(10, false);
             statement.executeUpdate();
 
             statement.close();
@@ -614,11 +616,11 @@ public class mySqlConn {
 
     public List<Email> readAllEmailsSent(String where) {
 
-        String query = "SELECT ES_NO,ES_SUBJ,ES_FR,ES_TO,ES_CC,ES_BCC,ES_DATE,ES_BODY,ES_ATTCH FROM " +
-                "EMAIL_SENT";
+        String query = "SELECT EMNO,SBJCT,FRADD,TOADD,CCADD,BCCADD,TSTMP,EBODY,ATTCH,U.FNAME FROM EMAIL_SENT E, users" +
+                " U WHERE E.UCODE = U.UCODE";
 
         if (where == null) {
-            query = query + " ORDER BY ES_NO DESC";
+            query = query + " ORDER BY EMNO DESC";
         } else {
             query = query + where;
         }
@@ -637,9 +639,9 @@ public class mySqlConn {
 
             while (set.next()) {
                 Email email = new Email();
-                email.setEmailNo(set.getInt("ES_NO"));
-                email.setSubject(set.getString("ES_SUBJ"));
-                email.setTimestamp(set.getString("ES_DATE"));
+                email.setEmailNo(set.getInt("EMNO"));
+                email.setSubject(set.getString("SBJCT"));
+                email.setTimestamp(set.getString("TSTMP"));
 
                 // Note, MM is months, not mm
                 DateFormat inputFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.S");
@@ -654,11 +656,11 @@ public class mySqlConn {
                 String outputText = outputFormat.format(date);
                 email.setTimeFormatted(outputText);
 
-                email.setBody(set.getString("ES_BODY"));
-                email.setAttch(set.getString("ES_ATTCH"));
+                email.setBody(set.getString("EBODY"));
+                email.setAttch(set.getString("ATTCH"));
 
                 //------From Address
-                String[] from = set.getString("ES_FR").split("\\^");
+                String[] from = set.getString("FRADD").split("\\^");
                 Address[] fromAddress = new Address[from.length];
                 for (int i = 1, j = 0; i < from.length; i++, j++) {
                     try {
@@ -670,7 +672,7 @@ public class mySqlConn {
                 email.setFromAddress(fromAddress);
 
                 //-----To Address
-                String[] to = set.getString("ES_TO").split("\\^");
+                String[] to = set.getString("TOADD").split("\\^");
                 Address[] toAddress = new Address[to.length];
                 for (int i = 1, j = 0; i < to.length; i++, j++) {
                     try {
@@ -682,7 +684,7 @@ public class mySqlConn {
                 email.setToAddress(toAddress);
 
                 //----- CC Address
-                String[] cc = set.getString("ES_CC").split("\\^");
+                String[] cc = set.getString("CCADD").split("\\^");
                 Address[] ccAddress = new Address[cc.length];
                 for (int i = 1, j = 0; i < cc.length; i++, j++) {
                     try {
@@ -694,7 +696,7 @@ public class mySqlConn {
                 email.setCcAddress(ccAddress);
 
                 //----- CC Address
-                String[] bcc = set.getString("ES_BCC").split("\\^");
+                String[] bcc = set.getString("BCCADD").split("\\^");
                 Address[] bccAddress = new Address[bcc.length];
                 for (int i = 1, j = 0; i < bcc.length; i++, j++) {
                     try {
@@ -704,6 +706,7 @@ public class mySqlConn {
                     }
                 }
                 email.setBccAddress(bccAddress);
+                email.setUser(set.getString("FNAME"));
 
                 allEmails.add(email);
             }

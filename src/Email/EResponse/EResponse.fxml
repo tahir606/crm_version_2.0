@@ -7,27 +7,22 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Text?>
 
-<AnchorPane id="AnchorPane" prefHeight="455.0" prefWidth="486.0" stylesheets="@../../styles/eresponse.css"
-            xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/9"
-            fx:controller="Email.EResponse.EResponseController">
+<AnchorPane id="AnchorPane" prefHeight="455.0" prefWidth="486.0" stylesheets="@../../styles/eresponse.css" xmlns="http://javafx.com/javafx/9" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Email.EResponse.EResponseController">
     <children>
-        <JFXTextField fx:id="txt_to" layoutX="66.0" layoutY="14.0" prefHeight="25.0" prefWidth="298.0"/>
-        <Label layoutX="10.0" layoutY="19.0" text="To:"/>
-        <JFXTextField fx:id="txt_cc" layoutX="66.0" layoutY="47.0" prefHeight="25.0" prefWidth="298.0"/>
-        <Label layoutX="10.0" layoutY="52.0" text="CC:"/>
-        <JFXTextField fx:id="txt_bcc" layoutX="66.0" layoutY="85.0" prefHeight="25.0" prefWidth="298.0"/>
-        <Label layoutX="10.0" layoutY="90.0" text="BCC:"/>
-        <JFXTextField fx:id="txt_subject" layoutX="66.0" layoutY="170.0" prefHeight="25.0" prefWidth="298.0"/>
-        <Text layoutX="10.0" layoutY="187.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Subject:"/>
-        <Text layoutX="10.0" layoutY="307.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Body:"/>
+        <JFXTextField fx:id="txt_to" layoutX="66.0" layoutY="14.0" prefHeight="25.0" prefWidth="298.0" />
+        <Label layoutX="10.0" layoutY="19.0" text="To:" />
+        <JFXTextField fx:id="txt_cc" layoutX="66.0" layoutY="47.0" prefHeight="25.0" prefWidth="298.0" />
+        <Label layoutX="10.0" layoutY="52.0" text="CC:" />
+        <JFXTextField fx:id="txt_bcc" layoutX="66.0" layoutY="85.0" prefHeight="25.0" prefWidth="298.0" />
+        <Label layoutX="10.0" layoutY="90.0" text="BCC:" />
+        <JFXTextField fx:id="txt_subject" layoutX="66.0" layoutY="170.0" prefHeight="25.0" prefWidth="298.0" />
+        <Text layoutX="10.0" layoutY="187.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Subject:" />
+        <Text layoutX="10.0" layoutY="307.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Body:" />
         <!--<JFXTextArea fx:id="txt_body" layoutX="66.0" layoutY="271.0" prefHeight="157.0" prefWidth="298.0"/>-->
-        <TextArea fx:id="txt_body" layoutX="66.0" layoutY="271.0" prefHeight="157.0" prefWidth="298.0"/>
-        <JFXButton fx:id="btn_attach" buttonType="RAISED" layoutX="394.0" layoutY="216.0" mnemonicParsing="false"
-                   onAction="#btnAttachClick" prefHeight="43.0" prefWidth="68.0" text="Attach"/>
-        <JFXButton fx:id="btn_Send" buttonType="RAISED" layoutX="394.0" layoutY="378.0" mnemonicParsing="false"
-                   onAction="#btnSendClick" prefHeight="43.0" prefWidth="68.0" text="Send"/>
-        <Text fx:id="lbl_attach" layoutX="10.0" layoutY="226.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Attach:"/>
-        <JFXTextField fx:id="txt_attach" editable="false" layoutX="66.0" layoutY="209.0" prefHeight="25.0"
-                      prefWidth="298.0"/>
+        <TextArea fx:id="txt_body" layoutX="66.0" layoutY="271.0" prefHeight="157.0" prefWidth="298.0" wrapText="true" />
+        <JFXButton fx:id="btn_attach" buttonType="RAISED" layoutX="394.0" layoutY="216.0" mnemonicParsing="false" onAction="#btnAttachClick" prefHeight="43.0" prefWidth="68.0" text="Attach" />
+        <JFXButton fx:id="btn_Send" buttonType="RAISED" layoutX="394.0" layoutY="378.0" mnemonicParsing="false" onAction="#btnSendClick" prefHeight="43.0" prefWidth="68.0" text="Send" />
+        <Text fx:id="lbl_attach" layoutX="10.0" layoutY="226.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Attach:" />
+        <JFXTextField fx:id="txt_attach" editable="false" layoutX="66.0" layoutY="209.0" prefHeight="25.0" prefWidth="298.0" />
     </children>
 </AnchorPane>

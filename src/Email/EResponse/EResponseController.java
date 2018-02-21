@@ -51,6 +51,7 @@ public class EResponseController implements Initializable {
     String Subject, Email, cc, bcc, Body, Disclaimer, Attachment;
 
     public EResponseController() {
+
     }
 
     @Override
@@ -67,6 +68,7 @@ public class EResponseController implements Initializable {
             txt_to.setText(EmailDashController.efrom);
             txt_to.setDisable(true);
             txt_subject.setDisable(true);
+            txt_body.setText(EmailDashController.body);
             btn_Send.setText("Reply");
 
         } else if (EmailDashController.ReplyForward == 'F') {
@@ -143,6 +145,8 @@ public class EResponseController implements Initializable {
         em.setDisclaimer(Disclaimer);
         if (file != null)
             em.setAttch(file.getAbsolutePath());
+        else
+            em.setAttch("");
 
         helper.sendEmail(em, null);
 

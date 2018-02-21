@@ -16,6 +16,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
@@ -108,6 +109,7 @@ public class EmailDashController implements Initializable {
     private static AnchorPane anchor_bodyF;
 
     public static String[] EMAILS_LIST;
+    private static int Email_Type = 1;
 
     public EmailDashController() {
 
@@ -178,14 +180,14 @@ public class EmailDashController implements Initializable {
                 archive.getStyleClass().add("btnMenu");
                 archive.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> inflateArchive());
 
-                JFXButton sentMail = new JFXButton("Sent Mail");
-                sentMail.setMinSize(1, menu_email.getHeight());
-                sentMail.setGraphic(new ImageView(new Image(getClass().getResourceAsStream("/res/img/sentmail.png"))));
-                sentMail.getStyleClass().add("btnMenu");
-                sentMail.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> inflatesentMail());
+//                JFXButton sentMail = new JFXButton("Sent Mail");
+//                sentMail.setMinSize(1, menu_email.getHeight());
+//                sentMail.setGraphic(new ImageView(new Image(getClass().getResourceAsStream("/res/img/sentmail.png"))));
+//                sentMail.getStyleClass().add("btnMenu");
+//                sentMail.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> inflatesentMail());
 
 
-                Platform.runLater(() -> menu_email.getChildren().addAll(email, reload, filter, archive, sentMail));
+                Platform.runLater(() -> menu_email.getChildren().addAll(email, reload, filter, archive));
 
 
             }
@@ -245,6 +247,8 @@ public class EmailDashController implements Initializable {
 
             if (newValue.equals("Reply")) {
                 ReplyForward = 'R';
+                body = "\n\n\n" + "On " + sEmail.getTimeFormatted() + ", " + sEmail.getFromAddress
+                        ()[0].toString() + " wrote:\n" + sEmail.getBody();
             } else if (newValue.equals("Forward")) {
                 ReplyForward = 'F';
                 body = sEmail.getBody();
@@ -258,34 +262,58 @@ public class EmailDashController implements Initializable {
 
     }
 
+
+    JFXButton allMail = new JFXButton("General");
+    JFXButton tickets = new JFXButton("Tickets");
+    JFXButton sentMail = new JFXButton("Sent");
+
     private void populateCategoryBoxes() {
 
-        JFXButton allMail = new JFXButton("All Mails");
-        allMail.setMinHeight(50);
-        allMail.setMinWidth(60);
-//        allMail.setStyle("-fx-background-color: #000000;");
-//        sentMail.setGraphic(new ImageView(new Image(getClass().getResourceAsStream("/res/img/sentmail.png"))));
-//        allMail.getStyleClass().add("btnMenu");
-        allMail.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> inflatesentMail());
-
-        JFXButton tickets = new JFXButton("Tickets");
         tickets.setMinHeight(50);
         tickets.setMinWidth(60);
-//        allMail.setStyle("-fx-background-color: #000000;");
-//        sentMail.setGraphic(new ImageView(new Image(getClass().getResourceAsStream("/res/img/sentmail.png"))));
-//        allMail.getStyleClass().add("btnMenu");
-        tickets.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> inflatesentMail());
+        tickets.getStyleClass().add("btnMenuBox");
+        tickets.setAlignment(Pos.CENTER_LEFT);
+        tickets.setOnAction(event -> changeEmailType(1, tickets));
 
+        allMail.setMinHeight(50);
+        allMail.setMinWidth(60);
+        allMail.getStyleClass().add("btnMenuBox");
+        allMail.setAlignment(Pos.CENTER_LEFT);
+        allMail.setOnAction(event -> changeEmailType(2, allMail));
 
-        JFXButton sentMail = new JFXButton("Sent Mail");
         sentMail.setMinHeight(50);
         sentMail.setMinWidth(60);
-//        allMail.setStyle("-fx-background-color: #000000;");
-//        sentMail.setGraphic(new ImageView(new Image(getClass().getResourceAsStream("/res/img/sentmail.png"))));
-//        allMail.getStyleClass().add("btnMenu");
-        sentMail.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> inflatesentMail());
+        sentMail.setAlignment(Pos.CENTER_LEFT);
+        sentMail.getStyleClass().add("btnMenuBox");
+        sentMail.setOnAction(event -> changeEmailType(3, sentMail));
 
-        category_box.getChildren().addAll(allMail, tickets, sentMail);
+        category_box.getChildren().addAll(tickets, allMail, sentMail);
+
+        switch (Email_Type) {
+            case 1:
+                tickets.fire();
+                break;
+            case 2:
+                allMail.fire();
+                break;
+            case 3:
+                sentMail.fire();
+                break;
+        }
+    }
+
+    private void changeEmailType(int type, JFXButton btn) {
+
+        tickets.getStyleClass().remove("btnMenuBoxPressed");
+        allMail.getStyleClass().remove("btnMenuBoxPressed");
+        sentMail.getStyleClass().remove("btnMenuBoxPressed");
+
+        btn.getStyleClass().add("btnMenuBoxPressed");
+
+        Email_Type = type;
+        loadEmails();
+
+
     }
 
     //OPENING RESPONSE STAGE
@@ -437,7 +465,21 @@ public class EmailDashController implements Initializable {
 
     private List<Email> checkIfEmailsExist() {
 
-        List<Email> emails = sql.readAllEmails(fHelper.ReadFilter());
+
+        List<Email> emails = null;
+
+        switch (Email_Type) {
+            case 1:     //Tickets
+                emails = sql.readAllEmails(fHelper.ReadFilter());
+                break;
+            case 2:     //General
+
+                break;
+            case 3:     //Sent
+                emails = sql.readAllEmailsSent(null);
+                break;
+        }
+
         if (emails == null) {
             emails = new ArrayList<>();
             Email nEm = new Email();
@@ -469,7 +511,14 @@ public class EmailDashController implements Initializable {
                 return;
             }
 
-            title_locked.setText("Locked By: ");
+            if (Email_Type == 1) {
+                title_locked.setText("Locked By: ");
+                label_locked.setText(email.getLockedByName());
+            } else if (Email_Type == 3) {
+                title_locked.setText("Sent By User: ");
+                label_locked.setText(email.getUser());
+            }
+
             label_time.setText(email.getTimeFormatted());
 
             //----Emails
@@ -500,8 +549,6 @@ public class EmailDashController implements Initializable {
                     }
                 }
             }
-
-            label_locked.setText(email.getLockedByName());
 
             txt_subject.setText(email.getSubject());
             anchor_details.setVisible(true);
@@ -537,6 +584,19 @@ public class EmailDashController implements Initializable {
             eBody.setEditable(false);
             if (!anchor_body.isVisible()) {
                 anchor_body.setVisible(true);
+            }
+
+            if (Email_Type != 1) {  //If Email Type is General or Sent
+                btn_lock.setVisible(false);
+                btn_unlock.setVisible(false);
+                btn_solv.setVisible(false);
+
+                imgLoader.setVisible(false);
+                return;
+            } else {
+                btn_lock.setVisible(true);
+                btn_unlock.setVisible(true);
+                btn_solv.setVisible(true);
             }
 
             //Buttons
@@ -639,7 +699,6 @@ public class EmailDashController implements Initializable {
 
     //Pulling all email IDs from database
     public void pullingEmails() {
-
         new Thread(() -> EMAILS_LIST = sql.getAllEmailIDs(null)).start();
 
     }

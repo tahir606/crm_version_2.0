@@ -30,16 +30,12 @@ public class Controller implements Initializable {
 
     @FXML
     private JFXTextField user_field;
-
     @FXML
     private JFXPasswordField pass_field;
-
     @FXML
     private JFXButton login_btn;
-
     @FXML
     private Label error_message;
-
     @FXML
     private ImageView img_loader;
 
@@ -55,7 +51,7 @@ public class Controller implements Initializable {
         img_loader.setImage(
                 new Image(getClass().getResourceAsStream("/res/img/loader.gif")));     //Setting Loading Image to ImageView
         img_loader.setVisible(false);
-        Platform.setImplicitExit(false);
+//        Platform.setImplicitExit(false);
 
         pass_field.setOnAction(event -> {
             String users = user_field.getText(), pass = pass_field.getText();

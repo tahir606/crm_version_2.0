@@ -7,7 +7,7 @@ public class Email {
 
     private int EmailNo, msgNo, lockd;
     private Address[] toAddress, fromAddress, ccAddress, bccAddress;
-    private String subject, timestamp, timeFormatted, body, attch, lockedByName, disclaimer;
+    private String subject, timestamp, timeFormatted, body, attch, lockedByName, disclaimer, user;
     private char solvFlag, isAttch;
     private boolean freze;
 
@@ -201,6 +201,14 @@ public class Email {
 
     public void setLockedByName(String lockedByName) {
         this.lockedByName = lockedByName;
+    }
+
+    public String getUser() {
+        return user;
+    }
+
+    public void setUser(String user) {
+        this.user = user;
     }
 
     public boolean isFreze() {

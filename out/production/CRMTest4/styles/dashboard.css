@@ -34,6 +34,22 @@
     -fx-scale-x: 1.12;
 }
 
+.btnMenuBox {
+    -fx-font-size: 9pt;
+    -fx-font-weight: bold;
+}
+
+.btnMenuBox:hover {
+    -fx-scale-y: 1.12;
+    -fx-scale-x: 1.12;
+}
+
+.btnMenuBoxPressed {
+    -fx-background-color: #c2edcb;
+    -fx-scale-y: 1.1;
+    -fx-scale-x: 1.1;
+}
+
 
 .background {
 /* e8fcde */
