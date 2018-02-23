@@ -15,6 +15,7 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.stage.Modality;
@@ -29,9 +30,10 @@ public class settingsController implements Initializable {
 
     @FXML
     private HBox menu_hbox;
-
+//    @FXML
+//    private AnchorPane anchor_holder;
     @FXML
-    private AnchorPane anchor_holder;
+    private BorderPane main_pane;
 
     private ImageView img_loader = dController.img_load;
     private int currentPane = 0;
@@ -43,7 +45,7 @@ public class settingsController implements Initializable {
 
     private void populateMenu() {
 
-        EventHandler myEmailEvent = event -> inflating("email/email.fxml", 1);
+        EventHandler myEmailEvent = event -> inflating("settings/email/email.fxml", 1);
 
         JFXButton emailSetting = new JFXButton("Email");
         Image image = new Image(getClass().getResourceAsStream("/res/img/at.png"));
@@ -54,7 +56,7 @@ public class settingsController implements Initializable {
 
         //---------------------------------------------------Split-----------
 
-        EventHandler myAdminEvent = event -> inflating("admin/admin.fxml", 2);
+        EventHandler myAdminEvent = event -> inflating("settings/admin/admin.fxml", 2);
 
         JFXButton adminSetting = new JFXButton("User");
         Image imageA = new Image(getClass().getResourceAsStream("/res/img/users.png"));
@@ -65,7 +67,7 @@ public class settingsController implements Initializable {
 
         //---------------------------------------------------Split-----------
 
-        EventHandler myNetworkEvent = event -> inflating("network/networkSet.fxml", 3);
+        EventHandler myNetworkEvent = event -> inflating("settings/network/networkSet.fxml", 3);
 
         JFXButton networkSetting = new JFXButton("Network");
         Image imageN = new Image(getClass().getResourceAsStream("/res/img/network.png"));
@@ -85,24 +87,25 @@ public class settingsController implements Initializable {
         new Thread(new Runnable() {
             @Override
             public void run() {
-                try {
-
                     if (currentPane == p) {
                         img_loader.setVisible(false);
                         return;
                     } else {
-                        Platform.runLater(() -> anchor_holder.getChildren().clear());
+//                        Platform.runLater(() -> anchor_holder.getChildren().clear());
                     }
 
-                    admin_pane = FXMLLoader.load(getClass().getResource(pane));
+//                    admin_pane = FXMLLoader.load(getClass().getResource(pane));
                     Platform.runLater(() -> {
-                        anchor_holder.getChildren().add(admin_pane);
+//                        anchor_holder.getChildren().add(admin_pane);
+                        try {
+                            main_pane.setCenter(FXMLLoader.load(getClass().getClassLoader().getResource
+                                    (pane)));
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
                         currentPane = p;
                         img_loader.setVisible(false);
                     });
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
             }
         }).start();
     }

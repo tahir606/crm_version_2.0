@@ -442,7 +442,6 @@ public class mySqlConn {
             e.printStackTrace();
         }
 
-
     }
 
     public static String autoReplySubject = "Burhani Customer Support - Ticket Number: ";
@@ -536,6 +535,131 @@ public class mySqlConn {
                 } else {
                     email.setLockedByName(getUserName(con, email.getLockd())); //Getting name of username that locked
                 }                                                              // particular email
+
+                //------From Address
+                String[] from = set.getString("FRADD").split("\\^");
+                Address[] fromAddress = new Address[from.length];
+                for (int i = 1, j = 0; i < from.length; i++, j++) {
+                    try {
+                        fromAddress[j] = new InternetAddress(from[i]);
+                    } catch (AddressException e) {
+                        e.printStackTrace();
+                    }
+                }
+                email.setFromAddress(fromAddress);
+
+                //-----To Address
+                String[] to = set.getString("TOADD").split("\\^");
+                Address[] toAddress = new Address[to.length];
+                for (int i = 1, j = 0; i < to.length; i++, j++) {
+                    try {
+                        toAddress[j] = new InternetAddress(to[i]);
+                    } catch (AddressException e) {
+                        e.printStackTrace();
+                    }
+                }
+                email.setToAddress(toAddress);
+
+                //----- CC Address
+                String[] cc = set.getString("CCADD").split("\\^");
+                Address[] ccAddress = new Address[cc.length];
+                for (int i = 1, j = 0; i < cc.length; i++, j++) {
+                    try {
+                        ccAddress[j] = new InternetAddress(cc[i]);
+                    } catch (AddressException e) {
+                        e.printStackTrace();
+                    }
+                }
+                email.setCcAddress(ccAddress);
+
+                allEmails.add(email);
+            }
+
+            doRelease(con);
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+
+        return allEmails;
+    }
+
+
+    public void insertEmailGeneral(Email email) {
+
+        String query = "INSERT INTO email_general(EMNO,SBJCT,TOADD,FRADD,TSTMP,EBODY,ATTCH,CCADD,MSGNO," +
+                "FREZE) SELECT IFNULL(max(EMNO),0)+1,?,?,?,?,?,?,?,?,? from EMAIL_GENERAL";
+
+        Connection con = getConnection();
+        PreparedStatement statement = null;
+
+        System.out.println(email);
+
+        try {
+            statement = con.prepareStatement(query);
+            statement.setString(1, email.getSubject());
+            statement.setString(2, email.getToAddressString());
+            statement.setString(3, email.getFromAddressString());
+            statement.setString(4, email.getTimestamp());
+            statement.setString(5, email.getBody());
+            statement.setString(6, email.getAttch());
+            statement.setString(7, email.getCcAddressString());
+            statement.setInt(8, email.getMsgNo());
+            statement.setBoolean(9, email.isFreze());
+            statement.executeUpdate();
+
+            statement.close();
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    public List<Email> readAllEmailsGeneral(String where) {
+
+        String query = "SELECT EMNO,MSGNO,SBJCT,FRADD,TOADD,CCADD,TSTMP,EBODY,ATTCH FROM EMAIL_GENERAL";
+
+        if (where == null) {
+            query = query + " ORDER BY EMNO DESC";
+        } else {
+            query = query + where;
+        }
+
+        List<Email> allEmails = new ArrayList<>();
+
+        try {
+            Connection con = getConnection();
+            PreparedStatement statement = con.prepareStatement(query);
+            System.out.println(query);
+            ResultSet set = statement.executeQuery();
+            //-------------Creating Email-------------
+            if (!set.isBeforeFirst()) {
+                return null;
+            }
+
+            while (set.next()) {
+                Email email = new Email();
+                email.setEmailNo(set.getInt("EMNO"));
+                email.setMsgNo(set.getInt("MSGNO"));
+                email.setSubject(set.getString("SBJCT"));
+                email.setTimestamp(set.getString("TSTMP"));
+
+                // Note, MM is months, not mm
+                DateFormat inputFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.S");
+                DateFormat outputFormat = new SimpleDateFormat("dd-MMM-yyyy hh:mm a");
+
+                Date date = null;
+                try {
+                    date = inputFormat.parse(email.getTimestamp());
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
+                String outputText = outputFormat.format(date);
+                email.setTimeFormatted(outputText);
+
+                email.setBody(set.getString("EBODY"));
+                email.setAttch(set.getString("ATTCH"));
+                // particular email
 
                 //------From Address
                 String[] from = set.getString("FRADD").split("\\^");
@@ -995,12 +1119,108 @@ public class mySqlConn {
                 statement.executeUpdate();
             }
 
+            for (int i = 0; i < emails.length; i++) {
+                try {
+                    if (emails[i] == null)
+                        continue;
+                    String[] t = emails[i].split("\\@");
+                    System.out.println(t);
+                    insertDomainsWhitelist(con, t[1]);
+                } catch (Exception e) {
+                    System.out.println(e);
+                    continue;
+                }
+            }
+
             if (statement != null)
                 statement.close();
             doRelease(con);
         } catch (SQLException e) {
+            System.out.println(e);
+        }
+    }
+
+    public void insertDomainsWhitelist(Connection con, String domain) {
+        String query = "INSERT INTO DOMAIN_LIST(DCODE,DNAME,DWB) " +
+                " SELECT IFNULL(max(DCODE),0)+1,?,? from DOMAIN_LIST";
+
+        PreparedStatement statement = null;
+
+        if (con == null)
+            con = getConnection();
+
+        try {
+            statement = con.prepareStatement(query);
+            statement.setString(1, domain);
+            statement.setInt(2, 1); //WhiteList
+            statement.executeUpdate();
+            if (statement != null)
+                statement.close();
+//            doRelease(con);
+        } catch (SQLException e) {
+            System.out.println(e);
+            if (statement != null) {
+                try {
+                    statement.close();
+                } catch (SQLException e1) {
+                    e1.printStackTrace();
+                }
+            }
+        }
+    }
+
+    public void insertDomainsWhitelist(String[] list) {
+        String query = "INSERT INTO DOMAIN_LIST(DCODE,DNAME,DWB) " +
+                " SELECT IFNULL(max(DCODE),0)+1,?,? from DOMAIN_LIST";
+
+        PreparedStatement statement = null;
+        Connection con = getConnection();
+        try {
+
+            for (int i = 0; i < list.length; i++) {
+                if (list[i] == null || list[i].equals(""))
+                    continue;
+                statement = null;
+                statement = con.prepareStatement(query);
+                statement.setString(1, list[i]);
+                statement.setInt(2, 1); //WhiteList
+                statement.executeUpdate();
+            }
+            if (statement != null)
+                statement.close();
+        } catch (SQLException e) {
+            System.out.println(e);
+            if (statement != null) {
+                try {
+                    statement.close();
+                } catch (SQLException e1) {
+                    e1.printStackTrace();
+                }
+            }
+        }
+    }
+
+    public List<String> getWhiteListDomains() {
+        String query = "SELECT DNAME FROM domain_list WHERE DWB = 1";
+
+        try {
+            Connection con = getConnection();
+            PreparedStatement statement = con.prepareStatement(query);
+            ResultSet set = statement.executeQuery();
+
+            List<String> l = new ArrayList<>();
+
+            while (set.next()) {
+                l.add(set.getString("DNAME"));
+            }
+
+            return l;
+
+        } catch (SQLException e) {
             e.printStackTrace();
         }
+
+        return null;
     }
 
     public int getNoClients() {

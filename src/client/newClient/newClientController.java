@@ -84,7 +84,6 @@ public class newClientController implements Initializable {
         } catch (NullPointerException e) {
             nClient = 1;
         }
-//        System.out.println(nClient);
 
         Client c = new Client();
         c.setCode(nClient);
@@ -114,9 +113,6 @@ public class newClientController implements Initializable {
     }
 
     private void populateDetails(Client newValue) {
-
-        System.out.println("Populating");
-
         if (newValue == null)
             return;
         else if (newValue.getName().equals(" + Create New"))
@@ -125,8 +121,6 @@ public class newClientController implements Initializable {
             txt_name.setText(newValue.getName());
 
         txt_owner.setText(newValue.getOwner());
-//        txt_email.setText(newValue.getEmail());
-//        txt_phone.setText(newValue.getPhone());
         txt_website.setText(newValue.getWebsite());
         txt_addr.setText(newValue.getAddr());
         txt_city.setText(newValue.getCity());
@@ -141,8 +135,6 @@ public class newClientController implements Initializable {
     public void saveChanges(ActionEvent actionEvent) {
         String name = txt_name.getText(),
                 owner = txt_owner.getText(),
-//                email = txt_email.getText(),
-//                phone = txt_phone.getText(),
                 website = txt_website.getText(),
                 addr = txt_addr.getText(),
                 city = txt_city.getText(),
@@ -165,8 +157,6 @@ public class newClientController implements Initializable {
 
                 clientSel.setName(name);
                 clientSel.setOwner(owner);
-//                clientSel.setEmails(Emails);
-//                clientSel.setPhones(Phones);
                 clientSel.setWebsite(website);
                 clientSel.setAddr(addr);
                 clientSel.setCity(city);

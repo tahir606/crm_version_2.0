@@ -4,7 +4,7 @@
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.HBox?>
 
-<BorderPane prefHeight="359.0" prefWidth="945.0" stylesheets="@../styles/settings.css"
+<BorderPane fx:id="main_pane" prefHeight="359.0" prefWidth="945.0" stylesheets="@../styles/settings.css"
             xmlns="http://javafx.com/javafx/9" xmlns:fx="http://javafx.com/fxml/1"
             fx:controller="settings.settingsController">
     <top>
@@ -12,6 +12,6 @@
               BorderPane.alignment="CENTER"/>
     </top>
     <center>
-        <AnchorPane fx:id="anchor_holder" prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER"/>
+        <!--<AnchorPane fx:id="anchor_holder" prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER"/>-->
     </center>
 </BorderPane>

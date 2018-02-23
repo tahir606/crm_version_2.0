@@ -24,6 +24,11 @@ public class ESetting {
         this.disc = disc;
     }
 
+    @Override
+    public String toString() {
+        return host + "\n" + email + "\n" + pass + "\n" + fspath + "\n" + auto + "\n" + disc;
+    }
+
     public String getHost() {
         return host;
     }

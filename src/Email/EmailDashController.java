@@ -78,10 +78,8 @@ public class EmailDashController implements Initializable {
     private VBox vbox_from;
     @FXML
     private VBox vbox_cc;
-
     @FXML
     private JFXComboBox<FileDev> combo_attach;
-
     @FXML
     private HBox menu_email;
 
@@ -322,8 +320,8 @@ public class EmailDashController implements Initializable {
             FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("EResponse/EResponse.fxml"));
             Parent root1 = (Parent) fxmlLoader.load();
             Stage stage2 = new Stage();
-            stage2.initModality(Modality.APPLICATION_MODAL);
-            stage2.initStyle(StageStyle.UTILITY);
+//            stage2.initModality(Modality.APPLICATION_MODAL);
+//            stage2.initStyle(StageStyle.UTILITY);
             stage2.setTitle("Respond");
             stage2.setScene(new Scene(root1));
             trayHelper tray = new trayHelper();
@@ -473,7 +471,7 @@ public class EmailDashController implements Initializable {
                 emails = sql.readAllEmails(fHelper.ReadFilter());
                 break;
             case 2:     //General
-
+                emails = sql.readAllEmailsGeneral(null);
                 break;
             case 3:     //Sent
                 emails = sql.readAllEmailsSent(null);

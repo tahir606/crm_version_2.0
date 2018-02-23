@@ -3,6 +3,8 @@ package Email.EResponse;
 import Email.EmailDashController;
 import JCode.emailControl;
 import com.jfoenix.controls.JFXTextField;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -62,6 +64,13 @@ public class EResponseController implements Initializable {
         TextFields.bindAutoCompletion(txt_to, emails);
         TextFields.bindAutoCompletion(txt_cc, emails);
         TextFields.bindAutoCompletion(txt_bcc, emails);
+
+        txt_to.textProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue.contains(",")) {
+                TextFields.bindAutoCompletion(txt_to, emails);
+                System.out.println("Binding");
+            }
+        });
 
         txt_subject.setText(EmailDashController.subject);
         if (EmailDashController.ReplyForward == 'R') {

@@ -40,10 +40,13 @@ public class emailControl {
     private static ESetting ESETTING;
     private fileHelper fHelper;
 
+    private static List<String> white_list;
+
     public emailControl() {
         fHelper = new fileHelper();
         sqlConn = new mySqlConn();
         ESETTING = sqlConn.getEmailSettings();
+        white_list = sqlConn.getWhiteListDomains();
         if (ESETTING != null) {
             F_ADD = ESETTING.getFspath();
 //            System.out.println(F_ADD);
@@ -157,7 +160,21 @@ public class emailControl {
         email.setFreze(false);
         System.out.println(email);
 
-        sqlConn.insertEmail(email, message);
+        int tix = 1;    //2 means ticket 1 means general
+
+        for (String t : white_list) {
+            for (Address e : email.getFromAddress()) {
+                if (e.toString().contains(t)) {
+                    tix = 2;
+                    break;
+                }
+            }
+        }
+
+        if (tix == 2)
+            sqlConn.insertEmail(email, message);
+        else if (tix == 1)
+            sqlConn.insertEmailGeneral(email);
 
         return result;
     }

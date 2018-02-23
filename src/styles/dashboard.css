@@ -5,6 +5,12 @@
     -fx-font-weight: 900;
 }
 
+.boldText {
+    -fx-font-size: 11pt;
+    -fx-text-fill: #002b05;
+    -fx-font-weight: bold;
+}
+
 .dashboardButton {
     -fx-background-size: 25px 25px;
     -fx-background-repeat: no-repeat;
