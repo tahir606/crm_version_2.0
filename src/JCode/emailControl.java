@@ -321,13 +321,13 @@ public class emailControl {
             message.saveChanges();
 
             //message.setText(multipart);
-            message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(email.getToAddress()[0].toString()));
+            message.setRecipients(Message.RecipientType.TO, email.getToAddress());
             if (email.getCcAddress() == null) { //Just to check if its null
             } else if (!email.getCcAddress()[0].toString().equals(""))
-                message.setRecipients(Message.RecipientType.CC, InternetAddress.parse(email.getCcAddress()[0].toString()));
+                message.setRecipients(Message.RecipientType.CC, email.getCcAddress());
             if (email.getBccAddress() == null) { //Just to check if its null
             } else if (!email.getBccAddress()[0].toString().equals(""))
-                message.setRecipients(Message.RecipientType.BCC, InternetAddress.parse(email.getBccAddress()[0].toString()));
+                message.setRecipients(Message.RecipientType.BCC, email.getBccAddress());
 
             //Put Message Reply
             if (messageReply != null) {
