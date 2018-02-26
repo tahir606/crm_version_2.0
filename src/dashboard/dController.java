@@ -33,6 +33,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.ResourceBundle;
 
+
 public class dController implements Initializable {
 
 //    @FXML
@@ -71,14 +72,35 @@ public class dController implements Initializable {
 
     private static int currentPane;
 
+    Thread splash;
+
+    Pane p;
+
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         img_load = img_loader;
 
+        splash = new Thread(() -> {
+            try {
+                p = new Pane();
+                p.setStyle("-fx-background-color: #000000;");
+                Platform.runLater(() -> {
+                    Stage stage = new Stage();
+                    stage.setScene(new Scene(p, 200, 200));
+                    stage.show();
+                });
+            } catch (InterruptedException e) {
+
+            }
+        });
+
+
+        splash.start();
+
         fHelper = new fileHelper();
         tHelper = new trayHelper();
-
-        network = fHelper.getNetworkDetails();
+//
+//        network = fHelper.getNetworkDetails();
         sql = new mySqlConn();
 
         eSetting = sql.getEmailSettings();
@@ -91,9 +113,9 @@ public class dController implements Initializable {
         //Setting Loading Image to ImageView
         img_loader.setVisible(true);
 
-        DrawerPane(); //Populate Drawer
+//        DrawerPane(); //Populate Drawer
 
-        inflateHomeonThread();
+//        inflateHomeonThread();
 
         if (user.isEmail()) {
             emailCtrl();
@@ -104,6 +126,11 @@ public class dController implements Initializable {
             new Thread(() -> new JClient()).start();
         }
 
+        try {
+            splash.interrupt();
+        } catch (Exception e) {
+            System.out.println(e);
+        }
         Platform.setImplicitExit(false);
     }
 

@@ -1,8 +1,10 @@
+import com.sun.javafx.application.LauncherImpl;
 import dashboard.dController;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 
 import JCode.*;
@@ -12,13 +14,17 @@ public class Main extends Application {
     private fileHelper fHelper;
     private static trayHelper tray;
 
+    public static Thread splash;
+
     @Override
     public void start(Stage primaryStage) throws Exception {
 
         fHelper = new fileHelper();
         tray = new trayHelper();
 
-        fHelper.makeFolders();
+//        fHelper.makeFolders();
+//
+//        Thread.sleep(5000);
 
         if (fHelper.getNetworkDetails() == null) {
             Parent root = FXMLLoader.load(getClass().getResource("settings/network/networkSet.fxml"));
@@ -50,5 +56,6 @@ public class Main extends Application {
 
     public static void main(String[] args) {
         launch(args);
+//        LauncherImpl.launchApplication(Main.class, SplashScreenLoader.class, args);
     }
 }

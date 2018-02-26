@@ -26,6 +26,7 @@ import javax.mail.internet.InternetAddress;
 import java.io.File;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.ResourceBundle;
 
@@ -52,7 +53,7 @@ public class EResponseController implements Initializable {
     @FXML
     private HBox hbox_to, hbox_cc, hbox_bcc;
 
-    File file;
+    List<File> file;
 
     emailControl helper = new emailControl();
 
@@ -123,9 +124,12 @@ public class EResponseController implements Initializable {
     public void btnAttachClick(ActionEvent actionEvent) {
         FileChooser chooser = new FileChooser();
         chooser.setTitle("Attach File");
-        file = chooser.showOpenDialog(new Stage());
-        if (file != null)
-            txt_attach.setText(file.getName());
+        file = chooser.showOpenMultipleDialog(new Stage());
+        String at = "";
+        for (File f : file) {
+            at = at + " -- " + f.getName();
+        }
+        txt_attach.setText(at);
     }
 
     public void btnSendClick(ActionEvent actionEvent) {
@@ -142,7 +146,40 @@ public class EResponseController implements Initializable {
         System.out.println(Body);
 //        System.out.println((hbox_to.getChildren().size() == 0 ^ Email.equals("")) || Body.equals(""));
 
-        if (!(hbox_to.getChildren().size() == 0 || Email.equals("")) || Body.equals("")) {
+        objects.Email em = new Email();
+
+        //--------------To
+        List<Address> to_emails = new ArrayList<>();
+        for (Node n : hbox_to.getChildren()) {
+            HBox b = (HBox) n;
+            for (Node node : b.getChildren()) {
+                if (node.getAccessibleText() == null)
+                    continue;
+                System.out.println(node.getAccessibleText());
+                if (node.getAccessibleText().equals("txt")) {
+                    Label l = (Label) node;
+                    try {
+                        System.out.println(l.getText());
+                        Address to = new InternetAddress(l.getText());
+                        to_emails.add(to);
+                    } catch (AddressException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        }
+        try {
+            if (!txt_to.getText().equals("")) {
+                Address to = new InternetAddress(txt_to.getText());
+                to_emails.add(to);
+            }
+        } catch (AddressException e) {
+            e.printStackTrace();
+        }
+        Address ad[] = to_emails.toArray(new Address[to_emails.size()]);
+        em.setToAddress(ad);
+
+        if (em.getToAddress().length < 0 || Body.equals("")) {
             Alert alert = new Alert(Alert.AlertType.WARNING, "Required Fields are Empty",
                     ButtonType.OK);
             alert.showAndWait();
@@ -154,82 +191,75 @@ public class EResponseController implements Initializable {
             }
         }
 
-        objects.Email em = new Email();
-
-        //--------------To
-        List<Address> to_emails = new ArrayList<>();
-        for (Node node : hbox_to.getChildren()) {
-            if (node.getAccessibleText() == null)
-                continue;
-            if (node.getAccessibleText().equals("txt")) {
-                Label l = (Label) node;
-                try {
-                    Address to = new InternetAddress(l.getText());
-                    to_emails.add(to);
-                } catch (AddressException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
-        try {
-            Address to = new InternetAddress(txt_to.getText());
-            to_emails.add(to);
-        } catch (AddressException e) {
-            e.printStackTrace();
-        }
-        Address ad[] = (Address[]) to_emails.toArray();
-        em.setToAddress(ad);
-
 
         //--------------CC
         List<Address> cc_emails = new ArrayList<>();
-        for (Node node : hbox_cc.getChildren()) {
-            if (node.getAccessibleText().equals("txt")) {
-                Label l = (Label) node;
-                try {
-                    Address to = new InternetAddress(l.getText());
-                    to_emails.add(to);
-                } catch (AddressException e) {
-                    e.printStackTrace();
+        for (Node n : hbox_cc.getChildren()) {
+            HBox h = (HBox) n;
+            for (Node node : h.getChildren()) {
+                if (node.getAccessibleText() == null)
+                    continue;
+                if (node.getAccessibleText().equals("txt")) {
+                    Label l = (Label) node;
+                    try {
+                        Address to = new InternetAddress(l.getText());
+                        cc_emails.add(to);
+                    } catch (AddressException e) {
+                        e.printStackTrace();
+                    }
                 }
             }
         }
         try {
-            Address cc = new InternetAddress(txt_cc.getText());
-            cc_emails.add(cc);
+            if (!txt_cc.getText().equals("")) {
+                Address cc = new InternetAddress(txt_cc.getText());
+                cc_emails.add(cc);
+            }
         } catch (AddressException e) {
             e.printStackTrace();
         }
-        Address cc[] = (Address[]) cc_emails.toArray();
+        Address cc[] = cc_emails.toArray(new Address[cc_emails.size()]);
         em.setCcAddress(cc);
+
+        System.out.println(Arrays.toString(em.getCcAddress()));
 
         //--------------BCC
         List<Address> bcc_emails = new ArrayList<>();
-        for (Node node : hbox_bcc.getChildren()) {
-            if (node.getAccessibleText().equals("txt")) {
-                Label l = (Label) node;
-                try {
-                    Address bcc = new InternetAddress(l.getText());
-                    bcc_emails.add(bcc);
-                } catch (AddressException e) {
-                    e.printStackTrace();
+        for (Node n : hbox_bcc.getChildren()) {
+            HBox h = (HBox) n;
+            for (Node node : h.getChildren()) {
+                if (node.getAccessibleText() == null)
+                    continue;
+                if (node.getAccessibleText().equals("txt")) {
+                    Label l = (Label) node;
+                    try {
+                        Address bcc = new InternetAddress(l.getText());
+                        bcc_emails.add(bcc);
+                    } catch (AddressException e) {
+                        e.printStackTrace();
+                    }
                 }
             }
         }
         try {
-            Address bcc = new InternetAddress(txt_bcc.getText());
-            bcc_emails.add(bcc);
+            if (!txt_bcc.getText().equals("")) {
+                Address bcc = new InternetAddress(txt_bcc.getText());
+                bcc_emails.add(bcc);
+            }
         } catch (AddressException e) {
             e.printStackTrace();
         }
-        Address bcc[] = (Address[]) bcc_emails.toArray();
-        em.setCcAddress(bcc);
+        Address bcc[] = bcc_emails.toArray(new Address[bcc_emails.size()]);
+        em.setBccAddress(bcc);
+
+        System.out.println(Arrays.toString(em.getBccAddress()));
 
         em.setSubject(Subject);
         em.setBody(Body);
         em.setDisclaimer(Disclaimer);
-        if (file != null)
-            em.setAttch(file.getAbsolutePath());
+        if (file == null) {
+        } else if (file.size() > -1)
+            em.setAttachments(file);
         else
             em.setAttch("");
 

@@ -2,12 +2,15 @@ package objects;
 
 
 import javax.mail.Address;
+import java.io.File;
+import java.util.List;
 
 public class Email {
 
     private int EmailNo, msgNo, lockd;
     private Address[] toAddress, fromAddress, ccAddress, bccAddress;
     private String subject, timestamp, timeFormatted, body, attch, lockedByName, disclaimer, user;
+    private List<File> attachments;
     private char solvFlag, isAttch;
     private boolean freze;
 
@@ -169,6 +172,14 @@ public class Email {
 
     public void setAttch(String attch) {
         this.attch = attch;
+    }
+
+    public List<File> getAttachments() {
+        return attachments;
+    }
+
+    public void setAttachments(List<File> attachments) {
+        this.attachments = attachments;
     }
 
     public char getIsAttch() {

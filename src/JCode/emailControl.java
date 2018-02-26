@@ -291,29 +291,26 @@ public class emailControl {
 //            if (email == null)
 //                return;
 
-            if (email.getAttch() == null) {
-            } else if (!email.getAttch().equals("")) {
+            String attach = ""; //String to save in the database
+            if (email.getAttachments() == null) {
+            } else if (!(email.getAttachments().size() < 0)) {
                 // Part two is attachment
                 messageBodyPart = new MimeBodyPart();
-
-                BodyPart attachment = new MimeBodyPart();
-
-                File s = new File(email.getAttch());
-
-                if (s.exists()) {
-                    DataSource source = new FileDataSource(email.getAttch());
-                    attachment.setDataHandler(new DataHandler(source));
-
-                    attachment.setFileName(email.getAttch());
-                    //System.out.println(Attachment);
-
-                } else {
-                    trayHelper.trayIcon.displayMessage("IOException", "File Not Found", TrayIcon.MessageType.ERROR);
-
+                for (File f : email.getAttachments()) {
+                    BodyPart attachment = new MimeBodyPart();
+                    if (f.exists()) {
+                        DataSource source = new FileDataSource(f.getAbsolutePath());
+                        attachment.setDataHandler(new DataHandler(source));
+                        attachment.setFileName(f.getAbsolutePath());
+                        attach = attach + f.getAbsolutePath() + "^";    //Concatenating String for Database
+                    } else {
+                        trayHelper.trayIcon.displayMessage("IOException", "File Not Found", TrayIcon.MessageType.ERROR);
+                    }
+                    multipart.addBodyPart(attachment);
                 }
-
-                multipart.addBodyPart(attachment);
             }
+
+            email.setAttch(attach);
 
             // Send the complete message parts
             message.setContent(multipart);
@@ -323,10 +320,10 @@ public class emailControl {
             //message.setText(multipart);
             message.setRecipients(Message.RecipientType.TO, email.getToAddress());
             if (email.getCcAddress() == null) { //Just to check if its null
-            } else if (!email.getCcAddress()[0].toString().equals(""))
+            } else if (email.getCcAddress().length > -1)
                 message.setRecipients(Message.RecipientType.CC, email.getCcAddress());
             if (email.getBccAddress() == null) { //Just to check if its null
-            } else if (!email.getBccAddress()[0].toString().equals(""))
+            } else if (email.getBccAddress().length > -1)
                 message.setRecipients(Message.RecipientType.BCC, email.getBccAddress());
 
             //Put Message Reply
