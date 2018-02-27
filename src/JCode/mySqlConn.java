@@ -36,23 +36,31 @@ public class mySqlConn {
 
     public mySqlConn() {
         fHelper = new fileHelper();
+        System.out.println("Step 0.1");
         Network network = fHelper.getNetworkDetails();
+        System.out.println("Step 0.2");
         if (network == null)
             return;
         URL = "jdbc:mysql://" + network.getHost() + ":" + network.getPort() + "/" + network.getDbname() + "?allowMultiQueries=true";
         USER = network.getRoot();
         PASSWORD = network.getPass();
-
+        System.out.println("Step 0.3");
         user = fHelper.ReadUserDetails();
+        System.out.println("Step 0.4");
         eSetting = getEmailSettings();
+        System.out.println("Step 0.5");
     }
 
     private Connection getConnection() {
 
         try {
+            System.out.println("1.2");
             Class.forName("com.mysql.jdbc.Driver");
+            DriverManager.setLoginTimeout(2);
+            System.out.println(URL + "\n" + USER + "\n" + PASSWORD);
             Connection con = DriverManager.getConnection(
                     URL, USER, PASSWORD);
+            System.out.println("1.3");
             return con;
         } catch (Exception e) {
             e.printStackTrace();
@@ -932,7 +940,7 @@ public class mySqlConn {
 
         String query = "SELECT HOST, EMAIL, PASS, FSPATH, AUTOCHK, DISCCHK, AUTOTXT, DISCTXT FROM EMAIL_SETTINGS " +
                 "WHERE 1";
-
+        System.out.println("1.1");
         Connection con = getConnection();
         try {
             PreparedStatement statement = con.prepareStatement(query);

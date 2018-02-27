@@ -69,6 +69,8 @@ public class emailSetController implements Initializable {
 
     private static String autoText, discText;
 
+    static int EmailSet_type = 0;
+
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         sql = new mySqlConn();
@@ -102,11 +104,13 @@ public class emailSetController implements Initializable {
 
     void init() {
         List<String> whiteList = sql.getWhiteListDomains();
-        white_list.getItems().clear();
-        white_list.getItems().addAll(whiteList);
+        try {
+            white_list.getItems().clear();
+            white_list.getItems().addAll(whiteList);
+        } catch (NullPointerException e) {
+            System.out.println(e);
+        }
     }
-
-    static int EmailSet_type = 0;
 
     JFXButton general = new JFXButton("General");
     JFXButton tickets = new JFXButton("Tickets");
@@ -310,4 +314,5 @@ public class emailSetController implements Initializable {
         stage.show();
 
     }
+
 }

@@ -7,6 +7,7 @@ import JCode.mySqlConn;
 import JCode.trayHelper;
 import JSockets.JClient;
 import JSockets.JServer;
+import SplashScreen.SplashScreenThread;
 import com.jfoenix.controls.JFXButton;
 import javafx.application.Platform;
 import javafx.event.Event;
@@ -23,7 +24,9 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
 
 import javafx.scene.input.MouseEvent;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 import objects.ESetting;
 import objects.Network;
 import objects.Users;
@@ -36,24 +39,10 @@ import java.util.ResourceBundle;
 
 public class dController implements Initializable {
 
-//    @FXML
-//    private AnchorPane fx_anchor;
-//
-//    @FXML
-//    private Pane main_pane;
-//
-//    @FXML
-//    private VBox menu_pane;
-//
-//    @FXML
-//    private ImageView img_loader;
-
     @FXML
     private BorderPane border_pane;
-
     @FXML
     private ImageView img_loader;
-
     @FXML
     private VBox menu_pane;
 
@@ -72,50 +61,50 @@ public class dController implements Initializable {
 
     private static int currentPane;
 
-    Thread splash;
-
-    Pane p;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         img_load = img_loader;
 
-        splash = new Thread(() -> {
-            try {
-                p = new Pane();
-                p.setStyle("-fx-background-color: #000000;");
-                Platform.runLater(() -> {
-                    Stage stage = new Stage();
-                    stage.setScene(new Scene(p, 200, 200));
-                    stage.show();
-                });
-            } catch (InterruptedException e) {
-
-            }
-        });
-
-
-        splash.start();
-
         fHelper = new fileHelper();
         tHelper = new trayHelper();
+
+        System.out.println("Step 3");
 //
-//        network = fHelper.getNetworkDetails();
+        network = fHelper.getNetworkDetails();
+
+        System.out.println("Step 4");
+
         sql = new mySqlConn();
+
+        System.out.println("Step 5");
 
         eSetting = sql.getEmailSettings();
 
+        System.out.println("Step 6");
+
         user = fHelper.ReadUserDetails();
+
+        System.out.println("Step 7");
+
         rightsList = user.getuRightsList();
+
+        System.out.println("Step 8");
 
         img_loader.setImage(
                 new Image(getClass().getResourceAsStream("/res/img/loader.gif")));
         //Setting Loading Image to ImageView
         img_loader.setVisible(true);
 
-//        DrawerPane(); //Populate Drawer
+        SplashScreenThread.hideSplashScreen();
 
-//        inflateHomeonThread();
+        DrawerPane(); //Populate Drawer
+
+        System.out.println("Step 9");
+
+        inflateHomeonThread();
+
+        System.out.println("Step 10");
 
         if (user.isEmail()) {
             emailCtrl();
@@ -126,11 +115,8 @@ public class dController implements Initializable {
             new Thread(() -> new JClient()).start();
         }
 
-        try {
-            splash.interrupt();
-        } catch (Exception e) {
-            System.out.println(e);
-        }
+        System.out.println("Step 11");
+
         Platform.setImplicitExit(false);
     }
 
@@ -177,13 +163,13 @@ public class dController implements Initializable {
             public void handle(Event event) {
                 img_loader.setVisible(true);
 
-                boolean connection = mySqlConn.pingHost(network.getHost(), network.getPort(), 2000);
-
-                if (!connection) {
-                    tHelper.displayNotification("Error", "Database Not Found!");
-                    img_loader.setVisible(false);
-                    return;
-                }
+//                boolean connection = mySqlConn.pingHost(network.getHost(), network.getPort(), 2000);
+//
+//                if (!connection) {
+//                    tHelper.displayNotification("Error", "Database Not Found!");
+//                    img_loader.setVisible(false);
+//                    return;
+//                }
 
                 new Thread(new Runnable() {
                     @Override
@@ -480,5 +466,7 @@ public class dController implements Initializable {
         emailThread.start();
 
     }
+
+
 
 }

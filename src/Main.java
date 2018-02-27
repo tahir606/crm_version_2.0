@@ -1,20 +1,26 @@
+import SplashScreen.SplashScreenThread;
 import com.sun.javafx.application.LauncherImpl;
 import dashboard.dController;
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.layout.Pane;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 
 import JCode.*;
+import javafx.stage.StageStyle;
+
+import java.io.IOException;
 
 public class Main extends Application {
 
     private fileHelper fHelper;
     private static trayHelper tray;
 
-    public static Thread splash;
+    static SplashScreenThread splash;
 
     @Override
     public void start(Stage primaryStage) throws Exception {
@@ -23,8 +29,8 @@ public class Main extends Application {
         tray = new trayHelper();
 
 //        fHelper.makeFolders();
-//
-//        Thread.sleep(5000);
+
+        System.out.println("Step 1");
 
         if (fHelper.getNetworkDetails() == null) {
             Parent root = FXMLLoader.load(getClass().getResource("settings/network/networkSet.fxml"));
@@ -43,6 +49,7 @@ public class Main extends Application {
             primaryStage.show();
         } else {
             Parent root = FXMLLoader.load(getClass().getResource("dashboard/dashboard.fxml"));
+            System.out.println("Step 2");
             primaryStage.setTitle("Dashboard- BITS-CRM");
             primaryStage.setScene(new Scene(root, 1200, 500));
 //            primaryStage.setMaximized(true);
@@ -55,7 +62,10 @@ public class Main extends Application {
 
 
     public static void main(String[] args) {
+
+        new SplashScreenThread().showSplashScreen();
         launch(args);
-//        LauncherImpl.launchApplication(Main.class, SplashScreenLoader.class, args);
     }
+
+
 }
