@@ -69,32 +69,34 @@ public class dController implements Initializable {
         fHelper = new fileHelper();
         tHelper = new trayHelper();
 
+        img_loader.setImage(
+                new Image(getClass().getResourceAsStream("/res/img/loader.gif")));
+        //Setting Loading Image to ImageView
+        img_loader.setVisible(true);
+
         System.out.println("Step 3");
 //
         network = fHelper.getNetworkDetails();
 
         System.out.println("Step 4");
 
-        sql = new mySqlConn();
+//        new Thread(() -> {
+            sql = new mySqlConn();
 
-        System.out.println("Step 5");
+            System.out.println("Step 5");
 
-        eSetting = sql.getEmailSettings();
+            eSetting = sql.getEmailSettings();
 
-        System.out.println("Step 6");
+            System.out.println("Step 6");
 
-        user = fHelper.ReadUserDetails();
+            user = fHelper.ReadUserDetails();
 
-        System.out.println("Step 7");
+            System.out.println("Step 7");
 
-        rightsList = user.getuRightsList();
+            rightsList = user.getuRightsList();
 
-        System.out.println("Step 8");
-
-        img_loader.setImage(
-                new Image(getClass().getResourceAsStream("/res/img/loader.gif")));
-        //Setting Loading Image to ImageView
-        img_loader.setVisible(true);
+            System.out.println("Step 8");
+//        }).start();
 
         SplashScreenThread.hideSplashScreen();
 
@@ -310,7 +312,7 @@ public class dController implements Initializable {
             public void handle(MouseEvent event) {
                 img_loader.setVisible(true);
 
-                sql.setLogin(null, user.getUCODE(), false);
+                sql.setLogin(user.getUCODE(), false);
 
                 if (isServer == true) {
                     JServer.closeThread();

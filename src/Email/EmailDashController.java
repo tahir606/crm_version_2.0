@@ -178,15 +178,7 @@ public class EmailDashController implements Initializable {
                 archive.getStyleClass().add("btnMenu");
                 archive.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> inflateArchive());
 
-//                JFXButton sentMail = new JFXButton("Sent Mail");
-//                sentMail.setMinSize(1, menu_email.getHeight());
-//                sentMail.setGraphic(new ImageView(new Image(getClass().getResourceAsStream("/res/img/sentmail.png"))));
-//                sentMail.getStyleClass().add("btnMenu");
-//                sentMail.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> inflatesentMail());
-
-
                 Platform.runLater(() -> menu_email.getChildren().addAll(email, reload, filter, archive));
-
 
             }
         }).start();
@@ -309,6 +301,11 @@ public class EmailDashController implements Initializable {
         btn.getStyleClass().add("btnMenuBoxPressed");
 
         Email_Type = type;
+
+        if (type != 1) {
+            combo_respond.setDisable(false);
+        }
+
         loadEmails();
 
 

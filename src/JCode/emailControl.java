@@ -46,7 +46,7 @@ public class emailControl {
         fHelper = new fileHelper();
         sqlConn = new mySqlConn();
         ESETTING = sqlConn.getEmailSettings();
-        white_list = sqlConn.getWhiteListDomains();
+        white_list = sqlConn.getWhiteBlackListDomains(1);
         if (ESETTING != null) {
             F_ADD = ESETTING.getFspath();
 //            System.out.println(F_ADD);
@@ -132,7 +132,7 @@ public class emailControl {
             for (int partcounts = 0; partcounts < numberofparts; partcounts++) {
                 MimeBodyPart part = (MimeBodyPart) mimeMultipart.getBodyPart(partcounts);
                 if (Part.ATTACHMENT.equalsIgnoreCase(part.getDisposition())) {
-                    String filename = F_ADD + "\\" + part.getFileName();
+                    String filename = ESETTING.getFspath() + "\\" + part.getFileName();
                     System.out.println(part.getFileName());
                     ATTACH += filename + "^";  //AttachFiles string is to be inserted into Database
                     part.saveFile(filename);

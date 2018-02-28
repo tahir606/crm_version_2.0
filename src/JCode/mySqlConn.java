@@ -34,33 +34,31 @@ public class mySqlConn {
 
     private Users user;
 
+    private static Connection static_con;
+
     public mySqlConn() {
         fHelper = new fileHelper();
-        System.out.println("Step 0.1");
         Network network = fHelper.getNetworkDetails();
-        System.out.println("Step 0.2");
         if (network == null)
             return;
         URL = "jdbc:mysql://" + network.getHost() + ":" + network.getPort() + "/" + network.getDbname() + "?allowMultiQueries=true";
         USER = network.getRoot();
         PASSWORD = network.getPass();
-        System.out.println("Step 0.3");
         user = fHelper.ReadUserDetails();
-        System.out.println("Step 0.4");
+        if (static_con == null)
+            static_con = getConnection();
+
         eSetting = getEmailSettings();
-        System.out.println("Step 0.5");
     }
 
     private Connection getConnection() {
 
         try {
-            System.out.println("1.2");
             Class.forName("com.mysql.jdbc.Driver");
             DriverManager.setLoginTimeout(2);
             System.out.println(URL + "\n" + USER + "\n" + PASSWORD);
             Connection con = DriverManager.getConnection(
                     URL, USER, PASSWORD);
-            System.out.println("1.3");
             return con;
         } catch (Exception e) {
             e.printStackTrace();
@@ -78,12 +76,12 @@ public class mySqlConn {
                 "AND FREZE = ? " +
                 "AND ISLOG = false ";
 
-        Connection con = getConnection();
+//        // Connection con = getConnection();
 
         Users user = new Users();
 
         try {
-            PreparedStatement statement = con.prepareStatement(query);
+            PreparedStatement statement = static_con.prepareStatement(query);
             statement.setString(1, username);
             statement.setString(2, password);
             statement.setString(3, "N");
@@ -103,12 +101,12 @@ public class mySqlConn {
             if (user.getUCODE() == '\0') {
                 return false;
             } else {
-                setLogin(con, user.getUCODE(), true);
+                setLogin(user.getUCODE(), true);
             }
 
             user.setUNAME(username);
 
-            return getRights(user, con);
+            return getRights(user);
 
         } catch (SQLException e) {
             e.printStackTrace();
@@ -117,20 +115,20 @@ public class mySqlConn {
         return false;
     }
 
-    public void setLogin(Connection con, int Ucode, boolean log) {
+    public void setLogin(int Ucode, boolean log) {
         String query = "UPDATE USERS SET ISLOG = ? WHERE UCODE = ?";
 
         boolean newCon = false; //If con has been initialized (In case of logout)
 
-        if (con == null) {
-            newCon = true;
-            con = getConnection();
-        }
+//        if (static_con == null) {
+//            newCon = true;
+//            static_con = getConnection();
+//        }
 
         PreparedStatement statement = null;
 
         try {
-            statement = con.prepareStatement(query);
+            statement = static_con.prepareStatement(query);
             statement.setBoolean(1, log);
             statement.setInt(2, Ucode);
 
@@ -138,15 +136,15 @@ public class mySqlConn {
 
             statement.close();
 
-            if (newCon == true)
-                doRelease(con);
+//            if (newCon == true)
+//                // doRelease(con);
 
         } catch (SQLException e) {
             e.printStackTrace();
         }
     }
 
-    public boolean getRights(Users user, Connection con) {
+    public boolean getRights(Users user) {
 
         String query1 = "SELECT  RL.RCODE, RL.RNAME FROM RIGHTS_CHART RC, RIGHTS_LIST RL" +
                 " WHERE RC.UCODE = ?" +
@@ -163,10 +161,10 @@ public class mySqlConn {
 
         try {
             if (user.getUright().equals("Admin")) {
-                statement = con.prepareStatement(query2);
+                statement = static_con.prepareStatement(query2);
                 set = statement.executeQuery();
             } else {
-                statement = con.prepareStatement(query1);
+                statement = static_con.prepareStatement(query1);
                 statement.setInt(1, user.getUCODE());
                 set = statement.executeQuery();
             }
@@ -182,7 +180,7 @@ public class mySqlConn {
         } catch (SQLException e) {
             e.printStackTrace();
         } finally {
-            doRelease(con);
+//            // doRelease(con);
         }
 
         return false;
@@ -190,7 +188,7 @@ public class mySqlConn {
     }
 
 
-    public String getUserName(Connection con, int ucode) { //For Locking Names
+    public String getUserName(int ucode) { //For Locking Names
 
         String query = " SELECT FNAME FROM USERS " +
                 " WHERE UCODE = ?";
@@ -199,7 +197,7 @@ public class mySqlConn {
         ResultSet set = null;
 
         try {
-            statement = con.prepareStatement(query);
+            statement = static_con.prepareStatement(query);
             statement.setInt(1, ucode);
             set = statement.executeQuery();
 
@@ -219,12 +217,12 @@ public class mySqlConn {
         String query = " SELECT FNAME, SOLV, LOCKD FROM USERS " +
                 " WHERE UCODE = ?";
 
-        Connection con = getConnection();
+//        // Connection con = getConnection();
         PreparedStatement statement = null;
         ResultSet set = null;
 
         try {
-            statement = con.prepareStatement(query);
+            statement = static_con.prepareStatement(query);
             statement.setInt(1, user.getUCODE());
             set = statement.executeQuery();
 
@@ -248,12 +246,12 @@ public class mySqlConn {
 
         String query2 = "SELECT RCODE FROM RIGHTS_CHART WHERE UCODE = ?";
 
-        Connection con = getConnection();
+//        // Connection con = getConnection();
         PreparedStatement statement = null;
         ResultSet set = null;
 
         try {
-            statement = con.prepareStatement(query);
+            statement = static_con.prepareStatement(query);
             set = statement.executeQuery();
 
             while (set.next()) {
@@ -277,7 +275,7 @@ public class mySqlConn {
 
                 if (!user.getUright().equalsIgnoreCase("Admin")) {
                     ArrayList<Users.uRights> rights = new ArrayList<>();
-                    PreparedStatement statement1 = con.prepareStatement(query2);
+                    PreparedStatement statement1 = static_con.prepareStatement(query2);
                     statement1.setInt(1, user.getUCODE());
                     ResultSet set1 = statement1.executeQuery();
                     while (set1.next()) {
@@ -293,7 +291,7 @@ public class mySqlConn {
         } catch (SQLException e) {
             e.printStackTrace();
         } finally {
-            doRelease(con);
+//            // doRelease(con);
         }
 
         return userList;
@@ -305,13 +303,13 @@ public class mySqlConn {
 
         String query = "SELECT RCODE, RNAME FROM RIGHTS_LIST WHERE FREZE = 'N'";
 
-        Connection con = getConnection();
+//        // Connection con = getConnection();
         PreparedStatement statement = null;
         ResultSet set = null;
 
         try {
 
-            statement = con.prepareStatement(query);
+            statement = static_con.prepareStatement(query);
             set = statement.executeQuery();
 
             while (set.next()) {
@@ -325,7 +323,7 @@ public class mySqlConn {
         } catch (SQLException e) {
             e.printStackTrace();
         } finally {
-            doRelease(con);
+//            // doRelease(con);
         }
 
         return rightsList;
@@ -347,8 +345,8 @@ public class mySqlConn {
 
 
         try {
-            Connection con = getConnection();
-            PreparedStatement statement = con.prepareStatement(query);
+//            // Connection con = getConnection();
+            PreparedStatement statement = static_con.prepareStatement(query);
             statement.setString(1, user.getFNAME());
             statement.setString(2, user.getUNAME());
             statement.setString(3, user.getEmail());
@@ -373,20 +371,20 @@ public class mySqlConn {
             statement = null;
 
             if (!user.getUright().equals("Admin")) {
-                statement = con.prepareStatement(delete);
+                statement = static_con.prepareStatement(delete);
                 statement.setInt(1, user.getUCODE());
                 statement.executeUpdate();
 
                 for (Users.uRights u : user.getRights()) {
                     statement = null;
-                    statement = con.prepareStatement(insert);
+                    statement = static_con.prepareStatement(insert);
                     statement.setInt(1, u.getRCODE());
                     statement.setInt(2, user.getUCODE());
                     statement.executeUpdate();
                 }
             }
 
-            doRelease(con);
+//            // doRelease(con);
 
         } catch (SQLException e) {
             e.printStackTrace();
@@ -398,11 +396,11 @@ public class mySqlConn {
 
         String query = "DELETE FROM USERS WHERE UCODE = ?";
 
-        Connection con = getConnection();
+        // Connection con = getConnection();
         PreparedStatement statement = null;
 
         try {
-            statement = con.prepareStatement(query);
+            statement = static_con.prepareStatement(query);
             statement.setInt(1, u.getUCODE());
             statement.executeUpdate();
 
@@ -411,7 +409,7 @@ public class mySqlConn {
         } catch (SQLException e) {
             e.printStackTrace();
         } finally {
-            doRelease(con);
+            // // doRelease(con);
         }
 
     }
@@ -422,13 +420,13 @@ public class mySqlConn {
         String query = "INSERT INTO email_store(EMNO,SBJCT,TOADD,FRADD,TSTMP,EBODY,ATTCH,CCADD,ESOLV,MSGNO,LOCKD," +
                 "FREZE) SELECT IFNULL(max(EMNO),0)+1,?,?,?,?,?,?,?,?,?,?,? from EMAIL_STORE";
 
-        Connection con = getConnection();
+        // Connection con = getConnection();
         PreparedStatement statement = null;
 
         System.out.println(email.getTimestamp());
 
         try {
-            statement = con.prepareStatement(query);
+            statement = static_con.prepareStatement(query);
             statement.setString(1, email.getSubject());
             statement.setString(2, email.getToAddressString());
             statement.setString(3, email.getFromAddressString());
@@ -444,7 +442,7 @@ public class mySqlConn {
 
             statement.close();
             if (eSetting.isAuto())
-                autoReply(con, email, message);
+                autoReply(email, message);
 
         } catch (SQLException e) {
             e.printStackTrace();
@@ -454,7 +452,7 @@ public class mySqlConn {
 
     public static String autoReplySubject = "Burhani Customer Support - Ticket Number: ";
 
-    private void autoReply(Connection con, Email email, Message message) {
+    private void autoReply(Email email, Message message) {
 
         String queryEMNO = "SELECT emno FROM email_store" +
                 " WHERE msgno = ?" +
@@ -463,7 +461,7 @@ public class mySqlConn {
 
         try {
 
-            PreparedStatement statementEMNO = con.prepareStatement(queryEMNO);
+            PreparedStatement statementEMNO = static_con.prepareStatement(queryEMNO);
             statementEMNO.setInt(1, email.getMsgNo());
             statementEMNO.setString(2, email.getSubject());
             statementEMNO.setString(3, email.getTimestamp());
@@ -488,7 +486,7 @@ public class mySqlConn {
         } catch (SQLException e) {
             e.printStackTrace();
         } finally {
-            doRelease(con);
+            // doRelease(con);
         }
     }
 
@@ -505,8 +503,8 @@ public class mySqlConn {
         List<Email> allEmails = new ArrayList<>();
 
         try {
-            Connection con = getConnection();
-            PreparedStatement statement = con.prepareStatement(query);
+            // Connection con = getConnection();
+            PreparedStatement statement = static_con.prepareStatement(query);
             System.out.println(query);
             ResultSet set = statement.executeQuery();
             //-------------Creating Email-------------
@@ -541,7 +539,7 @@ public class mySqlConn {
                 if (set.getInt("LOCKD") == '\0') {
                     email.setLockedByName("Unlocked");
                 } else {
-                    email.setLockedByName(getUserName(con, email.getLockd())); //Getting name of username that locked
+                    email.setLockedByName(getUserName(email.getLockd())); //Getting name of username that locked
                 }                                                              // particular email
 
                 //------From Address
@@ -583,7 +581,7 @@ public class mySqlConn {
                 allEmails.add(email);
             }
 
-            doRelease(con);
+            // doRelease(con);
         } catch (SQLException ex) {
             ex.printStackTrace();
         }
@@ -597,13 +595,13 @@ public class mySqlConn {
         String query = "INSERT INTO email_general(EMNO,SBJCT,TOADD,FRADD,TSTMP,EBODY,ATTCH,CCADD,MSGNO," +
                 "FREZE) SELECT IFNULL(max(EMNO),0)+1,?,?,?,?,?,?,?,?,? from EMAIL_GENERAL";
 
-        Connection con = getConnection();
+        // Connection con = getConnection();
         PreparedStatement statement = null;
 
         System.out.println(email);
 
         try {
-            statement = con.prepareStatement(query);
+            statement = static_con.prepareStatement(query);
             statement.setString(1, email.getSubject());
             statement.setString(2, email.getToAddressString());
             statement.setString(3, email.getFromAddressString());
@@ -636,8 +634,8 @@ public class mySqlConn {
         List<Email> allEmails = new ArrayList<>();
 
         try {
-            Connection con = getConnection();
-            PreparedStatement statement = con.prepareStatement(query);
+            // Connection con = getConnection();
+            PreparedStatement statement = static_con.prepareStatement(query);
             System.out.println(query);
             ResultSet set = statement.executeQuery();
             //-------------Creating Email-------------
@@ -708,7 +706,7 @@ public class mySqlConn {
                 allEmails.add(email);
             }
 
-            doRelease(con);
+            // doRelease(con);
         } catch (SQLException ex) {
             ex.printStackTrace();
         }
@@ -720,13 +718,13 @@ public class mySqlConn {
         String query = "INSERT INTO EMAIL_SENT(EMNO,SBJCT,FRADD,TOADD,CCADD,BCCADD,TSTMP,EBODY,ATTCH,UCODE,FREZE" +
                 ") SELECT IFNULL(max(EMNO),0)+1,?,?,?,?,?,?,?,?,?,? from EMAIL_SENT";
 
-        Connection con = getConnection();
+        // Connection con = getConnection();
         PreparedStatement statement = null;
 
         System.out.println(email.getTimestamp());
 
         try {
-            statement = con.prepareStatement(query);
+            statement = static_con.prepareStatement(query);
             statement.setString(1, email.getSubject());
             statement.setString(2, email.getFromAddressString());
             statement.setString(3, email.getToAddressString());
@@ -760,8 +758,8 @@ public class mySqlConn {
         List<Email> allEmails = new ArrayList<>();
 
         try {
-            Connection con = getConnection();
-            PreparedStatement statement = con.prepareStatement(query);
+            // Connection con = getConnection();
+            PreparedStatement statement = static_con.prepareStatement(query);
             System.out.println(query);
             ResultSet set = statement.executeQuery();
             //-------------Creating Email-------------
@@ -843,7 +841,7 @@ public class mySqlConn {
                 allEmails.add(email);
             }
 
-            doRelease(con);
+            // doRelease(con);
         } catch (SQLException ex) {
             ex.printStackTrace();
         }
@@ -858,11 +856,11 @@ public class mySqlConn {
                 " SET LOCKD = ? " +
                 " WHERE EMNO = ? ";
 
-        Connection con = getConnection();
+        // Connection con = getConnection();
         PreparedStatement statement = null;
 
         try {
-            statement = con.prepareStatement(query);
+            statement = static_con.prepareStatement(query);
 
             if (op == 1) {  //Locking
                 statement.setInt(1, user.getUCODE());
@@ -876,7 +874,7 @@ public class mySqlConn {
         } catch (SQLException e) {
             e.printStackTrace();
         } finally {
-            doRelease(con);
+            // doRelease(con);
         }
 
     }
@@ -891,17 +889,17 @@ public class mySqlConn {
                 " ((select IFNULL(SOLV,0) + 1 AS SOLV from ( select SOLV from users where UCODE = ?) as x))" +
                 " WHERE UCODE = ?";
 
-        Connection con = getConnection();
+        // Connection con = getConnection();
         PreparedStatement statement = null;
 
         try {
-            statement = con.prepareStatement(query);
+            statement = static_con.prepareStatement(query);
             statement.setString(1, flag);
             statement.setInt(2, email.getEmailNo());
             statement.executeUpdate();
             statement.close();
 
-            statement = con.prepareStatement(query2);
+            statement = static_con.prepareStatement(query2);
             statement.setInt(1, user.getUCODE());
             statement.setInt(2, user.getUCODE());
             statement.executeUpdate();
@@ -911,7 +909,7 @@ public class mySqlConn {
         } catch (SQLException e) {
             e.printStackTrace();
         } finally {
-            doRelease(con);
+            // doRelease(con);
         }
 
     }
@@ -922,11 +920,11 @@ public class mySqlConn {
 
         query = query + where;
 
-        Connection con = getConnection();
+        // Connection con = getConnection();
         PreparedStatement statement = null;
 
         try {
-            statement = con.prepareStatement(query);
+            statement = static_con.prepareStatement(query);
             statement.executeUpdate();
 
             statement.close();
@@ -941,9 +939,9 @@ public class mySqlConn {
         String query = "SELECT HOST, EMAIL, PASS, FSPATH, AUTOCHK, DISCCHK, AUTOTXT, DISCTXT FROM EMAIL_SETTINGS " +
                 "WHERE 1";
         System.out.println("1.1");
-        Connection con = getConnection();
+//        // Connection con = getConnection();
         try {
-            PreparedStatement statement = con.prepareStatement(query);
+            PreparedStatement statement = static_con.prepareStatement(query);
             ResultSet set = statement.executeQuery();
             ESetting eSetting;
             while (set.next()) {
@@ -973,11 +971,11 @@ public class mySqlConn {
         String query = "UPDATE EMAIL_SETTINGS SET HOST = ?,EMAIL = ?, PASS = ?, FSPATH = ?," +
                 " AUTOCHK = ?, DISCCHK = ?, AUTOTXT = ?, DISCTXT = ? WHERE ECODE = 1";
 
-        Connection con = getConnection();
+        // Connection con = getConnection();
         PreparedStatement statement = null;
 
         try {
-            statement = con.prepareStatement(query);
+            statement = static_con.prepareStatement(query);
             statement.setString(1, eSetting.getHost());
             statement.setString(2, eSetting.getEmail());
             statement.setString(3, eSetting.getPass());
@@ -1006,11 +1004,11 @@ public class mySqlConn {
                 ",CL_COUNTRY,CL_WEBSITE,CL_TYPE, CL_JOINDATE) " +
                 " SELECT IFNULL(max(CL_ID),0)+1,?,?,?,?,?,?,?,?,?,? from CLIENT_STORE";
 
-        Connection con = getConnection();
+        // Connection con = getConnection();
         PreparedStatement statement = null;
 
         try {
-            statement = con.prepareStatement(query);
+            statement = static_con.prepareStatement(query);
             statement.setString(1, client.getName());
             statement.setString(2, client.getOwner());
             statement.setString(3, client.getEmail());
@@ -1027,7 +1025,7 @@ public class mySqlConn {
 
             statement.executeUpdate();
 
-            EmailsPhoneInsertion(con, statement, client);
+            EmailsPhoneInsertion(statement, client);
 
         } catch (SQLException e) {
             e.printStackTrace();
@@ -1041,13 +1039,13 @@ public class mySqlConn {
                 " CL_EMAIL = ?, CL_PHONE = ?, CL_ADDR = ?, CL_CITY = ?, CL_COUNTRY = ?," +
                 " CL_WEBSITE = ?, CL_TYPE = ?, CL_JOINDATE = ? WHERE CL_ID = ?";
 
-        Connection con = getConnection();
+        // Connection con = getConnection();
         PreparedStatement statement = null;
 
         System.out.println("Client Owner: " + client.getOwner());
 
         try {
-            statement = con.prepareStatement(query);
+            statement = static_con.prepareStatement(query);
             statement.setString(1, client.getName());
             statement.setString(2, client.getOwner());
             statement.setString(3, client.getEmail());
@@ -1065,18 +1063,18 @@ public class mySqlConn {
 
             statement.executeUpdate();
 
-            EmailsPhoneInsertion(con, statement, client);
+            EmailsPhoneInsertion(statement, client);
 
         } catch (SQLException e) {
             e.printStackTrace();
         } finally {
-            doRelease(con);
+            // doRelease(con);
         }
 
 
     }
 
-    private void EmailsPhoneInsertion(Connection con, PreparedStatement statement, Client client) {
+    private void EmailsPhoneInsertion(PreparedStatement statement, Client client) {
 
         String deleteEmails = "DELETE FROM EMAIL_LIST WHERE CL_ID = ?";
 
@@ -1091,7 +1089,7 @@ public class mySqlConn {
 
         try {
             statement = null;
-            statement = con.prepareStatement(deleteEmails);
+            statement = static_con.prepareStatement(deleteEmails);
             statement.setInt(1, client.getCode());
             statement.executeUpdate();
             //Adding Emails
@@ -1102,14 +1100,14 @@ public class mySqlConn {
                 if (emails[i] == null)
                     continue;
 
-                statement = con.prepareStatement(emailList);
+                statement = static_con.prepareStatement(emailList);
                 statement.setString(1, emails[i]);
                 statement.setInt(2, client.getCode());
                 statement.executeUpdate();
             }
 
             statement = null;
-            statement = con.prepareStatement(deletePhones);
+            statement = static_con.prepareStatement(deletePhones);
             statement.setInt(1, client.getCode());
             statement.executeUpdate();
 
@@ -1121,7 +1119,7 @@ public class mySqlConn {
                 if (phones[i] == null)
                     continue;
 
-                statement = con.prepareStatement(phoneList);
+                statement = static_con.prepareStatement(phoneList);
                 statement.setString(1, phones[i]);
                 statement.setInt(2, client.getCode());
                 statement.executeUpdate();
@@ -1133,7 +1131,7 @@ public class mySqlConn {
                         continue;
                     String[] t = emails[i].split("\\@");
                     System.out.println(t);
-                    insertDomainsWhitelist(con, t[1]);
+                    insertDomainsWhitelist(t[1]);
                 } catch (Exception e) {
                     System.out.println(e);
                     continue;
@@ -1142,29 +1140,29 @@ public class mySqlConn {
 
             if (statement != null)
                 statement.close();
-            doRelease(con);
+            // doRelease(con);
         } catch (SQLException e) {
             System.out.println(e);
         }
     }
 
-    public void insertDomainsWhitelist(Connection con, String domain) {
+    public void insertDomainsWhitelist(String domain) {
         String query = "INSERT INTO DOMAIN_LIST(DCODE,DNAME,DWB) " +
                 " SELECT IFNULL(max(DCODE),0)+1,?,? from DOMAIN_LIST";
 
         PreparedStatement statement = null;
 
-        if (con == null)
-            con = getConnection();
+//        if (con == null)
+//            con = getConnection();
 
         try {
-            statement = con.prepareStatement(query);
+            statement = static_con.prepareStatement(query);
             statement.setString(1, domain);
             statement.setInt(2, 1); //WhiteList
             statement.executeUpdate();
             if (statement != null)
                 statement.close();
-//            doRelease(con);
+//            // doRelease(con);
         } catch (SQLException e) {
             System.out.println(e);
             if (statement != null) {
@@ -1182,14 +1180,14 @@ public class mySqlConn {
                 " SELECT IFNULL(max(DCODE),0)+1,?,? from DOMAIN_LIST";
 
         PreparedStatement statement = null;
-        Connection con = getConnection();
+        // Connection con = getConnection();
         try {
 
             for (int i = 0; i < list.length; i++) {
                 if (list[i] == null || list[i].equals(""))
                     continue;
                 statement = null;
-                statement = con.prepareStatement(query);
+                statement = static_con.prepareStatement(query);
                 statement.setString(1, list[i]);
                 statement.setInt(2, 1); //WhiteList
                 statement.executeUpdate();
@@ -1208,12 +1206,28 @@ public class mySqlConn {
         }
     }
 
-    public List<String> getWhiteListDomains() {
-        String query = "SELECT DNAME FROM domain_list WHERE DWB = 1";
+    public void updateDomainType(int type, String domain) {    //1 for White List 2 for Black List
+        String query = "UPDATE  DOMAIN_LIST  SET  DWB = ? WHERE DNAME = ?";
+        PreparedStatement statement = null;
+        try {
+            statement = static_con.prepareStatement(query);
+            statement.setInt(1, type);
+            statement.setString(2, domain);
+            statement.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            // doRelease(con);
+        }
+    }
+
+    public List<String> getWhiteBlackListDomains(int type) {
+        String query = "SELECT DNAME FROM domain_list WHERE DWB = ?";
 
         try {
-            Connection con = getConnection();
-            PreparedStatement statement = con.prepareStatement(query);
+            // Connection con = getConnection();
+            PreparedStatement statement = static_con.prepareStatement(query);
+            statement.setInt(1, type);
             ResultSet set = statement.executeQuery();
 
             List<String> l = new ArrayList<>();
@@ -1235,8 +1249,8 @@ public class mySqlConn {
         String query = "SELECT COUNT(CL_ID) FROM CLIENT_STORE WHERE CL_TYPE = 1";
 
         try {
-            Connection con = getConnection();
-            PreparedStatement statement = con.prepareStatement(query);
+            // Connection con = getConnection();
+            PreparedStatement statement = static_con.prepareStatement(query);
             ResultSet set = statement.executeQuery();
 
             while (set.next())
@@ -1266,8 +1280,8 @@ public class mySqlConn {
         List<Client> allClients = new ArrayList<>();
 
         try {
-            Connection con = getConnection();
-            PreparedStatement statement = con.prepareStatement(query);
+            // Connection con = getConnection();
+            PreparedStatement statement = static_con.prepareStatement(query);
             ResultSet set = statement.executeQuery();
             //-------------Creating Email-------------
             if (!set.isBeforeFirst()) {
@@ -1289,7 +1303,7 @@ public class mySqlConn {
                 client.setJoinDate(set.getString("CL_JOINDATE"));
 
                 //Get all Emails
-                PreparedStatement st = con.prepareStatement(emails);
+                PreparedStatement st = static_con.prepareStatement(emails);
                 st.setInt(1, client.getCode());
                 ResultSet setArray = st.executeQuery();
 
@@ -1303,7 +1317,7 @@ public class mySqlConn {
 
                 //Get all Phone Numbers
                 st = null;
-                st = con.prepareStatement(phones);
+                st = static_con.prepareStatement(phones);
                 st.setInt(1, client.getCode());
                 setArray = null;
                 setArray = st.executeQuery();
@@ -1319,7 +1333,7 @@ public class mySqlConn {
                 allClients.add(client);
             }
 
-            doRelease(con);
+            // doRelease(con);
         } catch (SQLException ex) {
             ex.printStackTrace();
         }
@@ -1336,8 +1350,8 @@ public class mySqlConn {
         String query = "SELECT CT_NAME FROM CLIENT_TYPE";
 
         try {
-            Connection con = getConnection();
-            PreparedStatement statement = con.prepareStatement(query);
+            // Connection con = getConnection();
+            PreparedStatement statement = static_con.prepareStatement(query);
             ResultSet set = statement.executeQuery();
             //-------------Creating Email-------------
             if (!set.isBeforeFirst()) {
@@ -1350,7 +1364,7 @@ public class mySqlConn {
                 types.add(set.getString("CT_NAME"));
             }
 
-            doRelease(con);
+            // doRelease(con);
 
             return types;
 
@@ -1372,7 +1386,7 @@ public class mySqlConn {
         Connection con = null;
         try {
             con = getConnection();
-            PreparedStatement statement = con.prepareStatement(query);
+            PreparedStatement statement = static_con.prepareStatement(query);
             ResultSet set = statement.executeQuery();
             //-------------Creating Email-------------
             if (!set.isBeforeFirst()) {
@@ -1396,7 +1410,7 @@ public class mySqlConn {
         } catch (SQLException ex) {
             ex.printStackTrace();
         } finally {
-            doRelease(con);
+            // doRelease(con);
         }
 
         return null;
@@ -1427,7 +1441,7 @@ public class mySqlConn {
 
         try {
             if (con != null)
-                con.close();
+                static_con.close();
         } catch (SQLException e) {
             e.printStackTrace();
         }

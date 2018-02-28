@@ -16,6 +16,9 @@
         <!-</content>-->
         <!--</ScrollPane>-->
         <JFXButton fx:id="btn_add" buttonType="RAISED" layoutX="27.0" layoutY="314.0" onAction="#addtoWhite" prefHeight="25.0" prefWidth="103.0" styleClass="hbox_menu" text="Add Domain" AnchorPane.bottomAnchor="41.0" AnchorPane.leftAnchor="27.0" />
-      <Label layoutX="105.0" layoutY="16.0" styleClass="boldText" text="WhiteList" />
+      <Label layoutX="105.0" layoutY="16.0" styleClass="boldText" text="WhiteList" AnchorPane.leftAnchor="105.0" AnchorPane.topAnchor="16.0" />
+      <JFXListView fx:id="black_list" layoutX="367.0" layoutY="45.0" prefHeight="276.0" prefWidth="205.0"
+                   AnchorPane.bottomAnchor="79.0" AnchorPane.topAnchor="45.0" />
+      <Label layoutX="445.0" layoutY="16.0" styleClass="boldText" text="BlackList" AnchorPane.topAnchor="16.0" />
     </children>
 </AnchorPane>

@@ -15,16 +15,16 @@ import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Alert;
-import javafx.scene.control.ButtonType;
-import javafx.scene.control.Label;
-import javafx.scene.control.TextArea;
+import javafx.scene.control.*;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Paint;
 import javafx.stage.*;
 import objects.ESetting;
+import objects.Email;
 import objects.Users;
 
 import java.io.IOException;
@@ -56,11 +56,15 @@ public class emailSetController implements Initializable {
     @FXML
     private JFXButton btn_choose;
     @FXML
+    private JFXButton btnGmail;
+    @FXML
     private VBox vbox_menu;
     @FXML
     private BorderPane main_pane;
     @FXML
     private JFXListView<String> white_list;
+    @FXML
+    private JFXListView<String> black_list;
 
     private static ESetting eSetting;
 
@@ -89,6 +93,9 @@ public class emailSetController implements Initializable {
         }
 
         if (EmailSet_type == 1) {
+
+            btnGmail();
+
             System.out.println("tr: " + eSetting.getHost());
             txt_host.setText(eSetting.getHost());
             txt_email.setText(eSetting.getEmail());
@@ -96,20 +103,47 @@ public class emailSetController implements Initializable {
             txt_fspath.setText(eSetting.getFspath());
             check_auto.setSelected(eSetting.isAuto());
             check_disclaimer.setSelected(eSetting.isDisc());
+
+            EmailSet_type = 0;
         } else if (EmailSet_type == 2) {
             init();
+            EmailSet_type = 0;
         }
 
     }
 
+    private void btnGmail() {
+        btnGmail.setText("Gmail Settings");
+        Image image = new Image(getClass().getResourceAsStream("/res/img/gmail.png"), 20, 15, false, false);
+//        button.setPrefSize(menu_pane.getPrefWidth(), 40);
+        btnGmail.getStyleClass().add("btn");
+        btnGmail.setGraphic(new ImageView(image));
+    }
+
     void init() {
-        List<String> whiteList = sql.getWhiteListDomains();
+        List<String> whiteList = sql.getWhiteBlackListDomains(1);
+        List<String> blackList = sql.getWhiteBlackListDomains(2);
         try {
             white_list.getItems().clear();
             white_list.getItems().addAll(whiteList);
+            black_list.getItems().clear();
+            black_list.getItems().addAll(blackList);
         } catch (NullPointerException e) {
             System.out.println(e);
         }
+
+        //Right click menu
+        final ContextMenu contextMenu = new ContextMenu();
+        MenuItem blacklistItem = new MenuItem("BlackList Domain");
+        blacklistItem.setOnAction(t -> {
+            sql.updateDomainType(2, white_list.getSelectionModel().getSelectedItem());
+            init();
+        });
+        contextMenu.getItems().add(blacklistItem);
+        white_list.setContextMenu(contextMenu);
+        white_list.setOnContextMenuRequested(event -> event.consume());
+
+
     }
 
     JFXButton general = new JFXButton("General");
@@ -315,4 +349,11 @@ public class emailSetController implements Initializable {
 
     }
 
+    public void onGmail(ActionEvent actionEvent) {
+
+        txt_host.setText("imap.gmail.com");
+        txt_email.setText("");
+        txt_pass.setText("");
+
+    }
 }
