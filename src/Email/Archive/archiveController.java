@@ -94,7 +94,7 @@ public class archiveController implements Initializable {
         alert2.showAndWait();
 
         if (alert2.getResult() == ButtonType.YES) {
-            sql.ArchiveEmail(where);
+            sql.ArchiveEmail(EmailDashController.Email_Type, where);
             EmailDashController.loadEmailsStatic();
             Stage stage = (Stage) btn_move.getScene().getWindow();
             stage.close();

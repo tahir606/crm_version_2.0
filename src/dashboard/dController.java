@@ -74,39 +74,19 @@ public class dController implements Initializable {
         //Setting Loading Image to ImageView
         img_loader.setVisible(true);
 
-        System.out.println("Step 3");
-//
         network = fHelper.getNetworkDetails();
 
-        System.out.println("Step 4");
+        sql = new mySqlConn();
 
-//        new Thread(() -> {
-            sql = new mySqlConn();
-
-            System.out.println("Step 5");
-
-            eSetting = sql.getEmailSettings();
-
-            System.out.println("Step 6");
-
-            user = fHelper.ReadUserDetails();
-
-            System.out.println("Step 7");
-
-            rightsList = user.getuRightsList();
-
-            System.out.println("Step 8");
-//        }).start();
+        eSetting = sql.getEmailSettings();
+        user = fHelper.ReadUserDetails();
+        rightsList = user.getuRightsList();
 
         SplashScreenThread.hideSplashScreen();
 
         DrawerPane(); //Populate Drawer
 
-        System.out.println("Step 9");
-
         inflateHomeonThread();
-
-        System.out.println("Step 10");
 
         if (user.isEmail()) {
             emailCtrl();
@@ -116,8 +96,6 @@ public class dController implements Initializable {
             isServer = false;
             new Thread(() -> new JClient()).start();
         }
-
-        System.out.println("Step 11");
 
         Platform.setImplicitExit(false);
     }
@@ -468,7 +446,6 @@ public class dController implements Initializable {
         emailThread.start();
 
     }
-
 
 
 }

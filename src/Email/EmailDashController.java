@@ -60,6 +60,8 @@ public class EmailDashController implements Initializable {
     @FXML
     private Label label_locked;
     @FXML
+    private Label label_from;
+    @FXML
     private Label title_locked;
     @FXML
     private TextArea txt_subject;
@@ -78,6 +80,8 @@ public class EmailDashController implements Initializable {
     private VBox vbox_from;
     @FXML
     private VBox vbox_cc;
+    @FXML
+    private VBox vbox_bcc;
     @FXML
     private JFXComboBox<FileDev> combo_attach;
     @FXML
@@ -100,17 +104,15 @@ public class EmailDashController implements Initializable {
     public static String efrom, subject, body;
 
     private static Email selectedEmail = null;
-    public static volatile boolean reload = false;
 
     public static ListView<Email> list_emailsF;
     private static AnchorPane anchor_detailsF;
     private static AnchorPane anchor_bodyF;
 
     public static String[] EMAILS_LIST;
-    private static int Email_Type = 1;
+    public static int Email_Type = 1;
 
     public EmailDashController() {
-
     }
 
     @Override
@@ -133,8 +135,6 @@ public class EmailDashController implements Initializable {
         populateCategoryBoxes();
 
         loadEmails(); //Loading Emails into the list
-
-//        menu_email.setSpacing(10.0);
 
         new Thread(new Runnable() {
             @Override
@@ -195,7 +195,7 @@ public class EmailDashController implements Initializable {
         MenuItem editItem = new MenuItem("Move to Archive");
         editItem.setOnAction(t -> {
             Email selectedItem = list_emails.getSelectionModel().getSelectedItem();
-            sql.ArchiveEmail(" EMNO = " + selectedItem.getEmailNo());
+            sql.ArchiveEmail(Email_Type, " EMNO = " + selectedItem.getEmailNo());
             loadEmails();
         });
         contextMenu.getItems().add(editItem);
@@ -230,7 +230,6 @@ public class EmailDashController implements Initializable {
             }
 
             Email sEmail = selectedEmail;
-
 
             efrom = sEmail.getFromAddress()[0].toString();
             subject = "RE: " + sEmail.getSubject();
@@ -468,7 +467,7 @@ public class EmailDashController implements Initializable {
                 emails = sql.readAllEmails(fHelper.ReadFilter());
                 break;
             case 2:     //General
-                emails = sql.readAllEmailsGeneral(null);
+                emails = sql.readAllEmailsGeneral(fHelper.ReadFilter());
                 break;
             case 3:     //Sent
                 emails = sql.readAllEmailsSent(null);
@@ -506,14 +505,6 @@ public class EmailDashController implements Initializable {
                 return;
             }
 
-            if (Email_Type == 1) {
-                title_locked.setText("Locked By: ");
-                label_locked.setText(email.getLockedByName());
-            } else if (Email_Type == 3) {
-                title_locked.setText("Sent By User: ");
-                label_locked.setText(email.getUser());
-            }
-
             label_time.setText(email.getTimeFormatted());
 
             //----Emails
@@ -522,7 +513,21 @@ public class EmailDashController implements Initializable {
             vbox_cc.getChildren().clear();    //Both VBoxes
             vbox_cc.setSpacing(2.0);
 
-            from = email.getFromAddress();
+            if (Email_Type == 1) {
+                label_from.setText("From:");
+                from = email.getFromAddress();
+                title_locked.setText("Locked By: ");
+                label_locked.setText(email.getLockedByName());
+            } else if (Email_Type == 2) {
+                label_from.setText("From:");
+                from = email.getFromAddress();
+            } else if (Email_Type == 3) {
+                label_from.setText("To:");
+                from = email.getToAddress();
+                title_locked.setText("Sent By User: ");
+                label_locked.setText(email.getUser());
+            }
+
             cc = email.getCcAddress();
             for (Address f : from) {
                 try {

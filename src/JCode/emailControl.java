@@ -113,10 +113,6 @@ public class emailControl {
         Address[] toAddress = message.getRecipients(Message.RecipientType.TO);
         Address[] ccAddress = message.getRecipients(Message.RecipientType.CC);
 
-        trayHelper th = new trayHelper();
-        th.displayNotification("New Email", "Email Received From: " + fromAddress[0].toString());
-        JServer.broadcastMessages(fromAddress[0].toString());
-
         SUBJECT = message.getSubject();
         if (SUBJECT.equals(""))
             SUBJECT = "No Subject";
@@ -175,6 +171,11 @@ public class emailControl {
             sqlConn.insertEmail(email, message);
         else if (tix == 1)
             sqlConn.insertEmailGeneral(email);
+
+        trayHelper th = new trayHelper();
+        th.displayNotification("New Email", "Email Received From: " + fromAddress[0].toString());
+
+        JServer.broadcastMessages(fromAddress[0].toString());   //Notify all client sockets
 
         return result;
     }

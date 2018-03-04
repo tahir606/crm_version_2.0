@@ -19,6 +19,7 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -718,7 +719,6 @@ public class mySqlConn {
         String query = "INSERT INTO EMAIL_SENT(EMNO,SBJCT,FRADD,TOADD,CCADD,BCCADD,TSTMP,EBODY,ATTCH,UCODE,FREZE" +
                 ") SELECT IFNULL(max(EMNO),0)+1,?,?,?,?,?,?,?,?,?,? from EMAIL_SENT";
 
-        // Connection con = getConnection();
         PreparedStatement statement = null;
 
         System.out.println(email.getTimestamp());
@@ -882,20 +882,24 @@ public class mySqlConn {
     public void solvEmail(Email email, String flag, Users user) {
 
         String query = " UPDATE EMAIL_STORE " +     //Query to Update Email status to solve
-                " SET ESOLV = ?" +
+                " SET ESOLV = ?, " +
+                " SOLVTIME = ? " +
                 " WHERE EMNO = ? ";
 
         String query2 = "UPDATE USERS SET SOLV = " +        //Query to +1 solved
                 " ((select IFNULL(SOLV,0) + 1 AS SOLV from ( select SOLV from users where UCODE = ?) as x))" +
                 " WHERE UCODE = ?";
 
-        // Connection con = getConnection();
+        String timeStamp = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.S").format(Calendar.getInstance().getTime());
+        email.setTimestamp(timeStamp);
+
         PreparedStatement statement = null;
 
         try {
             statement = static_con.prepareStatement(query);
             statement.setString(1, flag);
-            statement.setInt(2, email.getEmailNo());
+            statement.setString(2, email.getTimestamp());
+            statement.setInt(3, email.getEmailNo());
             statement.executeUpdate();
             statement.close();
 
@@ -914,9 +918,17 @@ public class mySqlConn {
 
     }
 
-    public void ArchiveEmail(String where) {    //Verb
+    public void ArchiveEmail(int type, String where) {    //Verb
 
-        String query = "UPDATE EMAIL_STORE SET FREZE = 1 WHERE ";
+        String query = "";
+
+        switch (type) {
+            case 1:
+                query = "UPDATE EMAIL_STORE SET FREZE = 1 WHERE ";
+                break;
+            case 2:
+                query = "UPDATE EMAIL_GENERAL SET FREZE = 1 WHERE ";
+        }
 
         query = query + where;
 
