@@ -64,20 +64,22 @@ public class mySqlConn {
                 Connection con = DriverManager.getConnection(
                         URL, USER, PASSWORD);
                 return con;
-            } catch (Exception e) {
+            } catch (SQLException | ClassNotFoundException e) {
                 times++;
+                System.out.println(e);
                 try {
-                    Thread.sleep(5000);
+                    Thread.sleep(8000);
                 } catch (InterruptedException e1) {
                     e1.printStackTrace();
                 }
-                System.out.println(e.getLocalizedMessage());
-                if (times == 6) {
+                if (times == 10) {
                     showAlertDialog();
-                    return null;
+                    break;
                 }
             }
         }
+
+        return null;
     }
 
     public boolean authenticateLogin(String username, String password) {
