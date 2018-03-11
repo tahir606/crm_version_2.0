@@ -49,7 +49,6 @@ public class Main extends Application {
             primaryStage.show();
         } else {
             Parent root = FXMLLoader.load(getClass().getResource("dashboard/dashboard.fxml"));
-            System.out.println("Step 2");
             primaryStage.setTitle("Dashboard- BITS-CRM");
             primaryStage.setScene(new Scene(root, 1200, 500));
 //            primaryStage.setMaximized(true);

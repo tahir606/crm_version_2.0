@@ -54,19 +54,30 @@ public class mySqlConn {
 
     private Connection getConnection() {
 
-        try {
-            Class.forName("com.mysql.jdbc.Driver");
-            DriverManager.setLoginTimeout(2);
-            System.out.println(URL + "\n" + USER + "\n" + PASSWORD);
-            Connection con = DriverManager.getConnection(
-                    URL, USER, PASSWORD);
-            return con;
-        } catch (Exception e) {
-            e.printStackTrace();
-            showAlertDialog();
-        }
+        int times = 1;
 
-        return null;
+        while (true) {
+            try {
+                System.out.println("Trying times: " + times);
+                Class.forName("com.mysql.jdbc.Driver");
+                System.out.println(URL + "\n" + USER + "\n" + PASSWORD);
+                Connection con = DriverManager.getConnection(
+                        URL, USER, PASSWORD);
+                return con;
+            } catch (Exception e) {
+                times++;
+                try {
+                    Thread.sleep(5000);
+                } catch (InterruptedException e1) {
+                    e1.printStackTrace();
+                }
+                System.out.println(e.getLocalizedMessage());
+                if (times == 6) {
+                    showAlertDialog();
+                    return null;
+                }
+            }
+        }
     }
 
     public boolean authenticateLogin(String username, String password) {
@@ -1438,7 +1449,7 @@ public class mySqlConn {
     }
 
     private void showAlertDialog() {
-//        Platform.runLater(() -> {
+
         Alert alert2 = new Alert(Alert.AlertType.ERROR, "Cannot Connect to the Database!",
                 ButtonType.OK);
         alert2.showAndWait();
@@ -1446,7 +1457,7 @@ public class mySqlConn {
         if (alert2.getResult() == ButtonType.OK) {
             System.exit(0);
         }
-//        });
+
     }
 
     private void doRelease(Connection con) {
