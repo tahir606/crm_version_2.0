@@ -2,8 +2,8 @@ package objects;
 
 public class ESetting {
 
-    private String host, email, pass, fspath, autotext, disctext;
-    private boolean auto, disc;
+    private String host, email, pass, fspath, autotext, disctext, solvRespText;
+    private boolean auto, disc, solv;
 
     public ESetting() {
     }
@@ -77,6 +77,14 @@ public class ESetting {
         this.disc = disc;
     }
 
+    public boolean isSolv() {
+        return solv;
+    }
+
+    public void setSolv(boolean solv) {
+        this.solv = solv;
+    }
+
     public String getAutotext() {
         return autotext;
     }
@@ -91,5 +99,13 @@ public class ESetting {
 
     public void setDisctext(String disctext) {
         this.disctext = disctext;
+    }
+
+    public String getSolvRespText() {
+        return solvRespText;
+    }
+
+    public void setSolvRespText(String solvRespText) {
+        this.solvRespText = solvRespText;
     }
 }
