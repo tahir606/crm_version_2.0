@@ -994,7 +994,7 @@ public class mySqlConn {
 //                " SELECT IFNULL(max(ECODE),0)+1,?,?,? from EMAIL_SETTINGS";
 
         String query = "UPDATE EMAIL_SETTINGS SET HOST = ?,EMAIL = ?, PASS = ?, FSPATH = ?," +
-                " AUTOCHK = ?, DISCCHK = ?, AUTOTXT = ?, DISCTXT = ? WHERE ECODE = 1";
+                " AUTOCHK = ?, DISCCHK = ?, AUTOTXT = ?, DISCTXT = ?, SOLVTXT = ?, SOLVCHK = ? WHERE ECODE = 1";
 
         // Connection con = getConnection();
         PreparedStatement statement = null;
@@ -1009,7 +1009,8 @@ public class mySqlConn {
             statement.setBoolean(6, eSetting.isDisc());
             statement.setString(7, eSetting.getAutotext());
             statement.setString(8, eSetting.getDisctext());
-
+            statement.setString(9, eSetting.getSolvRespText());
+            statement.setBoolean(10, eSetting.isSolv());
             statement.executeUpdate();
 
             statement.close();

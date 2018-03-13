@@ -56,6 +56,10 @@ public class emailSetController implements Initializable {
     @FXML
     private JFXButton btn_choose;
     @FXML
+    private JFXCheckBox check_solvResp;
+    @FXML
+    private JFXButton btn_solvResp;
+    @FXML
     private JFXButton btnGmail;
     @FXML
     private VBox vbox_menu;
@@ -71,7 +75,7 @@ public class emailSetController implements Initializable {
     private mySqlConn sql;
     private fileHelper fHelper;
 
-    private static String autoText, discText;
+    private static String autoText, discText, solvRespText;
 
     static int EmailSet_type = 0;
 
@@ -83,8 +87,9 @@ public class emailSetController implements Initializable {
         eSetting = sql.getEmailSettings();
         System.out.println(eSetting);
 
-        autoText = fHelper.ReadAutoDisc(1).getAutotext();
-        discText = fHelper.ReadAutoDisc(2).getAutotext();
+        autoText = eSetting.getAutotext();
+        discText = eSetting.getDisctext();
+        solvRespText = eSetting.getSolvRespText();
 
         try {
             populateCategoryBoxes();
@@ -103,6 +108,7 @@ public class emailSetController implements Initializable {
             txt_fspath.setText(eSetting.getFspath());
             check_auto.setSelected(eSetting.isAuto());
             check_disclaimer.setSelected(eSetting.isDisc());
+            check_solvResp.setSelected(eSetting.isSolv());
 
             EmailSet_type = 0;
         } else if (EmailSet_type == 2) {
@@ -222,6 +228,11 @@ public class emailSetController implements Initializable {
     }
 
     @FXML
+    void setSolvResp(ActionEvent actionEvent) {
+        inflateTextArea(3);
+    }
+
+    @FXML
     void onChoose(ActionEvent event) {
         DirectoryChooser chooser = new DirectoryChooser();
         chooser.setTitle("Select Folder");
@@ -233,7 +244,7 @@ public class emailSetController implements Initializable {
 
         String host, email, pass, fspath;
 
-        boolean auto, disc;
+        boolean auto, disc, solv;
 
         host = txt_host.getText();
         email = txt_email.getText();
@@ -241,6 +252,7 @@ public class emailSetController implements Initializable {
         fspath = txt_fspath.getText();
         auto = check_auto.isSelected();
         disc = check_disclaimer.isSelected();
+        solv = check_solvResp.isSelected();
 
         if (host.equals("") || pass.equals("") || email.equals("") || fspath.equals("")) {
             Toast.makeText((Stage) bnt_save.getScene().getWindow(), "Required fields are empty");
@@ -260,8 +272,12 @@ public class emailSetController implements Initializable {
                 autoText = "";
             if (discText == null)
                 discText = "";
+            if (solvRespText == null)
+                solvRespText = "";
+
             es.setAutotext(autoText);
             es.setDisctext(discText);
+            es.setSolvRespText(solvRespText);
 
             sql.saveEmailSettings(es);
 
@@ -278,15 +294,17 @@ public class emailSetController implements Initializable {
         Stage stage = new Stage();
         stage.initModality(Modality.APPLICATION_MODAL);
         stage.initStyle(StageStyle.UTILITY);
-        String title = (c == 1) ? "Auto Reply" : "Disclamier";
+        String title = (c == 1) ? "Auto Reply" : (c == 2 ? "Disclamier" : "Solved Response");
         stage.setTitle(title);
         AnchorPane pane = new AnchorPane();
         TextArea area = new TextArea();
 
         if (c == 1)         //Auto Reply
             area.setText(autoText);
-        else if (c == 2)     //Disclaimer
+        else if (c == 2)    //Disclaimer
             area.setText(discText);
+        else if (c == 3)    //Solved Response
+            area.setText(solvRespText);
 
 
         area.setMinSize(400, 400);
@@ -356,4 +374,5 @@ public class emailSetController implements Initializable {
         txt_pass.setText("");
 
     }
+
 }
