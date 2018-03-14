@@ -283,7 +283,9 @@ public class dController implements Initializable {
         logoutBtn.setGraphic(new ImageView(image));
         logoutBtn.getStyleClass().add("btn");
         logoutBtn.setAlignment(Pos.CENTER_LEFT);
-        menu_pane.getChildren().add(logoutBtn);
+
+        Platform.runLater(() -> menu_pane.getChildren().add(logoutBtn));
+
 
         logoutBtn.addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler<MouseEvent>() {
             @Override
@@ -338,7 +340,8 @@ public class dController implements Initializable {
         powerBtn.setGraphic(new ImageView(image));
         powerBtn.getStyleClass().add("btn");
         powerBtn.setAlignment(Pos.CENTER_LEFT);
-        menu_pane.getChildren().add(powerBtn);
+
+        Platform.runLater(() -> menu_pane.getChildren().add(powerBtn));
 
         powerBtn.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> System.exit(0));
     }
