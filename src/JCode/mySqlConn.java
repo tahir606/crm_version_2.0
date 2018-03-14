@@ -922,12 +922,32 @@ public class mySqlConn {
             statement.executeUpdate();
             statement.close();
 
+            if (eSetting.isSolv()) {
+                solvResponder(email);
+            }
+
 
         } catch (SQLException e) {
             e.printStackTrace();
         } finally {
             // doRelease(con);
         }
+
+    }
+
+    private void solvResponder(Email email) {
+
+        String sb = "Ticket Number: " + email.getEmailNo() + " Resolved";
+
+        String bd = eSetting.getSolvRespText();
+
+        Email send = new Email();
+        send.setSubject(sb);
+        send.setToAddress(email.getToAddress());
+        send.setCcAddress(email.getCcAddress());
+        send.setBody(bd);
+
+        emailControl.sendEmail(send, null);
 
     }
 
@@ -961,7 +981,8 @@ public class mySqlConn {
 
     public ESetting getEmailSettings() {
 
-        String query = "SELECT HOST, EMAIL, PASS, FSPATH, AUTOCHK, DISCCHK, AUTOTXT, DISCTXT FROM EMAIL_SETTINGS " +
+        String query = "SELECT HOST, EMAIL, PASS, FSPATH, AUTOCHK, DISCCHK, SOLVCHK, AUTOTXT, DISCTXT, SOLVTXT FROM " +
+                "EMAIL_SETTINGS " +
                 "WHERE 1";
         System.out.println("1.1");
 //        // Connection con = getConnection();
@@ -973,8 +994,10 @@ public class mySqlConn {
                 eSetting = new ESetting(set.getString("HOST"), set.getString("EMAIL"),
                         set.getString("PASS"), set.getString("FSPATH"), set.getBoolean("AUTOCHK"),
                         set.getBoolean("DISCCHK"));
+                eSetting.setSolv(set.getBoolean("SOLVCHK"));
                 eSetting.setAutotext(set.getString("AUTOTXT"));
                 eSetting.setDisctext(set.getString("DISCTXT"));
+                eSetting.setSolvRespText(set.getString("SOLVTXT"));
                 return eSetting;
             }
 

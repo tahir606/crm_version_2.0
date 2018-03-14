@@ -268,6 +268,7 @@ public class emailSetController implements Initializable {
             ESetting es = new ESetting(host, email, pass, fspath);
             es.setAuto(auto);
             es.setDisc(disc);
+            es.setSolv(solv);
             if (autoText == null)
                 autoText = "";
             if (discText == null)
@@ -319,6 +320,8 @@ public class emailSetController implements Initializable {
                 autoText = area.getText();
             } else if (c == 2) {    //Disclaimer
                 discText = area.getText();
+            } else if (c == 3) {    //Solved Response
+                solvRespText = area.getText();
             }
         });
 
