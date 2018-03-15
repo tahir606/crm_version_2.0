@@ -319,13 +319,30 @@ public class emailControl {
             message.saveChanges();
 
             //message.setText(multipart);
-            message.setRecipients(Message.RecipientType.TO, email.getToAddress());
+            if (email.getToAddress() == null) { //Just to check if its null
+            } else if (email.getToAddress().length > -1) {
+                Address[] toAdd = email.getToAddress();
+                for (int i = 0; i < toAdd.length; i++) {
+                    if (toAdd[i] != null)
+                        message.addRecipient(Message.RecipientType.TO, toAdd[i]);
+                }
+            }
             if (email.getCcAddress() == null) { //Just to check if its null
-            } else if (email.getCcAddress().length > -1)
-                message.setRecipients(Message.RecipientType.CC, email.getCcAddress());
+            } else if (email.getCcAddress().length > -1) {
+                Address[] ccAdd = email.getCcAddress();
+                for (int i = 0; i < ccAdd.length; i++) {
+                    if (ccAdd[i] != null)
+                        message.addRecipient(Message.RecipientType.CC, ccAdd[i]);
+                }
+            }
             if (email.getBccAddress() == null) { //Just to check if its null
-            } else if (email.getBccAddress().length > -1)
-                message.setRecipients(Message.RecipientType.BCC, email.getBccAddress());
+            } else if (email.getBccAddress().length > -1) {
+                Address[] bccAdd = email.getBccAddress();
+                for (int i = 0; i < bccAdd.length; i++) {
+                    if (bccAdd[i] != null)
+                        message.addRecipient(Message.RecipientType.BCC, bccAdd[i]);
+                }
+            }
 
             //Put Message Reply
             if (messageReply != null) {

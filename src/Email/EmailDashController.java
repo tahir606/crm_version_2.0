@@ -672,7 +672,7 @@ public class EmailDashController implements Initializable {
     @FXML
     public void onSolv(ActionEvent actionEvent) {
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION, "Are you sure you want to mark this as solved?\n" +
-                "This action cannot be taken back.",
+                "This action cannot be taken back. A response will be issued to all concerned Email IDs",
                 ButtonType.YES, ButtonType.NO);
         alert.showAndWait();
 

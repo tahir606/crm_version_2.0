@@ -927,7 +927,7 @@ public class mySqlConn {
             }
 
 
-        } catch (SQLException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         } finally {
             // doRelease(con);
@@ -943,7 +943,7 @@ public class mySqlConn {
 
         Email send = new Email();
         send.setSubject(sb);
-        send.setToAddress(email.getToAddress());
+        send.setToAddress(email.getFromAddress());
         send.setCcAddress(email.getCcAddress());
         send.setBody(bd);
 
