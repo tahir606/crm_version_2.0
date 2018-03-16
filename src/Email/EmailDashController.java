@@ -193,6 +193,13 @@ public class EmailDashController implements Initializable {
             loadEmails();
         });
         contextMenu.getItems().add(editItem);
+        if (Email_Type == 2) {
+            MenuItem createTicket = new MenuItem("Create Ticket");
+            createTicket.setOnAction(t -> {
+
+            });
+            contextMenu.getItems().add(createTicket);
+        }
         list_emails.setContextMenu(contextMenu);
         list_emails.setOnContextMenuRequested(event -> event.consume());
 
