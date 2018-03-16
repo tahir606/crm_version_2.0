@@ -7,6 +7,7 @@ import java.io.InputStreamReader;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Scanner;
 
@@ -15,7 +16,9 @@ public class JServer {
     public static ServerSocket ss;
     private DataOutputStream dos;
 
-    public static List<Socket> sockets = new ArrayList<>();
+    public static LinkedList<Socket> sockets = new LinkedList<>();
+
+//    public static List<Socket> sockets = new ArrayList<>();
 //    private final static int MAX_CLIENTS = 10;
 
     public JServer() {
@@ -66,11 +69,11 @@ public class JServer {
         for (Socket s : sockets) {
             try {
                 DataOutputStream dos = new DataOutputStream(s.getOutputStream());
-                System.out.println("Relaying reloading message to clients");
                 dos.writeUTF(msg);
             } catch (IOException e) {
                 try {
                     s.close();
+                    sockets.remove(s);
                 } catch (IOException e1) {
                     e1.printStackTrace();
                 }

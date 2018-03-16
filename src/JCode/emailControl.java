@@ -2,23 +2,19 @@ package JCode;
 
 
 import JSockets.JServer;
-import com.sun.mail.util.MailConnectException;
 import objects.ESetting;
 import objects.Email;
+import Email.EmailDashController;
 
 import javax.activation.DataHandler;
 import javax.activation.DataSource;
 import javax.activation.FileDataSource;
 import javax.mail.*;
-import javax.mail.Authenticator;
 import javax.mail.PasswordAuthentication;
 import javax.mail.internet.*;
 import javax.mail.search.FlagTerm;
-import javax.mail.search.SearchTerm;
 import java.awt.*;
 import java.net.*;
-import java.text.DateFormat;
-import java.text.ParseException;
 import java.util.List;
 import java.io.*;
 import java.text.SimpleDateFormat;
@@ -174,6 +170,8 @@ public class emailControl {
 
         trayHelper th = new trayHelper();
         th.displayNotification("New Email", "Email Received From: " + fromAddress[0].toString());
+
+        EmailDashController.loadEmailsStatic();
 
         JServer.broadcastMessages(fromAddress[0].toString());   //Notify all client sockets
 

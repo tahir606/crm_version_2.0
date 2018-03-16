@@ -642,7 +642,7 @@ public class mySqlConn {
         if (where == null) {
             query = query + " ORDER BY EMNO DESC";
         } else {
-            query = query + where;
+            query = query + where + " ORDER BY EMNO DESC";
         }
 
         List<Email> allEmails = new ArrayList<>();
@@ -686,9 +686,12 @@ public class mySqlConn {
                 Address[] fromAddress = new Address[from.length];
                 for (int i = 1, j = 0; i < from.length; i++, j++) {
                     try {
-                        fromAddress[j] = new InternetAddress(from[i]);
+                        if (from[j] != null)
+                            fromAddress[j] = new InternetAddress(from[i]);
                     } catch (AddressException e) {
                         e.printStackTrace();
+                        fromAddress[j] = new InternetAddress();
+                        continue;
                     }
                 }
                 email.setFromAddress(fromAddress);

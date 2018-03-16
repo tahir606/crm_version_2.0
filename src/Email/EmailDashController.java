@@ -134,7 +134,7 @@ public class EmailDashController implements Initializable {
 
         populateCategoryBoxes();
 
-        loadEmails(); //Loading Emails into the list
+//        loadEmails(); //Loading Emails into the list
 
         new Thread(new Runnable() {
             @Override
@@ -158,13 +158,7 @@ public class EmailDashController implements Initializable {
                 reload.setMinSize(100, menu_email.getHeight());
                 reload.setGraphic(new ImageView(new Image(getClass().getResourceAsStream("/res/img/refresh.png"))));
                 reload.getStyleClass().add("btnMenu");
-                reload.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
-                    if (selectedEmail != null) {
-                        loadEmails(selectedEmail);
-                    } else {
-                        loadEmails();
-                    }
-                });
+                reload.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> loadEmails());
 
                 JFXButton filter = new JFXButton("Filters");
                 filter.setMinSize(100, menu_email.getHeight());
@@ -252,9 +246,9 @@ public class EmailDashController implements Initializable {
     }
 
 
-    JFXButton allMail = new JFXButton("General");
-    JFXButton tickets = new JFXButton("Tickets");
-    JFXButton sentMail = new JFXButton("Sent");
+    static JFXButton allMail = new JFXButton("General");
+    static JFXButton tickets = new JFXButton("Tickets");
+    static JFXButton sentMail = new JFXButton("Sent");
 
     private void populateCategoryBoxes() {
 
@@ -299,15 +293,16 @@ public class EmailDashController implements Initializable {
 
         btn.getStyleClass().add("btnMenuBoxPressed");
 
-        Email_Type = type;
+        if (type != Email_Type) {
+            Email_Type = type;
+            selectedEmail = null;
+        }
 
         if (type != 1) {
             combo_respond.setDisable(false);
         }
 
         loadEmails();
-
-
     }
 
     //OPENING RESPONSE STAGE
@@ -316,8 +311,6 @@ public class EmailDashController implements Initializable {
             FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("EResponse/EResponse.fxml"));
             Parent root1 = (Parent) fxmlLoader.load();
             Stage stage2 = new Stage();
-//            stage2.initModality(Modality.APPLICATION_MODAL);
-//            stage2.initStyle(StageStyle.UTILITY);
             stage2.setTitle("Respond");
             stage2.setScene(new Scene(root1));
             trayHelper tray = new trayHelper();
@@ -367,98 +360,44 @@ public class EmailDashController implements Initializable {
         }
     }
 
-    //OPENING THE Archive
-    private void inflatesentMail() {
-        try {
-            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("SentMail/sent.fxml"));
-            Parent root1 = (Parent) fxmlLoader.load();
-            Stage stage2 = new Stage();
-            stage2.initModality(Modality.APPLICATION_MODAL);
-            stage2.initStyle(StageStyle.UTILITY);
-            stage2.setTitle("Sent Mail");
-            stage2.setScene(new Scene(root1));
-            trayHelper tray = new trayHelper();
-            tray.createIcon(stage2);
-            Platform.setImplicitExit(true);
-            stage2.show();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
     public void loadEmails() {
-        new Thread(() -> Platform.runLater(() -> {
-            list_emails.getItems().clear();
-            list_emails.getItems().addAll(checkIfEmailsExist());
+        Email temp = selectedEmail;
+        list_emails.getItems().clear();
+        selectedEmail = temp;
+        list_emails.getItems().addAll(checkIfEmailsExist());
 
+        if (selectedEmail == null) {
             anchor_body.setVisible(false);
             anchor_details.setVisible(false);
-
             imgLoader.setVisible(false);
-        })).start();
-    }
+            return;
+        }
 
-    void loadEmails(Email e) {      //Loads an email and sets a particular email as selected
-        new Thread(() -> {
-            Platform.runLater(() -> {
-                int index = -1;
-                list_emails.getItems().clear();
-                list_emails.getItems().addAll(checkIfEmailsExist());
-
-                for (Email email : list_emails.getItems()) {
-                    index++;
-                    if (email.getEmailNo() == e.getEmailNo()) {
-                        break;
-                    }
-                }
-                list_emails.getSelectionModel().select(index);
-            });
-
-            imgLoader.setVisible(false);
-        }).start();
+        int index = -1;
+        for (Email email : list_emails.getItems()) {
+            index++;
+            if (email.getEmailNo() == selectedEmail.getEmailNo()) {
+                break;
+            }
+        }
+        list_emails.getSelectionModel().select(index);
     }
 
     public static void loadEmailsStatic() {      //Load Emails from other controller
-        new Thread(() -> {
-            imgLoader.setVisible(true);
 
-            System.out.println("Loading EMails Static");
+        imgLoader.setVisible(true);
 
-            Email e = selectedEmail;
+        if (Email_Type == 1) {
+            Platform.runLater(() -> tickets.fire());
+        } else if (Email_Type == 2) {
+            Platform.runLater(() -> allMail.fire());
+        }
 
-            mySqlConn sql = new mySqlConn();
-            fileHelper helper = new fileHelper();
-
-            List<Email> emails = sql.readAllEmails(helper.ReadFilter());
-
-            Platform.runLater(() -> {
-                int index = -1;
-                list_emailsF.getItems().clear();
-                list_emailsF.getItems().addAll(emails);
-
-                if (selectedEmail == null) {
-                    imgLoader.setVisible(false);
-                    anchor_detailsF.setVisible(false);
-                    anchor_bodyF.setVisible(false);
-                    return;
-                }
-
-                for (Email email : list_emailsF.getItems()) {
-                    index++;
-                    if (email.getEmailNo() == e.getEmailNo()) {
-                        break;
-                    }
-                }
-                list_emailsF.getSelectionModel().select(index);
-            });
-
-            imgLoader.setVisible(false);
-        }).start();
+        imgLoader.setVisible(false);
     }
 
 
     private List<Email> checkIfEmailsExist() {
-
 
         List<Email> emails = null;
 
@@ -467,7 +406,7 @@ public class EmailDashController implements Initializable {
                 emails = sql.readAllEmails(fHelper.ReadFilter());
                 break;
             case 2:     //General
-                emails = sql.readAllEmailsGeneral(fHelper.ReadFilter());
+                emails = sql.readAllEmailsGeneral(" WHERE FREZE = 0");
                 break;
             case 3:     //Sent
                 emails = sql.readAllEmailsSent(null);
@@ -601,7 +540,6 @@ public class EmailDashController implements Initializable {
 
             //Buttons
             if (email.getSolvFlag() == 'S') {    //If Email is solved disable all buttons
-//                            System.out.println("If Email is solved disable all buttons");
 
                 title_locked.setText("Solved By: ");
                 label_locked.setText(email.getLockedByName());
@@ -614,11 +552,8 @@ public class EmailDashController implements Initializable {
 
                 combo_respond.setDisable(true);
             } else {    //If Email is not solved
-//                            System.out.println("If Email is not solved");
                 if (email.getLockd() != '\0') {     //If Email is locked
-//                                System.out.println("If Email is locked");
                     if (email.getLockd() == user.getUCODE()) {      //If Email is locked by YOU
-//                                    System.out.println("If Email is locked by YOU");
                         btn_lock.setVisible(false);
                         btn_unlock.setVisible(true);
                         btn_unlock.setDisable(false);
@@ -626,7 +561,6 @@ public class EmailDashController implements Initializable {
 
                         combo_respond.setDisable(false);
                     } else {                        //If Email is locked but NOT by you
-//                                    System.out.println("If Email is locked but NOT by you");
                         btn_unlock.setVisible(false);
                         btn_lock.setVisible(true);
                         btn_lock.setDisable(true);
@@ -635,7 +569,6 @@ public class EmailDashController implements Initializable {
                         combo_respond.setDisable(true);
                     }
                 } else {                            //If Email is not locked
-//                                System.out.println("If Email is not locked");
                     btn_lock.setDisable(false);
                     btn_lock.setVisible(true);
                     btn_unlock.setVisible(false);
@@ -651,22 +584,18 @@ public class EmailDashController implements Initializable {
 
     public void onLock(ActionEvent actionEvent) {
         imgLoader.setVisible(true);
-        new Thread(() -> {
-            sql.lockEmail(selectedEmail, 1);
-            loadEmails(selectedEmail);
-            reloadInstances();
-        }).start();
+        sql.lockEmail(selectedEmail, 1);
+        loadEmailsStatic();
+        reloadInstances();
     }
 
     @FXML
     public void unLock(ActionEvent actionEvent) {
         imgLoader.setVisible(true);
-        new Thread(() -> {
-            Email email = selectedEmail;
-            sql.lockEmail(email, 0);
-            loadEmails(email);
-            reloadInstances();
-        }).start();
+        Email email = selectedEmail;
+        sql.lockEmail(email, 0);
+        loadEmailsStatic();
+        reloadInstances();
     }
 
     @FXML
@@ -678,7 +607,7 @@ public class EmailDashController implements Initializable {
 
         if (alert.getResult() == ButtonType.YES) {
             sql.solvEmail(selectedEmail, "S", user); // S for solved
-            loadEmails(selectedEmail);
+            loadEmailsStatic();
             reloadInstances();
         } else {
             return;

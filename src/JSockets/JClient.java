@@ -4,6 +4,7 @@ import Email.EmailDashController;
 import JCode.fileHelper;
 import JCode.trayHelper;
 import dashboard.dController;
+import objects.Email;
 import objects.Network;
 
 import java.io.DataInputStream;
@@ -50,10 +51,13 @@ public class JClient {
                         String d = dis.readUTF();
                         if (d.equals("R")) {
 //                            EmailDashController.reload = true;
+                            System.out.println("Listened for");
                             EmailDashController.loadEmailsStatic();
                         }
-                        else
+                        else {
                             th.displayNotification("Email Received", "Email Received from " + d);
+                            EmailDashController.loadEmailsStatic();
+                        }
                     } catch (IOException e) {
                         // The client may have closed the socket.
                         isServerOpen = false;
