@@ -21,6 +21,8 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.Label;
+import javafx.scene.control.Menu;
+import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.TextArea;
 import javafx.scene.image.Image;
@@ -28,6 +30,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.ContextMenuEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Modality;
@@ -73,7 +76,8 @@ public class EmailDashController implements Initializable {
     private JFXButton btn_unlock;
     @FXML
     private JFXComboBox<String> combo_respond;
-
+    @FXML
+    private BorderPane border_email;
     @FXML
     private VBox category_box;
     @FXML
@@ -86,6 +90,8 @@ public class EmailDashController implements Initializable {
     private JFXComboBox<FileDev> combo_attach;
     @FXML
     private HBox menu_email;
+    @FXML
+    private MenuBar menu_bar;
 
     @FXML
     private JFXButton menu_reload;
@@ -135,47 +141,73 @@ public class EmailDashController implements Initializable {
         populateCategoryBoxes();
 
 //        loadEmails(); //Loading Emails into the list
+//
+//        new Thread(() -> {
+            //1) Populating Top Menu
+            //  a) Creating and adding listeners to Buttons
+//                JFXButton email = new JFXButton("New Email");
+//                email.setMinSize(100, menu_email.getHeight());
+//                email.setGraphic(new ImageView(new Image(getClass().getResourceAsStream("/res/img/newmail.png"))));
+//                email.getStyleClass().add("btnMenu");
+//                email.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
+//                    efrom = "";
+//                    subject = "";
+//                    body = "";
+//                    ReplyForward = 'N'; //N for New.
+//
+//                    inflateEResponse();
+//                });
 
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                //1) Populating Top Menu
-                //  a) Creating and adding listeners to Buttons
-                JFXButton email = new JFXButton("New Email");
-                email.setMinSize(100, menu_email.getHeight());
-                email.setGraphic(new ImageView(new Image(getClass().getResourceAsStream("/res/img/newmail.png"))));
-                email.getStyleClass().add("btnMenu");
-                email.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
-                    efrom = "";
-                    subject = "";
-                    body = "";
-                    ReplyForward = 'N'; //N for New.
+            Menu newMenu = new Menu("New");
+//            newMenu.setGraphic(new ImageView(new Image(getClass().getResourceAsStream("/res/img/newmail.png"))));
+            MenuItem newEmail = new MenuItem("New Email");
+            newEmail.setOnAction(event -> {
+                efrom = "";
+                subject = "";
+                body = "";
+                ReplyForward = 'N'; //N for New.
 
-                    inflateEResponse();
-                });
+                inflateEResponse();
+            });
+            newMenu.getItems().add(newEmail);
+            MenuItem newTicket = new MenuItem("New Ticket");
+            newTicket.setOnAction(event -> {
 
-                JFXButton reload = new JFXButton("Refresh");
-                reload.setMinSize(100, menu_email.getHeight());
-                reload.setGraphic(new ImageView(new Image(getClass().getResourceAsStream("/res/img/refresh.png"))));
-                reload.getStyleClass().add("btnMenu");
-                reload.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> loadEmails());
+            });
 
-                JFXButton filter = new JFXButton("Filters");
-                filter.setMinSize(100, menu_email.getHeight());
-                filter.setGraphic(new ImageView(new Image(getClass().getResourceAsStream("/res/img/filter.png"))));
-                filter.getStyleClass().add("btnMenu");
-                filter.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> inflateFilters());
+            menu_bar.getMenus().add(newMenu);
+//
+            Menu edit = new Menu("Edit");
 
-                JFXButton archive = new JFXButton("Move to Archive");
-                archive.setMinSize(1, menu_email.getHeight());
-                archive.setGraphic(new ImageView(new Image(getClass().getResourceAsStream("/res/img/archive.png"))));
-                archive.getStyleClass().add("btnMenu");
-                archive.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> inflateArchive());
+            MenuItem reload = new MenuItem("Refresh");
+//            reload.setMinSize(100, menu_email.getHeight());
+//            reload.setGraphic(new ImageView(new Image(getClass().getResourceAsStream("/res/img/refresh.png"))));
+//            reload.getStyleClass().add("btnMenu");
+//            reload.setOnAction(event -> loadEmails());
+            reload.setOnAction(event -> loadEmails());
 
-                Platform.runLater(() -> menu_email.getChildren().addAll(email, reload, filter, archive));
+            edit.getItems().add(reload);
 
-            }
-        }).start();
+            MenuItem filter = new MenuItem("Filters");
+//            filter.setMinSize(100, menu_email.getHeight());
+//            filter.setGraphic(new ImageView(new Image(getClass().getResourceAsStream("/res/img/filter.png"))));
+//            filter.getStyleClass().add("btnMenu");
+//            filter.setOnAction(event -> inflateFilters());
+            filter.setOnAction(event -> inflateFilters());
+
+            edit.getItems().add(filter);
+
+            MenuItem archive = new MenuItem("Move to Archive");
+//            archive.setMinSize(1, menu_email.getHeight());
+//            archive.setGraphic(new ImageView(new Image(getClass().getResourceAsStream("/res/img/archive.png"))));
+//            archive.getStyleClass().add("btnMenu");
+            archive.setOnAction(event -> inflateArchive());
+
+            edit.getItems().add(archive);
+
+            menu_bar.getMenus().add(edit);
+//
+//        }).start();
 
         //Populating List
         //Creates the changes in the Details Section
@@ -183,25 +215,6 @@ public class EmailDashController implements Initializable {
             selectedEmail = newValue;
             populateDetails(selectedEmail);
         });
-
-        //Right click menu
-        final ContextMenu contextMenu = new ContextMenu();
-        MenuItem editItem = new MenuItem("Move to Archive");
-        editItem.setOnAction(t -> {
-            Email selectedItem = list_emails.getSelectionModel().getSelectedItem();
-            sql.ArchiveEmail(Email_Type, " EMNO = " + selectedItem.getEmailNo());
-            loadEmails();
-        });
-        contextMenu.getItems().add(editItem);
-        if (Email_Type == 2) {
-            MenuItem createTicket = new MenuItem("Create Ticket");
-            createTicket.setOnAction(t -> {
-
-            });
-            contextMenu.getItems().add(createTicket);
-        }
-        list_emails.setContextMenu(contextMenu);
-        list_emails.setOnContextMenuRequested(event -> event.consume());
 
         //Attaching listener to attaching combo box
         combo_attach.valueProperty().addListener((observable, oldValue, newValue) -> {
@@ -310,6 +323,29 @@ public class EmailDashController implements Initializable {
         }
 
         loadEmails();
+
+        //Right click menu
+        ContextMenu contextMenu = new ContextMenu();
+        MenuItem editItem = new MenuItem("Move to Archive");
+        editItem.setOnAction(t -> {
+            Email selectedItem = list_emails.getSelectionModel().getSelectedItem();
+            sql.ArchiveEmail(Email_Type, " EMNO = " + selectedItem.getEmailNo());
+            loadEmails();
+        });
+        contextMenu.getItems().add(editItem);
+        if (Email_Type == 2) {
+            MenuItem createTicket = new MenuItem("Create Ticket");
+            createTicket.setOnAction(t -> {
+                Email selectedItem = list_emails.getSelectionModel().getSelectedItem();
+                System.out.println(selectedItem);
+                sql.insertEmailManual(selectedItem);
+                sql.ArchiveEmail(Email_Type, " EMNO = " + selectedItem.getEmailNo());
+                loadEmails();
+            });
+            contextMenu.getItems().add(createTicket);
+        }
+        list_emails.setContextMenu(contextMenu);
+        list_emails.setOnContextMenuRequested(event -> event.consume());
     }
 
     //OPENING RESPONSE STAGE

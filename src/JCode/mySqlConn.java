@@ -464,6 +464,37 @@ public class mySqlConn {
 
     }
 
+    public void insertEmailManual(Email email) {
+
+        String query = "INSERT INTO email_store(EMNO,SBJCT,TOADD,FRADD,TSTMP,EBODY,ATTCH,CCADD,ESOLV,MSGNO,LOCKD," +
+                "FREZE) SELECT IFNULL(max(EMNO),0)+1,?,?,?,?,?,?,?,?,?,?,? from EMAIL_STORE";
+
+        // Connection con = getConnection();
+        PreparedStatement statement = null;
+
+        try {
+            statement = static_con.prepareStatement(query);
+            statement.setString(1, email.getSubject());
+            statement.setString(2, email.getToAddressString());
+            statement.setString(3, email.getFromAddressString());
+            statement.setString(4, email.getTimestamp());
+            statement.setString(5, email.getBody());
+            statement.setString(6, email.getAttch());
+            statement.setString(7, email.getCcAddressString());
+            statement.setString(8, String.valueOf(email.getSolvFlag()));
+            statement.setInt(9, email.getMsgNo());
+            statement.setInt(10, email.getLockd());
+            statement.setBoolean(11, email.isFreze());
+            statement.executeUpdate();
+
+            statement.close();
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+    }
+
     public static String autoReplySubject = "Burhani Customer Support - Ticket Number: ";
 
     private void autoReply(Email email, Message message) {

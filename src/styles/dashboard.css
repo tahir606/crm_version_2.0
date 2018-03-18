@@ -4,7 +4,30 @@
     -fx-font-size: 8pt;
     -fx-font-weight: 900;
 }
+/*
+.menu .label {
+    -fx-text-fill: white;
+    -fx-focus-color: transparent;
+}
 
+.menu-item {
+    -fx-background-color: #396042;
+}
+
+.menu-item: hover {
+    -fx-scale-y: 1.1;
+    -fx-scale-x: 1.1;
+}
+
+.menu: hover {
+    -fx-scale-y: 1.1;
+    -fx-scale-x: 1.1;
+}
+
+.menu-bar {
+    -fx-background-color: #396042;
+}
+*/
 .boldText {
     -fx-font-size: 11pt;
     -fx-text-fill: #002b05;
