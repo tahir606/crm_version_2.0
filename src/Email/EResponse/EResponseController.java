@@ -265,7 +265,10 @@ public class EResponseController implements Initializable {
         else
             em.setAttch("");
 
-        helper.sendEmail(em, null);
+        if (choice == 1)
+            helper.sendEmail(em, null);
+        else if (choice == 2)
+            
 
         Stage stage = (Stage) btn_Send.getScene().getWindow();
         stage.close();
