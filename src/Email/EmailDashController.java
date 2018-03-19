@@ -172,7 +172,12 @@ public class EmailDashController implements Initializable {
             newMenu.getItems().add(newEmail);
             MenuItem newTicket = new MenuItem("New Ticket");
             newTicket.setOnAction(event -> {
+                efrom = "";
+                subject = "";
+                body = "";
+                ReplyForward = 'N'; //N for New.
 
+                inflateEResponse();
             });
 
             menu_bar.getMenus().add(newMenu);

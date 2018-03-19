@@ -53,6 +53,8 @@ public class EResponseController implements Initializable {
     @FXML
     private HBox hbox_to, hbox_cc, hbox_bcc;
 
+    public static int choice = 0;
+
     List<File> file;
 
     emailControl helper = new emailControl();
