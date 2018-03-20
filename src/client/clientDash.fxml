@@ -1,17 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Menu?>
+<?import javafx.scene.control.MenuBar?>
+<?import javafx.scene.control.MenuItem?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.BorderPane?>
-<?import javafx.scene.layout.HBox?>
 
 <BorderPane fx:id="main_pane" prefHeight="500.0" prefWidth="1100.0" stylesheets="@../styles/clients.css" xmlns="http://javafx.com/javafx/9" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.clientDashController">
-    <top>
-        <HBox fx:id="menu_client" prefHeight="34.0" prefWidth="945.0" styleClass="hbox_menu">
-            <children>
-            </children>
-        </HBox>
-    </top>
+    <!--<top>-->
+        <!--<HBox fx:id="menu_client" prefHeight="34.0" prefWidth="945.0" styleClass="hbox_menu">-->
+            <!--<children>-->
+            <!--</children>-->
+        <!--</HBox>-->
+    <!--</top>-->
    <center>
         <AnchorPane fx:id="pane_client" prefHeight="472.0" prefWidth="1152.0" BorderPane.alignment="CENTER">
             <children>
@@ -20,5 +22,11 @@
             </children>
         </AnchorPane>
    </center>
+   <top>
+      <MenuBar fx:id="menu_clients" BorderPane.alignment="CENTER">
+        <menus>
+        </menus>
+      </MenuBar>
+   </top>
 
 </BorderPane>

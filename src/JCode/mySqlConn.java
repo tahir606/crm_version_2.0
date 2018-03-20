@@ -18,10 +18,8 @@ import java.sql.*;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Calendar;
+import java.util.*;
 import java.util.Date;
-import java.util.List;
 
 public class mySqlConn {
 
@@ -786,6 +784,12 @@ public class mySqlConn {
 
             statement.close();
 
+            String[] allEmails = (email.getToAddressString() + "^"
+                    + email.getCcAddressString() + "^"
+                    + email.getBccAddressString()).split("\\^");
+
+            EmailsListInsertion(allEmails);
+
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -1224,6 +1228,31 @@ public class mySqlConn {
             if (statement != null)
                 statement.close();
             // doRelease(con);
+        } catch (SQLException e) {
+            System.out.println(e);
+        }
+    }
+
+    private void EmailsListInsertion(String[] emails) {
+
+        String emailList = "INSERT INTO EMAIL_LIST(EM_ID,EM_NAME) " +
+                "SELECT IFNULL(max(EM_ID),0)+1,? from EMAIL_LIST";
+
+        try {
+            PreparedStatement statement = null;
+
+            for (int i = 0; i < emails.length; i++) {   //Inserting Emailss
+                statement = null;
+                if (emails[i] == null || emails[i].equals(""))
+                    continue;
+
+                statement = static_con.prepareStatement(emailList);
+                statement.setString(1, emails[i]);
+                statement.executeUpdate();
+            }
+
+            if (statement != null)
+                statement.close();
         } catch (SQLException e) {
             System.out.println(e);
         }

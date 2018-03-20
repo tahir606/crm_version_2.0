@@ -2,6 +2,7 @@ package Email.EResponse;
 
 import Email.EmailDashController;
 import JCode.emailControl;
+import JCode.mySqlConn;
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXTextField;
 import javafx.beans.value.ChangeListener;
@@ -25,10 +26,8 @@ import javax.mail.internet.AddressException;
 import javax.mail.internet.InternetAddress;
 import java.io.File;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.ResourceBundle;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 public class EResponseController implements Initializable {
 
@@ -53,7 +52,7 @@ public class EResponseController implements Initializable {
     @FXML
     private HBox hbox_to, hbox_cc, hbox_bcc;
 
-    public static int choice = 0;
+    public static volatile int choice = 1;
 
     List<File> file;
 
@@ -67,6 +66,11 @@ public class EResponseController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+
+        if (choice == 1)
+            btn_Send.setText("Send");
+        else if (choice == 2)
+            btn_Send.setText("Create");
 
         String[] emails = EmailDashController.EMAILS_LIST;
 
@@ -267,8 +271,14 @@ public class EResponseController implements Initializable {
 
         if (choice == 1)
             helper.sendEmail(em, null);
-        else if (choice == 2)
-            
+        else if (choice == 2) {
+            mySqlConn sql = new mySqlConn();
+            em.setFromAddress(em.getToAddress());
+            String timeStamp = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.S").format(Calendar.getInstance().getTime());
+            em.setTimestamp(timeStamp);
+            sql.insertEmailManual(em);
+            EmailDashController.loadEmailsStatic();
+        }
 
         Stage stage = (Stage) btn_Send.getScene().getWindow();
         stage.close();

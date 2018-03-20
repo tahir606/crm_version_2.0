@@ -12,6 +12,9 @@ import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
+import javafx.scene.control.Menu;
+import javafx.scene.control.MenuBar;
+import javafx.scene.control.MenuItem;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
@@ -38,25 +41,40 @@ public class clientDashController implements Initializable {
     @FXML
     private AnchorPane pane_client;
     @FXML
-    private AnchorPane anchor_holder;
+    private MenuBar menu_clients;
 
     private ImageView img_loader = dController.img_load;
     private int currentPane = 0;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        newClientButton();
+        populateMenuBar();
     }
 
-    private void newClientButton() {
-        JFXButton newClient = new JFXButton("Edit Client");
-        Image imageA = new Image(getClass().getResourceAsStream("/res/img/edit.png"));
-        newClient.setPrefSize(110, menu_client.getHeight());
-        newClient.setOnAction(event -> inflatePane("newClient/newClient.fxml", 1));
-        newClient.setGraphic(new ImageView(imageA));
-        newClient.getStyleClass().add("btnMenu");
+//    private void newClientButton() {
+//        JFXButton newClient = new JFXButton("Edit Client");
+//        Image imageA = new Image(getClass().getResourceAsStream("/res/img/edit.png"));
+//        newClient.setPrefSize(110, menu_client.getHeight());
+//        newClient.setOnAction(event -> inflatePane("newClient/newClient.fxml", 1));
+//        newClient.setGraphic(new ImageView(imageA));
+//        newClient.getStyleClass().add("btnMenu");
+//
+//        menu_client.getChildren().addAll(newClient);
+//    }
 
-        menu_client.getChildren().addAll(newClient);
+    private void populateMenuBar() {
+
+        Menu menuEdit = new Menu("Edit");
+
+        MenuItem newClient = new MenuItem("Edit Client");
+//        Image imageA = new Image(getClass().getResourceAsStream("/res/img/edit.png"));
+//        newClient.setPrefSize(110, menu_client.getHeight());
+        newClient.setOnAction(event -> inflatePane("newClient/newClient.fxml", 1));
+//        newClient.setGraphic(new ImageView(imageA));
+//        newClient.getStyleClass().add("btnMenu");
+        menuEdit.getItems().addAll(newClient);
+
+        menu_clients.getMenus().add(menuEdit);
     }
 
     private void viewClients() {
