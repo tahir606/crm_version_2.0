@@ -114,11 +114,11 @@ public class dController implements Initializable {
                         break;
                     }
                     case 2: {
-                        adminButton();
+                        clientButton();
                         break;
                     }
                     case 3: {
-                        clientButton();
+                        adminButton();
                         break;
                     }
                 }

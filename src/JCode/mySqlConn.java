@@ -467,7 +467,6 @@ public class mySqlConn {
         String query = "INSERT INTO email_store(EMNO,SBJCT,TOADD,FRADD,TSTMP,EBODY,ATTCH,CCADD,ESOLV,MSGNO,LOCKD," +
                 "FREZE,MANUAL) SELECT IFNULL(max(EMNO),0)+1,?,?,?,?,?,?,?,?,?,?,?,? from EMAIL_STORE";
 
-        // Connection con = getConnection();
         PreparedStatement statement = null;
 
         try {
