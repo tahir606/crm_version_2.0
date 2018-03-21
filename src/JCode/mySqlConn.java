@@ -465,7 +465,7 @@ public class mySqlConn {
     public void insertEmailManual(Email email) {
 
         String query = "INSERT INTO email_store(EMNO,SBJCT,TOADD,FRADD,TSTMP,EBODY,ATTCH,CCADD,ESOLV,MSGNO,LOCKD," +
-                "FREZE) SELECT IFNULL(max(EMNO),0)+1,?,?,?,?,?,?,?,?,?,?,? from EMAIL_STORE";
+                "FREZE,MANUAL) SELECT IFNULL(max(EMNO),0)+1,?,?,?,?,?,?,?,?,?,?,?,? from EMAIL_STORE";
 
         // Connection con = getConnection();
         PreparedStatement statement = null;
@@ -479,10 +479,11 @@ public class mySqlConn {
             statement.setString(5, email.getBody());
             statement.setString(6, email.getAttch());
             statement.setString(7, email.getCcAddressString());
-            statement.setString(8, String.valueOf(email.getSolvFlag()));
+            statement.setString(8, "N");
             statement.setInt(9, email.getMsgNo());
             statement.setInt(10, email.getLockd());
             statement.setBoolean(11, email.isFreze());
+            statement.setBoolean(12, true);
             statement.executeUpdate();
 
             statement.close();

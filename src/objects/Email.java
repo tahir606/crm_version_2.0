@@ -12,7 +12,7 @@ public class Email {
     private String subject, timestamp, timeFormatted, body, attch, lockedByName, disclaimer, user;
     private List<File> attachments;
     private char solvFlag, isAttch;
-    private boolean freze;
+    private boolean isManual,freze;
 
     public Email() {
 
@@ -220,6 +220,14 @@ public class Email {
 
     public void setUser(String user) {
         this.user = user;
+    }
+
+    public boolean isManual() {
+        return isManual;
+    }
+
+    public void setManual(boolean manual) {
+        isManual = manual;
     }
 
     public boolean isFreze() {
