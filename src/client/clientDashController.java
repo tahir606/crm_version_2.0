@@ -55,7 +55,7 @@ public class clientDashController implements Initializable {
 //        JFXButton newClient = new JFXButton("Edit Client");
 //        Image imageA = new Image(getClass().getResourceAsStream("/res/img/edit.png"));
 //        newClient.setPrefSize(110, menu_client.getHeight());
-//        newClient.setOnAction(event -> inflatePane("newClient/newContact.fxml", 1));
+//        newClient.setOnAction(event -> inflatePane("newClient/contactView.fxml", 1));
 //        newClient.setGraphic(new ImageView(imageA));
 //        newClient.getStyleClass().add("btnMenu");
 //
@@ -69,7 +69,7 @@ public class clientDashController implements Initializable {
         MenuItem newClient = new MenuItem("Edit Client");
 //        Image imageA = new Image(getClass().getResourceAsStream("/res/img/edit.png"));
 //        newClient.setPrefSize(110, menu_client.getHeight());
-        newClient.setOnAction(event -> inflatePane("newClient/newContact.fxml", 1));
+        newClient.setOnAction(event -> inflatePane("newClient/contactView.fxml", 1));
 //        newClient.setGraphic(new ImageView(imageA));
 //        newClient.getStyleClass().add("btnMenu");
         menuEdit.getItems().addAll(newClient);
