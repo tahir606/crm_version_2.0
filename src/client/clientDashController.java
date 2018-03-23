@@ -51,34 +51,19 @@ public class clientDashController implements Initializable {
         populateMenuBar();
     }
 
-//    private void newClientButton() {
-//        JFXButton newClient = new JFXButton("Edit Client");
-//        Image imageA = new Image(getClass().getResourceAsStream("/res/img/edit.png"));
-//        newClient.setPrefSize(110, menu_client.getHeight());
-//        newClient.setOnAction(event -> inflatePane("newClient/contactView.fxml", 1));
-//        newClient.setGraphic(new ImageView(imageA));
-//        newClient.getStyleClass().add("btnMenu");
-//
-//        menu_client.getChildren().addAll(newClient);
-//    }
-
     private void populateMenuBar() {
 
         Menu menuEdit = new Menu("Edit");
 
         MenuItem newClient = new MenuItem("Edit Client");
-//        Image imageA = new Image(getClass().getResourceAsStream("/res/img/edit.png"));
-//        newClient.setPrefSize(110, menu_client.getHeight());
-        newClient.setOnAction(event -> inflatePane("newClient/contactView.fxml", 1));
-//        newClient.setGraphic(new ImageView(imageA));
-//        newClient.getStyleClass().add("btnMenu");
+        newClient.setOnAction(event -> inflatePane("newClient/newClient.fxml", 1));
         menuEdit.getItems().addAll(newClient);
 
+        MenuItem newContact = new MenuItem("New Contact");
+        newContact.setOnAction(event -> inflatePane("newContact/newContact.fxml", 2));
+        menuEdit.getItems().addAll(newContact);
+
         menu_clients.getMenus().add(menuEdit);
-    }
-
-    private void viewClients() {
-
     }
 
     private Pane admin_pane;

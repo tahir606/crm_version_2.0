@@ -71,42 +71,6 @@ public class newContactController implements Initializable {
 
     private void init() {
 
-        combo_client.getItems().clear();
-        clientList = sql.getAllClients(null);
-        types = sql.getClientTypes();
-
-        combo_type.getItems().setAll(types);
-        try {
-            nClient = clientList.get(clientList.size() - 1).getCode() + 1; //Get CL_ID for new client
-        } catch (NullPointerException e) {
-            nClient = 1;
-        }
-
-        Client c = new Client();
-        c.setCode(nClient);
-        c.setName(" + Create New");
-        c.setOwner("");
-        c.setEmail("");
-        c.setPhone("");
-        c.setWebsite("");
-        c.setAddr("");
-        c.setCity("");
-        c.setCountry("");
-        c.setType(1);
-        c.setEmails(new String[noOfFields]);
-        c.setPhones(new String[noOfFields]);
-
-        combo_client.getItems().add(c);
-
-        if (nClient != 1)   //If there are no clients previously, else this throws a null pointer exception
-            combo_client.getItems().addAll(clientList);
-
-        combo_client.valueProperty().addListener((observable, oldValue, newValue) -> {
-            populateDetails(newValue);
-            clientSel = newValue;
-        });
-        combo_type.getSelectionModel().select(0);
-        combo_client.getSelectionModel().select(0);
     }
 
     private void populateDetails(Client newValue) {
