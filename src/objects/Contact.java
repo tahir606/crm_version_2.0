@@ -3,8 +3,9 @@ package objects;
 public class Contact {
 
     private int code;
-    private String firstName, lastName, dob, address, city, country, note;
+    private String firstName, lastName, dob, address, city, country, note, clientName;
     private String[] emails, phones;
+    private boolean freze;
 
     public Contact() {
     }

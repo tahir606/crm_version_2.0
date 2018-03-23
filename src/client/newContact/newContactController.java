@@ -21,6 +21,7 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import objects.Client;
+import objects.Contact;
 
 import java.net.URL;
 import java.time.LocalDate;
@@ -30,15 +31,13 @@ import java.util.ResourceBundle;
 public class newContactController implements Initializable {
 
     @FXML
-    private JFXTextField txt_name;
+    private JFXTextField txt_fname;
     @FXML
-    private JFXTextField txt_owner;
+    private JFXTextField txt_lname;
     @FXML
     private JFXButton btn_email;
     @FXML
     private JFXButton btn_phone;
-    @FXML
-    private JFXTextField txt_website;
     @FXML
     private JFXTextField txt_addr;
     @FXML
@@ -46,67 +45,29 @@ public class newContactController implements Initializable {
     @FXML
     private JFXTextField txt_country;
     @FXML
-    private JFXDatePicker joining_date;
-    @FXML
-    private JFXComboBox<String> combo_type;
-    @FXML
-    private JFXComboBox<Client> combo_client;
+    private JFXDatePicker date_of_birth;
     @FXML
     private JFXButton btn_save;
+    @FXML
+    private JFXComboBox client_list;
 
-    private mySqlConn sql;
-
-    private List<Client> clientList;
-    private List<String> types;
-    private int nClient;    //CL_ID for new Client
-
-    private Client clientSel;
+    mySqlConn sql;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         sql = new mySqlConn();
-
-        init();
-    }
-
-    private void init() {
-
-    }
-
-    private void populateDetails(Client newValue) {
-        if (newValue == null)
-            return;
-        else if (newValue.getName().equals(" + Create New"))
-            txt_name.setText("");
-        else
-            txt_name.setText(newValue.getName());
-
-        txt_owner.setText(newValue.getOwner());
-        txt_website.setText(newValue.getWebsite());
-        txt_addr.setText(newValue.getAddr());
-        txt_city.setText(newValue.getCity());
-        txt_country.setText(newValue.getCountry());
-        if (newValue.getJoinDate() != null)
-            joining_date.setValue(LocalDate.parse(newValue.getJoinDate()));
-        else
-            joining_date.setValue(null);
-
     }
 
     public void saveChanges(ActionEvent actionEvent) {
-        String name = txt_name.getText(),
-                owner = txt_owner.getText(),
-                website = txt_website.getText(),
+        String fname = txt_fname.getText(),
+                lname = txt_lname.getText(),
                 addr = txt_addr.getText(),
                 city = txt_city.getText(),
                 country = txt_country.getText(),
-                jdate = String.valueOf(joining_date.getValue());
+                jdate = String.valueOf(date_of_birth.getValue());
 
-        System.out.println(owner);
 
-        int type = combo_type.getSelectionModel().getSelectedIndex() + 1;
-
-        if (name.equals("") || city.equals("") || country.equals("")) {
+        if (fname.equals("") || lname.equals("") || city.equals("") || country.equals("")) {
             Toast.makeText((Stage) btn_save.getScene().getWindow(), "Required Fields Are Empty");
             return;
         } else {
@@ -116,23 +77,18 @@ public class newContactController implements Initializable {
 
             if (alert2.getResult() == ButtonType.YES) {
 
-                clientSel.setName(name);
-                clientSel.setOwner(owner);
-                clientSel.setWebsite(website);
-                clientSel.setAddr(addr);
-                clientSel.setCity(city);
-                clientSel.setCountry(country);
-                clientSel.setJoinDate(jdate);
-                clientSel.setType(type);
+                Contact contact = new Contact();
 
-                if (nClient == clientSel.getCode()) {
-                    System.out.println("Inserting");
-                    sql.insertClient(clientSel);
-                } else {
-                    System.out.println("Updating");
-                    sql.updateClient(clientSel);
-                }
-                init();
+                contact.setFirstName(fname);
+                contact.setLastName(lname);
+                contact.setAddress(addr);
+                ;
+                contact.setCity(city);
+                contact.setCountry(country);
+                contact.setDob(jdate);
+
+                sql.insertContact(contact);
+
 
             } else {
                 return;
