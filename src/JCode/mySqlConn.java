@@ -1488,7 +1488,7 @@ public class mySqlConn {
     }
 
     public String[] getAllEmailIDs(String where) {
-        String query = "SELECT EM_NAME FROM EMAIL_LIST ";
+        String query = "SELECT DISTINCT EM_NAME FROM EMAIL_LIST ";
 
         if (where == null)
             query = query + " ORDER BY EM_NAME";
