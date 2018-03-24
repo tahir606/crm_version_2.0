@@ -1528,6 +1528,42 @@ public class mySqlConn {
         return null;
     }
 
+    //---------------------Contact------------------
+    public void insertContact(Contact contact) {
+
+        String query = "INSERT INTO CONTACT_STORE(CS_ID, CS_FNAME ,CS_LNAME ,CS_DOB ,CS_ADDR ,CS_CITY , " +
+                "CS_COUNTRY ,CS_NOTE ,FREZE ,CL_ID) " +
+                " SELECT IFNULL(max(CL_ID),0)+1,?,?,?,?,?,?,?,?,?,? from CONTACT_STORE";
+
+        // Connection con = getConnection();
+        PreparedStatement statement = null;
+
+        try {
+            statement = static_con.prepareStatement(query);
+            statement.setString(1, client.getName());
+            statement.setString(2, client.getOwner());
+            statement.setString(3, client.getEmail());
+            statement.setString(4, client.getPhone());
+            statement.setString(5, client.getAddr());
+            statement.setString(6, client.getCity());
+            statement.setString(7, client.getCountry());
+            statement.setString(8, client.getWebsite());
+            statement.setInt(9, client.getType());
+            if (!client.getJoinDate().equals("null"))
+                statement.setString(10, client.getJoinDate());
+            else
+                statement.setString(10, null);
+
+            statement.executeUpdate();
+
+            EmailsPhoneInsertion(statement, client);
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+    }
+
     public static boolean pingHost(String host, int port, int timeout) {
         try (Socket socket = new Socket()) {
             socket.connect(new InetSocketAddress(host, port), timeout);
