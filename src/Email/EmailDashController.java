@@ -201,25 +201,6 @@ public class EmailDashController implements Initializable {
 
         pullingEmails();
 
-        list_emails.setCellFactory(new Callback<ListView<Email>, ListCell<Email>>() {
-            @Override
-            public ListCell<Email> call(ListView<Email> param) {
-
-                ListCell<Email> cell = new ListCell<Email>() {
-                    @Override
-                    protected void updateItem(Email item, boolean empty) {
-                        super.updateItem(item, empty);
-                        if (item != null)
-                            setText(item.toString());
-                        else
-                            setText("");
-                    }
-                };
-
-                return cell;
-            }
-        });
-
     }
 
     private void populateMenuBar() {
@@ -357,6 +338,33 @@ public class EmailDashController implements Initializable {
         }
 
         loadEmails();
+
+        list_emails.setCellFactory(new Callback<ListView<Email>, ListCell<Email>>() {
+            @Override
+            public ListCell<Email> call(ListView<Email> param) {
+
+                ListCell<Email> cell = new ListCell<Email>() {
+                    @Override
+                    protected void updateItem(Email item, boolean empty) {
+                        super.updateItem(item, empty);
+                        if (item != null) {
+                            setText(item.toString());
+                            if (item.getLockd() == 0){
+                                if (!getStyleClass().contains("unlockedEmail")) {
+                                    getStyleClass().add("unlockedEmail");
+                                }
+
+                            } else {
+                                getStyleClass().remove("unlockedEmail");
+                            }
+                        } else
+                            setText("");
+                    }
+                };
+
+                return cell;
+            }
+        });
 
         //Right click menu
         ContextMenu contextMenu = new ContextMenu();
