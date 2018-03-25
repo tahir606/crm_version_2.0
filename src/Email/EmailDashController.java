@@ -142,8 +142,7 @@ public class EmailDashController implements Initializable {
 
         populateCategoryBoxes();
 
-//        loadEmails(); //Loading Emails into the list
-//
+        list_emails.setStyle("-fx-background-insets: 1;");
 
         populateMenuBar();
 

@@ -1233,6 +1233,76 @@ public class mySqlConn {
         }
     }
 
+    private void EmailsPhoneInsertion(PreparedStatement statement, Contact contact) {
+
+        String deleteEmails = "DELETE FROM EMAIL_LIST WHERE CS_ID = ?";
+
+        String deletePhones = "DELETE FROM PHONE_LIST WHERE CS_ID = ?";
+
+        String emailList = "INSERT INTO EMAIL_LIST(EM_ID,EM_NAME,CS_ID) " +
+                "SELECT IFNULL(max(EM_ID),0)+1,?,? from EMAIL_LIST";
+
+        String phoneList = "INSERT INTO PHONE_LIST(PH_ID,PH_NUM,CS_ID) " +
+                "SELECT IFNULL(max(PH_ID),0)+1,?,? from PHONE_LIST";
+
+        try {
+            statement = null;
+            statement = static_con.prepareStatement(deleteEmails);
+            statement.setInt(1, contact.getCode());
+            statement.executeUpdate();
+            //Adding Emails
+            String[] emails = contact.getEmails();
+
+            for (int i = 0; i < emails.length; i++) {   //Inserting Emailss
+                statement = null;
+                if (emails[i] == null)
+                    continue;
+
+                statement = static_con.prepareStatement(emailList);
+                statement.setString(1, emails[i]);
+                statement.setInt(2, contact.getCode());
+                statement.executeUpdate();
+            }
+
+            statement = null;
+            statement = static_con.prepareStatement(deletePhones);
+            statement.setInt(1, contact.getCode());
+            statement.executeUpdate();
+
+            //Adding Phones
+            String[] phones = contact.getPhones();
+
+            for (int i = 0; i < phones.length; i++) {   //Inserting Emailss
+                statement = null;
+                if (phones[i] == null)
+                    continue;
+
+                statement = static_con.prepareStatement(phoneList);
+                statement.setString(1, phones[i]);
+                statement.setInt(2, contact.getCode());
+                statement.executeUpdate();
+            }
+
+//            for (int i = 0; i < emails.length; i++) {
+//                try {
+//                    if (emails[i] == null)
+//                        continue;
+//                    String[] t = emails[i].split("\\@");
+//                    System.out.println(t);
+//                    insertDomainsWhitelist(t[1]);
+//                } catch (Exception e) {
+//                    System.out.println(e);
+//                    continue;
+//                }
+//            }
+
+            if (statement != null)
+                statement.close();
+        } catch (SQLException e) {
+            System.out.println(e);
+        }
+    }
+
     private void EmailsListInsertion(String[] emails) {
 
         String emailList = "INSERT INTO EMAIL_LIST(EM_ID,EM_NAME) " +
@@ -1533,7 +1603,7 @@ public class mySqlConn {
 
         String query = "INSERT INTO CONTACT_STORE(CS_ID, CS_FNAME ,CS_LNAME ,CS_DOB ,CS_ADDR ,CS_CITY , " +
                 "CS_COUNTRY ,CS_NOTE ,FREZE ,CL_ID) " +
-                " SELECT IFNULL(max(CL_ID),0)+1,?,?,?,?,?,?,?,?,? from CONTACT_STORE";
+                " SELECT IFNULL(max(CS_ID),0)+1,?,?,?,?,?,?,?,?,? from CONTACT_STORE";
 
         // Connection con = getConnection();
         PreparedStatement statement = null;
@@ -1551,6 +1621,9 @@ public class mySqlConn {
             statement.setInt(9, contact.getClientCode());
 
             statement.executeUpdate();
+
+
+            EmailsPhoneInsertion(statement, contact);
 
         } catch (SQLException e) {
             e.printStackTrace();

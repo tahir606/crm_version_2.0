@@ -74,13 +74,11 @@ public class newContactController implements Initializable {
             Toast.makeText((Stage) btn_save.getScene().getWindow(), "Required Fields Are Empty");
             return;
         } else {
-            Alert alert2 = new Alert(Alert.AlertType.CONFIRMATION, "Are you sure you want to add Client? ",
+            Alert alert2 = new Alert(Alert.AlertType.CONFIRMATION, "Are you sure you want to add Contact? ",
                     ButtonType.YES, ButtonType.NO);
             alert2.showAndWait();
 
             if (alert2.getResult() == ButtonType.YES) {
-
-                Contact contact = new Contact();
 
                 contact.setFirstName(fname);
                 contact.setLastName(lname);
