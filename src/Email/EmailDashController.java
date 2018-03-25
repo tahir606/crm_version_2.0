@@ -38,6 +38,7 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import javafx.stage.Window;
+import javafx.util.Callback;
 import objects.Email;
 import objects.Users;
 
@@ -200,12 +201,31 @@ public class EmailDashController implements Initializable {
 
         pullingEmails();
 
+        list_emails.setCellFactory(new Callback<ListView<Email>, ListCell<Email>>() {
+            @Override
+            public ListCell<Email> call(ListView<Email> param) {
+
+                ListCell<Email> cell = new ListCell<Email>() {
+                    @Override
+                    protected void updateItem(Email item, boolean empty) {
+                        super.updateItem(item, empty);
+                        if (item != null)
+                            setText(item.toString());
+                        else
+                            setText("");
+                    }
+                };
+
+                return cell;
+            }
+        });
+
     }
 
     private void populateMenuBar() {
 //        new Thread(() -> {
-            //1) Populating Top Menu
-            //  a) Creating and adding listeners to Buttons
+        //1) Populating Top Menu
+        //  a) Creating and adding listeners to Buttons
 //                JFXButton email = new JFXButton("New Email");
 //                email.setMinSize(100, menu_email.getHeight());
 //                email.setGraphic(new ImageView(new Image(getClass().getResourceAsStream("/res/img/newmail.png"))));
@@ -219,65 +239,65 @@ public class EmailDashController implements Initializable {
 //                    inflateEResponse();
 //                });
 
-            Menu newMenu = new Menu("New");
+        Menu newMenu = new Menu("New");
 //            newMenu.setGraphic(new ImageView(new Image(getClass().getResourceAsStream("/res/img/newmail.png"))));
-            MenuItem newEmail = new MenuItem("New Email");
-            newEmail.setOnAction(event -> {
-                efrom = "";
-                subject = "";
-                body = "";
-                ReplyForward = 'N'; //N for New.
+        MenuItem newEmail = new MenuItem("New Email");
+        newEmail.setOnAction(event -> {
+            efrom = "";
+            subject = "";
+            body = "";
+            ReplyForward = 'N'; //N for New.
 
-                inflateEResponse(1);
-            });
-            newMenu.getItems().add(newEmail);
-            MenuItem newTicket = new MenuItem("New Ticket");
-            newTicket.setOnAction(event -> {
-                efrom = "";
-                subject = "";
-                body = "";
-                ReplyForward = 'N'; //N for New.
+            inflateEResponse(1);
+        });
+        newMenu.getItems().add(newEmail);
+        MenuItem newTicket = new MenuItem("New Ticket");
+        newTicket.setOnAction(event -> {
+            efrom = "";
+            subject = "";
+            body = "";
+            ReplyForward = 'N'; //N for New.
 
-                inflateEResponse(2);
-            });
-            newMenu.getItems().add(newTicket);
+            inflateEResponse(2);
+        });
+        newMenu.getItems().add(newTicket);
 
-            menu_bar.getMenus().add(newMenu);
+        menu_bar.getMenus().add(newMenu);
 
 //
-            Menu edit = new Menu("Edit");
+        Menu edit = new Menu("Edit");
 
-            MenuItem reload = new MenuItem("Refresh");
+        MenuItem reload = new MenuItem("Refresh");
 //            reload.setMinSize(100, menu_email.getHeight());
 //            reload.setGraphic(new ImageView(new Image(getClass().getResourceAsStream("/res/img/refresh.png"))));
 //            reload.getStyleClass().add("btnMenu");
 //            reload.setOnAction(event -> loadEmails());
-            reload.setOnAction(event -> loadEmails());
+        reload.setOnAction(event -> loadEmails());
 
-            edit.getItems().add(reload);
+        edit.getItems().add(reload);
 
-            MenuItem filter = new MenuItem("Filters");
+        MenuItem filter = new MenuItem("Filters");
 //            filter.setMinSize(100, menu_email.getHeight());
 //            filter.setGraphic(new ImageView(new Image(getClass().getResourceAsStream("/res/img/filter.png"))));
 //            filter.getStyleClass().add("btnMenu");
 //            filter.setOnAction(event -> inflateFilters());
-            filter.setOnAction(event -> inflateFilters());
+        filter.setOnAction(event -> inflateFilters());
 
-            edit.getItems().add(filter);
+        edit.getItems().add(filter);
 
-            MenuItem archive = new MenuItem("Move to Archive");
+        MenuItem archive = new MenuItem("Move to Archive");
 //            archive.setMinSize(1, menu_email.getHeight());
 //            archive.setGraphic(new ImageView(new Image(getClass().getResourceAsStream("/res/img/archive.png"))));
 //            archive.getStyleClass().add("btnMenu");
-            archive.setOnAction(event -> inflateArchive());
+        archive.setOnAction(event -> inflateArchive());
 
-            edit.getItems().add(archive);
+        edit.getItems().add(archive);
 
-            menu_bar.getMenus().add(edit);
+        menu_bar.getMenus().add(edit);
 //
 //        }).start();
 
-        }
+    }
 
 
     static JFXButton allMail = new JFXButton("General");

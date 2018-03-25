@@ -1533,30 +1533,24 @@ public class mySqlConn {
 
         String query = "INSERT INTO CONTACT_STORE(CS_ID, CS_FNAME ,CS_LNAME ,CS_DOB ,CS_ADDR ,CS_CITY , " +
                 "CS_COUNTRY ,CS_NOTE ,FREZE ,CL_ID) " +
-                " SELECT IFNULL(max(CL_ID),0)+1,?,?,?,?,?,?,?,?,?,? from CONTACT_STORE";
+                " SELECT IFNULL(max(CL_ID),0)+1,?,?,?,?,?,?,?,?,? from CONTACT_STORE";
 
         // Connection con = getConnection();
         PreparedStatement statement = null;
 
         try {
             statement = static_con.prepareStatement(query);
-            statement.setString(1, client.getName());
-            statement.setString(2, client.getOwner());
-            statement.setString(3, client.getEmail());
-            statement.setString(4, client.getPhone());
-            statement.setString(5, client.getAddr());
-            statement.setString(6, client.getCity());
-            statement.setString(7, client.getCountry());
-            statement.setString(8, client.getWebsite());
-            statement.setInt(9, client.getType());
-            if (!client.getJoinDate().equals("null"))
-                statement.setString(10, client.getJoinDate());
-            else
-                statement.setString(10, null);
+            statement.setString(1, contact.getFirstName());
+            statement.setString(2, contact.getLastName());
+            statement.setString(3, contact.getDob());
+            statement.setString(4, contact.getAddress());
+            statement.setString(5, contact.getCity());
+            statement.setString(6, contact.getCountry());
+            statement.setString(7, contact.getNote());
+            statement.setBoolean(8, contact.isFreze());
+            statement.setInt(9, contact.getClientCode());
 
             statement.executeUpdate();
-
-            EmailsPhoneInsertion(statement, client);
 
         } catch (SQLException e) {
             e.printStackTrace();

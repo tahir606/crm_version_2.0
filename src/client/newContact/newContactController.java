@@ -53,9 +53,12 @@ public class newContactController implements Initializable {
 
     mySqlConn sql;
 
+    static Contact contact;
+
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         sql = new mySqlConn();
+        contact = new Contact();
     }
 
     public void saveChanges(ActionEvent actionEvent) {
@@ -82,13 +85,16 @@ public class newContactController implements Initializable {
                 contact.setFirstName(fname);
                 contact.setLastName(lname);
                 contact.setAddress(addr);
-                ;
                 contact.setCity(city);
                 contact.setCountry(country);
-                contact.setDob(jdate);
+                if (jdate.equals("null"))
+                    contact.setDob(null);
+                else
+                    contact.setDob(jdate);
+
+                System.out.println(contact);
 
                 sql.insertContact(contact);
-
 
             } else {
                 return;
@@ -105,12 +111,12 @@ public class newContactController implements Initializable {
         inflateBOX(2);
     }
 
-    public static int noOfFields = 10;
+    public static int noOfFields = 5;
 
     private void inflateBOX(int c) {
 
-        String[] Emails = clientSel.getEmails();
-        String[] Phones = clientSel.getPhones();
+        String[] Emails = contact.getEmails();
+        String[] Phones = contact.getPhones();
 
         Stage stage = new Stage();
         stage.initModality(Modality.APPLICATION_MODAL);
@@ -157,9 +163,9 @@ public class newContactController implements Initializable {
                 }
             }
             if (c == 1)
-                clientSel.setEmails(array);
+                contact.setEmails(array);
             else if (c == 2)
-                clientSel.setPhones(array);
+                contact.setPhones(array);
         });
 
         stage.show();

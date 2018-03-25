@@ -1,13 +1,36 @@
 package objects;
 
+import client.newContact.newContactController;
+
+import java.util.Arrays;
+
 public class Contact {
 
-    private int code;
+    private int code, clientCode;
     private String firstName, lastName, dob, address, city, country, note, clientName;
-    private String[] emails, phones;
+    private String[] emails = new String[newContactController.noOfFields], phones = new String[newContactController.noOfFields];
     private boolean freze;
 
     public Contact() {
+    }
+
+    @Override
+    public String toString() {
+        return "Contact{" +
+                "code=" + code +
+                ", clientCode=" + clientCode +
+                ", firstName='" + firstName + '\'' +
+                ", lastName='" + lastName + '\'' +
+                ", dob='" + dob + '\'' +
+                ", address='" + address + '\'' +
+                ", city='" + city + '\'' +
+                ", country='" + country + '\'' +
+                ", note='" + note + '\'' +
+                ", clientName='" + clientName + '\'' +
+                ", emails=" + Arrays.toString(emails) +
+                ", phones=" + Arrays.toString(phones) +
+                ", freze=" + freze +
+                '}';
     }
 
     public int getCode() {
@@ -88,5 +111,29 @@ public class Contact {
 
     public void setPhones(String[] phones) {
         this.phones = phones;
+    }
+
+    public int getClientCode() {
+        return clientCode;
+    }
+
+    public void setClientCode(int clientCode) {
+        this.clientCode = clientCode;
+    }
+
+    public String getClientName() {
+        return clientName;
+    }
+
+    public void setClientName(String clientName) {
+        this.clientName = clientName;
+    }
+
+    public boolean isFreze() {
+        return freze;
+    }
+
+    public void setFreze(boolean freze) {
+        this.freze = freze;
     }
 }
