@@ -5,7 +5,7 @@ import client.newClient.newClientController;
 public class Client {
 
     private int Code, Type;
-    private String Name, owner, Email, Phone, Addr, City, Country, Website, JoinDate;
+    private String Name, owner, Email, Phone, Addr, City, Country, Website, JoinDate, note;
     private String[] emails = new String[newClientController.noOfFields],
             phones = new String[newClientController.noOfFields];
 
@@ -119,5 +119,13 @@ public class Client {
 
     public void setJoinDate(String joinDate) {
         JoinDate = joinDate;
+    }
+
+    public String getNote() {
+        return note;
+    }
+
+    public void setNote(String note) {
+        this.note = note;
     }
 }

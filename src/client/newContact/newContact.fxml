@@ -42,14 +42,14 @@
                 <HBox prefHeight="30.0" prefWidth="200.0" spacing="10.0">
                     <children>
                         <Label prefHeight="35.0" prefWidth="80.0" text="Date of Birth" />
-                        <JFXDatePicker fx:id="date_of_birth" prefHeight="28.0" prefWidth="200.0" />
+                        <JFXDatePicker fx:id="date_of_birth" prefHeight="28.0" prefWidth="200.0" promptText="mm/dd/yyyy" />
                     </children>
                 </HBox>
                 <HBox prefHeight="15.0" prefWidth="200.0" spacing="10.0" />
             <HBox prefHeight="30.0" prefWidth="200.0" spacing="10.0">
                <children>
                   <Label prefHeight="35.0" prefWidth="80.0" text="With Client:" />
-                  <JFXComboBox fx:id="client_list" prefHeight="25.0" prefWidth="340.0" />
+                  <JFXComboBox fx:id="client_list" prefHeight="25.0" prefWidth="340.0" promptText="Select Client" />
                </children>
             </HBox>
             <HBox prefHeight="15.0" prefWidth="200.0" spacing="10.0" />

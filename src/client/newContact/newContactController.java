@@ -15,6 +15,7 @@ import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
+import javafx.scene.control.TextArea;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Paint;
 import javafx.stage.Modality;
@@ -45,6 +46,8 @@ public class newContactController implements Initializable {
     @FXML
     private JFXTextField txt_country;
     @FXML
+    private TextArea txt_note;
+    @FXML
     private JFXDatePicker date_of_birth;
     @FXML
     private JFXButton btn_save;
@@ -55,10 +58,17 @@ public class newContactController implements Initializable {
 
     static Contact contact;
 
+    private List<Client> allClients;
+
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         sql = new mySqlConn();
         contact = new Contact();
+
+        contact.setCode(sql.getNewContactCode());
+
+        allClients = sql.getAllClients("CL_TYPE = 1");
+        client_list.getItems().addAll(allClients);
     }
 
     public void saveChanges(ActionEvent actionEvent) {
@@ -67,6 +77,7 @@ public class newContactController implements Initializable {
                 addr = txt_addr.getText(),
                 city = txt_city.getText(),
                 country = txt_country.getText(),
+                note = txt_note.getText(),
                 jdate = String.valueOf(date_of_birth.getValue());
 
 
@@ -85,10 +96,16 @@ public class newContactController implements Initializable {
                 contact.setAddress(addr);
                 contact.setCity(city);
                 contact.setCountry(country);
+                contact.setNote(note);
                 if (jdate.equals("null"))
                     contact.setDob(null);
                 else
                     contact.setDob(jdate);
+
+                Client c = (Client) client_list.getSelectionModel().getSelectedItem();
+
+                if (c != null)
+                    contact.setClientCode(c.getCode());
 
                 System.out.println(contact);
 

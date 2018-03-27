@@ -1167,12 +1167,11 @@ public class mySqlConn {
 
         String deletePhones = "DELETE FROM PHONE_LIST WHERE CL_ID = ?";
 
-        String emailList = "INSERT INTO EMAIL_LIST(EM_ID,EM_NAME,CL_ID) " +
-                "SELECT IFNULL(max(EM_ID),0)+1,?,? from EMAIL_LIST";
+        String emailList = "INSERT INTO EMAIL_LIST(EM_ID,EM_NAME,CL_ID,UCODE,CS_ID) " +
+                "SELECT IFNULL(max(EM_ID),0)+1,?,?,?,? from EMAIL_LIST";
 
-        String phoneList = "INSERT INTO PHONE_LIST(PH_ID,PH_NUM,CL_ID) " +
-                "SELECT IFNULL(max(PH_ID),0)+1,?,? from PHONE_LIST";
-
+        String phoneList = "INSERT INTO PHONE_LIST(PH_ID,PH_NUM,CL_ID,UCODE,CS_ID) " +
+                "SELECT IFNULL(max(PH_ID),0)+1,?,?,?,? from PHONE_LIST";
 
         try {
             statement = null;
@@ -1190,6 +1189,8 @@ public class mySqlConn {
                 statement = static_con.prepareStatement(emailList);
                 statement.setString(1, emails[i]);
                 statement.setInt(2, client.getCode());
+                statement.setInt(3, 0);
+                statement.setInt(4, 0);
                 statement.executeUpdate();
             }
 
@@ -1209,6 +1210,8 @@ public class mySqlConn {
                 statement = static_con.prepareStatement(phoneList);
                 statement.setString(1, phones[i]);
                 statement.setInt(2, client.getCode());
+                statement.setInt(3, 0);
+                statement.setInt(4, 0);
                 statement.executeUpdate();
             }
 
@@ -1239,11 +1242,11 @@ public class mySqlConn {
 
         String deletePhones = "DELETE FROM PHONE_LIST WHERE CS_ID = ?";
 
-        String emailList = "INSERT INTO EMAIL_LIST(EM_ID,EM_NAME,CS_ID) " +
-                "SELECT IFNULL(max(EM_ID),0)+1,?,? from EMAIL_LIST";
+        String emailList = "INSERT INTO EMAIL_LIST(EM_ID,EM_NAME,CS_ID,UCODE,CL_ID) " +
+                "SELECT IFNULL(max(EM_ID),0)+1,?,?,?,? from EMAIL_LIST";
 
-        String phoneList = "INSERT INTO PHONE_LIST(PH_ID,PH_NUM,CS_ID) " +
-                "SELECT IFNULL(max(PH_ID),0)+1,?,? from PHONE_LIST";
+        String phoneList = "INSERT INTO PHONE_LIST(PH_ID,PH_NUM,CS_ID,UCODE,CL_ID) " +
+                "SELECT IFNULL(max(PH_ID),0)+1,?,?,?,? from PHONE_LIST";
 
         try {
             statement = null;
@@ -1261,6 +1264,8 @@ public class mySqlConn {
                 statement = static_con.prepareStatement(emailList);
                 statement.setString(1, emails[i]);
                 statement.setInt(2, contact.getCode());
+                statement.setInt(3, 0);
+                statement.setInt(4, 0);
                 statement.executeUpdate();
             }
 
@@ -1280,21 +1285,11 @@ public class mySqlConn {
                 statement = static_con.prepareStatement(phoneList);
                 statement.setString(1, phones[i]);
                 statement.setInt(2, contact.getCode());
+                statement.setInt(3, 0);
+                statement.setInt(4, 0);
                 statement.executeUpdate();
             }
 
-//            for (int i = 0; i < emails.length; i++) {
-//                try {
-//                    if (emails[i] == null)
-//                        continue;
-//                    String[] t = emails[i].split("\\@");
-//                    System.out.println(t);
-//                    insertDomainsWhitelist(t[1]);
-//                } catch (Exception e) {
-//                    System.out.println(e);
-//                    continue;
-//                }
-//            }
 
             if (statement != null)
                 statement.close();
@@ -1305,8 +1300,8 @@ public class mySqlConn {
 
     private void EmailsListInsertion(String[] emails) {
 
-        String emailList = "INSERT INTO EMAIL_LIST(EM_ID,EM_NAME) " +
-                "SELECT IFNULL(max(EM_ID),0)+1,? from EMAIL_LIST";
+        String emailList = "INSERT INTO EMAIL_LIST(EM_ID,EM_NAME,CL_ID,UCODE,CS_ID) " +
+                "SELECT IFNULL(max(EM_ID),0)+1,?,?,?,? from EMAIL_LIST";
 
         try {
             PreparedStatement statement = null;
@@ -1318,6 +1313,9 @@ public class mySqlConn {
 
                 statement = static_con.prepareStatement(emailList);
                 statement.setString(1, emails[i]);
+                statement.setInt(2, 0);
+                statement.setInt(3, 0);
+                statement.setInt(4, 0);
                 statement.executeUpdate();
             }
 
@@ -1453,7 +1451,7 @@ public class mySqlConn {
         if (where == null) {
             query = query + " ORDER BY CL_ID";
         } else {
-            query = query + where;
+            query = query + " WHERE " + where;
         }
 
         String emails = "SELECT EM_NAME FROM EMAIL_LIST WHERE CL_ID = ?";
@@ -1463,6 +1461,7 @@ public class mySqlConn {
 
         try {
             // Connection con = getConnection();
+            System.out.println(query);
             PreparedStatement statement = static_con.prepareStatement(query);
             ResultSet set = statement.executeQuery();
             //-------------Creating Email-------------
@@ -1629,6 +1628,27 @@ public class mySqlConn {
             e.printStackTrace();
         }
 
+    }
+
+    public int getNewContactCode() {
+        String query = "SELECT IFNULL(max(CS_ID),0)+1 AS CS_ID FROM CONTACT_STORE";
+
+        // Connection con = getConnection();
+        PreparedStatement statement = null;
+
+        try {
+            statement = static_con.prepareStatement(query);
+
+            ResultSet set = statement.executeQuery();
+            while (set.next()) {
+                return set.getInt("CS_ID");
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return 0;
     }
 
     public static boolean pingHost(String host, int port, int timeout) {

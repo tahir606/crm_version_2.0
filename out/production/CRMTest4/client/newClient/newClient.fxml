@@ -51,7 +51,7 @@
             <HBox prefHeight="30.0" prefWidth="200.0" spacing="10.0">
                <children>
                   <Label prefHeight="35.0" prefWidth="80.0" text="Joining Date:" />
-                  <JFXDatePicker fx:id="joining_date" prefHeight="28.0" prefWidth="200.0" />
+                  <JFXDatePicker fx:id="joining_date" prefHeight="28.0" prefWidth="200.0" promptText="mm/dd/yyyy" />
                </children>
             </HBox>
             <HBox prefHeight="15.0" prefWidth="200.0" spacing="10.0" />
