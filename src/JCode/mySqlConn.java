@@ -1630,6 +1630,85 @@ public class mySqlConn {
 
     }
 
+    public List<Contact> getAllContact(String where) {
+        String query = "SELECT CS_ID,CS_FNAME,CS_LNAME,CS_DOB,CS_ADDR," +
+                "CS_CITY,CS_COUNTRY,CS_NOTE,CREATEDON FROM CONTACT_STORE";
+
+
+        if (where == null) {
+            query = query + "WHERE FREZE = 0 ORDER BY CS_ID";
+        } else {
+            query = query + " WHERE " + where;
+        }
+
+        String emails = "SELECT EM_NAME FROM EMAIL_LIST WHERE CS_ID = ?";
+        String phones = "SELECT PH_NUM FROM PHONE_LIST WHERE CS_ID = ?";
+
+        List<Client> allClients = new ArrayList<>();
+
+        try {
+            // Connection con = getConnection();
+            System.out.println(query);
+            PreparedStatement statement = static_con.prepareStatement(query);
+            ResultSet set = statement.executeQuery();
+            //-------------Creating Email-------------
+            if (!set.isBeforeFirst()) {
+                return null;
+            }
+
+            while (set.next()) {
+                Client client = new Client();
+                client.setCode(set.getInt("CL_ID"));
+                client.setName(set.getString("CL_NAME"));
+                client.setOwner(set.getString("CL_OWNER"));
+                client.setEmail(set.getString("CL_EMAIL"));
+                client.setPhone(set.getString("CL_PHONE"));
+                client.setAddr(set.getString("CL_ADDR"));
+                client.setCity(set.getString("CL_CITY"));
+                client.setCountry(set.getString("CL_COUNTRY"));
+                client.setWebsite(set.getString("CL_WEBSITE"));
+                client.setType(set.getInt("CL_TYPE"));
+                client.setJoinDate(set.getString("CL_JOINDATE"));
+
+                //Get all Emails
+                PreparedStatement st = static_con.prepareStatement(emails);
+                st.setInt(1, client.getCode());
+                ResultSet setArray = st.executeQuery();
+
+                String[] dataArr = new String[newClientController.noOfFields];
+                int c = 0;
+                while (setArray.next()) {
+                    dataArr[c] = setArray.getString("EM_NAME");
+                    c++;
+                }
+                client.setEmails(dataArr);
+
+                //Get all Phone Numbers
+                st = null;
+                st = static_con.prepareStatement(phones);
+                st.setInt(1, client.getCode());
+                setArray = null;
+                setArray = st.executeQuery();
+
+                dataArr = new String[newClientController.noOfFields];
+                c = 0;
+                while (setArray.next()) {
+                    dataArr[c] = setArray.getString("PH_NUM");
+                    c++;
+                }
+                client.setPhones(dataArr);
+
+                allClients.add(client);
+            }
+
+            // doRelease(con);
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+
+        return allClients;
+    }
+
     public int getNewContactCode() {
         String query = "SELECT IFNULL(max(CS_ID),0)+1 AS CS_ID FROM CONTACT_STORE";
 

@@ -48,22 +48,33 @@ public class clientDashController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+
+        inflatePane("contactView/contactView.fxml", 3);     //Inflating Dashboard
+
         populateMenuBar();
     }
 
     private void populateMenuBar() {
 
-        Menu menuEdit = new Menu("Edit");
+        Menu menuNew = new Menu("New");
 
         MenuItem newClient = new MenuItem("Edit Client");
         newClient.setOnAction(event -> inflatePane("newClient/newClient.fxml", 1));
-        menuEdit.getItems().addAll(newClient);
+        menuNew.getItems().addAll(newClient);
 
         MenuItem newContact = new MenuItem("New Contact");
         newContact.setOnAction(event -> inflatePane("newContact/newContact.fxml", 2));
-        menuEdit.getItems().addAll(newContact);
+        menuNew.getItems().addAll(newContact);
 
-        menu_clients.getMenus().add(menuEdit);
+        menu_clients.getMenus().add(menuNew);
+
+        Menu menuView = new Menu("View");
+
+        MenuItem dashboard = new MenuItem("Dashboard");
+        dashboard.setOnAction(event -> inflatePane("contactView/contactView.fxml", 3));
+        menuView.getItems().add(dashboard);
+
+        menu_clients.getMenus().add(menuView);
     }
 
     private Pane admin_pane;
