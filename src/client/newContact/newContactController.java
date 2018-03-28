@@ -140,7 +140,7 @@ public class newContactController implements Initializable {
         stage.setTitle(title);
         VBox pane = new VBox();
         pane.setMinWidth(200);
-        pane.setMinHeight(230);
+        pane.setMinHeight(130);
         for (int i = 0; i < noOfFields; i++) {
             JFXTextField txt_data = new JFXTextField();
             txt_data.setMinWidth(pane.getWidth());
