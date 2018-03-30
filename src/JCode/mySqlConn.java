@@ -1734,11 +1734,8 @@ public class mySqlConn {
 //                contact.setCode(set.getInt("CS_ID"));
                 contact.setFirstName(set.getString("CS_FNAME"));
                 contact.setLastName(set.getString("CS_LNAME"));
-//                contact.setDob(set.getString("CS_DOB"));
-//                contact.setAddress(set.getString("CS_ADDR"));
-//                contact.setCity(set.getString("CS_CITY"));
-//                contact.setCountry(set.getString("CS_COUNTRY"));
-//                contact.setNote(set.getString("CS_NOTE"));
+                contact.setCity(set.getString("CS_CITY"));
+                contact.setCountry(set.getString("CS_COUNTRY"));
 
 //                //Get all Emails
 //                PreparedStatement st = static_con.prepareStatement(emails);

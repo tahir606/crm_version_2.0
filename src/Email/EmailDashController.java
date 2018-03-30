@@ -142,7 +142,7 @@ public class EmailDashController implements Initializable {
 
         populateCategoryBoxes();
 
-        list_emails.setStyle("-fx-background-insets: 1;");
+        list_emails.setStyle("-fx-background-insets: 1 1;");
 
         populateMenuBar();
 

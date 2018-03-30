@@ -91,6 +91,9 @@ public class newContactController implements Initializable {
 
             if (alert2.getResult() == ButtonType.YES) {
 
+                fname = fname.substring(0, 1).toUpperCase() + fname.substring(1);   //Make First Letter to Uppercase
+                lname = lname.substring(0, 1).toUpperCase() + lname.substring(1);
+
                 contact.setFirstName(fname);
                 contact.setLastName(lname);
                 contact.setAddress(addr);

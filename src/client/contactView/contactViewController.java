@@ -31,6 +31,7 @@ import objects.ContactProperty;
 import java.awt.event.MouseEvent;
 import java.net.URL;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
 
@@ -45,11 +46,11 @@ public class contactViewController implements Initializable {
     @FXML
     TableView<ContactProperty> table_contact;
     @FXML
-    TableColumn<ContactProperty, Boolean> col_chk;
+    TableColumn<ContactProperty, String> col_name;
     @FXML
-    TableColumn<ContactProperty, String> col_fname;
+    TableColumn<ContactProperty, String> col_city;
     @FXML
-    TableColumn<ContactProperty, String> col_lname;
+    TableColumn<ContactProperty, String> col_country;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -57,8 +58,9 @@ public class contactViewController implements Initializable {
 
         table_contact.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
 
-        col_fname.setCellValueFactory(new PropertyValueFactory<>("firstName"));
-        col_lname.setCellValueFactory(new PropertyValueFactory<>("lastName"));
+        col_name.setCellValueFactory(new PropertyValueFactory<>("fullName"));
+        col_city.setCellValueFactory(new PropertyValueFactory<>("city"));
+        col_country.setCellValueFactory(new PropertyValueFactory<>("country"));
 
         table_contact.getItems().setAll(sql.getAllContactsProperty(null));
 

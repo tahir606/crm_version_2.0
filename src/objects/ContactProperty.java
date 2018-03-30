@@ -5,27 +5,16 @@ import javafx.beans.property.SimpleStringProperty;
 
 public class ContactProperty {
 
-    SimpleBooleanProperty isSelected;
-    SimpleStringProperty firstName, lastName;
+    SimpleStringProperty firstName, lastName, fullName, city, country;
 
     public ContactProperty() {
 
-        isSelected = new SimpleBooleanProperty();
         firstName = new SimpleStringProperty();
         lastName = new SimpleStringProperty();
+        fullName = new SimpleStringProperty();
+        city = new SimpleStringProperty();
+        country = new SimpleStringProperty();
 
-    }
-
-    public boolean isIsSelected() {
-        return isSelected.get();
-    }
-
-    public SimpleBooleanProperty isSelectedProperty() {
-        return isSelected;
-    }
-
-    public void setIsSelected(boolean isSelected) {
-        this.isSelected.set(isSelected);
     }
 
     public String getFirstName() {
@@ -50,5 +39,33 @@ public class ContactProperty {
 
     public void setLastName(String lastName) {
         this.lastName.set(lastName);
+    }
+
+    public String getFullName() {
+        return firstName.get() + " " + lastName.get();
+    }
+
+    public String getCity() {
+        return city.get();
+    }
+
+    public SimpleStringProperty cityProperty() {
+        return city;
+    }
+
+    public void setCity(String city) {
+        this.city.set(city);
+    }
+
+    public String getCountry() {
+        return country.get();
+    }
+
+    public SimpleStringProperty countryProperty() {
+        return country;
+    }
+
+    public void setCountry(String country) {
+        this.country.set(country);
     }
 }

@@ -4,13 +4,16 @@
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.layout.AnchorPane?>
 
-<AnchorPane fx:id="contactAnchor" prefHeight="472.0" prefWidth="1100.0" stylesheets="@../../styles/clients.css" xmlns="http://javafx.com/javafx/9" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.contactView.contactViewController">
-   <children>
-      <TableView fx:id="table_contact" prefHeight="472.0" prefWidth="546.0">
-        <columns>
-          <TableColumn fx:id="col_fname" prefWidth="75.0" text="First Name" />
-          <TableColumn fx:id="col_lname" prefWidth="75.0" text="Last Name" />
-        </columns>
-      </TableView>
-   </children>
+<AnchorPane fx:id="contactAnchor" prefHeight="472.0" prefWidth="1100.0" stylesheets="@../../styles/clients.css"
+            xmlns="http://javafx.com/javafx/9" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="client.contactView.contactViewController">
+    <children>
+        <TableView fx:id="table_contact" prefHeight="472.0" prefWidth="546.0">
+            <columns>
+                <TableColumn fx:id="col_name" prefWidth="90.0" text="Name"/>
+                <TableColumn fx:id="col_city" prefWidth="90.0" text="City"/>
+                <TableColumn fx:id="col_country" prefWidth="90.0" text="Country"/>
+            </columns>
+        </TableView>
+    </children>
 </AnchorPane>

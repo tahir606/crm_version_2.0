@@ -89,7 +89,8 @@ public class clientDashController implements Initializable {
                     img_loader.setVisible(false);
                     return;
                 } else {
-                    Platform.runLater(() -> pane_client.getChildren().clear());
+                    if (pane_client != null)
+                        Platform.runLater(() -> pane_client.getChildren().clear());
                 }
 
                 Platform.runLater(() -> {
