@@ -15,12 +15,12 @@
         <!--</HBox>-->
     <!--</top>-->
    <center>
-        <AnchorPane fx:id="pane_client" prefHeight="472.0" prefWidth="1152.0" BorderPane.alignment="CENTER">
-            <children>
-                <Label layoutX="850.0" layoutY="88.0" styleClass="dashText" text="No, of Clients:" />
-                <Label fx:id="txt_clients" layoutX="978.0" layoutY="88.0" styleClass="dashText" text="0" />
-            </children>
-        </AnchorPane>
+        <!--<AnchorPane fx:id="pane_client" prefHeight="472.0" prefWidth="1152.0" BorderPane.alignment="CENTER">-->
+            <!--<children>-->
+                <!--<Label layoutX="850.0" layoutY="88.0" styleClass="dashText" text="No, of Clients:" />-->
+                <!--<Label fx:id="txt_clients" layoutX="978.0" layoutY="88.0" styleClass="dashText" text="0" />-->
+            <!--</children>-->
+        <!--</AnchorPane>-->
    </center>
    <top>
       <MenuBar fx:id="menu_clients" BorderPane.alignment="CENTER">
