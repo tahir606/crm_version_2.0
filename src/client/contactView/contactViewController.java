@@ -5,17 +5,18 @@ import JCode.mySqlConn;
 import JCode.trayHelper;
 import com.jfoenix.controls.*;
 import javafx.application.Platform;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
-import javafx.scene.control.Alert;
-import javafx.scene.control.ButtonType;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
+import javafx.scene.control.*;
+import javafx.scene.control.cell.CheckBoxTableCell;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
@@ -27,6 +28,7 @@ import objects.Client;
 import objects.Contact;
 import objects.ContactProperty;
 
+import java.awt.event.MouseEvent;
 import java.net.URL;
 import java.time.LocalDate;
 import java.util.List;
@@ -34,7 +36,7 @@ import java.util.ResourceBundle;
 
 public class contactViewController implements Initializable {
 
-    TableView<Contact> contactTable;
+    JFXTreeTableView contactTable;
 
     mySqlConn sql;
 
@@ -42,6 +44,8 @@ public class contactViewController implements Initializable {
     AnchorPane contactAnchor;
     @FXML
     TableView<ContactProperty> table_contact;
+    @FXML
+    TableColumn<ContactProperty, Boolean> col_chk;
     @FXML
     TableColumn<ContactProperty, String> col_fname;
     @FXML
@@ -51,10 +55,28 @@ public class contactViewController implements Initializable {
     public void initialize(URL location, ResourceBundle resources) {
         sql = new mySqlConn();
 
-        col_fname.setCellValueFactory(new PropertyValueFactory<ContactProperty, String>("firstName"));
-        col_lname.setCellValueFactory(new PropertyValueFactory<ContactProperty, String>("lastName"));
+        table_contact.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
+
+        col_fname.setCellValueFactory(new PropertyValueFactory<>("firstName"));
+        col_lname.setCellValueFactory(new PropertyValueFactory<>("lastName"));
 
         table_contact.getItems().setAll(sql.getAllContactsProperty(null));
+
+        table_contact.addEventHandler(javafx.scene.input.MouseEvent.MOUSE_CLICKED, event -> {
+            List<ContactProperty> contacts = table_contact.getSelectionModel().getSelectedItems();
+
+            if (contacts == null) {
+                System.out.println("Nothing Selected");
+                return;
+            }
+
+            System.out.println("Selected Items: " + contacts.size());
+
+            for (ContactProperty c : contacts) {
+                System.out.println(c.getFirstName() + " " + c.getLastName());
+            }
+
+        });
 
 //        createTable();
     }

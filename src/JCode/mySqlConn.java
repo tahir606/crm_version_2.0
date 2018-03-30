@@ -1703,8 +1703,6 @@ public class mySqlConn {
         }
 
         return allContacts;
-<<<<<<< HEAD
-=======
     }
 
     public List<ContactProperty> getAllContactsProperty(String where) {
@@ -1779,7 +1777,6 @@ public class mySqlConn {
         }
 
         return allContacts;
->>>>>>> e449c8bb5f1aa2bd763faf48b3bc8d69306d7279
     }
 
     public int getNewContactCode() {
