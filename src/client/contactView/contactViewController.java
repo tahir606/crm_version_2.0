@@ -60,7 +60,7 @@ public class contactViewController implements Initializable {
 
         nameColumn.setSortType(TableColumn.SortType.ASCENDING);
 
-        ObservableList<Contact> list =
+//        ObservableList<Contact> list =
 
     }
 

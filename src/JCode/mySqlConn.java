@@ -1644,7 +1644,7 @@ public class mySqlConn {
         String emails = "SELECT EM_NAME FROM EMAIL_LIST WHERE CS_ID = ?";
         String phones = "SELECT PH_NUM FROM PHONE_LIST WHERE CS_ID = ?";
 
-        List<Client> allClients = new ArrayList<>();
+        List<Contact> allContacts = new ArrayList<>();
 
         try {
             // Connection con = getConnection();
@@ -1657,22 +1657,22 @@ public class mySqlConn {
             }
 
             while (set.next()) {
-                Client client = new Client();
-                client.setCode(set.getInt("CL_ID"));
-                client.setName(set.getString("CL_NAME"));
-                client.setOwner(set.getString("CL_OWNER"));
-                client.setEmail(set.getString("CL_EMAIL"));
-                client.setPhone(set.getString("CL_PHONE"));
-                client.setAddr(set.getString("CL_ADDR"));
-                client.setCity(set.getString("CL_CITY"));
-                client.setCountry(set.getString("CL_COUNTRY"));
-                client.setWebsite(set.getString("CL_WEBSITE"));
-                client.setType(set.getInt("CL_TYPE"));
-                client.setJoinDate(set.getString("CL_JOINDATE"));
+                Contact contact = new Contact();
+                contact.setCode(set.getInt("CL_ID"));
+//                contact.setName(set.getString("CL_NAME"));
+//                contact.setOwner(set.getString("CL_OWNER"));
+//                contact.setEmail(set.getString("CL_EMAIL"));
+//                contact.setPhone(set.getString("CL_PHONE"));
+//                contact.setAddr(set.getString("CL_ADDR"));
+//                contact.setCity(set.getString("CL_CITY"));
+//                contact.setCountry(set.getString("CL_COUNTRY"));
+//                contact.setWebsite(set.getString("CL_WEBSITE"));
+//                contact.setType(set.getInt("CL_TYPE"));
+//                contact.setJoinDate(set.getString("CL_JOINDATE"));
 
                 //Get all Emails
                 PreparedStatement st = static_con.prepareStatement(emails);
-                st.setInt(1, client.getCode());
+                st.setInt(1, contact.getCode());
                 ResultSet setArray = st.executeQuery();
 
                 String[] dataArr = new String[newClientController.noOfFields];
@@ -1681,12 +1681,12 @@ public class mySqlConn {
                     dataArr[c] = setArray.getString("EM_NAME");
                     c++;
                 }
-                client.setEmails(dataArr);
+                contact.setEmails(dataArr);
 
                 //Get all Phone Numbers
                 st = null;
                 st = static_con.prepareStatement(phones);
-                st.setInt(1, client.getCode());
+                st.setInt(1, contact.getCode());
                 setArray = null;
                 setArray = st.executeQuery();
 
@@ -1696,9 +1696,9 @@ public class mySqlConn {
                     dataArr[c] = setArray.getString("PH_NUM");
                     c++;
                 }
-                client.setPhones(dataArr);
+                contact.setPhones(dataArr);
 
-                allClients.add(client);
+                allContacts.add(contact);
             }
 
             // doRelease(con);
@@ -1706,7 +1706,7 @@ public class mySqlConn {
             ex.printStackTrace();
         }
 
-        return allClients;
+        return allContacts;
     }
 
     public int getNewContactCode() {
