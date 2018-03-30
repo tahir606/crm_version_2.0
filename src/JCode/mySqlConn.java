@@ -1657,19 +1657,6 @@ public class mySqlConn {
 
             while (set.next()) {
                 Contact contact = new Contact();
-<<<<<<< HEAD
-                contact.setCode(set.getInt("CL_ID"));
-//                contact.setName(set.getString("CL_NAME"));
-//                contact.setOwner(set.getString("CL_OWNER"));
-//                contact.setEmail(set.getString("CL_EMAIL"));
-//                contact.setPhone(set.getString("CL_PHONE"));
-//                contact.setAddr(set.getString("CL_ADDR"));
-//                contact.setCity(set.getString("CL_CITY"));
-//                contact.setCountry(set.getString("CL_COUNTRY"));
-//                contact.setWebsite(set.getString("CL_WEBSITE"));
-//                contact.setType(set.getInt("CL_TYPE"));
-//                contact.setJoinDate(set.getString("CL_JOINDATE"));
-=======
                 contact.setCode(set.getInt("CS_ID"));
                 contact.setFirstName(set.getString("CS_FNAME"));
                 contact.setLastName(set.getString("CS_LNAME"));
@@ -1678,7 +1665,6 @@ public class mySqlConn {
                 contact.setCity(set.getString("CS_CITY"));
                 contact.setCountry(set.getString("CS_COUNTRY"));
                 contact.setNote(set.getString("CS_NOTE"));
->>>>>>> e449c8bb5f1aa2bd763faf48b3bc8d69306d7279
 
                 //Get all Emails
                 PreparedStatement st = static_con.prepareStatement(emails);

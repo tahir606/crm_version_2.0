@@ -54,11 +54,7 @@ public class contactViewController implements Initializable {
         col_fname.setCellValueFactory(new PropertyValueFactory<ContactProperty, String>("firstName"));
         col_lname.setCellValueFactory(new PropertyValueFactory<ContactProperty, String>("lastName"));
 
-<<<<<<< HEAD
-//        ObservableList<Contact> list =
-=======
         table_contact.getItems().setAll(sql.getAllContactsProperty(null));
->>>>>>> e449c8bb5f1aa2bd763faf48b3bc8d69306d7279
 
 //        createTable();
     }
