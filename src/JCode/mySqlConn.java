@@ -1,6 +1,7 @@
 package JCode;
 
 import client.newClient.newClientController;
+import client.newContact.newContactController;
 import javafx.application.Platform;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
@@ -1630,13 +1631,12 @@ public class mySqlConn {
 
     }
 
-    public List<Contact> getAllContact(String where) {
+    public List<Contact> getAllContacts(String where) {
         String query = "SELECT CS_ID,CS_FNAME,CS_LNAME,CS_DOB,CS_ADDR," +
                 "CS_CITY,CS_COUNTRY,CS_NOTE,CREATEDON FROM CONTACT_STORE";
 
-
         if (where == null) {
-            query = query + "WHERE FREZE = 0 ORDER BY CS_ID";
+            query = query + " WHERE FREZE = 0 ORDER BY CS_ID";
         } else {
             query = query + " WHERE " + where;
         }
@@ -1647,7 +1647,6 @@ public class mySqlConn {
         List<Contact> allContacts = new ArrayList<>();
 
         try {
-            // Connection con = getConnection();
             System.out.println(query);
             PreparedStatement statement = static_con.prepareStatement(query);
             ResultSet set = statement.executeQuery();
@@ -1658,6 +1657,7 @@ public class mySqlConn {
 
             while (set.next()) {
                 Contact contact = new Contact();
+<<<<<<< HEAD
                 contact.setCode(set.getInt("CL_ID"));
 //                contact.setName(set.getString("CL_NAME"));
 //                contact.setOwner(set.getString("CL_OWNER"));
@@ -1669,13 +1669,23 @@ public class mySqlConn {
 //                contact.setWebsite(set.getString("CL_WEBSITE"));
 //                contact.setType(set.getInt("CL_TYPE"));
 //                contact.setJoinDate(set.getString("CL_JOINDATE"));
+=======
+                contact.setCode(set.getInt("CS_ID"));
+                contact.setFirstName(set.getString("CS_FNAME"));
+                contact.setLastName(set.getString("CS_LNAME"));
+                contact.setDob(set.getString("CS_DOB"));
+                contact.setAddress(set.getString("CS_ADDR"));
+                contact.setCity(set.getString("CS_CITY"));
+                contact.setCountry(set.getString("CS_COUNTRY"));
+                contact.setNote(set.getString("CS_NOTE"));
+>>>>>>> e449c8bb5f1aa2bd763faf48b3bc8d69306d7279
 
                 //Get all Emails
                 PreparedStatement st = static_con.prepareStatement(emails);
                 st.setInt(1, contact.getCode());
                 ResultSet setArray = st.executeQuery();
 
-                String[] dataArr = new String[newClientController.noOfFields];
+                String[] dataArr = new String[newContactController.noOfFields];
                 int c = 0;
                 while (setArray.next()) {
                     dataArr[c] = setArray.getString("EM_NAME");
@@ -1690,7 +1700,7 @@ public class mySqlConn {
                 setArray = null;
                 setArray = st.executeQuery();
 
-                dataArr = new String[newClientController.noOfFields];
+                dataArr = new String[newContactController.noOfFields];
                 c = 0;
                 while (setArray.next()) {
                     dataArr[c] = setArray.getString("PH_NUM");
@@ -1707,6 +1717,83 @@ public class mySqlConn {
         }
 
         return allContacts;
+<<<<<<< HEAD
+=======
+    }
+
+    public List<ContactProperty> getAllContactsProperty(String where) {
+        String query = "SELECT CS_ID,CS_FNAME,CS_LNAME,CS_DOB,CS_ADDR," +
+                "CS_CITY,CS_COUNTRY,CS_NOTE,CREATEDON FROM CONTACT_STORE";
+
+        if (where == null) {
+            query = query + " WHERE FREZE = 0 ORDER BY CS_ID";
+        } else {
+            query = query + " WHERE " + where;
+        }
+
+//        String emails = "SELECT EM_NAME FROM EMAIL_LIST WHERE CS_ID = ?";
+//        String phones = "SELECT PH_NUM FROM PHONE_LIST WHERE CS_ID = ?";
+
+        List<ContactProperty> allContacts = new ArrayList<>();
+
+        try {
+            System.out.println(query);
+            PreparedStatement statement = static_con.prepareStatement(query);
+            ResultSet set = statement.executeQuery();
+            //-------------Creating Email-------------
+            if (!set.isBeforeFirst()) {
+                return null;
+            }
+
+            while (set.next()) {
+                ContactProperty contact = new ContactProperty();
+//                contact.setCode(set.getInt("CS_ID"));
+                contact.setFirstName(set.getString("CS_FNAME"));
+                contact.setLastName(set.getString("CS_LNAME"));
+//                contact.setDob(set.getString("CS_DOB"));
+//                contact.setAddress(set.getString("CS_ADDR"));
+//                contact.setCity(set.getString("CS_CITY"));
+//                contact.setCountry(set.getString("CS_COUNTRY"));
+//                contact.setNote(set.getString("CS_NOTE"));
+
+//                //Get all Emails
+//                PreparedStatement st = static_con.prepareStatement(emails);
+//                st.setInt(1, contact.getCode());
+//                ResultSet setArray = st.executeQuery();
+//
+//                String[] dataArr = new String[newContactController.noOfFields];
+//                int c = 0;
+//                while (setArray.next()) {
+//                    dataArr[c] = setArray.getString("EM_NAME");
+//                    c++;
+//                }
+//                contact.setEmails(dataArr);
+//
+//                //Get all Phone Numbers
+//                st = null;
+//                st = static_con.prepareStatement(phones);
+//                st.setInt(1, contact.getCode());
+//                setArray = null;
+//                setArray = st.executeQuery();
+//
+//                dataArr = new String[newContactController.noOfFields];
+//                c = 0;
+//                while (setArray.next()) {
+//                    dataArr[c] = setArray.getString("PH_NUM");
+//                    c++;
+//                }
+//                contact.setPhones(dataArr);
+
+                allContacts.add(contact);
+            }
+
+            // doRelease(con);
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+
+        return allContacts;
+>>>>>>> e449c8bb5f1aa2bd763faf48b3bc8d69306d7279
     }
 
     public int getNewContactCode() {
