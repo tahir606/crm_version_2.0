@@ -49,7 +49,7 @@ public class clientDashController implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
 
-        inflatePane("contactView/contactView.fxml", 3);     //Inflating Dashboard
+        inflatePane("dash/dashBase.fxml", 3);     //Inflating Dashboard
 
         populateMenuBar();
     }
@@ -71,7 +71,7 @@ public class clientDashController implements Initializable {
         Menu menuView = new Menu("View");
 
         MenuItem dashboard = new MenuItem("Dashboard");
-        dashboard.setOnAction(event -> inflatePane("contactView/contactView.fxml", 3));
+        dashboard.setOnAction(event -> inflatePane("dash/dashBase.fxml", 3));
         menuView.getItems().add(dashboard);
 
         menu_clients.getMenus().add(menuView);
