@@ -2,6 +2,7 @@ package client.dash.contactView;
 
 import JCode.mySqlConn;
 import com.jfoenix.controls.*;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
@@ -15,12 +16,16 @@ import java.util.ResourceBundle;
 
 public class contactViewController implements Initializable {
 
-    JFXTreeTableView contactTable;
-
     mySqlConn sql;
 
     @FXML
     AnchorPane contactAnchor;
+    @FXML
+    AnchorPane toolbar_contacts;
+    @FXML
+    Label txt_no;
+    @FXML
+    JFXButton btn_email;
     @FXML
     TableView<ContactProperty> table_contact;
     @FXML
@@ -30,9 +35,13 @@ public class contactViewController implements Initializable {
     @FXML
     TableColumn<ContactProperty, String> col_country;
 
+    List<ContactProperty> selectedContacts;
+
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         sql = new mySqlConn();
+
+        toolbar_contacts.setVisible(false);
 
         table_contact.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
 
@@ -43,50 +52,20 @@ public class contactViewController implements Initializable {
         table_contact.getItems().setAll(sql.getAllContactsProperty(null));
 
         table_contact.addEventHandler(javafx.scene.input.MouseEvent.MOUSE_CLICKED, event -> {
-            List<ContactProperty> contacts = table_contact.getSelectionModel().getSelectedItems();
+            selectedContacts = table_contact.getSelectionModel().getSelectedItems();
 
-            if (contacts == null) {
-                System.out.println("Nothing Selected");
+            if (selectedContacts == null || selectedContacts.size() == 0) {
+                toolbar_contacts.setVisible(false);
                 return;
-            }
-
-            System.out.println("Selected Items: " + contacts.size());
-
-            for (ContactProperty c : contacts) {
-                System.out.println(c.getFirstName() + " " + c.getLastName());
+            } else {
+                toolbar_contacts.setVisible(true);
+                txt_no.setText(String.valueOf(selectedContacts.size()));
             }
 
         });
 
-//        createTable();
     }
 
-//    private void createTable() {
-//
-//        contactTable = new TableView<>();
-//
-//        TableColumn<Contact, JFXCheckBox> checkBoxColumn = new TableColumn<>("");
-//        TableColumn<Contact, String> nameColumn = new TableColumn<>("Name");
-//        TableColumn<Contact, String> emailColumn = new TableColumn<>("Email");
-//        TableColumn<Contact, String> phoneColumn = new TableColumn<>("Phone");
-//        TableColumn<Contact, String> clientColumn = new TableColumn<>("Client");
-//
-//        checkBoxColumn.setCellValueFactory(new PropertyValueFactory<>("check_box"));
-//        nameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
-//        emailColumn.setCellValueFactory(new PropertyValueFactory<>("email"));
-//        phoneColumn.setCellValueFactory(new PropertyValueFactory<>("phone"));
-//        clientColumn.setCellValueFactory(new PropertyValueFactory<>("client"));
-//
-//        nameColumn.setSortType(TableColumn.SortType.ASCENDING);
-//
-//        List<Contact> contacts = sql.getAllContacts(null);
-//        ObservableList<Contact> list = FXCollections.observableArrayList(contacts);
-//        contactTable.setItems(list);
-//
-//        contactTable.getColumns().addAll(checkBoxColumn, nameColumn, emailColumn, phoneColumn, clientColumn);
-//
-//        contactAnchor.getChildren().add(contactTable);
-//
-//    }
-
+    public void onEmailSending(ActionEvent actionEvent) {
+    }
 }

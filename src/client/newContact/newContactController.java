@@ -40,6 +40,10 @@ public class newContactController implements Initializable {
     @FXML
     private JFXButton btn_phone;
     @FXML
+    private JFXTextField txt_email;
+    @FXML
+    private JFXTextField txt_mobile;
+    @FXML
     private JFXTextField txt_addr;
     @FXML
     private JFXTextField txt_city;
@@ -74,6 +78,8 @@ public class newContactController implements Initializable {
     public void saveChanges(ActionEvent actionEvent) {
         String fname = txt_fname.getText(),
                 lname = txt_lname.getText(),
+                email = txt_email.getText(),
+                mobile = txt_mobile.getText(),
                 addr = txt_addr.getText(),
                 city = txt_city.getText(),
                 country = txt_country.getText(),
@@ -129,7 +135,7 @@ public class newContactController implements Initializable {
         inflateBOX(2);
     }
 
-    public static int noOfFields = 5;
+    public static int noOfFields = 1;
 
     private void inflateBOX(int c) {
 
