@@ -110,6 +110,8 @@ public class newContactController implements Initializable {
                     contact.setDob(null);
                 else
                     contact.setDob(jdate);
+                contact.setEmails(new String[]{email});
+                contact.setPhones(new String[]{mobile});
 
                 Client c = (Client) client_list.getSelectionModel().getSelectedItem();
 
