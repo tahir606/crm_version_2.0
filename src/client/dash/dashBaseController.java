@@ -45,14 +45,8 @@ public class dashBaseController implements Initializable {
 
         vbox_menu.getChildren().addAll(contacts, clients);
 
-//        switch (EmailSet_type) {
-//            case 1:
-//                general.fire();
-//                break;
-//            case 2:
-//                tickets.fire();
-//                break;
-//        }
+        contacts.fire();
+
     }
 
     private void changeSettingType(int i, JFXButton btn) {
