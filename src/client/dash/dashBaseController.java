@@ -19,10 +19,15 @@ public class dashBaseController implements Initializable {
     @FXML
     private BorderPane main_pane;
 
+    public static BorderPane main_paneF;
+
     private static int dashType = 0;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+
+        main_paneF = main_pane;
+
         populateCategoryBoxes();
     }
 

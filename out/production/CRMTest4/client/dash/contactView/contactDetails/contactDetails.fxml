@@ -44,7 +44,7 @@
                   </Label>
                </children>
             </HBox>
-            <HBox prefHeight="14.0" prefWidth="316.0" />
+            <HBox prefHeight="8.0" prefWidth="316.0" />
             <HBox prefHeight="26.0" prefWidth="316.0" spacing="25.0">
                <children>
                   <Label prefHeight="20.0" prefWidth="60.0" text="Client">
@@ -59,13 +59,42 @@
                   </Label>
                </children>
             </HBox>
+            <HBox prefHeight="8.0" prefWidth="316.0" />
+            <HBox prefHeight="26.0" prefWidth="316.0" spacing="25.0">
+               <children>
+                  <Label prefHeight="20.0" prefWidth="60.0" text="DoB">
+                     <font>
+                        <Font size="14.0" />
+                     </font>
+                  </Label>
+                  <Label text="01/01/1990">
+                     <font>
+                        <Font size="14.0" />
+                     </font>
+                  </Label>
+               </children>
+            </HBox>
+            <HBox prefHeight="26.0" prefWidth="316.0" spacing="25.0">
+               <children>
+                  <Label prefHeight="20.0" prefWidth="60.0" text="Age">
+                     <font>
+                        <Font size="14.0" />
+                     </font>
+                  </Label>
+                  <Label text="18">
+                     <font>
+                        <Font size="14.0" />
+                     </font>
+                  </Label>
+               </children>
+            </HBox>
          </children>
       </VBox>
       <JFXButton fx:id="btn_back" layoutX="14.0" layoutY="14.0" text=" " AnchorPane.leftAnchor="14.0" AnchorPane.topAnchor="14.0" />
-      <HBox layoutX="639.0" layoutY="4.0" prefHeight="44.0" prefWidth="361.0" spacing="20.0">
+      <HBox layoutX="639.0" layoutY="19.0" prefHeight="34.0" prefWidth="361.0" spacing="20.0">
          <children>
-            <JFXButton styleClass="emailDetailsButton" />
-            <JFXButton styleClass="emailDetailsButton" />
+            <JFXButton fx:id="btn_email" prefHeight="42.0" prefWidth="84.0" styleClass="emailDetailsButton" text="Send Email" />
+            <JFXButton fx:id="btn_edit" prefHeight="38.0" prefWidth="84.0" styleClass="emailDetailsButton" text="Edit" />
          </children>
       </HBox>
    </children>

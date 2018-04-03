@@ -17,6 +17,17 @@ public class ContactProperty {
 
     }
 
+    @Override
+    public String toString() {
+        return "ContactProperty{" +
+                "firstName=" + firstName +
+                ", lastName=" + lastName +
+                ", fullName=" + fullName +
+                ", city=" + city +
+                ", country=" + country +
+                '}';
+    }
+
     public String getFirstName() {
         return firstName.get();
     }

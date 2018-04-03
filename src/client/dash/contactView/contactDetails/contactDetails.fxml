@@ -44,7 +44,7 @@
                   </Label>
                </children>
             </HBox>
-            <HBox prefHeight="14.0" prefWidth="316.0" />
+            <HBox prefHeight="8.0" prefWidth="316.0" />
             <HBox prefHeight="26.0" prefWidth="316.0" spacing="25.0">
                <children>
                   <Label prefHeight="20.0" prefWidth="60.0" text="Client">
@@ -53,6 +53,35 @@
                      </font>
                   </Label>
                   <Label text="Example Client">
+                     <font>
+                        <Font size="14.0" />
+                     </font>
+                  </Label>
+               </children>
+            </HBox>
+            <HBox prefHeight="8.0" prefWidth="316.0" />
+            <HBox prefHeight="26.0" prefWidth="316.0" spacing="25.0">
+               <children>
+                  <Label prefHeight="20.0" prefWidth="60.0" text="DoB">
+                     <font>
+                        <Font size="14.0" />
+                     </font>
+                  </Label>
+                  <Label text="01/01/1990">
+                     <font>
+                        <Font size="14.0" />
+                     </font>
+                  </Label>
+               </children>
+            </HBox>
+            <HBox prefHeight="26.0" prefWidth="316.0" spacing="25.0">
+               <children>
+                  <Label prefHeight="20.0" prefWidth="60.0" text="Age">
+                     <font>
+                        <Font size="14.0" />
+                     </font>
+                  </Label>
+                  <Label text="18">
                      <font>
                         <Font size="14.0" />
                      </font>
