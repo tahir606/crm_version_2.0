@@ -58,7 +58,7 @@
                         <!--</ScrollPane>-->
                         <JFXButton fx:id="btn_lock" buttonType="RAISED" layoutX="28.0" layoutY="386.0" onAction="#onLock" styleClass="emailDetailsButton" text="Lock" AnchorPane.bottomAnchor="11.0" />
                         <JFXButton fx:id="btn_solv" buttonType="RAISED" layoutX="95.0" layoutY="386.0" onAction="#onSolv" styleClass="emailDetailsButton" text="Solved" AnchorPane.bottomAnchor="11.0" />
-                        <JFXComboBox fx:id="combo_attach" layoutX="80.0" layoutY="406.0" prefHeight="25.0" prefWidth="188.0" promptText="Select Attachment" AnchorPane.bottomAnchor="75.0" />
+                        <JFXComboBox fx:id="combo_attach" layoutX="80.0" layoutY="406.0" prefHeight="25.0" prefWidth="188.0" AnchorPane.bottomAnchor="75.0" />
                         <JFXComboBox fx:id="combo_respond" layoutX="244.0" layoutY="383.0" prefHeight="24.0" prefWidth="89.0" AnchorPane.bottomAnchor="11.0" />
                         <JFXButton fx:id="btn_unlock" buttonType="RAISED" layoutX="28.0" layoutY="386.0" onAction="#unLock" styleClass="emailUnlockButton" text="Unlock" visible="false" AnchorPane.bottomAnchor="11.0" />
                         <Label fx:id="label_cc1" layoutX="14.0" layoutY="241.0" prefHeight="17.0" prefWidth="82.0" text="Subject:" />

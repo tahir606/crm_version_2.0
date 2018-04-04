@@ -142,8 +142,6 @@ public class EmailDashController implements Initializable {
 
         populateCategoryBoxes();
 
-        list_emails.setStyle("-fx-background-insets: 1 1;");
-
         populateMenuBar();
 
         //Populating List
@@ -580,12 +578,14 @@ public class EmailDashController implements Initializable {
             //----Attachments
             combo_attach.getItems().clear();
 
-            if (email.getAttch() == null) {
+            if (email.getAttch() == null || email.getAttch().equals("")) {
+                System.out.println("No attachments");
                 combo_attach.setPromptText("No Attachments");
                 combo_attach.setDisable(true);
             } else if (!email.getAttch().equals("")) {
-                combo_attach.setDisable(false);
+                System.out.println("Some attachments");
                 combo_attach.setPromptText("Open Attachment");
+                combo_attach.setDisable(false);
                 List<FileDev> attFiles = new ArrayList<>();
                 for (String c : email.getAttch().split("\\^")) {
                     FileDev file = new FileDev(c);
@@ -593,10 +593,11 @@ public class EmailDashController implements Initializable {
                 }
                 combo_attach.getItems().addAll(attFiles);
 
-            } else {
-                combo_attach.setPromptText("No Attachments");
-                combo_attach.setDisable(true);
             }
+//            else {
+//                combo_attach.setPromptText("No Attachments");
+//                combo_attach.setDisable(true);
+//            }
 
             //----Ebody
             anchor_body.getChildren().clear();
