@@ -7,9 +7,9 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane prefHeight="472.0" prefWidth="1000.0" xmlns="http://javafx.com/javafx/9" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.dash.contactView.contactDetails.contactDetailsController">
+<AnchorPane prefHeight="472.0" prefWidth="1000.0" stylesheets="@../../../../styles/emailDash.css" xmlns="http://javafx.com/javafx/9" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.dash.contactView.contactDetails.contactDetailsController">
    <children>
-      <Label layoutX="28.0" layoutY="65.0" text="First Last Name">
+      <Label fx:id="txt_fname" layoutX="28.0" layoutY="65.0" text="First Last Name">
          <font>
             <Font name="Arial Narrow" size="20.0" />
          </font>
@@ -23,7 +23,7 @@
                         <Font size="14.0" />
                      </font>
                   </Label>
-                  <Label text="example@domain.com">
+                  <Label fx:id="txt_email" text="example@domain.com">
                      <font>
                         <Font size="14.0" />
                      </font>
@@ -37,7 +37,7 @@
                         <Font size="14.0" />
                      </font>
                   </Label>
-                  <Label text="+92001000000">
+                  <Label fx:id="txt_mobile" text="+92001000000">
                      <font>
                         <Font size="14.0" />
                      </font>
@@ -52,7 +52,7 @@
                         <Font size="14.0" />
                      </font>
                   </Label>
-                  <Label text="Example Client">
+                  <Label fx:id="txt_client" text="Example Client">
                      <font>
                         <Font size="14.0" />
                      </font>
@@ -67,7 +67,7 @@
                         <Font size="14.0" />
                      </font>
                   </Label>
-                  <Label text="01/01/1990">
+                  <Label fx:id="txt_dob" text="01/01/1990">
                      <font>
                         <Font size="14.0" />
                      </font>
@@ -81,7 +81,7 @@
                         <Font size="14.0" />
                      </font>
                   </Label>
-                  <Label text="18">
+                  <Label fx:id="txt_age" text="18">
                      <font>
                         <Font size="14.0" />
                      </font>

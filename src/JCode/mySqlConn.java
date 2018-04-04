@@ -521,7 +521,7 @@ public class mySqlConn {
             Email e = new Email();
             e.setSubject(autoReplySubject + emno);
             e.setToAddress(new Address[]{email.getFromAddress()[0]});
-            e.setBody(body);
+            e.setBody(body + "\n\n" + "--------In Reply To--------" + "\nSubject:   " + email.getSubject() + "\n" + email.getBody());
 
             emailControl.sendEmail(e, message);
             statementEMNO.close();
