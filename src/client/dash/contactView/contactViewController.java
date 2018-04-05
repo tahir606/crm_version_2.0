@@ -34,11 +34,17 @@ public class contactViewController implements Initializable {
     @FXML
     TableColumn<ContactProperty, String> col_name;
     @FXML
+    TableColumn<ContactProperty, String> col_email;
+    @FXML
+    TableColumn<ContactProperty, String> col_mobile;
+    @FXML
     TableColumn<ContactProperty, String> col_city;
     @FXML
     TableColumn<ContactProperty, String> col_country;
 
     List<ContactProperty> selectedContacts;
+
+    public static ContactProperty staticContact;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -49,6 +55,8 @@ public class contactViewController implements Initializable {
         table_contact.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
 
         col_name.setCellValueFactory(new PropertyValueFactory<>("fullName"));
+        col_email.setCellValueFactory(new PropertyValueFactory<>("email"));
+        col_mobile.setCellValueFactory(new PropertyValueFactory<>("mobile"));
         col_city.setCellValueFactory(new PropertyValueFactory<>("city"));
         col_country.setCellValueFactory(new PropertyValueFactory<>("country"));
 
@@ -71,7 +79,7 @@ public class contactViewController implements Initializable {
             TableRow<ContactProperty> row = new TableRow<>();
             row.setOnMouseClicked(event -> {
                 if (event.getClickCount() == 2 && (!row.isEmpty())) {
-                    ContactProperty rowData = row.getItem();
+                    staticContact = row.getItem();
                     try {
                         dashBaseController.main_paneF.setCenter(
                                 FXMLLoader.load(

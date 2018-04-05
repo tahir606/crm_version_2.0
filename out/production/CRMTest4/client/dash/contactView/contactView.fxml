@@ -12,6 +12,8 @@
         <TableView fx:id="table_contact" layoutY="34.0" prefHeight="438.0" prefWidth="1000.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="34.0">
             <columns>
                 <TableColumn fx:id="col_name" prefWidth="128.0" text="Name" />
+                <TableColumn fx:id="col_email" prefWidth="90.0" text="Email" />
+                <TableColumn fx:id="col_mobile" prefWidth="90.0" text="Mobile" />
                 <TableColumn fx:id="col_city" prefWidth="90.0" text="City" />
                 <TableColumn fx:id="col_country" prefWidth="90.0" text="Country" />
             </columns>

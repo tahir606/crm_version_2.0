@@ -521,7 +521,7 @@ public class mySqlConn {
             Email e = new Email();
             e.setSubject(autoReplySubject + emno);
             e.setToAddress(new Address[]{email.getFromAddress()[0]});
-            e.setBody(body + "\n\n" + "--------In Reply To--------" + "\nSubject:   " + email.getSubject() + "\n" + email.getBody());
+            e.setBody(body + "\n\n\n" + "--------In Reply To--------" + "\n\nSubject:   " + email.getSubject() + "\n\n" + email.getBody());
 
             emailControl.sendEmail(e, message);
             statementEMNO.close();
@@ -562,19 +562,7 @@ public class mySqlConn {
                 email.setMsgNo(set.getInt("MSGNO"));
                 email.setSubject(set.getString("SBJCT"));
                 email.setTimestamp(set.getString("TSTMP"));
-
-                // Note, MM is months, not mm
-                DateFormat inputFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.S");
-                DateFormat outputFormat = new SimpleDateFormat("dd-MMM-yyyy hh:mm a");
-
-                Date date = null;
-                try {
-                    date = inputFormat.parse(email.getTimestamp());
-                } catch (ParseException e) {
-                    e.printStackTrace();
-                }
-                String outputText = outputFormat.format(date);
-                email.setTimeFormatted(outputText);
+                email.setTimeFormatted(CommonTasks.getTimeFormatted(email.getTimestamp()));
 
                 email.setBody(set.getString("EBODY"));
                 email.setAttch(set.getString("ATTCH"));
@@ -1602,8 +1590,8 @@ public class mySqlConn {
     public void insertContact(Contact contact) {
 
         String query = "INSERT INTO CONTACT_STORE(CS_ID, CS_FNAME ,CS_LNAME ,CS_DOB ,CS_ADDR ,CS_CITY , " +
-                "CS_COUNTRY ,CS_NOTE ,FREZE ,CL_ID) " +
-                " SELECT IFNULL(max(CS_ID),0)+1,?,?,?,?,?,?,?,?,? from CONTACT_STORE";
+                "CS_COUNTRY ,CS_NOTE ,FREZE ,CL_ID, CREATEDON, CREATEDBY) " +
+                " SELECT IFNULL(max(CS_ID),0)+1,?,?,?,?,?,?,?,?,?,?,? from CONTACT_STORE";
 
         // Connection con = getConnection();
         PreparedStatement statement = null;
@@ -1619,6 +1607,8 @@ public class mySqlConn {
             statement.setString(7, contact.getNote());
             statement.setBoolean(8, contact.isFreze());
             statement.setInt(9, contact.getClientCode());
+            statement.setString(10, CommonTasks.getCurrentTimeStamp());
+            statement.setInt(11, fHelper.ReadUserDetails().getUCODE());
 
             statement.executeUpdate();
 
@@ -1706,17 +1696,17 @@ public class mySqlConn {
     }
 
     public List<ContactProperty> getAllContactsProperty(String where) {
-        String query = "SELECT CS_ID,CS_FNAME,CS_LNAME,CS_DOB,CS_ADDR," +
-                "CS_CITY,CS_COUNTRY,CS_NOTE,CREATEDON FROM CONTACT_STORE";
+        String query = "SELECT CS.CS_ID AS CS_ID,CS_FNAME,CS_LNAME,CS_DOB,CS_ADDR," +
+                " CS_CITY,CS_COUNTRY,CS_NOTE,CREATEDON,EM_NAME,PH_NUM,CL_NAME FROM CONTACT_STORE AS CS, EMAIL_LIST AS EL, PHONE_LIST AS PL, CLIENT_STORE AS CL" +
+                " WHERE EL.CS_ID = CS.CS_ID " +
+                " AND PL.CS_ID = CS.CS_ID " +
+                " AND CL.CL_ID = CS.CL_ID";
 
         if (where == null) {
-            query = query + " WHERE FREZE = 0 ORDER BY CS_ID";
+            query = query + " AND FREZE = 0 ORDER BY CS.CS_ID";
         } else {
-            query = query + " WHERE " + where;
+            query = query + " AND " + where;
         }
-
-//        String emails = "SELECT EM_NAME FROM EMAIL_LIST WHERE CS_ID = ?";
-//        String phones = "SELECT PH_NUM FROM PHONE_LIST WHERE CS_ID = ?";
 
         List<ContactProperty> allContacts = new ArrayList<>();
 
@@ -1725,45 +1715,17 @@ public class mySqlConn {
             PreparedStatement statement = static_con.prepareStatement(query);
             ResultSet set = statement.executeQuery();
             //-------------Creating Email-------------
-            if (!set.isBeforeFirst()) {
-                return null;
-            }
-
             while (set.next()) {
                 ContactProperty contact = new ContactProperty();
-//                contact.setCode(set.getInt("CS_ID"));
+                contact.setCode(set.getInt("CS_ID"));
                 contact.setFirstName(set.getString("CS_FNAME"));
                 contact.setLastName(set.getString("CS_LNAME"));
                 contact.setCity(set.getString("CS_CITY"));
                 contact.setCountry(set.getString("CS_COUNTRY"));
-
-//                //Get all Emails
-//                PreparedStatement st = static_con.prepareStatement(emails);
-//                st.setInt(1, contact.getCode());
-//                ResultSet setArray = st.executeQuery();
-//
-//                String[] dataArr = new String[newContactController.noOfFields];
-//                int c = 0;
-//                while (setArray.next()) {
-//                    dataArr[c] = setArray.getString("EM_NAME");
-//                    c++;
-//                }
-//                contact.setEmails(dataArr);
-//
-//                //Get all Phone Numbers
-//                st = null;
-//                st = static_con.prepareStatement(phones);
-//                st.setInt(1, contact.getCode());
-//                setArray = null;
-//                setArray = st.executeQuery();
-//
-//                dataArr = new String[newContactController.noOfFields];
-//                c = 0;
-//                while (setArray.next()) {
-//                    dataArr[c] = setArray.getString("PH_NUM");
-//                    c++;
-//                }
-//                contact.setPhones(dataArr);
+                contact.setEmail(set.getString("EM_NAME"));
+                contact.setMobile(set.getString("PH_NUM"));
+                contact.setDob(set.getString("CS_DOB"));
+                contact.setClientName(set.getString("CL_NAME"));
 
                 allContacts.add(contact);
             }

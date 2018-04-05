@@ -1,31 +1,58 @@
 package objects;
 
 import javafx.beans.property.SimpleBooleanProperty;
+import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
 
 public class ContactProperty {
 
-    SimpleStringProperty firstName, lastName, fullName, city, country;
+    SimpleIntegerProperty code, clID;
+    SimpleStringProperty firstName, lastName, fullName, city, country, email, mobile, dob, age, clientName;
 
     public ContactProperty() {
+
+        code = new SimpleIntegerProperty();
 
         firstName = new SimpleStringProperty();
         lastName = new SimpleStringProperty();
         fullName = new SimpleStringProperty();
         city = new SimpleStringProperty();
         country = new SimpleStringProperty();
+        email = new SimpleStringProperty();
+        mobile = new SimpleStringProperty();
+        dob = new SimpleStringProperty();
+        age = new SimpleStringProperty();
+
+        clientName = new SimpleStringProperty();
 
     }
 
     @Override
     public String toString() {
         return "ContactProperty{" +
-                "firstName=" + firstName +
+                "code=" + code +
+                ", firstName=" + firstName +
                 ", lastName=" + lastName +
                 ", fullName=" + fullName +
                 ", city=" + city +
                 ", country=" + country +
+                ", email=" + email +
+                ", mobile=" + mobile +
+                ", dob=" + dob +
+                ", age=" + age +
                 '}';
+    }
+
+    public int getCode() {
+        return code.get();
+    }
+
+    public SimpleIntegerProperty codeProperty() {
+        return code;
+    }
+
+    public void setCode(int code) {
+        this.code.set(code);
     }
 
     public String getFirstName() {
@@ -78,5 +105,77 @@ public class ContactProperty {
 
     public void setCountry(String country) {
         this.country.set(country);
+    }
+
+    public String getEmail() {
+        return email.get();
+    }
+
+    public SimpleStringProperty emailProperty() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email.set(email);
+    }
+
+    public String getMobile() {
+        return mobile.get();
+    }
+
+    public SimpleStringProperty mobileProperty() {
+        return mobile;
+    }
+
+    public void setMobile(String mobile) {
+        this.mobile.set(mobile);
+    }
+
+    public String getDob() {
+        return dob.get();
+    }
+
+    public SimpleStringProperty dobProperty() {
+        return dob;
+    }
+
+    public void setDob(String dob) {
+        this.dob.set(dob);
+    }
+
+    public String getAge() {
+        return age.get();
+    }
+
+    public SimpleStringProperty ageProperty() {
+        return age;
+    }
+
+    public void setAge(String age) {
+        this.age.set(age);
+    }
+
+    public int getClID() {
+        return clID.get();
+    }
+
+    public SimpleIntegerProperty clIDProperty() {
+        return clID;
+    }
+
+    public void setClID(int clID) {
+        this.clID.set(clID);
+    }
+
+    public String getClientName() {
+        return clientName.get();
+    }
+
+    public SimpleStringProperty clientNameProperty() {
+        return clientName;
+    }
+
+    public void setClientName(String clientName) {
+        this.clientName.set(clientName);
     }
 }
