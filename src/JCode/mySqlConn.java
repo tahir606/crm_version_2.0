@@ -1438,7 +1438,7 @@ public class mySqlConn {
 
 
         if (where == null) {
-            query = query + " ORDER BY CL_ID";
+            query = query + " WHERE CL_ID != 0 ORDER BY CL_ID";
         } else {
             query = query + " WHERE " + where;
         }
@@ -1480,7 +1480,11 @@ public class mySqlConn {
                 String[] dataArr = new String[newClientController.noOfFields];
                 int c = 0;
                 while (setArray.next()) {
+                    try {
                     dataArr[c] = setArray.getString("EM_NAME");
+                    } catch (ArrayIndexOutOfBoundsException e) {
+                        System.out.println("ArrayIndexOutOfBoundsException");
+                    }
                     c++;
                 }
                 client.setEmails(dataArr);
@@ -1726,6 +1730,7 @@ public class mySqlConn {
                 contact.setMobile(set.getString("PH_NUM"));
                 contact.setDob(set.getString("CS_DOB"));
                 contact.setClientName(set.getString("CL_NAME"));
+                contact.setAge(CommonTasks.getAge(contact.getDob()));
 
                 allContacts.add(contact);
             }

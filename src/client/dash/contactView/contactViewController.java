@@ -1,15 +1,21 @@
 package client.dash.contactView;
 
+import Email.EResponse.EResponseController;
 import JCode.mySqlConn;
+import JCode.trayHelper;
 import client.dash.dashBaseController;
 import com.jfoenix.controls.*;
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.AnchorPane;
+import javafx.stage.Stage;
 import objects.ContactProperty;
 
 import java.io.IOException;
@@ -34,6 +40,8 @@ public class contactViewController implements Initializable {
     @FXML
     TableColumn<ContactProperty, String> col_name;
     @FXML
+    TableColumn<ContactProperty, String> col_age;
+    @FXML
     TableColumn<ContactProperty, String> col_email;
     @FXML
     TableColumn<ContactProperty, String> col_mobile;
@@ -55,6 +63,7 @@ public class contactViewController implements Initializable {
         table_contact.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
 
         col_name.setCellValueFactory(new PropertyValueFactory<>("fullName"));
+        col_age.setCellValueFactory(new PropertyValueFactory<>("age"));
         col_email.setCellValueFactory(new PropertyValueFactory<>("email"));
         col_mobile.setCellValueFactory(new PropertyValueFactory<>("mobile"));
         col_city.setCellValueFactory(new PropertyValueFactory<>("city"));
@@ -96,5 +105,22 @@ public class contactViewController implements Initializable {
     }
 
     public void onEmailSending(ActionEvent actionEvent) {
+    }
+
+    private void inflateEResponse(int i) {
+        try {
+            EResponseController.choice = i;
+            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("EResponse/EResponse.fxml"));
+            Parent root1 = (Parent) fxmlLoader.load();
+            Stage stage2 = new Stage();
+            stage2.setTitle("New Email");
+            stage2.setScene(new Scene(root1));
+            trayHelper tray = new trayHelper();
+            tray.createIcon(stage2);
+            Platform.setImplicitExit(true);
+            stage2.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }

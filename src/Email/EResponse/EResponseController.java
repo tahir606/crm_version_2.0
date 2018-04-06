@@ -60,6 +60,8 @@ public class EResponseController implements Initializable {
 
     String Subject, Email, cc, bcc, Body, Disclaimer, Attachment;
 
+    public static String stSubject, stFrom, stBody;
+
     public EResponseController() {
 
     }

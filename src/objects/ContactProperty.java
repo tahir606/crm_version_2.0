@@ -6,8 +6,8 @@ import javafx.beans.property.SimpleStringProperty;
 
 public class ContactProperty {
 
-    SimpleIntegerProperty code, clID;
-    SimpleStringProperty firstName, lastName, fullName, city, country, email, mobile, dob, age, clientName;
+    SimpleIntegerProperty code, age, clID;
+    SimpleStringProperty firstName, lastName, fullName, city, country, email, mobile, dob, clientName;
 
     public ContactProperty() {
 
@@ -21,7 +21,7 @@ public class ContactProperty {
         email = new SimpleStringProperty();
         mobile = new SimpleStringProperty();
         dob = new SimpleStringProperty();
-        age = new SimpleStringProperty();
+        age = new SimpleIntegerProperty();
 
         clientName = new SimpleStringProperty();
 
@@ -143,15 +143,15 @@ public class ContactProperty {
         this.dob.set(dob);
     }
 
-    public String getAge() {
+    public int getAge() {
         return age.get();
     }
 
-    public SimpleStringProperty ageProperty() {
+    public SimpleIntegerProperty ageProperty() {
         return age;
     }
 
-    public void setAge(String age) {
+    public void setAge(int age) {
         this.age.set(age);
     }
 

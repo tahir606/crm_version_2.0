@@ -11,6 +11,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.geometry.Pos;
 import javafx.scene.control.Label;
+import javafx.scene.control.Tooltip;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import objects.ContactProperty;
@@ -47,6 +48,7 @@ public class contactDetailsController implements Initializable {
         Image image = new Image(this.getClass().getResourceAsStream("/res/img/left-arrow.png"));
         btn_back.setGraphic(new ImageView(image));
         btn_back.setAlignment(Pos.CENTER_LEFT);
+        btn_back.setTooltip(new Tooltip("Back to Contacts"));
         btn_back.setOnAction(event -> {
             try {
                 dashBaseController.main_paneF.setCenter(
@@ -61,16 +63,11 @@ public class contactDetailsController implements Initializable {
         ContactProperty contact = contactViewController.staticContact;
 
         txt_fname.setText(contact.getFullName());
-
         txt_email.setText(contact.getEmail());
         txt_mobile.setText(contact.getMobile());
-
-        txt_dob.setText(CommonTasks.getDateFormatted(contact.getDob()));
-
         txt_client.setText(contact.getClientName());
-
-        txt_age.setText("");
-
+        txt_dob.setText(CommonTasks.getDateFormatted(contact.getDob()));
+        txt_age.setText(String.valueOf(contact.getAge()));
 
     }
 }
