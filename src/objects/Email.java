@@ -12,7 +12,7 @@ public class Email {
     private String subject, timestamp, timeFormatted, body, attch, lockedByName, disclaimer, user;
     private List<File> attachments;
     private char solvFlag, isAttch;
-    private boolean isManual,freze;
+    private boolean isManual, freze;
 
     public Email() {
 
@@ -77,7 +77,17 @@ public class Email {
     public String getFromAddressString() {
         String s = "";
         for (Address ad : fromAddress) {
-            s = s + "^" + ad;
+            if (ad != null)
+                s = s + "^" + ad;
+        }
+        return s;
+    }
+
+    public String getFromAddressCommaString() {
+        String s = "";
+        for (Address ad : fromAddress) {
+            if (ad != null)
+                s = s + ad + ",";
         }
         return s;
     }
@@ -94,7 +104,21 @@ public class Email {
         String s = "";
         try {
             for (Address ad : ccAddress) {
-                s = s + "^" + ad;
+                if (ad != null)
+                    s = s + "^" + ad;
+            }
+        } catch (NullPointerException e) {
+            return "";
+        }
+        return s;
+    }
+
+    public String getCcAddressCommaString() {
+        String s = "";
+        try {
+            for (Address ad : ccAddress) {
+                if (ad != null)
+                    s = s + ad + ",";
             }
         } catch (NullPointerException e) {
             return "";

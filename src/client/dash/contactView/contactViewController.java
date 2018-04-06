@@ -17,6 +17,7 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 import objects.ContactProperty;
+import objects.Email;
 
 import java.io.IOException;
 import java.net.URL;
@@ -105,12 +106,27 @@ public class contactViewController implements Initializable {
     }
 
     public void onEmailSending(ActionEvent actionEvent) {
+
+        String email = "";
+
+        for (ContactProperty contact : selectedContacts) {
+            if (contact.getEmail() != null || contact.getEmail().equals(""))
+                email = email + contact.getEmail() + ",";
+        }
+
+        System.out.println(email);
+
+        EResponseController.stTo = email;
+        EResponseController.stInstance = 'R';
+
+        inflateEResponse(1);
+
     }
 
     private void inflateEResponse(int i) {
         try {
             EResponseController.choice = i;
-            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("EResponse/EResponse.fxml"));
+            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("../../../Email/EResponse/EResponse.fxml"));
             Parent root1 = (Parent) fxmlLoader.load();
             Stage stage2 = new Stage();
             stage2.setTitle("New Email");

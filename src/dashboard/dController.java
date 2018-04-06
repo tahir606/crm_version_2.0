@@ -271,7 +271,8 @@ public class dController implements Initializable {
         button.setGraphic(new ImageView(image));
         button.getStyleClass().add("btn");
         button.setAlignment(Pos.CENTER_LEFT);
-        menu_pane.getChildren().add(button);
+
+        Platform.runLater(() -> menu_pane.getChildren().add(button));
     }
 
     private void logoutButton() {

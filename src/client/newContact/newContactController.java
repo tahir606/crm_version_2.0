@@ -3,6 +3,7 @@ package client.newContact;
 import JCode.Toast;
 import JCode.mySqlConn;
 import JCode.trayHelper;
+import client.dash.dashBaseController;
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXComboBox;
 import com.jfoenix.controls.JFXDatePicker;
@@ -10,12 +11,17 @@ import com.jfoenix.controls.JFXTextField;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.TextArea;
+import javafx.scene.control.Tooltip;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Paint;
 import javafx.stage.Modality;
@@ -24,6 +30,7 @@ import javafx.stage.StageStyle;
 import objects.Client;
 import objects.Contact;
 
+import java.io.IOException;
 import java.net.URL;
 import java.time.LocalDate;
 import java.util.List;
@@ -36,9 +43,7 @@ public class newContactController implements Initializable {
     @FXML
     private JFXTextField txt_lname;
     @FXML
-    private JFXButton btn_email;
-    @FXML
-    private JFXButton btn_phone;
+    private JFXButton btn_back;
     @FXML
     private JFXTextField txt_email;
     @FXML
@@ -68,6 +73,21 @@ public class newContactController implements Initializable {
     public void initialize(URL location, ResourceBundle resources) {
         sql = new mySqlConn();
         contact = new Contact();
+
+        Image image = new Image(this.getClass().getResourceAsStream("/res/img/left-arrow.png"));
+        btn_back.setGraphic(new ImageView(image));
+        btn_back.setAlignment(Pos.CENTER_LEFT);
+        btn_back.setTooltip(new Tooltip("Back to Contacts"));
+        btn_back.setOnAction(event -> {
+            try {
+                dashBaseController.main_paneF.setCenter(
+                        FXMLLoader.load(
+                                getClass().getClassLoader().getResource("client/dash/contactView/contactView.fxml")));
+
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        });
 
         contact.setCode(sql.getNewContactCode());
 

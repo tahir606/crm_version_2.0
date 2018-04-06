@@ -117,7 +117,6 @@ public class EmailDashController implements Initializable {
     private static AnchorPane anchor_detailsF;
     private static AnchorPane anchor_bodyF;
 
-    public static String[] EMAILS_LIST;
     public static int Email_Type = 1;
 
     public EmailDashController() {
@@ -177,26 +176,25 @@ public class EmailDashController implements Initializable {
             if (newValue.equals("Respond")) {
                 return;
             }
-
             Email sEmail = selectedEmail;
 
-            efrom = sEmail.getFromAddress()[0].toString();
-            subject = "RE: " + sEmail.getSubject();
+            EResponseController.stTo = sEmail.getFromAddressCommaString();
+            EResponseController.stCc = sEmail.getCcAddressCommaString();
 
             if (newValue.equals("Reply")) {
-                ReplyForward = 'R';
-                body = "\n\n\n" + "On " + sEmail.getTimeFormatted() + ", " + sEmail.getFromAddress
+                EResponseController.stInstance = 'R';
+                EResponseController.stSubject = "RE: " + sEmail.getSubject();
+                EResponseController.stBody = "\n\n\n" + "On " + sEmail.getTimeFormatted() + ", " + sEmail.getFromAddress
                         ()[0].toString() + " wrote:\n" + sEmail.getBody();
             } else if (newValue.equals("Forward")) {
-                ReplyForward = 'F';
-                body = sEmail.getBody();
+                EResponseController.stSubject = "FW: " + sEmail.getSubject();
+                EResponseController.stInstance = 'F';
+                EResponseController.stBody = sEmail.getBody();
             }
             inflateEResponse(1);
             combo_respond.getSelectionModel().select(0);
         });
 //        imgLoader.setVisible(false);
-
-        pullingEmails();
 
     }
 
@@ -221,20 +219,20 @@ public class EmailDashController implements Initializable {
 //            newMenu.setGraphic(new ImageView(new Image(getClass().getResourceAsStream("/res/img/newmail.png"))));
         MenuItem newEmail = new MenuItem("New Email");
         newEmail.setOnAction(event -> {
-            efrom = "";
-            subject = "";
-            body = "";
-            ReplyForward = 'N'; //N for New.
+            EResponseController.stTo = "";
+            EResponseController.stSubject = "";
+            EResponseController.stBody = "";
+            EResponseController.stInstance = 'N'; //N for New.
 
             inflateEResponse(1);
         });
         newMenu.getItems().add(newEmail);
         MenuItem newTicket = new MenuItem("New Ticket");
         newTicket.setOnAction(event -> {
-            efrom = "";
-            subject = "";
-            body = "";
-            ReplyForward = 'N'; //N for New.
+            EResponseController.stTo = "";
+            EResponseController.stSubject = "";
+            EResponseController.stBody = "";
+            EResponseController.stInstance = 'N'; //N for New.
 
             inflateEResponse(2);
         });
@@ -346,7 +344,7 @@ public class EmailDashController implements Initializable {
                         super.updateItem(item, empty);
                         if (item != null) {
                             setText(item.toString());
-                            if (item.getLockd() == 0){
+                            if (item.getLockd() == 0) {
                                 if (!getStyleClass().contains("unlockedEmail")) {
                                     getStyleClass().add("unlockedEmail");
                                 }
@@ -712,12 +710,6 @@ public class EmailDashController implements Initializable {
             } else
                 JClient.sendMessage("R");   //Function was made so that if ever this feature is not needed i can just
         }).start();
-
-    }
-
-    //Pulling all email IDs from database
-    public void pullingEmails() {
-        new Thread(() -> EMAILS_LIST = sql.getAllEmailIDs(null)).start();
 
     }
 }

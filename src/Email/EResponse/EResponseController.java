@@ -60,7 +60,10 @@ public class EResponseController implements Initializable {
 
     String Subject, Email, cc, bcc, Body, Disclaimer, Attachment;
 
-    public static String stSubject, stFrom, stBody;
+    public static String stSubject, stTo, stCc, stBcc, stBody;
+    public static char stInstance;
+
+    public String[] EMAILS_LIST;
 
     public EResponseController() {
 
@@ -74,26 +77,27 @@ public class EResponseController implements Initializable {
         else if (choice == 2)
             btn_Send.setText("Create");
 
-        String[] emails = EmailDashController.EMAILS_LIST;
+        pullingEmails();
 
-        TextFields.bindAutoCompletion(txt_to, emails);
-        TextFields.bindAutoCompletion(txt_cc, emails);
-        TextFields.bindAutoCompletion(txt_bcc, emails);
+        TextFields.bindAutoCompletion(txt_to, EMAILS_LIST);
+        TextFields.bindAutoCompletion(txt_cc, EMAILS_LIST);
+        TextFields.bindAutoCompletion(txt_bcc, EMAILS_LIST);
 
         populatHbox(txt_to, hbox_to);
         populatHbox(txt_cc, hbox_cc);
         populatHbox(txt_bcc, hbox_bcc);
 
-        txt_subject.setText(EmailDashController.subject);
-        if (EmailDashController.ReplyForward == 'R') {
-            txt_to.setText(EmailDashController.efrom);
-            txt_to.setDisable(true);
+        txt_subject.setText(stSubject);
+
+        if (stInstance == 'R') {
+            populateTo();
+            populateCC();
             txt_subject.setDisable(true);
-            txt_body.setText(EmailDashController.body);
+            txt_body.setText(stBody);
             btn_Send.setText("Reply");
 
-        } else if (EmailDashController.ReplyForward == 'F') {
-            txt_body.setText(EmailDashController.body);
+        } else if (stInstance == 'F') {
+            txt_body.setText(stBody);
             txt_body.setDisable(true);
             txt_attach.setVisible(false);
             txt_attach.setDisable(true);
@@ -105,7 +109,34 @@ public class EResponseController implements Initializable {
             btn_attach.setDisable(true);
 
             btn_Send.setText("Forward");
+        } else if (stInstance == 'N') {
+            populateTo();
+            btn_Send.setText("Send");
+        } else {
+
         }
+    }
+
+    private void populateTo() {
+        if (stTo.equals(""))
+            return;
+        String to[] = stTo.split(",");
+        for (String t : to) {
+            txt_to.setText(t + ",");
+        }
+    }
+
+    private void populateCC() {
+        if (stCc.equals(""))
+            return;
+        String cc[] = stCc.split(",");
+        for (String c : cc) {
+            txt_cc.setText(c + ",");
+        }
+    }
+
+    private void populateBCC() {
+
     }
 
     private void populatHbox(TextField txt_field, HBox box) {
@@ -134,10 +165,12 @@ public class EResponseController implements Initializable {
         chooser.setTitle("Attach File");
         file = chooser.showOpenMultipleDialog(new Stage());
         String at = "";
-        for (File f : file) {
-            at = at + " -- " + f.getName();
+        if (file != null) {
+            for (File f : file) {
+                at = at + " -- " + f.getName();
+            }
+            txt_attach.setText(at);
         }
-        txt_attach.setText(at);
     }
 
     public void btnSendClick(ActionEvent actionEvent) {
@@ -146,7 +179,6 @@ public class EResponseController implements Initializable {
         Email = txt_to.getText();
         cc = "";
         bcc = "";
-//        Disclaimer = "\n\n\nRegards,\nBITS IT Department";
         Disclaimer = "";
 
         System.out.println(hbox_to.getChildren().size());
@@ -284,6 +316,15 @@ public class EResponseController implements Initializable {
 
         Stage stage = (Stage) btn_Send.getScene().getWindow();
         stage.close();
+
+    }
+
+    //Pulling all email IDs from database
+    public void pullingEmails() {
+//        new Thread(() -> {
+        mySqlConn sql = new mySqlConn();
+        EMAILS_LIST = sql.getAllEmailIDs(null);
+//        }).start();
 
     }
 
