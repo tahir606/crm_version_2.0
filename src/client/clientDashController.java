@@ -64,8 +64,10 @@ public class clientDashController implements Initializable {
         menuNew.getItems().addAll(newClient);
 
         MenuItem newContact = new MenuItem("New Contact");
-        newContactController.stInstance = 'N';
-        newContact.setOnAction(event -> inflatePane("newContact/newContact.fxml", 2));
+        newContact.setOnAction(event -> {
+            newContactController.stInstance = 'N';
+            inflatePane("newContact/newContact.fxml", 2);
+        });
         menuNew.getItems().addAll(newContact);
 
         menu_clients.getMenus().add(menuNew);

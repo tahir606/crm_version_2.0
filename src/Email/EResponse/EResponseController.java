@@ -127,7 +127,10 @@ public class EResponseController implements Initializable {
     }
 
     private void populateCC() {
-        if (stCc.equals(""))
+
+        if (stCc == null)
+            return;
+        else if (stCc.equals(""))
             return;
         String cc[] = stCc.split(",");
         for (String c : cc) {

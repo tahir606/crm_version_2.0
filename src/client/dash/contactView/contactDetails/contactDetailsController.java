@@ -48,7 +48,6 @@ public class contactDetailsController implements Initializable {
     @FXML
     private JFXButton btn_edit;
 
-
     @Override
     public void initialize(URL location, ResourceBundle resources) {
 

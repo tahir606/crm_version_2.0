@@ -7,7 +7,8 @@ import javafx.beans.property.SimpleStringProperty;
 public class ContactProperty {
 
     SimpleIntegerProperty code, age, clID;
-    SimpleStringProperty firstName, lastName, fullName, city, country, email, mobile, dob, clientName;
+    SimpleStringProperty firstName, lastName, fullName, address, city, country, email, mobile, dob, note, clientName;
+    SimpleBooleanProperty isFreeze;
 
     public ContactProperty() {
 
@@ -16,14 +17,19 @@ public class ContactProperty {
         firstName = new SimpleStringProperty();
         lastName = new SimpleStringProperty();
         fullName = new SimpleStringProperty();
+        address = new SimpleStringProperty();
         city = new SimpleStringProperty();
         country = new SimpleStringProperty();
         email = new SimpleStringProperty();
         mobile = new SimpleStringProperty();
         dob = new SimpleStringProperty();
         age = new SimpleIntegerProperty();
+        note = new SimpleStringProperty();
+        isFreeze = new SimpleBooleanProperty();
 
         clientName = new SimpleStringProperty();
+        clID = new SimpleIntegerProperty();
+
 
     }
 
@@ -81,6 +87,30 @@ public class ContactProperty {
 
     public String getFullName() {
         return firstName.get() + " " + lastName.get();
+    }
+
+    public String getAddress() {
+        return address.get();
+    }
+
+    public SimpleStringProperty addressProperty() {
+        return address;
+    }
+
+    public void setAddress(String address) {
+        this.address.set(address);
+    }
+
+    public String getNote() {
+        return note.get();
+    }
+
+    public SimpleStringProperty noteProperty() {
+        return note;
+    }
+
+    public void setNote(String note) {
+        this.note.set(note);
     }
 
     public String getCity() {
@@ -153,6 +183,18 @@ public class ContactProperty {
 
     public void setAge(int age) {
         this.age.set(age);
+    }
+
+    public boolean isIsFreeze() {
+        return isFreeze.get();
+    }
+
+    public SimpleBooleanProperty isFreezeProperty() {
+        return isFreeze;
+    }
+
+    public void setIsFreeze(boolean isFreeze) {
+        this.isFreeze.set(isFreeze);
     }
 
     public int getClID() {

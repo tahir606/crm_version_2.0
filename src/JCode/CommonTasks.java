@@ -65,7 +65,6 @@ public class CommonTasks {
 
         // Note, MM is months, not mm
         DateFormat inputFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.S");
-        //DateFormat outputFormat = new SimpleDateFormat("dd-MMM-yyyy hh:mm a");
 
         Date date = null;
         try {
@@ -86,6 +85,29 @@ public class CommonTasks {
 
         return Period.between(birthdate, now).getYears();
 
+    }
+
+    public static LocalDate createLocalDate(String timeStamp) {
+
+        DateFormat inputFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.S");
+
+        Date date = null;
+        try {
+            date = inputFormat.parse(timeStamp);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
+        Calendar calendar = new GregorianCalendar();
+        calendar.setTime(date);
+        int year = calendar.get(Calendar.YEAR);
+        //Add one to month {0 - 11}
+        int month = calendar.get(Calendar.MONTH) + 1;
+        int day = calendar.get(Calendar.DAY_OF_MONTH);
+
+        LocalDate localDate = LocalDate.of(year, month, day);
+
+        return localDate;
     }
 
 }

@@ -230,7 +230,8 @@ public class dController implements Initializable {
         button.addEventHandler(MouseEvent.MOUSE_PRESSED, myClientsEvent);
         button.setGraphic(new ImageView(image));
         button.setAlignment(Pos.CENTER_LEFT);
-        menu_pane.getChildren().add(button);
+
+        Platform.runLater(() -> menu_pane.getChildren().add(button));
     }
 
     Pane settings_pane = null;

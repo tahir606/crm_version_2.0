@@ -8,7 +8,7 @@ public class Contact {
 
     private int code, clientCode;
     private String firstName, lastName, dob, address, city, country, note, clientName;
-    private String[] emails = new String[newContactController.noOfFields], phones = new String[newContactController.noOfFields];
+    private String[] emails = new String[1], phones = new String[1];
     private boolean freze;
 
     public Contact() {
