@@ -3,6 +3,7 @@ package client.newContact;
 import JCode.Toast;
 import JCode.mySqlConn;
 import JCode.trayHelper;
+import client.dash.contactView.contactViewController;
 import client.dash.dashBaseController;
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXComboBox;
@@ -16,10 +17,7 @@ import javafx.fxml.Initializable;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
-import javafx.scene.control.Alert;
-import javafx.scene.control.ButtonType;
-import javafx.scene.control.TextArea;
-import javafx.scene.control.Tooltip;
+import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.VBox;
@@ -29,6 +27,7 @@ import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import objects.Client;
 import objects.Contact;
+import objects.ContactProperty;
 
 import java.io.IOException;
 import java.net.URL;
@@ -38,6 +37,9 @@ import java.util.ResourceBundle;
 
 public class newContactController implements Initializable {
 
+
+    @FXML
+    private Label txt_heading;
     @FXML
     private JFXTextField txt_fname;
     @FXML
@@ -69,6 +71,8 @@ public class newContactController implements Initializable {
 
     private List<Client> allClients;
 
+    public static char stInstance;
+
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         sql = new mySqlConn();
@@ -89,10 +93,38 @@ public class newContactController implements Initializable {
             }
         });
 
-        contact.setCode(sql.getNewContactCode());
+        switch (stInstance) {
+            case 'N': {      //New
+                txt_heading.setText("New Contact");
+                btn_back.setVisible(false);
+                contact.setCode(sql.getNewContactCode());
+                break;
+            }
+            case 'U': {      //Update
+                txt_heading.setText("Update Contact");
+                btn_back.setVisible(true);
+                contact.setCode(contactViewController.staticContact.getCode());
+                break;
+            }
+            default:
+                break;
+        }
 
         allClients = sql.getAllClients("CL_TYPE = 1");
         client_list.getItems().addAll(allClients);
+    }
+
+    public void populateContact() {
+        ContactProperty contact = contactViewController.staticContact;
+        txt_fname.setText(contact.getFirstName());
+        txt_lname.setText(contact.getFirstName());
+        txt_email.setText(contact.getFirstName());
+        txt_mobile.setText(contact.getFirstName());
+        txt_addr.setText(contact.getFirstName());
+        txt_city.setText(contact.getFirstName());
+        txt_country.setText(contact.getFirstName());
+        txt_note.setText(contact.getFirstName());
+//        date_of_birth.
     }
 
     public void saveChanges(ActionEvent actionEvent) {

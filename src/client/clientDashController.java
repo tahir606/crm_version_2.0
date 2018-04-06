@@ -1,6 +1,7 @@
 package client;
 
 import JCode.trayHelper;
+import client.newContact.newContactController;
 import com.jfoenix.controls.JFXButton;
 import dashboard.dController;
 import javafx.application.Platform;
@@ -63,6 +64,7 @@ public class clientDashController implements Initializable {
         menuNew.getItems().addAll(newClient);
 
         MenuItem newContact = new MenuItem("New Contact");
+        newContactController.stInstance = 'N';
         newContact.setOnAction(event -> inflatePane("newContact/newContact.fxml", 2));
         menuNew.getItems().addAll(newContact);
 
