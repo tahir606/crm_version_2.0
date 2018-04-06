@@ -8,6 +8,7 @@
 <?import javafx.scene.layout.HBox?>
 
 <AnchorPane fx:id="contactAnchor" prefHeight="472.0" prefWidth="1000.0" stylesheets="@../../../styles/emailDash.css" xmlns="http://javafx.com/javafx/9" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.dash.contactView.contactViewController">
+    
     <children>
         <TableView fx:id="table_contact" layoutY="34.0" prefHeight="438.0" prefWidth="1000.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="34.0">
             <columns>

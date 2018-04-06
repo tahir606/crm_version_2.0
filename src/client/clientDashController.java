@@ -52,7 +52,7 @@ public class clientDashController implements Initializable {
 
         inflatePane("dash/dashBase.fxml", 3);     //Inflating Dashboard
 
-        populateMenuBar();
+//        populateMenuBar();
     }
 
     private void populateMenuBar() {
