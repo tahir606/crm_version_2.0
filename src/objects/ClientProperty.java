@@ -1,0 +1,181 @@
+package objects;
+
+import client.newClient.newClientController;
+import javafx.beans.property.SimpleIntegerProperty;
+import javafx.beans.property.SimpleStringProperty;
+
+public class ClientProperty {
+
+    private SimpleIntegerProperty Code, Type;
+    private SimpleStringProperty Name, owner, Email, Phone, Addr, City, Country, Website, JoinDate, note;
+    private String[] emails = new String[newClientController.noOfFields],
+            phones = new String[newClientController.noOfFields];
+
+    public ClientProperty() {
+    }
+
+    @Override
+    public String toString() {
+        return Name.get();
+    }
+
+    public int getCode() {
+        return Code.get();
+    }
+
+    public SimpleIntegerProperty codeProperty() {
+        return Code;
+    }
+
+    public void setCode(int code) {
+        this.Code.set(code);
+    }
+
+    public int getType() {
+        return Type.get();
+    }
+
+    public SimpleIntegerProperty typeProperty() {
+        return Type;
+    }
+
+    public void setType(int type) {
+        this.Type.set(type);
+    }
+
+    public String getName() {
+        return Name.get();
+    }
+
+    public SimpleStringProperty nameProperty() {
+        return Name;
+    }
+
+    public void setName(String name) {
+        this.Name.set(name);
+    }
+
+    public String getOwner() {
+        return owner.get();
+    }
+
+    public SimpleStringProperty ownerProperty() {
+        return owner;
+    }
+
+    public void setOwner(String owner) {
+        this.owner.set(owner);
+    }
+
+    public String getEmail() {
+        return Email.get();
+    }
+
+    public SimpleStringProperty emailProperty() {
+        return Email;
+    }
+
+    public void setEmail(String email) {
+        this.Email.set(email);
+    }
+
+    public String getPhone() {
+        return Phone.get();
+    }
+
+    public SimpleStringProperty phoneProperty() {
+        return Phone;
+    }
+
+    public void setPhone(String phone) {
+        this.Phone.set(phone);
+    }
+
+    public String getAddr() {
+        return Addr.get();
+    }
+
+    public SimpleStringProperty addrProperty() {
+        return Addr;
+    }
+
+    public void setAddr(String addr) {
+        this.Addr.set(addr);
+    }
+
+    public String getCity() {
+        return City.get();
+    }
+
+    public SimpleStringProperty cityProperty() {
+        return City;
+    }
+
+    public void setCity(String city) {
+        this.City.set(city);
+    }
+
+    public String getCountry() {
+        return Country.get();
+    }
+
+    public SimpleStringProperty countryProperty() {
+        return Country;
+    }
+
+    public void setCountry(String country) {
+        this.Country.set(country);
+    }
+
+    public String getWebsite() {
+        return Website.get();
+    }
+
+    public SimpleStringProperty websiteProperty() {
+        return Website;
+    }
+
+    public void setWebsite(String website) {
+        this.Website.set(website);
+    }
+
+    public String getJoinDate() {
+        return JoinDate.get();
+    }
+
+    public SimpleStringProperty joinDateProperty() {
+        return JoinDate;
+    }
+
+    public void setJoinDate(String joinDate) {
+        this.JoinDate.set(joinDate);
+    }
+
+    public String getNote() {
+        return note.get();
+    }
+
+    public SimpleStringProperty noteProperty() {
+        return note;
+    }
+
+    public void setNote(String note) {
+        this.note.set(note);
+    }
+
+    public String[] getEmails() {
+        return emails;
+    }
+
+    public void setEmails(String[] emails) {
+        this.emails = emails;
+    }
+
+    public String[] getPhones() {
+        return phones;
+    }
+
+    public void setPhones(String[] phones) {
+        this.phones = phones;
+    }
+}

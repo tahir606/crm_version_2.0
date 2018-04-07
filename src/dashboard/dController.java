@@ -1,6 +1,5 @@
 package dashboard;
 
-import Email.EmailDashController;
 import JCode.emailControl;
 import JCode.fileHelper;
 import JCode.mySqlConn;
@@ -16,7 +15,6 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.geometry.Pos;
-import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
@@ -24,9 +22,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
 
 import javafx.scene.input.MouseEvent;
-import javafx.stage.Modality;
 import javafx.stage.Stage;
-import javafx.stage.StageStyle;
 import objects.ESetting;
 import objects.Network;
 import objects.Users;
@@ -211,7 +207,7 @@ public class dController implements Initializable {
 
                         Platform.runLater(() -> {
                             try {
-                                border_pane.setCenter(FXMLLoader.load(getClass().getClassLoader().getResource("client/clientDash.fxml")));
+                                border_pane.setCenter(FXMLLoader.load(getClass().getClassLoader().getResource("client/dashBase.fxml")));
                             } catch (IOException e) {
                                 e.printStackTrace();
                             }

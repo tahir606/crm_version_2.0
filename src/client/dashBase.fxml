@@ -6,8 +6,8 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<BorderPane fx:id="main_pane" stylesheets="@../../styles/settings.css" xmlns="http://javafx.com/javafx/9"
-            xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.dash.dashBaseController">
+<BorderPane fx:id="main_pane" stylesheets="@../styles/clients.css" xmlns="http://javafx.com/javafx/9"
+            xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.dashBaseController">
     <center>
     </center>
     <left>
@@ -18,4 +18,10 @@
             </children>
         </AnchorPane>
     </left>
+    <top>
+        <MenuBar fx:id="menu_clients" BorderPane.alignment="CENTER">
+            <menus>
+            </menus>
+        </MenuBar>
+    </top>
 </BorderPane>

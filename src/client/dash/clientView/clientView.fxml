@@ -7,14 +7,12 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.HBox?>
 
-<AnchorPane fx:id="contactAnchor" prefHeight="472.0" prefWidth="1000.0" stylesheets="@../../../styles/emailDash.css" xmlns="http://javafx.com/javafx/9" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.dash.contactView.contactViewController">
+<AnchorPane fx:id="contactAnchor" prefHeight="472.0" prefWidth="1000.0" stylesheets="@../../../styles/emailDash.css" xmlns="http://javafx.com/javafx/9" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.dash.clientView.clientViewController">
     <children>
         <TableView fx:id="table_contact" layoutY="34.0" prefHeight="438.0" prefWidth="1000.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="34.0">
             <columns>
                 <TableColumn fx:id="col_name" prefWidth="130.0" text="Name" />
-                <TableColumn fx:id="col_age" prefWidth="80.0" text="Age" />
-                <TableColumn fx:id="col_email" prefWidth="150.0" text="Email" />
-                <TableColumn fx:id="col_mobile" prefWidth="100.0" text="Mobile" />
+                <TableColumn fx:id="col_website" prefWidth="90.0" text="Website" />
                 <TableColumn fx:id="col_city" prefWidth="90.0" text="City" />
                 <TableColumn fx:id="col_country" prefWidth="90.0" text="Country" />
             </columns>

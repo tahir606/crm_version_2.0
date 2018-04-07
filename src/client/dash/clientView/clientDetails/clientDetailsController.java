@@ -1,9 +1,9 @@
-package client.dash.contactView.contactDetails;
+package client.dash.contactView.clientView;
 
 import Email.EResponse.EResponseController;
 import JCode.CommonTasks;
 import JCode.trayHelper;
-import client.dash.contactView.contactViewController;
+import client.dash.clientView.clientViewController;
 import client.dashBaseController;
 import client.newContact.newContactController;
 import com.jfoenix.controls.JFXButton;
@@ -19,13 +19,14 @@ import javafx.scene.control.Tooltip;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.stage.Stage;
+import objects.ClientProperty;
 import objects.ContactProperty;
 
 import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
-public class contactDetailsController implements Initializable {
+public class clientDetailsController implements Initializable {
 
     @FXML
     private Label txt_fname;
@@ -64,14 +65,14 @@ public class contactDetailsController implements Initializable {
             }
         });
 
-        ContactProperty contact = contactViewController.staticContact;
+        ClientProperty contact = clientViewController.staticContact;
 
-        txt_fname.setText(contact.getFullName());
-        txt_email.setText(contact.getEmail());
-        txt_mobile.setText(contact.getMobile());
-        txt_client.setText(contact.getClientName());
-        txt_dob.setText(CommonTasks.getDateFormatted(contact.getDob()));
-        txt_age.setText(String.valueOf(contact.getAge()));
+//        txt_fname.setText(contact.getFullName());
+//        txt_email.setText(contact.getEmail());
+//        txt_mobile.setText(contact.getMobile());
+//        txt_client.setText(contact.getClientName());
+//        txt_dob.setText(CommonTasks.getDateFormatted(contact.getDob()));
+//        txt_age.setText(String.valueOf(contact.getAge()));
 
         btn_email.setOnAction(event -> {
             EResponseController.stTo = contact.getEmail();

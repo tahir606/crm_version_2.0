@@ -3,38 +3,26 @@ package client.newContact;
 import JCode.CommonTasks;
 import JCode.Toast;
 import JCode.mySqlConn;
-import JCode.trayHelper;
 import client.dash.contactView.contactViewController;
-import client.dash.dashBaseController;
+import client.dashBaseController;
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXComboBox;
 import com.jfoenix.controls.JFXDatePicker;
 import com.jfoenix.controls.JFXTextField;
-import javafx.application.Platform;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
-import javafx.geometry.Insets;
 import javafx.geometry.Pos;
-import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.layout.VBox;
-import javafx.scene.paint.Paint;
-import javafx.stage.Modality;
 import javafx.stage.Stage;
-import javafx.stage.StageStyle;
 import objects.Client;
-import objects.Contact;
 import objects.ContactProperty;
 
 import java.io.IOException;
 import java.net.URL;
-import java.time.LocalDate;
 import java.util.List;
 import java.util.ResourceBundle;
 
@@ -116,14 +104,12 @@ public class newContactController implements Initializable {
         switch (stInstance) {
             case 'N': {      //New
                 txt_heading.setText("New Contact");
-                btn_back.setVisible(false);
                 contact.setCode(sql.getNewContactCode());
                 btn_save.setText("Create");
                 break;
             }
             case 'U': {      //Update
                 txt_heading.setText("Update Contact");
-                btn_back.setVisible(true);
                 contact.setCode(contactViewController.staticContact.getCode());
                 btn_save.setText("Update");
                 populateContact();

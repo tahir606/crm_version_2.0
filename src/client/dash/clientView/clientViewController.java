@@ -1,4 +1,4 @@
-package client.dash.contactView;
+package client.dash.clientView;
 
 import Email.EResponse.EResponseController;
 import JCode.mySqlConn;
@@ -16,14 +16,14 @@ import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
-import objects.ContactProperty;
+import objects.ClientProperty;
 
 import java.io.IOException;
 import java.net.URL;
 import java.util.List;
 import java.util.ResourceBundle;
 
-public class contactViewController implements Initializable {
+public class clientViewController implements Initializable {
 
     mySqlConn sql;
 
@@ -36,23 +36,19 @@ public class contactViewController implements Initializable {
     @FXML
     JFXButton btn_email;
     @FXML
-    TableView<ContactProperty> table_contact;
+    TableView<ClientProperty> table_contact;
     @FXML
-    TableColumn<ContactProperty, String> col_name;
+    TableColumn<ClientProperty, String> col_name;
     @FXML
-    TableColumn<ContactProperty, String> col_age;
+    TableColumn<ClientProperty, String> col_website;
     @FXML
-    TableColumn<ContactProperty, String> col_email;
+    TableColumn<ClientProperty, String> col_city;
     @FXML
-    TableColumn<ContactProperty, String> col_mobile;
-    @FXML
-    TableColumn<ContactProperty, String> col_city;
-    @FXML
-    TableColumn<ContactProperty, String> col_country;
+    TableColumn<ClientProperty, String> col_country;
 
-    List<ContactProperty> selectedContacts;
+    List<ClientProperty> selectedContacts;
 
-    public static ContactProperty staticContact;
+    public static ClientProperty staticContact;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -62,14 +58,12 @@ public class contactViewController implements Initializable {
 
         table_contact.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
 
-        col_name.setCellValueFactory(new PropertyValueFactory<>("fullName"));
-        col_age.setCellValueFactory(new PropertyValueFactory<>("age"));
-        col_email.setCellValueFactory(new PropertyValueFactory<>("email"));
-        col_mobile.setCellValueFactory(new PropertyValueFactory<>("mobile"));
-        col_city.setCellValueFactory(new PropertyValueFactory<>("city"));
-        col_country.setCellValueFactory(new PropertyValueFactory<>("country"));
+        col_name.setCellValueFactory(new PropertyValueFactory<>("Name"));
+        col_website.setCellValueFactory(new PropertyValueFactory<>("Website"));
+        col_city.setCellValueFactory(new PropertyValueFactory<>("City"));
+        col_country.setCellValueFactory(new PropertyValueFactory<>("Country"));
 
-        table_contact.getItems().setAll(sql.getAllContactsProperty(null));
+        table_contact.getItems().setAll(sql.getAllClientsProperty(null));
 
         table_contact.addEventHandler(javafx.scene.input.MouseEvent.MOUSE_CLICKED, event -> {
             selectedContacts = table_contact.getSelectionModel().getSelectedItems();
@@ -85,7 +79,7 @@ public class contactViewController implements Initializable {
         });
 
         table_contact.setRowFactory(tv -> {
-            TableRow<ContactProperty> row = new TableRow<>();
+            TableRow<ClientProperty> row = new TableRow<>();
             row.setOnMouseClicked(event -> {
                 if (event.getClickCount() == 2 && (!row.isEmpty())) {
                     staticContact = row.getItem();
@@ -93,7 +87,7 @@ public class contactViewController implements Initializable {
                         dashBaseController.main_paneF.setCenter(
                                 FXMLLoader.load(
                                         getClass().getClassLoader().getResource
-                                                ("client/dash/contactView/contactDetails/contactDetails.fxml")));
+                                                ("client/dash/clientView/clientDetails/clientDetails.fxml")));
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
@@ -108,7 +102,7 @@ public class contactViewController implements Initializable {
 
         String email = "";
 
-        for (ContactProperty contact : selectedContacts) {
+        for (ClientProperty contact : selectedContacts) {
             if (contact.getEmail() != null || contact.getEmail().equals(""))
                 email = email + contact.getEmail() + ",";
         }
