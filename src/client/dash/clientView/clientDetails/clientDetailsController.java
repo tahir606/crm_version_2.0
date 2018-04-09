@@ -1,4 +1,4 @@
-package client.dash.contactView.clientView;
+package client.dash.clientView.clientDetails;
 
 import Email.EResponse.EResponseController;
 import JCode.CommonTasks;
@@ -18,6 +18,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.Tooltip;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import objects.ClientProperty;
 import objects.ContactProperty;
@@ -30,22 +31,25 @@ public class clientDetailsController implements Initializable {
 
     @FXML
     private Label txt_fname;
+
     @FXML
-    private Label txt_email;
+    private Label txt_website;
+
     @FXML
-    private Label txt_mobile;
+    private VBox email_box;
+
     @FXML
-    private Label txt_client;
-    @FXML
-    private Label txt_dob;
-    @FXML
-    private Label txt_age;
+    private VBox phone_box;
+
     @FXML
     private JFXButton btn_back;
+
     @FXML
     private JFXButton btn_email;
+
     @FXML
     private JFXButton btn_edit;
+
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -58,7 +62,7 @@ public class clientDetailsController implements Initializable {
             try {
                 dashBaseController.main_paneF.setCenter(
                         FXMLLoader.load(
-                                getClass().getClassLoader().getResource("client/dash/contactView/contactView.fxml")));
+                                getClass().getClassLoader().getResource("client/dash/clientView/clientView.fxml")));
 
             } catch (IOException e) {
                 e.printStackTrace();
@@ -66,13 +70,6 @@ public class clientDetailsController implements Initializable {
         });
 
         ClientProperty contact = clientViewController.staticContact;
-
-//        txt_fname.setText(contact.getFullName());
-//        txt_email.setText(contact.getEmail());
-//        txt_mobile.setText(contact.getMobile());
-//        txt_client.setText(contact.getClientName());
-//        txt_dob.setText(CommonTasks.getDateFormatted(contact.getDob()));
-//        txt_age.setText(String.valueOf(contact.getAge()));
 
         btn_email.setOnAction(event -> {
             EResponseController.stTo = contact.getEmail();
@@ -85,7 +82,7 @@ public class clientDetailsController implements Initializable {
             try {
                 dashBaseController.main_paneF.setCenter(
                         FXMLLoader.load(
-                                getClass().getClassLoader().getResource("client/newContact/newContact.fxml")));
+                                getClass().getClassLoader().getResource("client/newClient/newClientController.fxml")));
 
             } catch (IOException e) {
                 e.printStackTrace();
