@@ -1,98 +1,51 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import com.jfoenix.controls.JFXButton?>
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
-<?import javafx.scene.text.*?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
 <AnchorPane prefHeight="472.0" prefWidth="1000.0" stylesheets="@../../../../styles/emailDash.css" xmlns="http://javafx.com/javafx/9" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.dash.contactView.contactDetails.contactDetailsController">
-   <children>
-      <Label fx:id="txt_fname" layoutX="28.0" layoutY="65.0" text="First Last Name">
-         <font>
-            <Font name="Arial Narrow" size="20.0" />
-         </font>
-      </Label>
-      <VBox layoutX="28.0" layoutY="104.0" prefHeight="297.0" prefWidth="316.0" spacing="10.0" AnchorPane.bottomAnchor="71.0" AnchorPane.leftAnchor="28.0" AnchorPane.topAnchor="104.0">
-         <children>
-            <HBox prefHeight="26.0" prefWidth="316.0" spacing="25.0">
-               <children>
-                  <Label prefHeight="20.0" prefWidth="60.0" text="Email">
-                     <font>
-                        <Font size="14.0" />
-                     </font>
-                  </Label>
-                  <Label fx:id="txt_email" text="example@domain.com">
-                     <font>
-                        <Font size="14.0" />
-                     </font>
-                  </Label>
-               </children>
-            </HBox>
-            <HBox prefHeight="26.0" prefWidth="316.0" spacing="25.0">
-               <children>
-                  <Label prefHeight="20.0" prefWidth="60.0" text="Mobile">
-                     <font>
-                        <Font size="14.0" />
-                     </font>
-                  </Label>
-                  <Label fx:id="txt_mobile" text="+92001000000">
-                     <font>
-                        <Font size="14.0" />
-                     </font>
-                  </Label>
-               </children>
-            </HBox>
-            <HBox prefHeight="8.0" prefWidth="316.0" />
-            <HBox prefHeight="26.0" prefWidth="316.0" spacing="25.0">
-               <children>
-                  <Label prefHeight="20.0" prefWidth="60.0" text="Client">
-                     <font>
-                        <Font size="14.0" />
-                     </font>
-                  </Label>
-                  <Label fx:id="txt_client" text="Example Client">
-                     <font>
-                        <Font size="14.0" />
-                     </font>
-                  </Label>
-               </children>
-            </HBox>
-            <HBox prefHeight="8.0" prefWidth="316.0" />
-            <HBox prefHeight="26.0" prefWidth="316.0" spacing="25.0">
-               <children>
-                  <Label prefHeight="20.0" prefWidth="60.0" text="DoB">
-                     <font>
-                        <Font size="14.0" />
-                     </font>
-                  </Label>
-                  <Label fx:id="txt_dob" text="01/01/1990">
-                     <font>
-                        <Font size="14.0" />
-                     </font>
-                  </Label>
-               </children>
-            </HBox>
-            <HBox prefHeight="26.0" prefWidth="316.0" spacing="25.0">
-               <children>
-                  <Label prefHeight="20.0" prefWidth="60.0" text="Age">
-                     <font>
-                        <Font size="14.0" />
-                     </font>
-                  </Label>
-                  <Label fx:id="txt_age" text="18">
-                     <font>
-                        <Font size="14.0" />
-                     </font>
-                  </Label>
-               </children>
-            </HBox>
-         </children>
-      </VBox>
-      <JFXButton fx:id="btn_back" layoutX="14.0" layoutY="14.0" pickOnBounds="true" ripplerFill="#99ff9f" text=" " AnchorPane.leftAnchor="14.0" AnchorPane.topAnchor="14.0" />
-      <HBox layoutX="639.0" layoutY="19.0" prefHeight="34.0" prefWidth="361.0" spacing="20.0">
-         <children>
-            <JFXButton fx:id="btn_email" prefHeight="42.0" prefWidth="84.0" styleClass="emailDetailsButton" text="Send Email" />
-            <JFXButton fx:id="btn_edit" prefHeight="38.0" prefWidth="84.0" styleClass="emailDetailsButton" text="Edit" />
-         </children>
-      </HBox>
-   </children>
+    <children>
+        <Label fx:id="txt_fname" layoutX="28.0" layoutY="65.0" text="Client Name">
+            <font>
+                <Font name="Arial Narrow" size="20.0" />
+            </font>
+        </Label>
+        <ScrollPane layoutX="19.0" layoutY="114.0" prefHeight="339.0" prefWidth="961.0">
+            <VBox layoutX="28.0" layoutY="104.0" prefHeight="331.0" prefWidth="660.0" spacing="10.0" AnchorPane.bottomAnchor="71.0" AnchorPane.leftAnchor="28.0" AnchorPane.topAnchor="104.0">
+                <children>
+                    <HBox prefHeight="8.0" prefWidth="316.0" />
+                    <HBox prefHeight="26.0" prefWidth="316.0" spacing="25.0">
+                        <children>
+                            <Label prefHeight="20.0" prefWidth="60.0" text="Website">
+                                <font>
+                                    <Font size="14.0" />
+                                </font>
+                            </Label>
+                            <Label fx:id="txt_website" text="www.example.com">
+                                <font>
+                                    <Font size="14.0" />
+                                </font>
+                            </Label>
+                        </children>
+                    </HBox>
+                </children>
+            <padding>
+               <Insets left="10.0" />
+            </padding>
+            </VBox>
+        </ScrollPane>
+        <JFXButton fx:id="btn_back" layoutX="14.0" layoutY="14.0" pickOnBounds="true" ripplerFill="#99ff9f" text=" " AnchorPane.leftAnchor="14.0" AnchorPane.topAnchor="14.0" />
+        <HBox layoutX="639.0" layoutY="19.0" prefHeight="34.0" prefWidth="361.0" spacing="20.0">
+            <children>
+                <JFXButton fx:id="btn_email" prefHeight="42.0" prefWidth="84.0" styleClass="emailDetailsButton" text="Send Email" />
+                <JFXButton fx:id="btn_edit" prefHeight="38.0" prefWidth="84.0" styleClass="emailDetailsButton" text="Edit" />
+            </children>
+        </HBox>
+    </children>
 </AnchorPane>

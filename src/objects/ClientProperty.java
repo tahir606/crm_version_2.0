@@ -12,6 +12,21 @@ public class ClientProperty {
             phones = new String[newClientController.noOfFields];
 
     public ClientProperty() {
+
+        Code = new SimpleIntegerProperty();
+        Type = new SimpleIntegerProperty();
+
+        Name = new SimpleStringProperty();
+        owner = new SimpleStringProperty();
+        Email = new SimpleStringProperty();
+        Phone = new SimpleStringProperty();
+        Addr = new SimpleStringProperty();
+        City = new SimpleStringProperty();
+        Country = new SimpleStringProperty();
+        Website = new SimpleStringProperty();
+        JoinDate = new SimpleStringProperty();
+        note = new SimpleStringProperty();
+
     }
 
     @Override
