@@ -7,7 +7,7 @@ import javafx.beans.property.SimpleStringProperty;
 public class ClientProperty {
 
     private SimpleIntegerProperty Code, Type;
-    private SimpleStringProperty Name, owner, Email, Phone, Addr, City, Country, Website, JoinDate, note;
+    private SimpleStringProperty Name, owner, Addr, City, Country, Website, JoinDate, note;
     private String[] emails = new String[newClientController.noOfFields],
             phones = new String[newClientController.noOfFields];
 
@@ -18,8 +18,6 @@ public class ClientProperty {
 
         Name = new SimpleStringProperty();
         owner = new SimpleStringProperty();
-        Email = new SimpleStringProperty();
-        Phone = new SimpleStringProperty();
         Addr = new SimpleStringProperty();
         City = new SimpleStringProperty();
         Country = new SimpleStringProperty();
@@ -80,30 +78,6 @@ public class ClientProperty {
 
     public void setOwner(String owner) {
         this.owner.set(owner);
-    }
-
-    public String getEmail() {
-        return Email.get();
-    }
-
-    public SimpleStringProperty emailProperty() {
-        return Email;
-    }
-
-    public void setEmail(String email) {
-        this.Email.set(email);
-    }
-
-    public String getPhone() {
-        return Phone.get();
-    }
-
-    public SimpleStringProperty phoneProperty() {
-        return Phone;
-    }
-
-    public void setPhone(String phone) {
-        this.Phone.set(phone);
     }
 
     public String getAddr() {

@@ -125,7 +125,7 @@ public class dashBaseController implements Initializable {
         Menu menuNew = new Menu("New");
 
         MenuItem newClient = new MenuItem("Edit Client");
-        newClient.setOnAction(event -> inflatePane("../newClient/newClient.fxml", 1));
+        newClient.setOnAction(event -> inflatePane("newClient/newClient.fxml", 1));
         menuNew.getItems().addAll(newClient);
 
         menu_clients.getMenus().add(menuNew);

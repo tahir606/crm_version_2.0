@@ -1546,8 +1546,6 @@ public class mySqlConn {
                 client.setCode(set.getInt("CL_ID"));
                 client.setName(set.getString("CL_NAME"));
                 client.setOwner(set.getString("CL_OWNER"));
-                client.setEmail(set.getString("CL_EMAIL"));
-                client.setPhone(set.getString("CL_PHONE"));
                 client.setAddr(set.getString("CL_ADDR"));
                 client.setCity(set.getString("CL_CITY"));
                 client.setCountry(set.getString("CL_COUNTRY"));

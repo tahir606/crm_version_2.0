@@ -31,25 +31,18 @@ public class clientDetailsController implements Initializable {
 
     @FXML
     private Label txt_fname;
-
     @FXML
     private Label txt_website;
-
     @FXML
     private VBox email_box;
-
     @FXML
     private VBox phone_box;
-
     @FXML
     private JFXButton btn_back;
-
     @FXML
     private JFXButton btn_email;
-
     @FXML
     private JFXButton btn_edit;
-
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -69,13 +62,13 @@ public class clientDetailsController implements Initializable {
             }
         });
 
-        ClientProperty contact = clientViewController.staticContact;
+        ClientProperty client = clientViewController.staticClient;
 
-        btn_email.setOnAction(event -> {
-            EResponseController.stTo = contact.getEmail();
-            EResponseController.stInstance = 'N';
-            inflateEResponse(1);
-        });
+//        btn_email.setOnAction(event -> {
+//            EResponseController.stTo = client();
+//            EResponseController.stInstance = 'N';
+//            inflateEResponse(1);
+//        });
 
         btn_edit.setOnAction(event -> {
             newContactController.stInstance = 'U';
@@ -88,6 +81,19 @@ public class clientDetailsController implements Initializable {
                 e.printStackTrace();
             }
         });
+
+        txt_fname.setText(client.getName());
+        txt_website.setText(client.getWebsite());
+
+        for (String email : client.getEmails()) {
+            Label label = new Label(email);
+            email_box.getChildren().add(label);
+        }
+
+        for (String phone : client.getPhones()) {
+            Label label = new Label(phone);
+            phone_box.getChildren().add(label);
+        }
 
     }
 

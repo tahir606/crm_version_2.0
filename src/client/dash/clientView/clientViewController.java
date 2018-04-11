@@ -48,7 +48,7 @@ public class clientViewController implements Initializable {
 
     List<ClientProperty> selectedContacts;
 
-    public static ClientProperty staticContact;
+    public static ClientProperty staticClient;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -82,7 +82,7 @@ public class clientViewController implements Initializable {
             TableRow<ClientProperty> row = new TableRow<>();
             row.setOnMouseClicked(event -> {
                 if (event.getClickCount() == 2 && (!row.isEmpty())) {
-                    staticContact = row.getItem();
+                    staticClient = row.getItem();
                     try {
                         dashBaseController.main_paneF.setCenter(
                                 FXMLLoader.load(
@@ -102,10 +102,10 @@ public class clientViewController implements Initializable {
 
         String email = "";
 
-        for (ClientProperty contact : selectedContacts) {
-            if (contact.getEmail() != null || contact.getEmail().equals(""))
-                email = email + contact.getEmail() + ",";
-        }
+//        for (ClientProperty contact : selectedContacts) {
+//            if (contact.getEmail() != null || contact.getEmail().equals(""))
+//                email = email + contact.getEmail() + ",";
+//        }
 
         System.out.println(email);
 
