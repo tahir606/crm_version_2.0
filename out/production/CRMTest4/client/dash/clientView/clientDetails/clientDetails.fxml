@@ -7,9 +7,8 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane prefHeight="472.0" prefWidth="1000.0" stylesheets="@../../../../styles/emailDash.css"
-            xmlns="http://javafx.com/javafx/9" xmlns:fx="http://javafx.com/fxml/1"
-            fx:controller="client.dash.clientView.clientDetails.clientDetailsController">
+<?import javafx.scene.control.ListView?>
+<AnchorPane prefHeight="472.0" prefWidth="1000.0" stylesheets="@../../../../styles/emailDash.css" xmlns="http://javafx.com/javafx/9" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.dash.clientView.clientDetails.clientDetailsController">
    <children>
       <Label fx:id="txt_fname" layoutX="28.0" layoutY="65.0" text="Client Name">
          <font>
@@ -35,10 +34,10 @@
             </HBox>
          </children>
       </VBox>
-      <Label layoutX="435.0" layoutY="80.0" text="EMAIL" />
-      <VBox fx:id="email_box" layoutX="330.0" layoutY="113.0" prefHeight="311.0" prefWidth="237.0" />
-      <Label layoutX="732.0" layoutY="80.0" text="PHONE" />
-      <VBox fx:id="phone_box" layoutX="633.0" layoutY="113.0" prefHeight="311.0" prefWidth="237.0" />
+      <Label fx:id="label_email" layoutX="435.0" layoutY="80.0" text="EMAIL" />
+      <ListView fx:id="email_list" layoutX="330.0" layoutY="113.0" prefHeight="311.0" prefWidth="237.0" />
+      <Label fx:id="label_phone" layoutX="732.0" layoutY="80.0" text="PHONE" />
+      <ListView fx:id="phone_list" layoutX="633.0" layoutY="113.0" prefHeight="311.0" prefWidth="237.0" />
       <JFXButton fx:id="btn_back" layoutX="14.0" layoutY="14.0" pickOnBounds="true" ripplerFill="#99ff9f" text=" " AnchorPane.leftAnchor="14.0" AnchorPane.topAnchor="14.0" />
       <HBox layoutX="639.0" layoutY="19.0" prefHeight="34.0" prefWidth="361.0" spacing="20.0">
          <children>

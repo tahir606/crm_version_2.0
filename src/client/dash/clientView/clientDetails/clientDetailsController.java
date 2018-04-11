@@ -15,6 +15,7 @@ import javafx.geometry.Pos;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
+import javafx.scene.control.ListView;
 import javafx.scene.control.Tooltip;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -37,6 +38,10 @@ public class clientDetailsController implements Initializable {
     private VBox email_box;
     @FXML
     private VBox phone_box;
+    @FXML
+    private ListView<String> email_list;
+    @FXML
+    private ListView<String> phone_list;
     @FXML
     private JFXButton btn_back;
     @FXML
@@ -86,13 +91,13 @@ public class clientDetailsController implements Initializable {
         txt_website.setText(client.getWebsite());
 
         for (String email : client.getEmails()) {
-            Label label = new Label(email);
-            email_box.getChildren().add(label);
+            if (email != null)
+                email_list.getItems().add(email);
         }
 
         for (String phone : client.getPhones()) {
-            Label label = new Label(phone);
-            phone_box.getChildren().add(label);
+            if (phone != null)
+                phone_list.getItems().add(phone);
         }
 
     }
