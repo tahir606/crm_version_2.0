@@ -3,16 +3,22 @@ package client.newClient;
 import JCode.Toast;
 import JCode.mySqlConn;
 import JCode.trayHelper;
+import client.dashBaseController;
 import com.jfoenix.controls.*;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.TextArea;
+import javafx.scene.control.Tooltip;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
@@ -24,6 +30,7 @@ import objects.Client;
 import objects.ESetting;
 import objects.Users;
 
+import java.io.IOException;
 import java.net.URL;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -41,6 +48,8 @@ public class newClientController implements Initializable {
     @FXML
     private JFXButton btn_phone;
     @FXML
+    private JFXButton btn_back;
+    @FXML
     private JFXTextField txt_website;
     @FXML
     private JFXTextField txt_addr;
@@ -52,8 +61,8 @@ public class newClientController implements Initializable {
     private JFXDatePicker joining_date;
     @FXML
     private JFXComboBox<String> combo_type;
-    @FXML
-    private JFXComboBox<Client> combo_client;
+//    @FXML
+//    private JFXComboBox<Client> combo_client;
     @FXML
     private JFXButton btn_save;
 
@@ -67,6 +76,22 @@ public class newClientController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+
+        Image image = new Image(this.getClass().getResourceAsStream("/res/img/left-arrow.png"));
+        btn_back.setGraphic(new ImageView(image));
+        btn_back.setAlignment(Pos.CENTER_LEFT);
+        btn_back.setTooltip(new Tooltip("Back to Contacts"));
+        btn_back.setOnAction(event -> {
+            try {
+                dashBaseController.main_paneF.setCenter(
+                        FXMLLoader.load(
+                                getClass().getClassLoader().getResource("client/dash/clientView/clientView.fxml")));
+
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        });
+
         sql = new mySqlConn();
 
         init();
@@ -74,7 +99,7 @@ public class newClientController implements Initializable {
 
     private void init() {
 
-        combo_client.getItems().clear();
+//        combo_client.getItems().clear();
         clientList = sql.getAllClients(null);
         types = sql.getClientTypes();
 
@@ -85,31 +110,31 @@ public class newClientController implements Initializable {
             nClient = 1;
         }
 
-        Client c = new Client();
-        c.setCode(nClient);
-        c.setName(" + Create New");
-        c.setOwner("");
-        c.setEmail("");
-        c.setPhone("");
-        c.setWebsite("");
-        c.setAddr("");
-        c.setCity("");
-        c.setCountry("");
-        c.setType(1);
-        c.setEmails(new String[noOfFields]);
-        c.setPhones(new String[noOfFields]);
+        clientSel = new Client();
+        clientSel.setCode(nClient);
+        clientSel.setName(" + Create New");
+        clientSel.setOwner("");
+        clientSel.setEmail("");
+        clientSel.setPhone("");
+        clientSel.setWebsite("");
+        clientSel.setAddr("");
+        clientSel.setCity("");
+        clientSel.setCountry("");
+        clientSel.setType(1);
+        clientSel.setEmails(new String[noOfFields]);
+        clientSel.setPhones(new String[noOfFields]);
 
-        combo_client.getItems().add(c);
-
-        if (nClient != 1)   //If there are no clients previously, else this throws a null pointer exception
-            combo_client.getItems().addAll(clientList);
-
-        combo_client.valueProperty().addListener((observable, oldValue, newValue) -> {
-            populateDetails(newValue);
-            clientSel = newValue;
-        });
+//        combo_client.getItems().add(c);
+//
+//        if (nClient != 1)   //If there are no clients previously, else this throws a null pointer exception
+//            combo_client.getItems().addAll(clientList);
+//
+//        combo_client.valueProperty().addListener((observable, oldValue, newValue) -> {
+//            populateDetails(newValue);
+//            clientSel = newValue;
+//        });
         combo_type.getSelectionModel().select(0);
-        combo_client.getSelectionModel().select(0);
+//        combo_client.getSelectionModel().select(0);
     }
 
     private void populateDetails(Client newValue) {
@@ -192,8 +217,11 @@ public class newClientController implements Initializable {
 
     private void inflateBOX(int c) {
 
-        String[] Emails = clientSel.getEmails();
-        String[] Phones = clientSel.getPhones();
+//        String[] Emails = clientSel.getEmails();
+//        String[] Phones = clientSel.getPhones();
+
+        String[] Emails = new String[noOfFields];
+        String[] Phones = new String[noOfFields];
 
         Stage stage = new Stage();
         stage.initModality(Modality.APPLICATION_MODAL);

@@ -11,7 +11,7 @@
 
 <AnchorPane prefHeight="472.0" prefWidth="1100.0" stylesheets="@../../styles/clients.css" xmlns="http://javafx.com/javafx/9" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.newClient.newClientController">
     <children>
-        <VBox layoutX="37.0" layoutY="24.0" prefHeight="425.0" prefWidth="578.0" spacing="5.0" AnchorPane.leftAnchor="37.0" AnchorPane.topAnchor="24.0">
+        <VBox layoutX="80.0" layoutY="36.0" prefHeight="398.0" prefWidth="578.0" spacing="5.0" AnchorPane.leftAnchor="80.0" AnchorPane.topAnchor="36.0">
             <children>
                 <HBox prefHeight="30.0" prefWidth="200.0" spacing="10.0">
                     <children>
@@ -70,7 +70,8 @@
             </HBox>
             </children>
         </VBox>
-        <JFXComboBox fx:id="combo_client" layoutX="713.0" layoutY="48.0" prefHeight="25.0" prefWidth="255.0" />
+        <!--<JFXComboBox fx:id="combo_client" layoutX="713.0" layoutY="48.0" prefHeight="25.0" prefWidth="255.0" />-->
+        <JFXButton fx:id="btn_back" layoutX="14.0" layoutY="14.0" pickOnBounds="true" ripplerFill="#99ff9f" text=" " AnchorPane.leftAnchor="14.0" AnchorPane.topAnchor="14.0" />
         <JFXButton fx:id="btn_save" buttonType="RAISED" layoutX="932.0" layoutY="427.0" onAction="#saveChanges" prefHeight="45.0" prefWidth="80.0" styleClass="hbox_menu" text="Save" AnchorPane.bottomAnchor="28.0" AnchorPane.rightAnchor="88.0" />
     </children>
 </AnchorPane>

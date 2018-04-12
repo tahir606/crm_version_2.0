@@ -14,7 +14,7 @@
 <AnchorPane prefHeight="472.0" prefWidth="1100.0" stylesheets="@../../styles/clients.css" xmlns="http://javafx.com/javafx/9" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.newContact.newContactController">
     <children>
         <JFXButton fx:id="btn_back" layoutX="14.0" layoutY="14.0" pickOnBounds="true" ripplerFill="#99ff9f" text=" " AnchorPane.leftAnchor="14.0" AnchorPane.topAnchor="14.0" />
-        <VBox layoutX="85.0" layoutY="59.0" prefHeight="386.0" prefWidth="578.0" spacing="5.0" AnchorPane.leftAnchor="85.0" AnchorPane.topAnchor="59.0">
+        <VBox layoutX="85.0" layoutY="74.0" prefHeight="386.0" prefWidth="578.0" spacing="5.0" AnchorPane.leftAnchor="85.0" AnchorPane.topAnchor="74.0">
             <children>
                 <HBox prefHeight="30.0" prefWidth="200.0" spacing="10.0">
                     <children>

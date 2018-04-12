@@ -1077,8 +1077,8 @@ public class mySqlConn {
     public void insertClient(Client client) {
 
         String query = "INSERT INTO CLIENT_STORE(CL_ID,CL_NAME,CL_OWNER,CL_EMAIL,CL_PHONE,CL_ADDR,CL_CITY" +
-                ",CL_COUNTRY,CL_WEBSITE,CL_TYPE, CL_JOINDATE) " +
-                " SELECT IFNULL(max(CL_ID),0)+1,?,?,?,?,?,?,?,?,?,? from CLIENT_STORE";
+                ",CL_COUNTRY,CL_WEBSITE,CL_TYPE,CL_JOINDATE,CREATEDBY,CREATEDON) " +
+                " SELECT IFNULL(max(CL_ID),0)+1,?,?,?,?,?,?,?,?,?,?,?,? from CLIENT_STORE";
 
         // Connection con = getConnection();
         PreparedStatement statement = null;
@@ -1098,6 +1098,8 @@ public class mySqlConn {
                 statement.setString(10, client.getJoinDate());
             else
                 statement.setString(10, null);
+            statement.setInt(11, fHelper.ReadUserDetails().getUCODE());
+            statement.setString(12, CommonTasks.getCurrentTimeStamp());
 
             statement.executeUpdate();
 
@@ -1481,7 +1483,7 @@ public class mySqlConn {
                 int c = 0;
                 while (setArray.next()) {
                     try {
-                    dataArr[c] = setArray.getString("EM_NAME");
+                        dataArr[c] = setArray.getString("EM_NAME");
                     } catch (ArrayIndexOutOfBoundsException e) {
                         System.out.println("ArrayIndexOutOfBoundsException");
                     }
