@@ -625,6 +625,7 @@ public class EmailDashController implements Initializable {
                 btn_solv.setVisible(true);
             }
 
+            //Locked/Solved Label
             //Buttons
             if (email.getSolvFlag() == 'S') {    //If Email is solved disable all buttons
 

@@ -24,12 +24,14 @@ import javafx.scene.layout.*;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
 import objects.ESetting;
+import objects.Email;
 import objects.Network;
 import objects.Users;
 
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.ResourceBundle;
 
 
@@ -74,6 +76,8 @@ public class dController implements Initializable {
 
         sql = new mySqlConn();
 
+        testRelations();
+
         eSetting = sql.getEmailSettings();
         user = fHelper.ReadUserDetails();
         rightsList = user.getuRightsList();
@@ -94,6 +98,14 @@ public class dController implements Initializable {
         }
 
         Platform.setImplicitExit(false);
+    }
+
+    private void testRelations() {
+        List<Email> emails = sql.readAllEmails(" WHERE EMNO = 3 ");
+
+        for (Email email : emails) {
+            sql.createEmailRelations(email);
+        }
     }
 
     private void DrawerPane() {

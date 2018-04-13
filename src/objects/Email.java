@@ -7,9 +7,9 @@ import java.util.List;
 
 public class Email {
 
-    private int EmailNo, msgNo, lockd;
+    private int EmailNo, msgNo, lockd, solvBy;
     private Address[] toAddress, fromAddress, ccAddress, bccAddress;
-    private String subject, timestamp, timeFormatted, body, attch, lockedByName, disclaimer, user;
+    private String subject, timestamp, timeFormatted, body, attch, lockedByName, disclaimer, user, solvByName;
     private List<File> attachments;
     private char solvFlag, isAttch;
     private boolean isManual, freze;
@@ -23,6 +23,7 @@ public class Email {
 
         return EmailNo + "\n" +
                 fromAddress[0].toString() + "\n" +
+                getTimeFormatted() + "\n" +
                 ((subject.length() > 20) ? subject.substring(0, 20) + "..." : subject);
 
 //        return "Email{\n" +

@@ -451,6 +451,25 @@ public class mySqlConn {
 
     }
 
+    public void createEmailRelations(Email email) {
+
+        String query = "SELECT DISTINCT EM_NAME FROM EMAIL_LIST WHERE EM_NAME LIKE ";
+
+        try {
+            for (Address address : email.getFromAddress()) {
+                System.out.println("ADDRESS: " + address);
+                PreparedStatement statement = static_con.prepareStatement(query + " '%" + address + "%'");
+                ResultSet set = statement.executeQuery();
+                while (set.next()) {
+                    System.out.println("EMAIL NAME: " + set.getString("EM_NAME"));
+                }
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+    }
 
     public void insertEmail(Email email, Message message) {
 
@@ -560,7 +579,7 @@ public class mySqlConn {
 
     public List<Email> readAllEmails(String where) {
 
-        String query = "SELECT EMNO,MSGNO,SBJCT,FRADD,TOADD,CCADD,TSTMP,EBODY,ATTCH,ESOLV,LOCKD FROM EMAIL_STORE";
+        String query = "SELECT EMNO,MSGNO,SBJCT,FRADD,TOADD,CCADD,TSTMP,EBODY,ATTCH,ESOLV,LOCKD,SOLVBY,SOLVTIME FROM EMAIL_STORE";
 
         if (where == null) {
             query = query + " ORDER BY EMNO DESC";
@@ -1027,7 +1046,6 @@ public class mySqlConn {
         String query = "SELECT HOST, EMAIL, PASS, FSPATH, AUTOCHK, DISCCHK, SOLVCHK, AUTOTXT, DISCTXT, SOLVTXT FROM " +
                 "EMAIL_SETTINGS " +
                 "WHERE 1";
-        System.out.println("1.1");
 //        // Connection con = getConnection();
         try {
             PreparedStatement statement = static_con.prepareStatement(query);

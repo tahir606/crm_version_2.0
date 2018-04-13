@@ -4,9 +4,7 @@
 <?import com.jfoenix.controls.JFXComboBox?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ListView?>
-<?import javafx.scene.control.Menu?>
 <?import javafx.scene.control.MenuBar?>
-<?import javafx.scene.control.MenuItem?>
 <?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.TextArea?>
 <?import javafx.scene.layout.AnchorPane?>
@@ -16,8 +14,7 @@
 <!--<?import JCode.StyledListView?>-->
 
 <AnchorPane prefHeight="540.0" prefWidth="1100.0" stylesheets="@../styles/emailDash.css" xmlns="http://javafx.com/javafx/9" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Email.EmailDashController">
-    <AnchorPane prefHeight="500.0" prefWidth="60.0" style="-fx-background-color: #e5e5e5;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0"
-                AnchorPane.topAnchor="0.0">
+    <AnchorPane prefHeight="500.0" prefWidth="60.0" style="-fx-background-color: #e5e5e5;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0">
         <children>
             <VBox fx:id="category_box" layoutY="35.0" prefHeight="466.0" prefWidth="60.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="34.0" />
         </children>
@@ -27,7 +24,7 @@
             <center>
             </center>
             <right>
-                <AnchorPane fx:id="anchor_body" prefHeight="467.0" prefWidth="353.0" styleClass="emailAnchorBody" BorderPane.alignment="CENTER" />
+                <AnchorPane fx:id="anchor_body" prefHeight="540.0" prefWidth="365.0" styleClass="emailAnchorBody" BorderPane.alignment="CENTER" />
             </right>
             <center>
                 <AnchorPane fx:id="anchor_details" maxWidth="-Infinity" prefHeight="425.0" styleClass="emailAnchorDetails" BorderPane.alignment="CENTER">
@@ -41,14 +38,14 @@
                         <Label fx:id="label_cc" layoutX="14.0" layoutY="161.0" prefHeight="17.0" prefWidth="82.0" text="CC:" />
                         <ScrollPane layoutX="94.0" layoutY="80.0" prefHeight="65.0" prefWidth="248.0" AnchorPane.leftAnchor="94.0" AnchorPane.rightAnchor="13.0">
                             <content>
-                                <VBox fx:id="vbox_from" prefHeight="62.0" prefWidth="233.0" />
+                                <VBox fx:id="vbox_from" prefHeight="62.0" prefWidth="222.0" />
                             </content>
                         </ScrollPane>
                         <Label fx:id="label_time" layoutX="132.0" layoutY="32.0" prefHeight="17.0" prefWidth="178.0" styleClass="normalText" text="Time Stamp" />
-                        <TextArea fx:id="txt_subject" editable="false" layoutX="94.0" layoutY="233.0" prefHeight="74.0" prefWidth="248.0" text="Subject" wrapText="true" />
-                        <ScrollPane layoutX="94.0" layoutY="156.0" prefHeight="65.0" prefWidth="248.0" AnchorPane.leftAnchor="94.0" AnchorPane.rightAnchor="13.0">
+                        <TextArea fx:id="txt_subject" editable="false" layoutX="94.0" layoutY="233.0" prefHeight="74.0" prefWidth="226.0" text="Subject" wrapText="true" AnchorPane.rightAnchor="13.0" />
+                        <ScrollPane layoutX="94.0" layoutY="156.0" prefHeight="65.0" prefWidth="233.0" AnchorPane.leftAnchor="94.0" AnchorPane.rightAnchor="13.0">
                             <content>
-                                <VBox fx:id="vbox_cc" prefHeight="62.0" prefWidth="233.0" />
+                                <VBox fx:id="vbox_cc" prefHeight="62.0" prefWidth="223.0" />
                             </content>
                         </ScrollPane>
                         <!--<ScrollPane layoutX="94.0" layoutY="234.0" prefHeight="65.0" prefWidth="248.0">-->
@@ -68,7 +65,7 @@
                 </AnchorPane>
             </center>
             <left>
-                <AnchorPane prefHeight="467.0" prefWidth="330.0" BorderPane.alignment="CENTER">
+                <AnchorPane prefHeight="540.0" prefWidth="345.0" BorderPane.alignment="CENTER">
                     <children>
                         <ListView fx:id="list_emails" layoutY="1.0" prefHeight="421.0" prefWidth="259.0" styleClass="emailListview" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
                         <!--<StyledListView fx:id="list_emails" prefHeight="425.0" prefWidth="259.0" styleClass="emailListview" />-->
