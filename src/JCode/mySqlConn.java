@@ -405,6 +405,30 @@ public class mySqlConn {
 
     }
 
+    public Users getNoOfSolvedEmails(Users user) {
+        String query = " SELECT COUNT(EMNO) AS EMNO FROM EMAIL_STORE " +
+                " WHERE SOLVBY = ?";
+
+//        // Connection con = getConnection();
+        PreparedStatement statement = null;
+        ResultSet set = null;
+
+        try {
+            statement = static_con.prepareStatement(query);
+            statement.setInt(1, user.getUCODE());
+            set = statement.executeQuery();
+
+            while (set.next()) {
+                user.setSolved(set.getInt("EMNO"));
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return user;
+    }
+
     public void deleteUser(Users u) {
 
         String query = "DELETE FROM USERS WHERE UCODE = ?";
@@ -923,12 +947,9 @@ public class mySqlConn {
 
         String query = " UPDATE EMAIL_STORE " +     //Query to Update Email status to solve
                 " SET ESOLV = ?, " +
+                " SOLVBY = ?, " +
                 " SOLVTIME = ? " +
                 " WHERE EMNO = ? ";
-
-        String query2 = "UPDATE USERS SET SOLV = " +        //Query to +1 solved
-                " ((select IFNULL(SOLV,0) + 1 AS SOLV from ( select SOLV from users where UCODE = ?) as x))" +
-                " WHERE UCODE = ?";
 
         String timeStamp = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.S").format(Calendar.getInstance().getTime());
         email.setTimestamp(timeStamp);
@@ -938,14 +959,9 @@ public class mySqlConn {
         try {
             statement = static_con.prepareStatement(query);
             statement.setString(1, flag);
-            statement.setString(2, email.getTimestamp());
-            statement.setInt(3, email.getEmailNo());
-            statement.executeUpdate();
-            statement.close();
-
-            statement = static_con.prepareStatement(query2);
-            statement.setInt(1, user.getUCODE());
             statement.setInt(2, user.getUCODE());
+            statement.setString(3, email.getTimestamp());
+            statement.setInt(4, email.getEmailNo());
             statement.executeUpdate();
             statement.close();
 
@@ -1518,7 +1534,7 @@ public class mySqlConn {
     }
 
     public List<ClientProperty> getAllClientsProperty(String where) {
-        String query = "SELECT CL_ID,CL_NAME,CL_OWNER,CL_EMAIL,CL_PHONE,CL_ADDR," +
+        String query = "SELECT CL_ID,CL_NAME,CL_OWNER,CL_ADDR," +
                 "CL_CITY,CL_COUNTRY,CL_WEBSITE,CL_TYPE,CL_JOINDATE FROM CLIENT_STORE";
 
 

@@ -46,7 +46,7 @@ public class HomeController implements Initializable {
         fHelper = new fileHelper();
         sql = new mySqlConn();
         user = fHelper.ReadUserDetails();
-        user = sql.getUserDetails(user);
+        user = sql.getNoOfSolvedEmails(user);
 
         txt_fname.setText(user.getFNAME());
         txt_solved.setText(String.valueOf(user.getSolved()));
