@@ -101,11 +101,8 @@ public class dController implements Initializable {
     }
 
     private void testRelations() {
-        List<Email> emails = sql.readAllEmails(" WHERE EMNO = 3 ");
-
-        for (Email email : emails) {
-            sql.createEmailRelations(email);
-        }
+        List<Email> emails = sql.readAllEmails(" WHERE EMNO = 32 ");
+        sql.createEmailRelations(emails.get(0));
     }
 
     private void DrawerPane() {

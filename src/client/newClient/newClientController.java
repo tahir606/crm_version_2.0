@@ -3,6 +3,8 @@ package client.newClient;
 import JCode.Toast;
 import JCode.mySqlConn;
 import JCode.trayHelper;
+import client.dash.clientView.clientViewController;
+import client.dash.contactView.contactViewController;
 import client.dashBaseController;
 import com.jfoenix.controls.*;
 import javafx.application.Platform;
@@ -13,10 +15,7 @@ import javafx.fxml.Initializable;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
-import javafx.scene.control.Alert;
-import javafx.scene.control.ButtonType;
-import javafx.scene.control.TextArea;
-import javafx.scene.control.Tooltip;
+import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
@@ -27,6 +26,7 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import objects.Client;
+import objects.ClientProperty;
 import objects.ESetting;
 import objects.Users;
 
@@ -58,10 +58,12 @@ public class newClientController implements Initializable {
     @FXML
     private JFXTextField txt_country;
     @FXML
+    private Label txt_heading;
+    @FXML
     private JFXDatePicker joining_date;
     @FXML
     private JFXComboBox<String> combo_type;
-//    @FXML
+    //    @FXML
 //    private JFXComboBox<Client> combo_client;
     @FXML
     private JFXButton btn_save;
@@ -72,7 +74,9 @@ public class newClientController implements Initializable {
     private List<String> types;
     private int nClient;    //CL_ID for new Client
 
-    private Client clientSel;
+    private ClientProperty clientSel;
+
+    public static char stInstance;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -94,28 +98,44 @@ public class newClientController implements Initializable {
 
         sql = new mySqlConn();
 
-        init();
+        types = sql.getClientTypes();
+        combo_type.getItems().setAll(types);
+
+        switch (stInstance) {
+            case 'N': {      //New
+                txt_heading.setText("New Client");
+                btn_save.setText("Create");
+                init();
+                break;
+            }
+            case 'U': {      //Update
+                txt_heading.setText("Update Client");
+//                clientSel.setCode(contactViewController.staticContact.getCode());
+                clientSel = clientViewController.staticClient;
+                btn_save.setText("Update");
+                populateDetails(clientSel);
+                break;
+            }
+            default:
+                break;
+        }
     }
 
     private void init() {
 
 //        combo_client.getItems().clear();
         clientList = sql.getAllClients(null);
-        types = sql.getClientTypes();
 
-        combo_type.getItems().setAll(types);
         try {
             nClient = clientList.get(clientList.size() - 1).getCode() + 1; //Get CL_ID for new client
         } catch (NullPointerException e) {
             nClient = 1;
         }
 
-        clientSel = new Client();
+        clientSel = new ClientProperty();
         clientSel.setCode(nClient);
         clientSel.setName(" + Create New");
         clientSel.setOwner("");
-        clientSel.setEmail("");
-        clientSel.setPhone("");
         clientSel.setWebsite("");
         clientSel.setAddr("");
         clientSel.setCity("");
@@ -137,7 +157,7 @@ public class newClientController implements Initializable {
 //        combo_client.getSelectionModel().select(0);
     }
 
-    private void populateDetails(Client newValue) {
+    private void populateDetails(ClientProperty newValue) {
         if (newValue == null)
             return;
         else if (newValue.getName().equals(" + Create New"))
@@ -154,6 +174,8 @@ public class newClientController implements Initializable {
             joining_date.setValue(LocalDate.parse(newValue.getJoinDate()));
         else
             joining_date.setValue(null);
+
+        combo_type.getSelectionModel().select(newValue.getType() - 1);  //Types in database start from 1
 
     }
 
@@ -174,7 +196,21 @@ public class newClientController implements Initializable {
             Toast.makeText((Stage) btn_save.getScene().getWindow(), "Required Fields Are Empty");
             return;
         } else {
-            Alert alert2 = new Alert(Alert.AlertType.CONFIRMATION, "Are you sure you want to add Client? ",
+            String msg = "";
+            switch (stInstance) {
+                case 'N': {
+                    msg = "Are you sure you want to add Client?";
+                    break;
+                }
+                case 'U': {
+                    msg = "Are you sure you want to update Client?";
+                    break;
+                }
+                default: {
+                    break;
+                }
+            }
+            Alert alert2 = new Alert(Alert.AlertType.CONFIRMATION, msg,
                     ButtonType.YES, ButtonType.NO);
             alert2.showAndWait();
 
@@ -189,14 +225,17 @@ public class newClientController implements Initializable {
                 clientSel.setJoinDate(jdate);
                 clientSel.setType(type);
 
-                if (nClient == clientSel.getCode()) {
-                    System.out.println("Inserting");
-                    sql.insertClient(clientSel);
-                } else {
-                    System.out.println("Updating");
-                    sql.updateClient(clientSel);
+                switch (stInstance) {
+                    case 'N': {
+                        sql.insertClient(clientSel);
+                        break;
+                    }
+                    case 'U': {
+                        sql.updateClient(clientSel);
+                        break;
+                    }
                 }
-                init();
+//                init();   //WHere to after
 
             } else {
                 return;
@@ -217,11 +256,25 @@ public class newClientController implements Initializable {
 
     private void inflateBOX(int c) {
 
-//        String[] Emails = clientSel.getEmails();
-//        String[] Phones = clientSel.getPhones();
-
         String[] Emails = new String[noOfFields];
         String[] Phones = new String[noOfFields];
+
+        switch (stInstance) {
+            case 'N': {
+                Emails = new String[noOfFields];
+                Phones = new String[noOfFields];
+                break;
+            }
+            case 'U': {
+                Emails = clientSel.getEmails();
+                Phones = clientSel.getPhones();
+                break;
+            }
+            default: {
+                break;
+            }
+        }
+
 
         Stage stage = new Stage();
         stage.initModality(Modality.APPLICATION_MODAL);

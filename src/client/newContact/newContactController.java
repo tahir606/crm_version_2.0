@@ -158,7 +158,21 @@ public class newContactController implements Initializable {
             Toast.makeText((Stage) btn_save.getScene().getWindow(), "Required Fields Are Empty");
             return;
         } else {
-            Alert alert2 = new Alert(Alert.AlertType.CONFIRMATION, "Are you sure you want to add Contact? ",
+            String msg = "";
+            switch (stInstance) {
+                case 'N': {
+                    msg = "Are you sure you want to add Contact?";
+                    break;
+                }
+                case 'U': {
+                    msg = "Are you sure you want to update Contact?";
+                    break;
+                }
+                default: {
+                    break;
+                }
+            }
+            Alert alert2 = new Alert(Alert.AlertType.CONFIRMATION, msg,
                     ButtonType.YES, ButtonType.NO);
             alert2.showAndWait();
 

@@ -1,5 +1,6 @@
 package client;
 
+import client.newClient.newClientController;
 import client.newContact.newContactController;
 import com.jfoenix.controls.JFXButton;
 import dashboard.dController;
@@ -124,8 +125,11 @@ public class dashBaseController implements Initializable {
 
         Menu menuNew = new Menu("New");
 
-        MenuItem newClient = new MenuItem("Edit Client");
-        newClient.setOnAction(event -> inflatePane("newClient/newClient.fxml", 1));
+        MenuItem newClient = new MenuItem("New Client");
+        newClient.setOnAction(event -> {
+            newClientController.stInstance = 'N';
+            inflatePane("newClient/newClient.fxml", 1);
+        });
         menuNew.getItems().addAll(newClient);
 
         menu_clients.getMenus().add(menuNew);

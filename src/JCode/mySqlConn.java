@@ -453,15 +453,22 @@ public class mySqlConn {
 
     public void createEmailRelations(Email email) {
 
-        String query = "SELECT DISTINCT EM_NAME FROM EMAIL_LIST WHERE EM_NAME LIKE ";
+        String query = "SELECT DISTINCT EM_NAME, CL_ID, CS_ID, UCODE FROM EMAIL_LIST WHERE EM_NAME LIKE ";
 
         try {
             for (Address address : email.getFromAddress()) {
-                System.out.println("ADDRESS: " + address.toString().split("\\<")[1]);
-                PreparedStatement statement = static_con.prepareStatement(query + " '%" + address.toString() + "%'");
-                ResultSet set = statement.executeQuery();
-                while (set.next()) {
-                    System.out.println("EMAIL NAME: " + set.getString("EM_NAME"));
+                if (address != null) {
+                    String splitted = address.toString().split("\\<")[1];
+                    splitted = splitted.split("\\>")[0];    //Split email into only the bare minimum to scan
+                    System.out.println(splitted);
+                    PreparedStatement statement = static_con.prepareStatement(query + " '%" + splitted + "%'");
+                    ResultSet set = statement.executeQuery();
+                    while (set.next()) {
+                        System.out.println("EMAIL: " + set.getString("EM_NAME") + "\n" +
+                                "CL_ID: " + set.getString("CL_ID") + "\n" +
+                                "CS_ID: " + set.getString("CS_ID") + "\n" +
+                                "UCODE: " + set.getString("UCODE") );
+                    }
                 }
             }
 
@@ -1108,11 +1115,11 @@ public class mySqlConn {
 
     }
 
-    public void insertClient(Client client) {
+    public void insertClient(ClientProperty client) {
 
-        String query = "INSERT INTO CLIENT_STORE(CL_ID,CL_NAME,CL_OWNER,CL_EMAIL,CL_PHONE,CL_ADDR,CL_CITY" +
+        String query = "INSERT INTO CLIENT_STORE(CL_ID,CL_NAME,CL_OWNER,CL_ADDR,CL_CITY" +
                 ",CL_COUNTRY,CL_WEBSITE,CL_TYPE,CL_JOINDATE,CREATEDBY,CREATEDON) " +
-                " SELECT IFNULL(max(CL_ID),0)+1,?,?,?,?,?,?,?,?,?,?,?,? from CLIENT_STORE";
+                " SELECT IFNULL(max(CL_ID),0)+1,?,?,?,?,?,?,?,?,?,? from CLIENT_STORE";
 
         // Connection con = getConnection();
         PreparedStatement statement = null;
@@ -1121,19 +1128,17 @@ public class mySqlConn {
             statement = static_con.prepareStatement(query);
             statement.setString(1, client.getName());
             statement.setString(2, client.getOwner());
-            statement.setString(3, client.getEmail());
-            statement.setString(4, client.getPhone());
-            statement.setString(5, client.getAddr());
-            statement.setString(6, client.getCity());
-            statement.setString(7, client.getCountry());
-            statement.setString(8, client.getWebsite());
-            statement.setInt(9, client.getType());
+            statement.setString(3, client.getAddr());
+            statement.setString(4, client.getCity());
+            statement.setString(5, client.getCountry());
+            statement.setString(6, client.getWebsite());
+            statement.setInt(7, client.getType());
             if (!client.getJoinDate().equals("null"))
-                statement.setString(10, client.getJoinDate());
+                statement.setString(8, client.getJoinDate());
             else
-                statement.setString(10, null);
-            statement.setInt(11, fHelper.ReadUserDetails().getUCODE());
-            statement.setString(12, CommonTasks.getCurrentTimeStamp());
+                statement.setString(8, null);
+            statement.setInt(9, fHelper.ReadUserDetails().getUCODE());
+            statement.setString(10, CommonTasks.getCurrentTimeStamp());
 
             statement.executeUpdate();
 
@@ -1145,10 +1150,10 @@ public class mySqlConn {
 
     }
 
-    public void updateClient(Client client) {
+    public void updateClient(ClientProperty client) {
 
         String query = "UPDATE  client_store  SET  CL_NAME = ?, CL_OWNER = ?," +
-                " CL_EMAIL = ?, CL_PHONE = ?, CL_ADDR = ?, CL_CITY = ?, CL_COUNTRY = ?," +
+                " CL_ADDR = ?, CL_CITY = ?, CL_COUNTRY = ?," +
                 " CL_WEBSITE = ?, CL_TYPE = ?, CL_JOINDATE = ? WHERE CL_ID = ?";
 
         // Connection con = getConnection();
@@ -1160,18 +1165,16 @@ public class mySqlConn {
             statement = static_con.prepareStatement(query);
             statement.setString(1, client.getName());
             statement.setString(2, client.getOwner());
-            statement.setString(3, client.getEmail());
-            statement.setString(4, client.getPhone());
-            statement.setString(5, client.getAddr());
-            statement.setString(6, client.getCity());
-            statement.setString(7, client.getCountry());
-            statement.setString(8, client.getWebsite());
-            statement.setInt(9, client.getType());
+            statement.setString(3, client.getAddr());
+            statement.setString(4, client.getCity());
+            statement.setString(5, client.getCountry());
+            statement.setString(6, client.getWebsite());
+            statement.setInt(7, client.getType());
             if (!client.getJoinDate().equals("null"))
-                statement.setString(10, client.getJoinDate());
+                statement.setString(8, client.getJoinDate());
             else
-                statement.setString(10, null);
-            statement.setInt(11, client.getCode());
+                statement.setString(8, null);
+            statement.setInt(9, client.getCode());
 
             statement.executeUpdate();
 
@@ -1186,7 +1189,7 @@ public class mySqlConn {
 
     }
 
-    private void EmailsPhoneInsertion(PreparedStatement statement, Client client) {
+    private void EmailsPhoneInsertion(PreparedStatement statement, ClientProperty client) {
 
         String deleteEmails = "DELETE FROM EMAIL_LIST WHERE CL_ID = ?";
 

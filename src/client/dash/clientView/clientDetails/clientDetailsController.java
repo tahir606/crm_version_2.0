@@ -5,6 +5,7 @@ import JCode.CommonTasks;
 import JCode.trayHelper;
 import client.dash.clientView.clientViewController;
 import client.dashBaseController;
+import client.newClient.newClientController;
 import client.newContact.newContactController;
 import com.jfoenix.controls.JFXButton;
 import javafx.application.Platform;
@@ -76,7 +77,7 @@ public class clientDetailsController implements Initializable {
 //        });
 
         btn_edit.setOnAction(event -> {
-            newContactController.stInstance = 'U';
+            newClientController.stInstance = 'U';
             try {
                 dashBaseController.main_paneF.setCenter(
                         FXMLLoader.load(
