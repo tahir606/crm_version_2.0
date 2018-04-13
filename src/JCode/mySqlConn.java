@@ -457,8 +457,8 @@ public class mySqlConn {
 
         try {
             for (Address address : email.getFromAddress()) {
-                System.out.println("ADDRESS: " + address);
-                PreparedStatement statement = static_con.prepareStatement(query + " '%" + address + "%'");
+                System.out.println("ADDRESS: " + address.toString().split("\\<")[1]);
+                PreparedStatement statement = static_con.prepareStatement(query + " '%" + address.toString() + "%'");
                 ResultSet set = statement.executeQuery();
                 while (set.next()) {
                     System.out.println("EMAIL NAME: " + set.getString("EM_NAME"));
