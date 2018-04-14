@@ -451,8 +451,8 @@ public class mySqlConn {
 
     }
 
-    private String mainQuery = "SELECT DISTINCT EM_NAME, CL_ID, CS_ID, UCODE FROM EMAIL_LIST WHERE EM_NAME LIKE ";
-    private String relQuery = "INSERT INTO EMAIL_RELATION (EMNO, EMTYPE, CL_ID, UCODE, CS_ID) VALUES (?, ?, ?, ?, ?)";
+    private String mainQuery = "SELECT DISTINCT EM_ID, EM_NAME, CL_ID, CS_ID, UCODE FROM EMAIL_LIST WHERE EM_NAME LIKE ";
+    private String relQuery = "INSERT INTO EMAIL_RELATION (EMNO, EM_ID EMTYPE, CL_ID, UCODE, CS_ID) VALUES (?, ?, ?, ?, ?, ?)";
     public void createEmailRelations(Email email) {
         try {
             for (Address address : email.getFromAddress()) {
@@ -481,11 +481,13 @@ public class mySqlConn {
             PreparedStatement statement = static_con.prepareStatement(mainQuery + " '%" + splitted + "%'");
             ResultSet set = statement.executeQuery();
             while (set.next()) {
+                System.out.println("In Result");
                 System.out.println("EMAIL: " + set.getString("EM_NAME") + "\n" +
                         "CL_ID: " + set.getString("CL_ID") + "\n" +
                         "CS_ID: " + set.getString("CS_ID") + "\n" +
                         "UCODE: " + set.getString("UCODE"));
                 int emno = email.getEmailNo(),
+                        emid = set.getInt("EM_ID"),
                         cl = set.getInt("CL_ID"),
                         cs = set.getInt("CS_ID"),
                         ucode = set.getInt("UCODE");
@@ -495,10 +497,11 @@ public class mySqlConn {
 
                 PreparedStatement stmnt = static_con.prepareStatement(relQuery);
                 stmnt.setInt(1, emno);
-                stmnt.setInt(2, 1);
-                stmnt.setInt(3, cl);
-                stmnt.setInt(4, cs);
-                stmnt.setInt(5, ucode);
+                stmnt.setInt(2, emid);
+                stmnt.setInt(3, 1);
+                stmnt.setInt(4, cl);
+                stmnt.setInt(5, cs);
+                stmnt.setInt(6, ucode);
                 stmnt.executeUpdate();
 
             }
