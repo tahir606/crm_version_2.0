@@ -101,7 +101,7 @@ public class dController implements Initializable {
     }
 
     private void testRelations() {
-        List<Email> emails = sql.readAllEmails(" WHERE EMNO = 38 ");
+        List<Email> emails = sql.readAllEmails(" WHERE EMNO = 18 ");
         sql.createEmailRelations(emails.get(0));
     }
 
