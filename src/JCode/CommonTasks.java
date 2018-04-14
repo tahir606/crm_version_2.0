@@ -71,6 +71,8 @@ public class CommonTasks {
             date = inputFormat.parse(timeStamp);
         } catch (ParseException e) {
             e.printStackTrace();
+        } catch (NullPointerException e){
+            return '\0';
         }
 
         Calendar calendar = new GregorianCalendar();

@@ -7,7 +7,7 @@ import java.util.List;
 
 public class Email {
 
-    private int EmailNo, msgNo, lockd, solvBy;
+    private int EmailNo, msgNo, lockd, solvBy, type;
     private Address[] toAddress, fromAddress, ccAddress, bccAddress;
     private String subject, timestamp, timeFormatted, body, attch, lockedByName, disclaimer, user, solvByName;
     private List<File> attachments;
@@ -253,6 +253,30 @@ public class Email {
 
     public void setManual(boolean manual) {
         isManual = manual;
+    }
+
+    public int getSolvBy() {
+        return solvBy;
+    }
+
+    public void setSolvBy(int solvBy) {
+        this.solvBy = solvBy;
+    }
+
+    public String getSolvByName() {
+        return solvByName;
+    }
+
+    public void setSolvByName(String solvByName) {
+        this.solvByName = solvByName;
+    }
+
+    public int getType() {
+        return type;
+    }
+
+    public void setType(int type) {
+        this.type = type;
     }
 
     public boolean isFreze() {

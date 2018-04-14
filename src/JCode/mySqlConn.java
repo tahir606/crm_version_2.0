@@ -451,31 +451,58 @@ public class mySqlConn {
 
     }
 
+    private String mainQuery = "SELECT DISTINCT EM_NAME, CL_ID, CS_ID, UCODE FROM EMAIL_LIST WHERE EM_NAME LIKE ";
+    private String relQuery = "INSERT INTO EMAIL_RELATION (EMNO, EMTYPE, CL_ID, UCODE, CS_ID) VALUES (?, ?, ?, ?, ?)";
     public void createEmailRelations(Email email) {
-
-        String query = "SELECT DISTINCT EM_NAME, CL_ID, CS_ID, UCODE FROM EMAIL_LIST WHERE EM_NAME LIKE ";
-
         try {
             for (Address address : email.getFromAddress()) {
-                if (address != null) {
-                    String splitted = address.toString().split("\\<")[1];
-                    splitted = splitted.split("\\>")[0];    //Split email into only the bare minimum to scan
-                    System.out.println(splitted);
-                    PreparedStatement statement = static_con.prepareStatement(query + " '%" + splitted + "%'");
-                    ResultSet set = statement.executeQuery();
-                    while (set.next()) {
-                        System.out.println("EMAIL: " + set.getString("EM_NAME") + "\n" +
-                                "CL_ID: " + set.getString("CL_ID") + "\n" +
-                                "CS_ID: " + set.getString("CS_ID") + "\n" +
-                                "UCODE: " + set.getString("UCODE") );
-                    }
-                }
+                subCreateEmailRelation(address, email);
             }
-
+            for (Address address : email.getCcAddress()) {
+                subCreateEmailRelation(address, email);
+            }
         } catch (SQLException e) {
             e.printStackTrace();
         }
 
+    }
+
+    private void subCreateEmailRelation(Address address, Email email) throws SQLException {
+        if (address != null) {
+            String splitted = "";
+            try {
+                splitted = address.toString().split("\\<")[1];
+                splitted = splitted.split("\\>")[0];    //Split email into only the bare minimum to scan
+            } catch (Exception e) {
+                e.printStackTrace();
+                splitted = address.toString();
+            }
+            System.out.println("Email: " + splitted);
+            PreparedStatement statement = static_con.prepareStatement(mainQuery + " '%" + splitted + "%'");
+            ResultSet set = statement.executeQuery();
+            while (set.next()) {
+                System.out.println("EMAIL: " + set.getString("EM_NAME") + "\n" +
+                        "CL_ID: " + set.getString("CL_ID") + "\n" +
+                        "CS_ID: " + set.getString("CS_ID") + "\n" +
+                        "UCODE: " + set.getString("UCODE"));
+                int emno = email.getEmailNo(),
+                        cl = set.getInt("CL_ID"),
+                        cs = set.getInt("CS_ID"),
+                        ucode = set.getInt("UCODE");
+
+                if (cl == 0 && cs == 0 && ucode == 0)   //Unrelated Email
+                    continue;
+
+                PreparedStatement stmnt = static_con.prepareStatement(relQuery);
+                stmnt.setInt(1, emno);
+                stmnt.setInt(2, 1);
+                stmnt.setInt(3, cl);
+                stmnt.setInt(4, cs);
+                stmnt.setInt(5, ucode);
+                stmnt.executeUpdate();
+
+            }
+        }
     }
 
     public void insertEmail(Email email, Message message) {
@@ -1472,7 +1499,7 @@ public class mySqlConn {
     }
 
     public List<Client> getAllClients(String where) {
-        String query = "SELECT CL_ID,CL_NAME,CL_OWNER,CL_EMAIL,CL_PHONE,CL_ADDR," +
+        String query = "SELECT CL_ID,CL_NAME,CL_OWNER,CL_ADDR," +
                 "CL_CITY,CL_COUNTRY,CL_WEBSITE,CL_TYPE,CL_JOINDATE FROM CLIENT_STORE";
 
 
@@ -1502,8 +1529,6 @@ public class mySqlConn {
                 client.setCode(set.getInt("CL_ID"));
                 client.setName(set.getString("CL_NAME"));
                 client.setOwner(set.getString("CL_OWNER"));
-                client.setEmail(set.getString("CL_EMAIL"));
-                client.setPhone(set.getString("CL_PHONE"));
                 client.setAddr(set.getString("CL_ADDR"));
                 client.setCity(set.getString("CL_CITY"));
                 client.setCountry(set.getString("CL_COUNTRY"));
