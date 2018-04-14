@@ -452,17 +452,20 @@ public class mySqlConn {
     }
 
     private String mainQuery = "SELECT DISTINCT EM_ID, EM_NAME, CL_ID, CS_ID, UCODE FROM EMAIL_LIST WHERE EM_NAME LIKE ";
-    private String relQuery = "INSERT INTO EMAIL_RELATION (EMNO, EM_ID EMTYPE, CL_ID, UCODE, CS_ID) VALUES (?, ?, ?, ?, ?, ?)";
+    private String relQuery = "INSERT INTO EMAIL_RELATION (EMNO, EM_ID, EMTYPE, CL_ID, UCODE, CS_ID) VALUES (?, ?, ?, ?, ?, ?)";
+
     public void createEmailRelations(Email email) {
         try {
             for (Address address : email.getFromAddress()) {
+                System.out.println("In from");
                 subCreateEmailRelation(address, email);
             }
             for (Address address : email.getCcAddress()) {
+                System.out.println("in Cc");
                 subCreateEmailRelation(address, email);
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            e.getLocalizedMessage();
         }
 
     }
@@ -481,11 +484,11 @@ public class mySqlConn {
             PreparedStatement statement = static_con.prepareStatement(mainQuery + " '%" + splitted + "%'");
             ResultSet set = statement.executeQuery();
             while (set.next()) {
-                System.out.println("In Result");
-                System.out.println("EMAIL: " + set.getString("EM_NAME") + "\n" +
-                        "CL_ID: " + set.getString("CL_ID") + "\n" +
-                        "CS_ID: " + set.getString("CS_ID") + "\n" +
-                        "UCODE: " + set.getString("UCODE"));
+//                System.out.println("In Result");
+//                System.out.println("EMAIL: " + set.getString("EM_NAME") + "\n" +
+//                        "CL_ID: " + set.getString("CL_ID") + "\n" +
+//                        "CS_ID: " + set.getString("CS_ID") + "\n" +
+//                        "UCODE: " + set.getString("UCODE"));
                 int emno = email.getEmailNo(),
                         emid = set.getInt("EM_ID"),
                         cl = set.getInt("CL_ID"),
