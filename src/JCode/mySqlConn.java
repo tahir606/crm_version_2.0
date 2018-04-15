@@ -477,18 +477,13 @@ public class mySqlConn {
                 splitted = address.toString().split("\\<")[1];
                 splitted = splitted.split("\\>")[0];    //Split email into only the bare minimum to scan
             } catch (Exception e) {
-                e.printStackTrace();
+                System.out.println(e);
                 splitted = address.toString();
             }
             System.out.println("Email: " + splitted);
             PreparedStatement statement = static_con.prepareStatement(mainQuery + " '%" + splitted + "%'");
             ResultSet set = statement.executeQuery();
             while (set.next()) {
-//                System.out.println("In Result");
-//                System.out.println("EMAIL: " + set.getString("EM_NAME") + "\n" +
-//                        "CL_ID: " + set.getString("CL_ID") + "\n" +
-//                        "CS_ID: " + set.getString("CS_ID") + "\n" +
-//                        "UCODE: " + set.getString("UCODE"));
                 int emno = email.getEmailNo(),
                         emid = set.getInt("EM_ID"),
                         cl = set.getInt("CL_ID"),
@@ -503,8 +498,8 @@ public class mySqlConn {
                 stmnt.setInt(2, emid);
                 stmnt.setInt(3, 1);
                 stmnt.setInt(4, cl);
-                stmnt.setInt(5, cs);
-                stmnt.setInt(6, ucode);
+                stmnt.setInt(5, ucode);
+                stmnt.setInt(6, cs);
                 stmnt.executeUpdate();
 
             }

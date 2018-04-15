@@ -1,16 +1,13 @@
 .normalText {
-    -fx-font-size: 9pt;
     -fx-text-fill: #005600;
 }
 
 .lockedText {
-    -fx-font-size: 9pt;
     -fx-text-fill: #005600;
     -fx-font-weight: bold;
 }
 
 .solvedText {
-    -fx-font-size: 9pt;
     -fx-text-fill: #005456;
     -fx-font-weight: bold;
 }
