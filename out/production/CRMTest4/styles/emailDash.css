@@ -2,6 +2,11 @@
     -fx-text-fill: #005600;
 }
 
+.blackText {
+    -fx-text-fill: #000000;
+    -fx-font-size: 11;
+}
+
 .lockedText {
     -fx-text-fill: #005600;
     -fx-font-weight: bold;
@@ -14,6 +19,11 @@
 
 .unlockedEmail {
     -fx-background-color: #d9e5f9;
+}
+
+
+.scroll-view {
+    -fx-background-color: transparent;
 }
 
 .unlockedEmail:filled:selected:focused, .list-cell:filled:selected {

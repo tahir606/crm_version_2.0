@@ -87,7 +87,9 @@ public class EmailDashController implements Initializable {
     @FXML
     private VBox vbox_cc;
     @FXML
-    private VBox vbox_bcc;
+    private VBox vbox_contacts;
+    @FXML
+    private VBox vbox_clients;
     @FXML
     private JFXComboBox<FileDev> combo_attach;
     @FXML

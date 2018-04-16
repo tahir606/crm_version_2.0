@@ -21,8 +21,7 @@ public class Email {
     @Override
     public String toString() {
 
-        return EmailNo + "\n" +
-                fromAddress[0].toString() + "\n" +
+        return EmailNo + " - " + fromAddress[0].toString() + "\n" +
                 getTimeFormatted() + "\n" +
                 ((subject.length() > 20) ? subject.substring(0, 20) + "..." : subject);
 

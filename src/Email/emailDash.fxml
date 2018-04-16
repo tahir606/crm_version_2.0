@@ -9,6 +9,7 @@
 <?import javafx.scene.control.TextArea?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
@@ -24,65 +25,149 @@
         <menus>
         </menus>
     </MenuBar>
-    <AnchorPane layoutY="25.0" prefHeight="500.0" prefWidth="1040.0" AnchorPane.bottomAnchor="-3.0" AnchorPane.leftAnchor="60.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="25.0">
+    <AnchorPane layoutY="25.0" prefHeight="500.0" prefWidth="1040.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="60.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="25.0">
         <AnchorPane fx:id="anchor_email" layoutX="80.0" maxHeight="Infinity" maxWidth="Infinity" minHeight="-Infinity" minWidth="-Infinity" prefWidth="1040.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-            <AnchorPane fx:id="anchor_body" layoutX="747.0" prefHeight="448.0" prefWidth="293.0" styleClass="emailAnchorBody" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="747.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" BorderPane.alignment="CENTER" />
+            <AnchorPane fx:id="anchor_body" layoutX="737.0" prefHeight="448.0" prefWidth="303.0" styleClass="emailAnchorBody" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="737.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" BorderPane.alignment="CENTER" />
             <AnchorPane fx:id="anchor_details" layoutX="345.0" maxWidth="-Infinity" prefHeight="448.0" prefWidth="400.0" styleClass="emailAnchorDetails" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="345.0" AnchorPane.topAnchor="0.0" BorderPane.alignment="CENTER">
                 <children>
-                    <Label fx:id="label_locked" layoutX="132.0" layoutY="37.0" prefHeight="17.0" prefWidth="178.0" styleClass="solvedText" text="Locked By">
-                        <font>
-                            <Font size="11.0" />
-                        </font>
-                    </Label>
-                    <Label fx:id="label_ticket1" layoutX="14.0" layoutY="5.0" prefHeight="17.0" prefWidth="108.0" text="Ticket Number:">
-                        <font>
-                            <Font size="11.0" />
-                        </font>
-                    </Label>
-                    <Label fx:id="label_time1" layoutX="14.0" layoutY="21.0" prefHeight="17.0" prefWidth="94.0" text="Time Stamp:">
-                        <font>
-                            <Font size="11.0" />
-                        </font>
-                    </Label>
-                    <Label fx:id="title_locked" layoutX="14.0" layoutY="37.0" prefHeight="17.0" prefWidth="92.0" text="Locked By:">
-                        <font>
-                            <Font size="11.0" />
-                        </font>
-                    </Label>
-                    <Label fx:id="label_ticket" layoutX="132.0" layoutY="6.0" prefHeight="17.0" prefWidth="178.0" styleClass="normalText" text="Ticket Number">
-                        <font>
-                            <Font size="11.0" />
-                        </font>
-                    </Label>
-                    <Label fx:id="label_from" layoutX="14.0" layoutY="57.0" prefHeight="17.0" prefWidth="74.0" text="From:">
-                        <font>
-                            <Font size="11.0" />
-                        </font>
-                    </Label>
-                    <Label fx:id="label_cc" layoutX="14.0" layoutY="104.0" prefHeight="17.0" prefWidth="82.0" text="CC:">
-                        <font>
-                            <Font size="11.0" />
-                        </font>
-                    </Label>
-                    <ScrollPane layoutX="94.0" layoutY="58.0" prefHeight="37.0" prefWidth="293.0" AnchorPane.leftAnchor="94.0" AnchorPane.rightAnchor="13.0">
-                        <content>
-                            <VBox fx:id="vbox_from" prefHeight="35.0" prefWidth="222.0" style="-fx-font-size: 10.5;" />
-                        </content>
-                    </ScrollPane>
-                    <Label fx:id="label_time" layoutX="132.0" layoutY="22.0" prefHeight="17.0" prefWidth="178.0" styleClass="normalText" text="Time Stamp">
-                        <font>
-                            <Font size="11.0" />
-                        </font>
-                    </Label>
-                    <TextArea fx:id="txt_subject" editable="false" layoutX="94.0" layoutY="140.0" prefHeight="64.0" prefWidth="293.0" text="Subject" wrapText="true" AnchorPane.leftAnchor="94.0" AnchorPane.rightAnchor="13.0">
-                        <font>
-                            <Font size="11.0" />
-                        </font>
-                    </TextArea>
-                    <ScrollPane layoutX="94.0" layoutY="99.0" prefHeight="37.0" prefWidth="293.0" AnchorPane.leftAnchor="94.0" AnchorPane.rightAnchor="13.0">
-                        <content>
-                            <VBox fx:id="vbox_cc" prefHeight="34.0" prefWidth="223.0" style="-fx-font-size: 10.5;" />
-                        </content>
+                    <ScrollPane layoutX="13.0" layoutY="2.0" prefHeight="357.0" prefWidth="375.0" style="-fx-background: #fcfcfc;" styleClass="scroll-view" AnchorPane.bottomAnchor="89.0" AnchorPane.leftAnchor="13.0" AnchorPane.rightAnchor="12.0" AnchorPane.topAnchor="2.0">
+                        <VBox prefHeight="335.0" prefWidth="370.0">
+                     <HBox>
+                        <children>
+                           <Label fx:id="label_ticket1" prefHeight="17.0" prefWidth="100.0" styleClass="blackText" text="Ticket Number:">
+                              <font>
+                                 <Font size="11.0" />
+                              </font>
+                           </Label>
+                           <Label fx:id="label_ticket" prefHeight="17.0" prefWidth="200.0" styleClass="normalText" text="Ticket Number">
+                              <font>
+                                 <Font size="11.0" />
+                              </font>
+                           </Label>
+                        </children>
+                     </HBox>
+                     <HBox>
+                        <children>
+                           <Label fx:id="label_time1" prefHeight="17.0" prefWidth="100.0" styleClass="blackText" text="Time Stamp:">
+                              <font>
+                                 <Font size="11.0" />
+                              </font>
+                           </Label>
+                           <Label fx:id="label_time" prefHeight="17.0" prefWidth="200.0" styleClass="normalText" text="Time Stamp">
+                              <font>
+                                 <Font size="11.0" />
+                              </font>
+                           </Label>
+                        </children>
+                     </HBox>
+                     <HBox>
+                        <children>
+                           <Label fx:id="title_locked" prefHeight="17.0" prefWidth="100.0" styleClass="blackText" text="Locked By:">
+                              <font>
+                                 <Font size="11.0" />
+                              </font>
+                           </Label>
+                           <Label fx:id="label_locked" prefHeight="17.0" prefWidth="200.0" styleClass="solvedText" text="Locked By">
+                              <font>
+                                 <Font size="11.0" />
+                              </font>
+                           </Label>
+                        </children>
+                     </HBox>
+                     <HBox minHeight="5.0" />
+                            <HBox prefHeight="42.0" prefWidth="327.0">
+                                <Label fx:id="label_from" layoutX="14.0" layoutY="57.0" prefHeight="17.0" prefWidth="70.0" styleClass="blackText" text="From:">
+                                    <font>
+                                        <Font size="11.0" />
+                                    </font>
+                                </Label>
+                                <ScrollPane layoutX="94.0" layoutY="58.0" prefWidth="275.0" styleClass="scroll-view" AnchorPane.leftAnchor="94.0" AnchorPane.rightAnchor="13.0">
+                                    <content>
+                                        <VBox fx:id="vbox_from" prefHeight="40.0" prefWidth="222.0" styleClass="blackText" />
+                                    </content>
+                                </ScrollPane>
+                            </HBox>
+                            <HBox prefHeight="42.0" prefWidth="327.0">
+                                <Label fx:id="label_cc" layoutX="14.0" layoutY="104.0" prefHeight="17.0" prefWidth="70.0" styleClass="blackText" text="CC:">
+                                    <font>
+                                        <Font size="11.0" />
+                                    </font>
+                                </Label>
+                                <ScrollPane layoutX="94.0" layoutY="99.0" prefHeight="65.0" prefWidth="275.0" styleClass="scroll-view" AnchorPane.leftAnchor="94.0" AnchorPane.rightAnchor="13.0">
+                                    <content>
+                                        <VBox fx:id="vbox_cc" prefHeight="40.0" prefWidth="223.0" styleClass="blackText" />
+                                    </content>
+                                </ScrollPane>
+                            </HBox>
+                            <!--<HBox>-->
+                            <!--<Label fx:id="label_from1" layoutX="14.0" layoutY="216.0" prefHeight="17.0" prefWidth="74.0"-->
+                            <!--text="Contacts:">-->
+                            <!--<font>-->
+                            <!--<Font size="11.0"/>-->
+                            <!--</font>-->
+                            <!--</Label>-->
+                            <!--<ScrollPane layoutX="94.0" layoutY="217.0" prefHeight="37.0" prefWidth="293.0">-->
+                            <!--<content>-->
+                            <!--<VBox fx:id="vbox_from1" prefHeight="35.0" prefWidth="222.0"-->
+                            <!--style="-fx-font-size: 10.5;"/>-->
+                            <!--</content>-->
+                            <!--</ScrollPane>-->
+                            <!--</HBox>-->
+                            <!--<HBox>-->
+                            <!--<Label fx:id="label_cc2" layoutX="14.0" layoutY="263.0" prefHeight="17.0" prefWidth="82.0"-->
+                            <!--text="Clients:">-->
+                            <!--<font>-->
+                            <!--<Font size="11.0"/>-->
+                            <!--</font>-->
+                            <!--</Label>-->
+                            <!--<ScrollPane layoutX="94.0" layoutY="258.0" prefHeight="37.0" prefWidth="293.0">-->
+                            <!--<content>-->
+                            <!--<VBox fx:id="vbox_cc1" prefHeight="34.0" prefWidth="223.0"-->
+                            <!--style="-fx-font-size: 10.5;"/>-->
+                            <!--</content>-->
+                            <!--</ScrollPane>-->
+                            <!--</HBox>-->
+                            <HBox>
+                                <Label fx:id="label_subject" layoutX="14.0" layoutY="148.0" prefHeight="17.0" prefWidth="70.0" styleClass="blackText" text="Subject:">
+                                    <font>
+                                        <Font size="11.0" />
+                                    </font>
+                                </Label>
+                                <TextArea fx:id="txt_subject" editable="false" layoutX="94.0" layoutY="140.0" prefHeight="64.0" prefWidth="293.0" styleClass="scroll-view" text="Subject" wrapText="true" AnchorPane.leftAnchor="94.0" AnchorPane.rightAnchor="13.0">
+                                    <font>
+                                        <Font size="11.0" />
+                                    </font>
+                                </TextArea>
+                            </HBox>
+                     <HBox prefHeight="42.0" prefWidth="327.0">
+                        <children>
+                           <Label fx:id="label_from1" layoutX="14.0" layoutY="57.0" prefHeight="17.0" prefWidth="70.0" styleClass="blackText" text="Contacts:">
+                              <font>
+                                 <Font size="11.0" />
+                              </font>
+                           </Label>
+                           <ScrollPane layoutX="94.0" layoutY="58.0" prefWidth="275.0" styleClass="scroll-view" AnchorPane.leftAnchor="94.0" AnchorPane.rightAnchor="13.0">
+                              <content>
+                                 <VBox fx:id="vbox_contacts" prefHeight="40.0" prefWidth="222.0" styleClass="blackText" />
+                              </content>
+                           </ScrollPane>
+                        </children>
+                     </HBox>
+                     <HBox prefHeight="42.0" prefWidth="327.0">
+                        <children>
+                           <Label fx:id="label_cc1" layoutX="14.0" layoutY="104.0" prefHeight="17.0" prefWidth="70.0" styleClass="blackText" text="Clients:">
+                              <font>
+                                 <Font size="11.0" />
+                              </font>
+                           </Label>
+                           <ScrollPane layoutX="94.0" layoutY="99.0" prefHeight="65.0" prefWidth="275.0" styleClass="scroll-view" AnchorPane.leftAnchor="94.0" AnchorPane.rightAnchor="13.0">
+                              <content>
+                                 <VBox fx:id="vbox_clients" prefHeight="40.0" prefWidth="223.0" styleClass="blackText" />
+                              </content>
+                           </ScrollPane>
+                        </children>
+                     </HBox>
+                        </VBox>
                     </ScrollPane>
                     <!--<ScrollPane layoutX="94.0" layoutY="234.0" prefHeight="65.0" prefWidth="248.0">-->
                     <!--<content>-->
@@ -94,31 +179,6 @@
                     <JFXComboBox fx:id="combo_attach" layoutX="106.0" layoutY="365.0" prefHeight="25.0" prefWidth="188.0" AnchorPane.bottomAnchor="58.0" />
                     <JFXComboBox fx:id="combo_respond" layoutX="244.0" layoutY="383.0" prefHeight="24.0" prefWidth="89.0" AnchorPane.bottomAnchor="11.0" />
                     <JFXButton fx:id="btn_unlock" buttonType="RAISED" layoutX="28.0" layoutY="386.0" onAction="#unLock" styleClass="emailUnlockButton" text="Unlock" visible="false" AnchorPane.bottomAnchor="11.0" />
-                    <Label fx:id="label_cc1" layoutX="14.0" layoutY="148.0" prefHeight="17.0" prefWidth="82.0" text="Subject:">
-                        <font>
-                            <Font size="11.0" />
-                        </font>
-                    </Label>
-               <Label fx:id="label_from1" layoutX="14.0" layoutY="216.0" prefHeight="17.0" prefWidth="74.0" text="Contacts:">
-                  <font>
-                     <Font size="11.0" />
-                  </font>
-               </Label>
-               <Label fx:id="label_cc2" layoutX="14.0" layoutY="263.0" prefHeight="17.0" prefWidth="82.0" text="Clients:">
-                  <font>
-                     <Font size="11.0" />
-                  </font>
-               </Label>
-               <ScrollPane layoutX="94.0" layoutY="217.0" prefHeight="37.0" prefWidth="293.0">
-                  <content>
-                     <VBox fx:id="vbox_from1" prefHeight="35.0" prefWidth="222.0" style="-fx-font-size: 10.5;" />
-                  </content>
-               </ScrollPane>
-               <ScrollPane layoutX="94.0" layoutY="258.0" prefHeight="37.0" prefWidth="293.0">
-                  <content>
-                     <VBox fx:id="vbox_cc1" prefHeight="34.0" prefWidth="223.0" style="-fx-font-size: 10.5;" />
-                  </content>
-               </ScrollPane>
                     <!--<Label fx:id="label_cc2" layoutX="10.0" layoutY="234.0" prefHeight="17.0" prefWidth="82.0"-->
                     <!--text="BCC:"/>-->
                 </children>

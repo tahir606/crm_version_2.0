@@ -506,6 +506,10 @@ public class mySqlConn {
         }
     }
 
+//    public List<Contact> getEmailRelations() {
+//
+//    }
+
     public void insertEmail(Email email, Message message) {
 
         String query = "INSERT INTO email_store(EMNO,SBJCT,TOADD,FRADD,TSTMP,EBODY,ATTCH,CCADD,ESOLV,MSGNO,LOCKD," +
