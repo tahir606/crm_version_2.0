@@ -76,7 +76,7 @@ public class dController implements Initializable {
 
         sql = new mySqlConn();
 
-        testRelations();
+//        testRelations();
 
         eSetting = sql.getEmailSettings();
         user = fHelper.ReadUserDetails();
