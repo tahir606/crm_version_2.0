@@ -451,9 +451,6 @@ public class mySqlConn {
 
     }
 
-    private String mainQuery = "SELECT DISTINCT EM_ID, EM_NAME, CL_ID, CS_ID, UCODE FROM EMAIL_LIST WHERE EM_NAME LIKE ";
-    private String relQuery = "INSERT INTO EMAIL_RELATION (EMNO, EM_ID, EMTYPE, CL_ID, UCODE, CS_ID) VALUES (?, ?, ?, ?, ?, ?)";
-
     public void createEmailRelations(Email email) {
         try {
             for (Address address : email.getFromAddress()) {
@@ -467,8 +464,10 @@ public class mySqlConn {
         } catch (SQLException e) {
             e.getLocalizedMessage();
         }
-
     }
+
+    private String mainQuery = "SELECT DISTINCT EM_ID, EM_NAME, CL_ID, CS_ID, UCODE FROM EMAIL_LIST WHERE EM_NAME LIKE ";
+    private String relQuery = "INSERT INTO EMAIL_RELATION (EMNO, EM_ID, EMTYPE, CL_ID, UCODE, CS_ID) VALUES (?, ?, ?, ?, ?, ?)";
 
     private void subCreateEmailRelation(Address address, Email email) throws SQLException {
         if (address != null) {
@@ -506,9 +505,22 @@ public class mySqlConn {
         }
     }
 
-//    public List<Contact> getEmailRelations() {
-//
-//    }
+    public List<Contact> getEmailRelations(Email email) {
+        String query = "SELECT CS.CS_ID, CS_FNAME, CS_LNAME " +
+                "FROM CONTACT_STORE as CS, EMAIL_RELATION as ER " +
+                "WHERE CS.CS_ID = ER.CS_ID " +
+                "and ER.EMNO = ?";
+
+        PreparedStatement statement = null;
+
+        try {
+            statement = static_con.prepareStatement(query);
+            statement.setInt(1, email.getEmailNo());
+            ResultSet set = statement.executeQuery();
+        } catch (SQLException e) {
+
+        }
+    }
 
     public void insertEmail(Email email, Message message) {
 

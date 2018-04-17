@@ -76,7 +76,7 @@ public class dController implements Initializable {
 
         sql = new mySqlConn();
 
-//        testRelations();
+        testRelations();
 
         eSetting = sql.getEmailSettings();
         user = fHelper.ReadUserDetails();
@@ -101,7 +101,7 @@ public class dController implements Initializable {
     }
 
     private void testRelations() {
-        List<Email> emails = sql.readAllEmails(" WHERE EMNO = 18 ");
+        List<Email> emails = sql.readAllEmails(" WHERE EMNO = 13 ");
         sql.createEmailRelations(emails.get(0));
     }
 
