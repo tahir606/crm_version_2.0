@@ -160,6 +160,15 @@ public class ClientProperty {
         this.emails = emails;
     }
 
+    public String getEmailsString() {
+        String st = "";
+        for (String s : emails) {
+            if (s != null)
+                st = st + s + ",";
+        }
+        return st;
+    }
+
     public String[] getPhones() {
         return phones;
     }

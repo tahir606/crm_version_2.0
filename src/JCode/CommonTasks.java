@@ -61,7 +61,7 @@ public class CommonTasks {
         return outputText;
     }
 
-    public static int getAge(String timeStamp) {
+    public static String getAge(String timeStamp) {
 
         // Note, MM is months, not mm
         DateFormat inputFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.S");
@@ -71,8 +71,8 @@ public class CommonTasks {
             date = inputFormat.parse(timeStamp);
         } catch (ParseException e) {
             e.printStackTrace();
-        } catch (NullPointerException e){
-            return '\0';
+        } catch (NullPointerException e) {
+            return "";
         }
 
         Calendar calendar = new GregorianCalendar();
@@ -85,7 +85,7 @@ public class CommonTasks {
         LocalDate birthdate = LocalDate.of(year, month, day);
         LocalDate now = LocalDate.now();
 
-        return Period.between(birthdate, now).getYears();
+        return String.valueOf(Period.between(birthdate, now).getYears());
 
     }
 

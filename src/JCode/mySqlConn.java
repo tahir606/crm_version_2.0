@@ -505,21 +505,56 @@ public class mySqlConn {
         }
     }
 
-    public List<Contact> getEmailRelations(Email email) {
-        String query = "SELECT CS.CS_ID, CS_FNAME, CS_LNAME " +
+    public List<ContactProperty> getEmailContactRelations(Email email) {
+        String query = "SELECT DISTINCT CS.CS_ID, CS_FNAME, CS_LNAME " +
                 "FROM CONTACT_STORE as CS, EMAIL_RELATION as ER " +
                 "WHERE CS.CS_ID = ER.CS_ID " +
-                "and ER.EMNO = ?";
+                "AND ER.EMNO = ?";
 
         PreparedStatement statement = null;
-
+        List<ContactProperty> contacts = new ArrayList<>();
         try {
             statement = static_con.prepareStatement(query);
             statement.setInt(1, email.getEmailNo());
             ResultSet set = statement.executeQuery();
+            while (set.next()) {
+                ContactProperty c = new ContactProperty();
+                c.setCode(set.getInt("CS_ID"));
+                c.setFirstName(set.getString("CS_FNAME"));
+                c.setLastName(set.getString("CS_LNAME"));
+                contacts.add(c);
+            }
         } catch (SQLException e) {
-
+            e.printStackTrace();
         }
+
+        return contacts;
+    }
+
+    public List<ClientProperty> getEmailClientRelations(Email email) {
+        String query = "SELECT DISTINCT CS.CL_ID, CL_NAME " +
+                " FROM CLIENT_STORE AS CS, EMAIL_RELATION as ER " +
+                " WHERE CS.CL_ID = ER.CL_ID " +
+                " AND ER.CL_ID != 0 " +
+                " AND ER.EMNO = ?";
+
+        PreparedStatement statement = null;
+        List<ClientProperty> clients = new ArrayList<>();
+        try {
+            statement = static_con.prepareStatement(query);
+            statement.setInt(1, email.getEmailNo());
+            ResultSet set = statement.executeQuery();
+            while (set.next()) {
+                ClientProperty c = new ClientProperty();
+                c.setCode(set.getInt("CL_ID"));
+                c.setName(set.getString("CL_NAME"));
+                clients.add(c);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return clients;
     }
 
     public void insertEmail(Email email, Message message) {
@@ -628,9 +663,11 @@ public class mySqlConn {
         }
     }
 
+    //Reading tickets
     public List<Email> readAllEmails(String where) {
 
-        String query = "SELECT EMNO,MSGNO,SBJCT,FRADD,TOADD,CCADD,TSTMP,EBODY,ATTCH,ESOLV,LOCKD,SOLVBY,SOLVTIME FROM EMAIL_STORE";
+        String query = "SELECT EMNO, MSGNO, SBJCT, FRADD, TOADD, CCADD, TSTMP, " +
+                " EBODY, ATTCH, ESOLV, LOCKD, SOLVBY, SOLVTIME FROM EMAIL_STORE";
 
         if (where == null) {
             query = query + " ORDER BY EMNO DESC";
@@ -703,6 +740,9 @@ public class mySqlConn {
                     }
                 }
                 email.setCcAddress(ccAddress);
+
+                email.setRelatedContacts(getEmailContactRelations(email));
+                email.setRelatedClients(getEmailClientRelations(email));
 
                 allEmails.add(email);
             }
@@ -1515,7 +1555,7 @@ public class mySqlConn {
         return 0;
     }
 
-    public List<Client> getAllClients(String where) {
+    public List<ClientProperty> getAllClients(String where) {
         String query = "SELECT CL_ID,CL_NAME,CL_OWNER,CL_ADDR," +
                 "CL_CITY,CL_COUNTRY,CL_WEBSITE,CL_TYPE,CL_JOINDATE FROM CLIENT_STORE";
 
@@ -1529,7 +1569,7 @@ public class mySqlConn {
         String emails = "SELECT EM_NAME FROM EMAIL_LIST WHERE CL_ID = ?";
         String phones = "SELECT PH_NUM FROM PHONE_LIST WHERE CL_ID = ?";
 
-        List<Client> allClients = new ArrayList<>();
+        List<ClientProperty> allClients = new ArrayList<>();
 
         try {
             // Connection con = getConnection();
@@ -1542,7 +1582,7 @@ public class mySqlConn {
             }
 
             while (set.next()) {
-                Client client = new Client();
+                ClientProperty client = new ClientProperty();
                 client.setCode(set.getInt("CL_ID"));
                 client.setName(set.getString("CL_NAME"));
                 client.setOwner(set.getString("CL_OWNER"));

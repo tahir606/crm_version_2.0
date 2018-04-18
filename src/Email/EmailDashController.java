@@ -39,6 +39,8 @@ import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import javafx.stage.Window;
 import javafx.util.Callback;
+import objects.ClientProperty;
+import objects.ContactProperty;
 import objects.Email;
 import objects.Users;
 
@@ -90,6 +92,14 @@ public class EmailDashController implements Initializable {
     private VBox vbox_contacts;
     @FXML
     private VBox vbox_clients;
+    @FXML
+    private HBox hbox_from;
+    @FXML
+    private HBox hbox_cc;
+    @FXML
+    private HBox hbox_clients;
+    @FXML
+    private HBox hbox_contacts;
     @FXML
     private JFXComboBox<FileDev> combo_attach;
     @FXML
@@ -517,10 +527,13 @@ public class EmailDashController implements Initializable {
     }
 
     Address[] from, cc;
+    List<ContactProperty> relatedContacts = new ArrayList<>();
+    List<ClientProperty> relatedClients = new ArrayList<>();
 
     private void populateDetails(Email email) {
         imgLoader.setVisible(true);
         new Thread(() -> Platform.runLater(() -> {
+
             try {
                 label_ticket.setText(String.valueOf(email.getEmailNo()));
             } catch (NullPointerException e) {
@@ -534,6 +547,10 @@ public class EmailDashController implements Initializable {
             vbox_from.setSpacing(2.0);
             vbox_cc.getChildren().clear();    //Both VBoxes
             vbox_cc.setSpacing(2.0);
+            vbox_contacts.getChildren().clear();
+            vbox_contacts.setSpacing(2.0);
+            vbox_clients.getChildren().clear();
+            vbox_clients.setSpacing(2.0);
 
             if (Email_Type == 1) {
                 label_from.setText("From:");
@@ -573,6 +590,42 @@ public class EmailDashController implements Initializable {
             }
 
             txt_subject.setText(email.getSubject());
+
+            if (Email_Type == 1) {                              //Check for email relations only if ticket is selected
+                relatedContacts = email.getRelatedContacts();
+                if (relatedContacts.size() > 0) {
+                    hbox_contacts.setVisible(true);
+                    for (ContactProperty c : relatedContacts) {
+                        try {
+                            Label label = new Label(c.toString());
+                            label.setPadding(new Insets(2, 5, 2, 5));
+                            vbox_contacts.getChildren().add(label);
+                        } catch (NullPointerException ex) {
+                            //Because null is saved
+                        }
+                    }
+                } else
+                    hbox_contacts.setVisible(false);
+
+                relatedClients = email.getRelatedClients();
+                if (relatedClients.size() > 0) {
+                    hbox_clients.setVisible(true);
+                    for (ClientProperty c : relatedClients) {
+                        try {
+                            Label label = new Label(c.toString());
+                            label.setPadding(new Insets(2, 5, 2, 5));
+                            vbox_clients.getChildren().add(label);
+                        } catch (NullPointerException ex) {
+                            //Because null is saved
+                        }
+                    }
+                } else
+                    hbox_clients.setVisible(false);
+            } else {
+                hbox_contacts.setVisible(false);
+                hbox_clients.setVisible(false);
+            }
+
             anchor_details.setVisible(true);
 
             //----Attachments

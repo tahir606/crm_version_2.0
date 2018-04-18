@@ -76,8 +76,6 @@ public class dController implements Initializable {
 
         sql = new mySqlConn();
 
-        testRelations();
-
         eSetting = sql.getEmailSettings();
         user = fHelper.ReadUserDetails();
         rightsList = user.getuRightsList();
@@ -98,11 +96,6 @@ public class dController implements Initializable {
         }
 
         Platform.setImplicitExit(false);
-    }
-
-    private void testRelations() {
-        List<Email> emails = sql.readAllEmails(" WHERE EMNO = 13 ");
-        sql.createEmailRelations(emails.get(0));
     }
 
     private void DrawerPane() {
@@ -186,7 +179,8 @@ public class dController implements Initializable {
         button.addEventHandler(MouseEvent.MOUSE_PRESSED, myEmailsEvent);
         button.setGraphic(new ImageView(image));
         button.setAlignment(Pos.CENTER_LEFT);
-        menu_pane.getChildren().add(button);
+        Platform.runLater(() -> menu_pane.getChildren().add(button));
+
 
     }
 
@@ -368,8 +362,7 @@ public class dController implements Initializable {
         homeBtn.setGraphic(new ImageView(image));
         homeBtn.getStyleClass().add("btn");
         homeBtn.setAlignment(Pos.CENTER_LEFT);
-
-        menu_pane.getChildren().add(homeBtn);
+        Platform.runLater(() -> menu_pane.getChildren().add(homeBtn));
 
         homeBtn.setOnAction(event -> inflateHome());
     }

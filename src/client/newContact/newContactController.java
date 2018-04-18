@@ -18,7 +18,7 @@ import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.stage.Stage;
-import objects.Client;
+import objects.ClientProperty;
 import objects.ContactProperty;
 
 import java.io.IOException;
@@ -60,7 +60,7 @@ public class newContactController implements Initializable {
 
     static ContactProperty contact;
 
-    private List<Client> allClients;
+    private List<ClientProperty> allClients;
 
     public static char stInstance;
 
@@ -134,7 +134,7 @@ public class newContactController implements Initializable {
 
         date_of_birth.setValue(CommonTasks.createLocalDate(contact.getDob()));
 
-        for (Client c : allClients) {
+        for (ClientProperty c : allClients) {
             if (c.getCode() == contact.getClID()) {
                 client_list.getSelectionModel().select(c);
                 break;
@@ -196,7 +196,7 @@ public class newContactController implements Initializable {
                 contact.setEmail(email);
                 contact.setMobile(mobile);
 
-                Client c = (Client) client_list.getSelectionModel().getSelectedItem();
+                ClientProperty c = (ClientProperty) client_list.getSelectionModel().getSelectedItem();
 
                 if (c != null)
                     contact.setClID(c.getCode());

@@ -36,10 +36,6 @@ public class clientDetailsController implements Initializable {
     @FXML
     private Label txt_website;
     @FXML
-    private VBox email_box;
-    @FXML
-    private VBox phone_box;
-    @FXML
     private ListView<String> email_list;
     @FXML
     private ListView<String> phone_list;
@@ -70,11 +66,11 @@ public class clientDetailsController implements Initializable {
 
         ClientProperty client = clientViewController.staticClient;
 
-//        btn_email.setOnAction(event -> {
-//            EResponseController.stTo = client();
-//            EResponseController.stInstance = 'N';
-//            inflateEResponse(1);
-//        });
+        btn_email.setOnAction(event -> {
+            EResponseController.stTo = client.getEmailsString();
+            EResponseController.stInstance = 'N';
+            inflateEResponse(1);
+        });
 
         btn_edit.setOnAction(event -> {
             newClientController.stInstance = 'U';

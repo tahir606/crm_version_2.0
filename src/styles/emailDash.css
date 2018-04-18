@@ -21,6 +21,9 @@
     -fx-background-color: #d9e5f9;
 }
 
+.hbox_border {
+    -fx-border-color: #033300;
+}
 
 .scroll-view {
     -fx-background-color: transparent;

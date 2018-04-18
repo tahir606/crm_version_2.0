@@ -25,7 +25,6 @@ import javafx.scene.paint.Paint;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
-import objects.Client;
 import objects.ClientProperty;
 import objects.ESetting;
 import objects.Users;
@@ -70,7 +69,7 @@ public class newClientController implements Initializable {
 
     private mySqlConn sql;
 
-    private List<Client> clientList;
+    private List<ClientProperty> clientList;
     private List<String> types;
     private int nClient;    //CL_ID for new Client
 

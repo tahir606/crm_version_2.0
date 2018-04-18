@@ -163,9 +163,10 @@ public class emailControl {
             }
         }
 
-        if (tix == 2)
+        if (tix == 2) {
             sqlConn.insertEmail(email, message);
-        else if (tix == 1)
+            sqlConn.createEmailRelations(email);
+        } else if (tix == 1)
             sqlConn.insertEmailGeneral(email);
 
         trayHelper th = new trayHelper();

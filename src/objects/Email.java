@@ -11,8 +11,8 @@ public class Email {
     private Address[] toAddress, fromAddress, ccAddress, bccAddress;
     private String subject, timestamp, timeFormatted, body, attch, lockedByName, disclaimer, user, solvByName;
     private List<File> attachments;
-    private List<Contact> relatedContacts;
-    private List<Client> relatedClients;
+    private List<ContactProperty> relatedContacts;
+    private List<ClientProperty> relatedClients;
     private char solvFlag, isAttch;
     private boolean isManual, freze;
 
@@ -152,19 +152,19 @@ public class Email {
         this.bccAddress = bccAddress;
     }
 
-    public List<Contact> getRelatedContacts() {
+    public List<ContactProperty> getRelatedContacts() {
         return relatedContacts;
     }
 
-    public void setRelatedContacts(List<Contact> relatedContacts) {
+    public void setRelatedContacts(List<ContactProperty> relatedContacts) {
         this.relatedContacts = relatedContacts;
     }
 
-    public List<Client> getRelatedClients() {
+    public List<ClientProperty> getRelatedClients() {
         return relatedClients;
     }
 
-    public void setRelatedClients(List<Client> relatedClients) {
+    public void setRelatedClients(List<ClientProperty> relatedClients) {
         this.relatedClients = relatedClients;
     }
 

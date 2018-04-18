@@ -6,8 +6,8 @@ import javafx.beans.property.SimpleStringProperty;
 
 public class ContactProperty {
 
-    SimpleIntegerProperty code, age, clID;
-    SimpleStringProperty firstName, lastName, fullName, address, city, country, email, mobile, dob, note, clientName;
+    SimpleIntegerProperty code, clID;
+    SimpleStringProperty firstName, lastName, fullName, address, city, country, age, email, mobile, dob, note, clientName;
     SimpleBooleanProperty isFreeze;
 
     public ContactProperty() {
@@ -23,7 +23,7 @@ public class ContactProperty {
         email = new SimpleStringProperty();
         mobile = new SimpleStringProperty();
         dob = new SimpleStringProperty();
-        age = new SimpleIntegerProperty();
+        age = new SimpleStringProperty();
         note = new SimpleStringProperty();
         isFreeze = new SimpleBooleanProperty();
 
@@ -35,18 +35,7 @@ public class ContactProperty {
 
     @Override
     public String toString() {
-        return "ContactProperty{" +
-                "code=" + code +
-                ", firstName=" + firstName +
-                ", lastName=" + lastName +
-                ", fullName=" + fullName +
-                ", city=" + city +
-                ", country=" + country +
-                ", email=" + email +
-                ", mobile=" + mobile +
-                ", dob=" + dob +
-                ", age=" + age +
-                '}';
+        return getFullName();
     }
 
     public int getCode() {
@@ -173,15 +162,15 @@ public class ContactProperty {
         this.dob.set(dob);
     }
 
-    public int getAge() {
+    public String getAge() {
         return age.get();
     }
 
-    public SimpleIntegerProperty ageProperty() {
+    public SimpleStringProperty ageProperty() {
         return age;
     }
 
-    public void setAge(int age) {
+    public void setAge(String age) {
         this.age.set(age);
     }
 
