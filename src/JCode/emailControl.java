@@ -156,8 +156,10 @@ public class emailControl {
 
         for (String t : white_list) {
             for (Address e : email.getFromAddress()) {
+                System.out.println("Checking " + e);
                 if (e.toString().contains(t)) {
                     tix = 2;
+                    System.out.println("Exists " + t);
                     break;
                 }
             }
@@ -165,7 +167,6 @@ public class emailControl {
 
         if (tix == 2) {
             sqlConn.insertEmail(email, message);
-            sqlConn.createEmailRelations(email);
         } else if (tix == 1)
             sqlConn.insertEmailGeneral(email);
 

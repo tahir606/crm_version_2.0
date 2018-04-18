@@ -583,6 +583,12 @@ public class mySqlConn {
             statement.executeUpdate();
 
             statement.close();
+
+            int emno = getEmailNo(email);
+            email.setEmailNo(emno);
+
+            createEmailRelations(email);
+
             if (eSetting.isAuto())
                 autoReply(email, message);
 
@@ -627,6 +633,18 @@ public class mySqlConn {
 
     private void autoReply(Email email, Message message) {
 
+        String body = "The Ticket Number Issued to you is: " + email.getEmailNo() + "\n" + eSetting.getAutotext();
+
+        Email e = new Email();
+        e.setSubject(autoReplySubject + email.getEmailNo());
+        e.setToAddress(new Address[]{email.getFromAddress()[0]});
+        e.setBody(body + "\n\n\n" + "--------In Reply To--------" + "\n\nSubject:   " + email.getSubject() + "\n\n" + email.getBody());
+
+        emailControl.sendEmail(e, message);
+
+    }
+
+    private int getEmailNo(Email email) {
         String queryEMNO = "SELECT emno FROM email_store" +
                 " WHERE msgno = ?" +
                 " AND sbjct = ? " +
@@ -645,22 +663,19 @@ public class mySqlConn {
             while (set.next()) {
                 emno = set.getInt(1);
             }
-            String body = "The Ticket Number Issued to you is: " + emno + "\n" + eSetting.getAutotext();
 
-            Email e = new Email();
-            e.setSubject(autoReplySubject + emno);
-            e.setToAddress(new Address[]{email.getFromAddress()[0]});
-            e.setBody(body + "\n\n\n" + "--------In Reply To--------" + "\n\nSubject:   " + email.getSubject() + "\n\n" + email.getBody());
-
-            emailControl.sendEmail(e, message);
             statementEMNO.close();
             set.close();
+
+            return emno;
 
         } catch (SQLException e) {
             e.printStackTrace();
         } finally {
             // doRelease(con);
         }
+
+        return 0;
     }
 
     //Reading tickets
