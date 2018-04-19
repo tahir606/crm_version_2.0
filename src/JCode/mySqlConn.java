@@ -457,9 +457,11 @@ public class mySqlConn {
                 System.out.println("In from");
                 subCreateEmailRelation(address, email);
             }
-            for (Address address : email.getCcAddress()) {
-                System.out.println("in Cc");
-                subCreateEmailRelation(address, email);
+            if (email.getCcAddress() != null) {
+                for (Address address : email.getCcAddress()) {
+                    System.out.println("in Cc");
+                    subCreateEmailRelation(address, email);
+                }
             }
         } catch (SQLException e) {
             e.getLocalizedMessage();
