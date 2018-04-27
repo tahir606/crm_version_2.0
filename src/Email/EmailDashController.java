@@ -344,8 +344,10 @@ public class EmailDashController implements Initializable {
                             } else {
                                 getStyleClass().remove("unlockedEmail");
                             }
-                        } else
+                        } else {
                             setText("");
+                            getStyleClass().remove("unlockedEmail");
+                        }
                     }
                 };
 
@@ -433,8 +435,6 @@ public class EmailDashController implements Initializable {
         }
     }
 
-    private static FilteredList<Email> filteredList;
-
     public void loadEmails() {
         Email temp = selectedEmail;
         list_emails.getItems().clear();
@@ -442,22 +442,19 @@ public class EmailDashController implements Initializable {
 
         //making list filterable
         ObservableList<Email> dataObj = FXCollections.observableArrayList(checkIfEmailsExist());
-        filteredList = new FilteredList<>(dataObj, s -> true);
+        FilteredList<Email> filteredList = new FilteredList<>(dataObj, s -> true);
 
         search_txt.textProperty().addListener((observable, oldValue, newValue) -> {
             String filter = search_txt.getText();
-            System.out.println(filter);
             if(filter == null || filter.length() == 0) {
                 filteredList.setPredicate(s -> true);
             }
             else {
-                filteredList.setPredicate(s -> s.toString().contains(filter));
+                filteredList.setPredicate(s -> s.toString().toUpperCase().contains(filter.toUpperCase()));
             }
         });
 
-        list_emails.getItems().addAll(filteredList);
-
-
+        list_emails.setItems(filteredList);
 
         if (selectedEmail == null) {
             anchor_body.setVisible(false);
