@@ -52,7 +52,7 @@ public class EResponseController implements Initializable {
     @FXML
     private HBox hbox_to, hbox_cc, hbox_bcc;
 
-    public static volatile int choice = 1;
+    public static volatile int choice = 1;      //1- Send Email 2-Create Ticket
 
     List<File> file;
 

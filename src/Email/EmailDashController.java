@@ -6,11 +6,15 @@ import JSockets.JClient;
 import JSockets.JServer;
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXComboBox;
+import com.jfoenix.controls.JFXTextField;
 import dashboard.dController;
 import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+import javafx.collections.transformation.FilteredList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -53,6 +57,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.ResourceBundle;
+import java.util.stream.IntStream;
 
 public class EmailDashController implements Initializable {
 
@@ -103,10 +108,11 @@ public class EmailDashController implements Initializable {
     @FXML
     private JFXComboBox<FileDev> combo_attach;
     @FXML
+    private MenuBar menu_bar;
+    @FXML
     private HBox menu_email;
     @FXML
-    private MenuBar menu_bar;
-
+    private JFXTextField search_txt;
     @FXML
     private JFXButton menu_reload;
 
@@ -207,26 +213,11 @@ public class EmailDashController implements Initializable {
             combo_respond.getSelectionModel().select(0);
         });
 //        imgLoader.setVisible(false);
-
     }
 
     private void populateMenuBar() {
 //        new Thread(() -> {
         //1) Populating Top Menu
-        //  a) Creating and adding listeners to Buttons
-//                JFXButton email = new JFXButton("New Email");
-//                email.setMinSize(100, menu_email.getHeight());
-//                email.setGraphic(new ImageView(new Image(getClass().getResourceAsStream("/res/img/newmail.png"))));
-//                email.getStyleClass().add("btnMenu");
-//                email.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
-//                    efrom = "";
-//                    subject = "";
-//                    body = "";
-//                    ReplyForward = 'N'; //N for New.
-//
-//                    inflateEResponse();
-//                });
-
         Menu newMenu = new Menu("New");
 //            newMenu.setGraphic(new ImageView(new Image(getClass().getResourceAsStream("/res/img/newmail.png"))));
         MenuItem newEmail = new MenuItem("New Email");
@@ -256,27 +247,16 @@ public class EmailDashController implements Initializable {
         Menu edit = new Menu("Edit");
 
         MenuItem reload = new MenuItem("Refresh");
-//            reload.setMinSize(100, menu_email.getHeight());
-//            reload.setGraphic(new ImageView(new Image(getClass().getResourceAsStream("/res/img/refresh.png"))));
-//            reload.getStyleClass().add("btnMenu");
-//            reload.setOnAction(event -> loadEmails());
         reload.setOnAction(event -> loadEmails());
 
         edit.getItems().add(reload);
 
         MenuItem filter = new MenuItem("Filters");
-//            filter.setMinSize(100, menu_email.getHeight());
-//            filter.setGraphic(new ImageView(new Image(getClass().getResourceAsStream("/res/img/filter.png"))));
-//            filter.getStyleClass().add("btnMenu");
-//            filter.setOnAction(event -> inflateFilters());
         filter.setOnAction(event -> inflateFilters());
 
         edit.getItems().add(filter);
 
         MenuItem archive = new MenuItem("Move to Archive");
-//            archive.setMinSize(1, menu_email.getHeight());
-//            archive.setGraphic(new ImageView(new Image(getClass().getResourceAsStream("/res/img/archive.png"))));
-//            archive.getStyleClass().add("btnMenu");
         archive.setOnAction(event -> inflateArchive());
 
         edit.getItems().add(archive);
@@ -453,11 +433,31 @@ public class EmailDashController implements Initializable {
         }
     }
 
+    private static FilteredList<Email> filteredList;
+
     public void loadEmails() {
         Email temp = selectedEmail;
         list_emails.getItems().clear();
         selectedEmail = temp;
-        list_emails.getItems().addAll(checkIfEmailsExist());
+
+        //making list filterable
+        ObservableList<Email> dataObj = FXCollections.observableArrayList(checkIfEmailsExist());
+        filteredList = new FilteredList<>(dataObj, s -> true);
+
+        search_txt.textProperty().addListener((observable, oldValue, newValue) -> {
+            String filter = search_txt.getText();
+            System.out.println(filter);
+            if(filter == null || filter.length() == 0) {
+                filteredList.setPredicate(s -> true);
+            }
+            else {
+                filteredList.setPredicate(s -> s.toString().contains(filter));
+            }
+        });
+
+        list_emails.getItems().addAll(filteredList);
+
+
 
         if (selectedEmail == null) {
             anchor_body.setVisible(false);
@@ -505,6 +505,7 @@ public class EmailDashController implements Initializable {
                 emails = sql.readAllEmailsSent(null);
                 break;
         }
+
 
         if (emails == null) {
             emails = new ArrayList<>();

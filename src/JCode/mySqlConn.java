@@ -858,7 +858,7 @@ public class mySqlConn {
                         if (from[j] != null)
                             fromAddress[j] = new InternetAddress(from[i]);
                     } catch (AddressException e) {
-                        e.printStackTrace();
+                        System.out.println("Missing Character");
                         fromAddress[j] = new InternetAddress();
                         continue;
                     }
