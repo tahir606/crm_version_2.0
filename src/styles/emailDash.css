@@ -25,11 +25,16 @@
     -fx-border-color: #033300;
 }
 
+.check_box_style {
+    -fx-font-size: 10;
+}
+
 .scroll-view {
     -fx-background-color: transparent;
 }
 
-.unlockedEmail:filled:selected:focused, .list-cell:filled:selected {
+/*, .list-cell:filled:selected*/
+.unlockedEmail:filled:selected:focused {
     -fx-background-color: linear-gradient(#328BDB 0%, #207BCF 25%, #1973C9 75%, #0A65BF 100%);
     -fx-text-fill: white;
     -fx-background-insets: 1;

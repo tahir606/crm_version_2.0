@@ -17,22 +17,18 @@
 
 <!--<?import JCode.StyledListView?>-->
 
-<AnchorPane prefHeight="470.0" prefWidth="1100.0" stylesheets="@../styles/emailDash.css" xmlns="http://javafx.com/javafx/9" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Email.EmailDashController">
+<AnchorPane prefHeight="470.0" prefWidth="1300.0" stylesheets="@../styles/emailDash.css" xmlns="http://javafx.com/javafx/9" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Email.EmailDashController">
     <AnchorPane prefHeight="470.0" prefWidth="60.0" style="-fx-background-color: #e5e5e5;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0">
         <children>
             <VBox fx:id="category_box" layoutY="35.0" prefHeight="466.0" prefWidth="60.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="34.0" />
         </children>
     </AnchorPane>
-    <MenuBar fx:id="menu_bar" layoutX="60.0" prefHeight="25.0" prefWidth="764.0" AnchorPane.leftAnchor="60.0" AnchorPane.topAnchor="0.0" BorderPane.alignment="CENTER">
+    <MenuBar fx:id="menu_bar" layoutX="67.0" prefHeight="25.0" prefWidth="972.0" AnchorPane.leftAnchor="60.0" AnchorPane.rightAnchor="261.0" AnchorPane.topAnchor="0.0" BorderPane.alignment="CENTER">
         <menus>
         </menus>
     </MenuBar>
-    <!--<HBox fx:id="menu_email" prefHeight="25.0" prefWidth="1040.0" styleClass="hbox_menu" AnchorPane.leftAnchor="60.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">-->
-        <!--<children>-->
-        <!--</children>-->
-    <!--</HBox>-->
     <AnchorPane layoutY="43.0" prefHeight="500.0" prefWidth="1040.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="60.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="25.0">
-        <AnchorPane fx:id="anchor_email" layoutX="80.0" maxHeight="Infinity" maxWidth="Infinity" minHeight="-Infinity" minWidth="-Infinity" prefWidth="1040.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+        <AnchorPane fx:id="anchor_email" layoutX="80.0" maxHeight="Infinity" maxWidth="Infinity" minHeight="-Infinity" minWidth="-Infinity" prefWidth="1040.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="150.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
             <AnchorPane fx:id="anchor_body" layoutX="737.0" prefHeight="448.0" prefWidth="303.0" styleClass="emailAnchorBody" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="737.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" BorderPane.alignment="CENTER" />
             <AnchorPane fx:id="anchor_details" layoutX="345.0" maxWidth="-Infinity" prefHeight="448.0" prefWidth="400.0" styleClass="emailAnchorDetails" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="345.0" AnchorPane.topAnchor="0.0" BorderPane.alignment="CENTER">
                 <children>
@@ -179,6 +175,10 @@
                 </children>
             </AnchorPane>
         </AnchorPane>
+      <VBox fx:id="vbox_filter" prefHeight="448.0" prefWidth="150.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0">
+         <children>
+            <HBox prefHeight="10.0" prefWidth="200.0" />
+         </children></VBox>
     </AnchorPane>
    <JFXTextField fx:id="search_txt" layoutX="842.0" prefHeight="18.0" prefWidth="258.0" promptText="Search" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
       <font>

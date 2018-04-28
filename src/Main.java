@@ -50,7 +50,7 @@ public class Main extends Application {
         } else {
             Parent root = FXMLLoader.load(getClass().getResource("dashboard/dashboard.fxml"));
             primaryStage.setTitle("Dashboard- BITS-CRM");
-            primaryStage.setScene(new Scene(root, 1200, 500));
+            primaryStage.setScene(new Scene(root, 1400, 500));
 //            primaryStage.setMaximized(true);
 //            primaryStage.setResizable(false);
             tray.createTrayIcon(primaryStage);
