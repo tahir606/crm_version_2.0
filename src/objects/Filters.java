@@ -42,15 +42,30 @@ public class Filters {
     }
 
     public static Filters readFromFile() {
-        String filters[] = fHelper.ReadFilter().split(",");
-        Filters filter = new Filters();
-        filter.setSortBy(filters[0]);
-        filter.setAscDesc(filters[1]);
+        String[] filters;
+        try {
+            filters = fHelper.ReadFilter().split(",");
 
-        filter.setSolved(Boolean.parseBoolean(filters[2]));
-        unsolved = Boolean.parseBoolean(filters[3]);
-        locked = Boolean.parseBoolean(filters[4]);
-        unlocked = Boolean.parseBoolean(filters[5]);
+            Filters filter = new Filters();
+            filter.setSortBy(filters[0]);
+            filter.setAscDesc(filters[1]);
+
+            filter.setSolved(Boolean.parseBoolean(filters[2]));
+            filter.setUnsolved(Boolean.parseBoolean(filters[3]));
+            filter.setLocked(Boolean.parseBoolean(filters[4]));
+            filter.setUnlocked(Boolean.parseBoolean(filters[5]));
+
+            return filter;
+        } catch (Exception e) {
+            Filters ft = new Filters();
+            ft.setSortBy("Tickets");
+            ft.setAscDesc("Desc");
+            ft.setSolved(false);
+            ft.setUnsolved(false);
+            ft.setLocked(false);
+            ft.setUnlocked(false);
+            return ft;
+        }
     }
 
     public String getSortBy() {

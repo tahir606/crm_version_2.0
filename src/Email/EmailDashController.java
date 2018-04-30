@@ -288,50 +288,45 @@ public class EmailDashController implements Initializable {
     private void populateFilters() {
         vbox_filter.setSpacing(10);
 
+        Filters filter = Filters.readFromFile();
+
         //Sort By (ComboBox)
         HBox sort = new HBox();
         sortBy = new JFXComboBox();
         setUpCombo(sortBy, "Sorted By", new String[]{"Tickets", "From", "Subject"});
-        sortBy.setOnAction(event -> {
+        sortBy.setOnAction(event -> saveFilters());
+        sortBy.getSelectionModel().select(filter.getSortBy());
 
-        });
         ascDesc = new JFXComboBox();
         setUpCombo(ascDesc, "Asc/Desc", new String[]{"Asc", "Desc"});
-        ascDesc.setOnAction(event -> {
-
-        });
+        ascDesc.setOnAction(event -> saveFilters());
+        ascDesc.getSelectionModel().select(filter.getAscDesc());
         sort.getChildren().addAll(sortBy, ascDesc);
         vbox_filter.getChildren().add(sort);
 
         //Checkboxes
         solved = new JFXCheckBox("Solved");
-        solved.selectedProperty().addListener((observable, oldValue, newValue) -> {
-
-        });
+        solved.selectedProperty().addListener((observable, oldValue, newValue) -> saveFilters());
         setUpCheck(solved);
+        solved.setSelected(filter.isSolved());
 
         unSolved = new JFXCheckBox("Unsolved");
-        unSolved.selectedProperty().addListener((observable, oldValue, newValue) -> {
-
-        });
+        unSolved.selectedProperty().addListener((observable, oldValue, newValue) -> saveFilters());
         setUpCheck(unSolved);
+        unSolved.setSelected(filter.isUnsolved());
 
         locked = new JFXCheckBox("Locked");
-        locked.selectedProperty().addListener((observable, oldValue, newValue) -> {
-
-        });
+        locked.selectedProperty().addListener((observable, oldValue, newValue) -> saveFilters());
         setUpCheck(locked);
+        locked.setSelected(filter.isLocked());
 
         unLocked = new JFXCheckBox("Unlocked");
         setUpCheck(unLocked);
-        unLocked.selectedProperty().addListener((observable, oldValue, newValue) -> {
-
-        });
-
+        unLocked.selectedProperty().addListener((observable, oldValue, newValue) -> saveFilters());
+        unLocked.setSelected(filter.isUnlocked());
     }
 
     private void saveFilters() {
-
         Filters filter = new Filters();
 
         filter.setSortBy(sortBy.getSelectionModel().getSelectedItem().toString());
@@ -341,6 +336,10 @@ public class EmailDashController implements Initializable {
         filter.setUnsolved(unSolved.isSelected());
         filter.setLocked(locked.isSelected());
         filter.setUnlocked(unLocked.isSelected());
+
+        filter.writeToFile();
+
+        loadEmailsStatic();
     }
 
     private void setUpCombo(JFXComboBox combo, String prompt, String[] options) {
@@ -484,7 +483,7 @@ public class EmailDashController implements Initializable {
         List<Email> emails = null;
         switch (Email_Type) {
             case 1:     //Tickets
-                emails = sql.readAllEmails(fHelper.ReadFilter());
+                emails = sql.readAllEmails(Filters.readFromFile());
                 break;
             case 2:     //General
                 emails = sql.readAllEmailsGeneral(" WHERE FREZE = 0");

@@ -681,15 +681,15 @@ public class mySqlConn {
     }
 
     //Reading tickets
-    public List<Email> readAllEmails(String where) {
+    public List<Email> readAllEmails(Filters filters) {
 
         String query = "SELECT EMNO, MSGNO, SBJCT, FRADD, TOADD, CCADD, TSTMP, " +
                 " EBODY, ATTCH, ESOLV, LOCKD, SOLVBY, SOLVTIME FROM EMAIL_STORE";
 
-        if (where == null) {
+        if (filters == null) {
             query = query + " ORDER BY EMNO DESC";
         } else {
-            query = query + where;
+            query = query + " WHERE " + filters.toString();
         }
 
         List<Email> allEmails = new ArrayList<>();
