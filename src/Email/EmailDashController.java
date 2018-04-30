@@ -44,10 +44,7 @@ import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import javafx.stage.Window;
 import javafx.util.Callback;
-import objects.ClientProperty;
-import objects.ContactProperty;
-import objects.Email;
-import objects.Users;
+import objects.*;
 
 import javax.mail.*;
 import javax.mail.internet.InternetAddress;
@@ -281,17 +278,24 @@ public class EmailDashController implements Initializable {
         btn.setAlignment(Pos.CENTER_LEFT);
     }
 
+    JFXComboBox sortBy;
+    JFXComboBox ascDesc;
+    JFXCheckBox solved;
+    JFXCheckBox unSolved;
+    JFXCheckBox locked;
+    JFXCheckBox unLocked;
+
     private void populateFilters() {
         vbox_filter.setSpacing(10);
 
         //Sort By (ComboBox)
         HBox sort = new HBox();
-        JFXComboBox sortBy = new JFXComboBox();
+        sortBy = new JFXComboBox();
         setUpCombo(sortBy, "Sorted By", new String[]{"Tickets", "From", "Subject"});
         sortBy.setOnAction(event -> {
 
         });
-        JFXComboBox ascDesc = new JFXComboBox();
+        ascDesc = new JFXComboBox();
         setUpCombo(ascDesc, "Asc/Desc", new String[]{"Asc", "Desc"});
         ascDesc.setOnAction(event -> {
 
@@ -300,30 +304,43 @@ public class EmailDashController implements Initializable {
         vbox_filter.getChildren().add(sort);
 
         //Checkboxes
-        JFXCheckBox solved = new JFXCheckBox("Solved");
+        solved = new JFXCheckBox("Solved");
         solved.selectedProperty().addListener((observable, oldValue, newValue) -> {
 
         });
         setUpCheck(solved);
 
-        JFXCheckBox unSolved = new JFXCheckBox("Unsolved");
+        unSolved = new JFXCheckBox("Unsolved");
         unSolved.selectedProperty().addListener((observable, oldValue, newValue) -> {
 
         });
         setUpCheck(unSolved);
 
-        JFXCheckBox locked = new JFXCheckBox("Locked");
+        locked = new JFXCheckBox("Locked");
         locked.selectedProperty().addListener((observable, oldValue, newValue) -> {
 
         });
         setUpCheck(locked);
 
-        JFXCheckBox unLocked = new JFXCheckBox("Unlocked");
+        unLocked = new JFXCheckBox("Unlocked");
         setUpCheck(unLocked);
         unLocked.selectedProperty().addListener((observable, oldValue, newValue) -> {
 
         });
 
+    }
+
+    private void saveFilters() {
+
+        Filters filter = new Filters();
+
+        filter.setSortBy(sortBy.getSelectionModel().getSelectedItem().toString());
+        filter.setAscDesc(ascDesc.getSelectionModel().getSelectedItem().toString());
+
+        filter.setSolved(solved.isSelected());
+        filter.setUnsolved(unSolved.isSelected());
+        filter.setLocked(locked.isSelected());
+        filter.setUnlocked(unLocked.isSelected());
     }
 
     private void setUpCombo(JFXComboBox combo, String prompt, String[] options) {
