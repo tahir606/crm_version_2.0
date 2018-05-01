@@ -121,7 +121,7 @@ public class EmailDashController implements Initializable {
     private static ImageView imgLoader = dController.img_load;
     public static String subject, body;
 
-    private static Email selectedEmail = null;
+    public static Email selectedEmail = null;
 
     public static ListView<Email> list_emailsF;
 
@@ -697,21 +697,25 @@ public class EmailDashController implements Initializable {
     }
 
     public void onSolv(ActionEvent actionEvent) {
-        Alert alert = new Alert(Alert.AlertType.CONFIRMATION, "Are you sure you want to mark this as solved?\n" +
-                "This action cannot be taken back. A response will be issued to all concerned Email IDs",
-                ButtonType.YES, ButtonType.NO);
-        alert.showAndWait();
+        if (!eSetting.isSolv()) {
+            Alert alert = new Alert(Alert.AlertType.CONFIRMATION, "Are you sure you want to mark this as solved?\n" +
+                    "This action cannot be taken back. A response will be issued to all concerned Email IDs",
+                    ButtonType.YES, ButtonType.NO);
+            alert.showAndWait();
 
-        if (alert.getResult() == ButtonType.YES) {
-            sql.solvEmail(selectedEmail, "S", user); // S for solved
-            loadEmailsStatic();
-            reloadInstances();
+            if (alert.getResult() == ButtonType.YES) {
+                sql.solvEmail(selectedEmail, "S", user); // S for solved
+                loadEmailsStatic();
+                reloadInstances();
+            } else {
+                return;
+            }
         } else {
-            return;
+            inflateWindow("Confirmation", "SolvedDialog/SolvedDialogController.fxml");
         }
     }
 
-    private void reloadInstances() {
+    public static void reloadInstances() {
         // comment this line
         new Thread(() -> {
             if (dController.isServer == true) {

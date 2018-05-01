@@ -1070,7 +1070,7 @@ public class mySqlConn {
 
     }
 
-    public void solvEmail(Email email, String flag, Users user) {
+    public void solvEmail(Email email, String flag, Users user, boolean choice) {
 
         String query = " UPDATE EMAIL_STORE " +     //Query to Update Email status to solve
                 " SET ESOLV = ?, " +
@@ -1092,7 +1092,7 @@ public class mySqlConn {
             statement.executeUpdate();
             statement.close();
 
-            if (eSetting.isSolv()) {
+            if (eSetting.isSolv() && choice) {
                 solvResponder(email);
             }
 
