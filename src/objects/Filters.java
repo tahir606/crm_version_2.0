@@ -8,7 +8,8 @@ public class Filters {
     private boolean solved,
             unsolved,
             locked,
-            unlocked;
+            unlocked,
+            archived;
     private static fileHelper fHelper;
 
     public Filters() {
@@ -22,12 +23,20 @@ public class Filters {
 
         if (solved) {
             filters = filters + " AND ESOLV = 'S' ";
-        } else if (unsolved) {
+        }
+        if (unsolved) {
             filters = filters + " AND ESOLV = 'N' ";
-        } else if (locked) {
+        }
+        if (locked) {
             filters = filters + " AND LOCKD != 0 ";
-        } else if (unlocked) {
+        }
+        if (unlocked) {
             filters = filters + " AND LOCKD = 0 ";
+        }
+        if (archived) {
+            filters = filters + " AND FREZE = 1 ";
+        } else {
+            filters = filters + " AND FREZE = 0 ";
         }
 
         filters = filters + " ORDER BY " + sortBy + " " + ascDesc;
@@ -36,12 +45,15 @@ public class Filters {
     }
 
     public void writeToFile() {
-        String filter = "";
-        filter = sortBy + "," + ascDesc + "," + solved + "," + unsolved + "," + locked + "," + unlocked;
+        String filter;
+        filter = getSortBy() + "," + ascDesc + "," + solved + "," + unsolved + "," + locked + "," + unlocked + "," + archived;
         fHelper.WriteFilter(filter);
     }
 
     public static Filters readFromFile() {
+        if (fHelper == null) {
+            fHelper = new fileHelper();
+        }
         String[] filters;
         try {
             filters = fHelper.ReadFilter().split(",");
@@ -54,9 +66,11 @@ public class Filters {
             filter.setUnsolved(Boolean.parseBoolean(filters[3]));
             filter.setLocked(Boolean.parseBoolean(filters[4]));
             filter.setUnlocked(Boolean.parseBoolean(filters[5]));
+            filter.setArchived(Boolean.parseBoolean(filters[6]));
 
             return filter;
         } catch (Exception e) {
+            e.printStackTrace();
             Filters ft = new Filters();
             ft.setSortBy("Tickets");
             ft.setAscDesc("Desc");
@@ -64,28 +78,42 @@ public class Filters {
             ft.setUnsolved(false);
             ft.setLocked(false);
             ft.setUnlocked(false);
+            ft.setArchived(false);
             return ft;
         }
     }
 
     public String getSortBy() {
-        return sortBy;
+        try {
+            switch (sortBy) {
+                case "EMNO":
+                    this.sortBy = "Tickets";
+                    break;
+                case "FRADD":
+                    this.sortBy = "From";
+                    break;
+                case "SBJCT":
+                    this.sortBy = "Subject";
+                    break;
+            }
+            return sortBy;
+        } catch (NullPointerException e) {
+            return "";
+        }
     }
 
     public void setSortBy(String sortBy) {
-
         switch (sortBy) {
             case "Tickets":
-                this.sortBy = " EMNO ";
+                this.sortBy = "EMNO";
                 break;
             case "From":
-                this.sortBy = " FRADD ";
+                this.sortBy = "FRADD";
                 break;
             case "Subject":
-                this.sortBy = " SBJCT ";
+                this.sortBy = "SBJCT";
                 break;
         }
-
     }
 
     public String getAscDesc() {
@@ -126,5 +154,13 @@ public class Filters {
 
     public void setUnlocked(boolean unlocked) {
         this.unlocked = unlocked;
+    }
+
+    public boolean isArchived() {
+        return archived;
+    }
+
+    public void setArchived(boolean archived) {
+        this.archived = archived;
     }
 }

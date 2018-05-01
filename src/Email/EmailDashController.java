@@ -278,12 +278,8 @@ public class EmailDashController implements Initializable {
         btn.setAlignment(Pos.CENTER_LEFT);
     }
 
-    JFXComboBox sortBy;
-    JFXComboBox ascDesc;
-    JFXCheckBox solved;
-    JFXCheckBox unSolved;
-    JFXCheckBox locked;
-    JFXCheckBox unLocked;
+    JFXComboBox sortBy, ascDesc;
+    JFXCheckBox solved, unSolved, locked, unLocked, archived;
 
     private void populateFilters() {
         vbox_filter.setSpacing(10);
@@ -324,9 +320,17 @@ public class EmailDashController implements Initializable {
         setUpCheck(unLocked);
         unLocked.selectedProperty().addListener((observable, oldValue, newValue) -> saveFilters());
         unLocked.setSelected(filter.isUnlocked());
+
+        archived = new JFXCheckBox("Archived");
+        setUpCheck(archived);
+        archived.selectedProperty().addListener((observable, oldValue, newValue) -> saveFilters());
+        archived.setSelected(filter.isArchived());
     }
 
     private void saveFilters() {
+
+        imgLoader.setVisible(true);
+
         Filters filter = new Filters();
 
         filter.setSortBy(sortBy.getSelectionModel().getSelectedItem().toString());
@@ -336,6 +340,7 @@ public class EmailDashController implements Initializable {
         filter.setUnsolved(unSolved.isSelected());
         filter.setLocked(locked.isSelected());
         filter.setUnlocked(unLocked.isSelected());
+        filter.setArchived(archived.isSelected());
 
         filter.writeToFile();
 
@@ -474,8 +479,6 @@ public class EmailDashController implements Initializable {
         } else if (Email_Type == 2) {
             Platform.runLater(() -> allMail.fire());
         }
-
-        imgLoader.setVisible(false);
     }
 
     private List<Email> checkIfEmailsExist() {
