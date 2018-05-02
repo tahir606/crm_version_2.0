@@ -230,6 +230,14 @@ public class emailControl {
             email.setDisclaimer("");
         }
 
+        if (sqlConn == null) {
+            sqlConn = new mySqlConn();
+        }
+
+        if (ESETTING == null) {
+            ESETTING = sqlConn.getEmailSettings();
+        }
+
         if (ESETTING.isDisc())
             perDisc = email.getDisclaimer() + "\n" + ESETTING.getDisctext();
         else

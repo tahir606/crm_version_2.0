@@ -12,6 +12,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.TextArea;
 import Email.EmailDashController;
+import javafx.stage.Stage;
 import objects.Email;
 import objects.Users;
 
@@ -46,7 +47,7 @@ public class SolvedDialogController implements Initializable {
 
         user = fHelper.ReadUserDetails();
 
-        String responder = sqlConn.getEmailSettings().getAutotext();
+        String responder = sqlConn.getEmailSettings().getSolvRespText();
         txt_body.setText(responder);
 
         check_send.selectedProperty().addListener((observable, oldValue, newValue) -> {
@@ -57,9 +58,12 @@ public class SolvedDialogController implements Initializable {
         });
 
         btn_solved.setOnAction(event -> {
-            sqlConn.solvEmail(selectedEmail, "S", user); // S for solved
+            sqlConn.solvEmail(selectedEmail, "S", user, !check_send.isSelected(), txt_body.getText().toString()); // S for solved
             loadEmailsStatic();
             reloadInstances();
+
+            Stage stage = (Stage) btn_solved.getScene().getWindow();
+            stage.close();
         });
 
     }

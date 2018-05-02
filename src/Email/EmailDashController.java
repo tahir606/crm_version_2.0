@@ -696,22 +696,25 @@ public class EmailDashController implements Initializable {
         reloadInstances();
     }
 
+    ESetting eSetting;
+
     public void onSolv(ActionEvent actionEvent) {
+        eSetting = sql.getEmailSettings();
         if (!eSetting.isSolv()) {
             Alert alert = new Alert(Alert.AlertType.CONFIRMATION, "Are you sure you want to mark this as solved?\n" +
-                    "This action cannot be taken back. A response will be issued to all concerned Email IDs",
+                    "This action cannot be taken back. No response will be issued.",
                     ButtonType.YES, ButtonType.NO);
             alert.showAndWait();
 
             if (alert.getResult() == ButtonType.YES) {
-                sql.solvEmail(selectedEmail, "S", user); // S for solved
+                sql.solvEmail(selectedEmail, "S", user, false, ""); // S for solved
                 loadEmailsStatic();
                 reloadInstances();
             } else {
                 return;
             }
         } else {
-            inflateWindow("Confirmation", "SolvedDialog/SolvedDialogController.fxml");
+            inflateWindow("Confirmation", "SolvedDialog/SolvedDialog.fxml");
         }
     }
 

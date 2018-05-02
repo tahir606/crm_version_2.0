@@ -1070,7 +1070,7 @@ public class mySqlConn {
 
     }
 
-    public void solvEmail(Email email, String flag, Users user, boolean choice) {
+    public void solvEmail(Email email, String flag, Users user, boolean choice, String msg) {
 
         String query = " UPDATE EMAIL_STORE " +     //Query to Update Email status to solve
                 " SET ESOLV = ?, " +
@@ -1093,7 +1093,7 @@ public class mySqlConn {
             statement.close();
 
             if (eSetting.isSolv() && choice) {
-                solvResponder(email);
+                solvResponder(email, msg);
             }
 
 
@@ -1105,11 +1105,11 @@ public class mySqlConn {
 
     }
 
-    private void solvResponder(Email email) {
+    private void solvResponder(Email email, String msg) {
 
         String sb = "Ticket Number: " + email.getEmailNo() + " Resolved";
 
-        String bd = eSetting.getSolvRespText();
+        String bd = msg;
 
         Email send = new Email();
         send.setSubject(sb);
