@@ -328,23 +328,22 @@ public class EmailDashController implements Initializable {
     }
 
     private void saveFilters() {
-
         imgLoader.setVisible(true);
+        try {
+            Filters filter = new Filters();
+            filter.setSortBy(sortBy.getSelectionModel().getSelectedItem().toString());
+            filter.setAscDesc(ascDesc.getSelectionModel().getSelectedItem().toString());
+            filter.setSolved(solved.isSelected());
+            filter.setUnsolved(unSolved.isSelected());
+            filter.setLocked(locked.isSelected());
+            filter.setUnlocked(unLocked.isSelected());
+            filter.setArchived(archived.isSelected());
+            filter.writeToFile();
 
-        Filters filter = new Filters();
-
-        filter.setSortBy(sortBy.getSelectionModel().getSelectedItem().toString());
-        filter.setAscDesc(ascDesc.getSelectionModel().getSelectedItem().toString());
-
-        filter.setSolved(solved.isSelected());
-        filter.setUnsolved(unSolved.isSelected());
-        filter.setLocked(locked.isSelected());
-        filter.setUnlocked(unLocked.isSelected());
-        filter.setArchived(archived.isSelected());
-
-        filter.writeToFile();
-
-        loadEmailsStatic();
+            loadEmailsStatic();
+        } catch (NullPointerException e) {
+            System.out.println("x--x");
+        }
     }
 
     private void setUpCombo(JFXComboBox combo, String prompt, String[] options) {
@@ -377,6 +376,11 @@ public class EmailDashController implements Initializable {
         if (type != 1) {
             combo_respond.setDisable(false);
         }
+
+        if (type == 1)
+            vbox_filter.setVisible(true);
+        else
+            vbox_filter.setVisible(false);
 
         loadEmails();
 
