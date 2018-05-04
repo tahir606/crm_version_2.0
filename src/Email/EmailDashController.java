@@ -449,14 +449,11 @@ public class EmailDashController implements Initializable {
         FilteredList<Email> filteredList = new FilteredList<>(dataObj, s -> true);
 
         search_txt.textProperty().addListener((observable, oldValue, newValue) -> {
-            enableDisable(1);
-            String filter = search_txt.getText();
-            if (filter == null || filter.length() == 0) {
-                filteredList.setPredicate(s -> true);
-            } else {
-                filteredList.setPredicate(s -> s.toString().toUpperCase().contains(filter.toUpperCase()));
-            }
+            setSearch(filteredList);
         });
+
+        setSearch(filteredList);
+
         list_emails.setItems(filteredList);
 
         if (selectedEmail == null) {
@@ -473,6 +470,16 @@ public class EmailDashController implements Initializable {
             }
         }
         list_emails.getSelectionModel().select(index);
+    }
+
+    private void setSearch(FilteredList<Email> filteredList) {
+        enableDisable(1);
+        String filter = search_txt.getText();
+        if (filter == null || filter.length() == 0) {
+            filteredList.setPredicate(s -> true);
+        } else {
+            filteredList.setPredicate(s -> s.toString().toUpperCase().contains(filter.toUpperCase()));
+        }
     }
 
     public static void loadEmailsStatic() {      //Load Emails from other controller
