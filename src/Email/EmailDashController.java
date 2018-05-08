@@ -448,9 +448,7 @@ public class EmailDashController implements Initializable {
         ObservableList<Email> dataObj = FXCollections.observableArrayList(checkIfEmailsExist());
         FilteredList<Email> filteredList = new FilteredList<>(dataObj, s -> true);
 
-        search_txt.textProperty().addListener((observable, oldValue, newValue) -> {
-            setSearch(filteredList);
-        });
+        search_txt.textProperty().addListener((observable, oldValue, newValue) -> setSearch(filteredList));
 
         setSearch(filteredList);
 
