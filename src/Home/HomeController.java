@@ -20,15 +20,16 @@ public class HomeController implements Initializable {
 
     @FXML
     AnchorPane main_anchor;
-
     @FXML
     HBox hbox_options;
-
     @FXML
     private Label txt_fname;
-
     @FXML
     private Label txt_solved;
+    @FXML
+    private Label txt_unsolved;
+    @FXML
+    private Label txt_unlocked;
 
     private Users user;
     private fileHelper fHelper;
@@ -50,12 +51,9 @@ public class HomeController implements Initializable {
 
         txt_fname.setText(user.getFNAME());
         txt_solved.setText(String.valueOf(user.getSolved()));
+        txt_unlocked.setText(String.valueOf(sql.getNoOfUnlocked()));
+        txt_unsolved.setText(String.valueOf(sql.getNoOfUnsolved()));
 
 
-//        hbox_options.setAlignment(Pos.BASELINE_RIGHT);
-//        JFXButton button = new JFXButton("Change Password");
-//        button.setButtonType(JFXButton.ButtonType.RAISED);
-//
-//        hbox_options.getChildren().add(button);
     }
 }

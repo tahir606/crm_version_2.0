@@ -171,14 +171,6 @@ public class emailSetController implements Initializable {
 
         vbox_menu.getChildren().addAll(general, tickets);
 
-//        switch (EmailSet_type) {
-//            case 1:
-//                general.fire();
-//                break;
-//            case 2:
-//                tickets.fire();
-//                break;
-//        }
     }
 
     private void changeSettingType(int i, JFXButton btn) {
@@ -195,9 +187,6 @@ public class emailSetController implements Initializable {
                     main_pane.setCenter(
                             FXMLLoader.load(
                                     getClass().getClassLoader().getResource("settings/email/general.fxml")));
-
-//                    autoText = eSetting.getAutotext();
-//                    discText = eSetting.getDisctext();
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -214,7 +203,6 @@ public class emailSetController implements Initializable {
                 break;
             }
         }
-
     }
 
     @FXML

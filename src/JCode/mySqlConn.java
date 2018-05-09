@@ -559,6 +559,52 @@ public class mySqlConn {
         return clients;
     }
 
+    public int getNoOfUnsolved() {
+        String query = " SELECT COUNT(EMNO) AS EMNO FROM EMAIL_STORE " +
+                " WHERE ESOLV != 'S' AND FREZE = 0";
+
+//        // Connection con = getConnection();
+        PreparedStatement statement = null;
+        ResultSet set = null;
+
+        try {
+            statement = static_con.prepareStatement(query);
+            set = statement.executeQuery();
+
+            while (set.next()) {
+                return set.getInt("EMNO");
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return 0;
+    }
+
+    public int getNoOfUnlocked() {
+        String query = " SELECT COUNT(EMNO) AS EMNO FROM EMAIL_STORE " +
+                " WHERE LOCKD = 0 AND ESOLV != 'S' AND FREZE = 0";
+
+//        // Connection con = getConnection();
+        PreparedStatement statement = null;
+        ResultSet set = null;
+
+        try {
+            statement = static_con.prepareStatement(query);
+            set = statement.executeQuery();
+
+            while (set.next()) {
+                return set.getInt("EMNO");
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return 0;
+    }
+
     public void insertEmail(Email email, Message message) {
 
         String query = "INSERT INTO email_store(EMNO,SBJCT,TOADD,FRADD,TSTMP,EBODY,ATTCH,CCADD,ESOLV,MSGNO,LOCKD," +

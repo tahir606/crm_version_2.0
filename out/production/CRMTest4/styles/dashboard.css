@@ -5,6 +5,11 @@
     -fx-font-weight: 900;
 }
 
+.blackText {
+    -fx-text-fill: #000000;
+    -fx-font-size: 11;
+}
+
 /*
 .menu .label {
     -fx-text-fill: white;

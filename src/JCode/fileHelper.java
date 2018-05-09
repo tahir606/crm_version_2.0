@@ -59,7 +59,7 @@ public class fileHelper {
 
             text = br.readLine();
             String[] t = text.split("\\^");
-            return new Network(t[0], Integer.parseInt(t[1]), t[2], t[3], t[4]);
+            return new Network(t[0], Integer.parseInt(t[1]));
         } catch (FileNotFoundException e) {
             System.out.println(e);
 //            askForNetwork();
@@ -94,8 +94,7 @@ public class fileHelper {
 
     public boolean WriteNetwork(Network network) {
 
-        String Details = network.getHost() + "^" + network.getPort() + "^" + network.getDbname() + "^"
-                + network.getRoot() + "^" + network.getPass();
+        String Details = network.getHost() + "^" + network.getPort();
 
         PrintWriter writer = null;
         try {

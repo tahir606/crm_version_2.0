@@ -33,15 +33,19 @@ public class networkSetController implements Initializable {
     fileHelper fHelper;
     trayHelper tHelper;
 
-    private final static String DB_NAME = "bits_crm",
-            USER = "root",
-            PASS = "tahir123!@#";
-
+//    private final static String DB_NAME = "bits_crm",
+//            USER = "root",
+//            PASS = "tahir123!@#";
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         fHelper = new fileHelper();
         tHelper = new trayHelper();
+
+        Network network = fHelper.getNetworkDetails();
+
+        txt_ip.setText(network.getHost());
+        txt_port.setText(String.valueOf(network.getPort()));
     }
 
     public void saveChanges(ActionEvent actionEvent) {
@@ -57,7 +61,7 @@ public class networkSetController implements Initializable {
         boolean ping = mySqlConn.pingHost(ip, Integer.parseInt(port), 2000);
 
         if (ping) {
-            fHelper.WriteNetwork(new Network(ip, Integer.parseInt(port), DB_NAME, USER, PASS));
+            fHelper.WriteNetwork(new Network(ip, Integer.parseInt(port)));
 
             if (fromMain == true) {
 
@@ -94,7 +98,7 @@ public class networkSetController implements Initializable {
                     primaryStage.show();
                 }
             } else if (fromMain == false) {
-                fHelper.WriteNetwork(new Network(ip, Integer.parseInt(port), DB_NAME, USER, PASS));
+                fHelper.WriteNetwork(new Network(ip, Integer.parseInt(port)));
             }
         } else
             Toast.makeText((Stage) btn_save.getScene().getWindow(), "Not able to connect to server!");
