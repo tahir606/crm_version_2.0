@@ -11,6 +11,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
@@ -68,7 +69,6 @@ public class settingsController implements Initializable {
         //---------------------------------------------------Split-----------
 
         EventHandler myNetworkEvent = event -> inflating("settings/network/networkSet.fxml", 3);
-
         JFXButton networkSetting = new JFXButton("Network");
         Image imageN = new Image(getClass().getResourceAsStream("/res/img/network.png"));
         networkSetting.setPrefSize(100, menu_hbox.getHeight());
@@ -77,6 +77,8 @@ public class settingsController implements Initializable {
         networkSetting.getStyleClass().add("btnMenu");
 
         menu_hbox.getChildren().addAll(emailSetting, adminSetting, networkSetting);
+
+        main_pane.setCenter(new Label("Select Setting Type"));
 
     }
 
@@ -90,13 +92,9 @@ public class settingsController implements Initializable {
                     if (currentPane == p) {
                         img_loader.setVisible(false);
                         return;
-                    } else {
-//                        Platform.runLater(() -> anchor_holder.getChildren().clear());
                     }
 
-//                    admin_pane = FXMLLoader.load(getClass().getResource(pane));
                     Platform.runLater(() -> {
-//                        anchor_holder.getChildren().add(admin_pane);
                         try {
                             main_pane.setCenter(FXMLLoader.load(getClass().getClassLoader().getResource
                                     (pane)));
