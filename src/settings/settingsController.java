@@ -31,8 +31,6 @@ public class settingsController implements Initializable {
 
     @FXML
     private HBox menu_hbox;
-//    @FXML
-//    private AnchorPane anchor_holder;
     @FXML
     private BorderPane main_pane;
 
@@ -47,7 +45,6 @@ public class settingsController implements Initializable {
     private void populateMenu() {
 
         EventHandler myEmailEvent = event -> inflating("settings/email/email.fxml", 1);
-
         JFXButton emailSetting = new JFXButton("Email");
         Image image = new Image(getClass().getResourceAsStream("/res/img/at.png"));
         emailSetting.setPrefSize(100, menu_hbox.getHeight());
@@ -58,7 +55,6 @@ public class settingsController implements Initializable {
         //---------------------------------------------------Split-----------
 
         EventHandler myAdminEvent = event -> inflating("settings/admin/admin.fxml", 2);
-
         JFXButton adminSetting = new JFXButton("User");
         Image imageA = new Image(getClass().getResourceAsStream("/res/img/users.png"));
         adminSetting.setPrefSize(100, menu_hbox.getHeight());
