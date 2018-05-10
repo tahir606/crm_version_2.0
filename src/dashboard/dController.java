@@ -116,6 +116,10 @@ public class dController implements Initializable {
                         break;
                     }
                     case 3: {
+                        productButton();
+                        break;
+                    }
+                    case 4: {
                         adminButton();
                         break;
                     }
@@ -131,23 +135,12 @@ public class dController implements Initializable {
 
     //---------------------------BUTTONS-------------------------
 
-
-    Pane email_pane = null;
-
     private void mailButton() {
 
         EventHandler myEmailsEvent = new EventHandler() {
             @Override
             public void handle(Event event) {
                 img_loader.setVisible(true);
-
-//                boolean connection = mySqlConn.pingHost(network.getHost(), network.getPort(), 2000);
-//
-//                if (!connection) {
-//                    tHelper.displayNotification("Error", "Database Not Found!");
-//                    img_loader.setVisible(false);
-//                    return;
-//                }
 
                 new Thread(new Runnable() {
                     @Override
@@ -180,7 +173,6 @@ public class dController implements Initializable {
         button.setGraphic(new ImageView(image));
         button.setAlignment(Pos.CENTER_LEFT);
         Platform.runLater(() -> menu_pane.getChildren().add(button));
-
 
     }
 
@@ -233,14 +225,13 @@ public class dController implements Initializable {
         Platform.runLater(() -> menu_pane.getChildren().add(button));
     }
 
-    Pane settings_pane = null;
+    private void productButton() {
 
-    private void adminButton() {
-
-        EventHandler myAdminEvent = new EventHandler() {
+        EventHandler myEmailsEvent = new EventHandler() {
             @Override
             public void handle(Event event) {
                 img_loader.setVisible(true);
+
                 new Thread(new Runnable() {
                     @Override
                     public void run() {
@@ -252,11 +243,51 @@ public class dController implements Initializable {
 
                         Platform.runLater(() -> {
                             try {
-                                border_pane.setCenter(FXMLLoader.load(getClass().getClassLoader().getResource("settings/settings.fxml")));
+                                border_pane.setCenter(FXMLLoader.load(getClass().getClassLoader().getResource("Email/emailDash.fxml")));
                             } catch (IOException e) {
                                 e.printStackTrace();
                             }
                             currentPane = 3;
+                            img_loader.setVisible(false);
+                        });
+                    }
+                }).start();
+            }
+        };
+
+        JFXButton button = new JFXButton("Products");
+        Image image = new Image(getClass().getResourceAsStream("/res/img/product.png"));
+        button.setPrefSize(menu_pane.getPrefWidth(), 40);
+        button.getStyleClass().add("btn");
+        button.addEventHandler(MouseEvent.MOUSE_PRESSED, myEmailsEvent);
+        button.setGraphic(new ImageView(image));
+        button.setAlignment(Pos.CENTER_LEFT);
+        Platform.runLater(() -> menu_pane.getChildren().add(button));
+
+    }
+
+    private void adminButton() {
+
+        EventHandler myAdminEvent = new EventHandler() {
+            @Override
+            public void handle(Event event) {
+                img_loader.setVisible(true);
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+
+                        if (currentPane == 4) {
+                            img_loader.setVisible(false);
+                            return;
+                        }
+
+                        Platform.runLater(() -> {
+                            try {
+                                border_pane.setCenter(FXMLLoader.load(getClass().getClassLoader().getResource("settings/settings.fxml")));
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
+                            currentPane = 4;
                             img_loader.setVisible(false);
                         });
                     }

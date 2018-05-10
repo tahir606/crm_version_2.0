@@ -13,7 +13,7 @@
             </children>
         </AnchorPane>
 
-        <VBox layoutX="14.0" layoutY="100.0" spacing="5" AnchorPane.bottomAnchor="167.0" AnchorPane.leftAnchor="14.0" AnchorPane.topAnchor="100.0">
+        <VBox layoutX="673.0" layoutY="120.0" spacing="5" AnchorPane.bottomAnchor="147.0" AnchorPane.rightAnchor="62.0" AnchorPane.topAnchor="120.0">
             <HBox>
                 <Label fx:id="txt_fname" alignment="CENTER_LEFT" layoutX="661.0" layoutY="87.0" prefHeight="21.0" prefWidth="210.0" styleClass="homeText" text="Name" AnchorPane.bottomAnchor="251.0" AnchorPane.rightAnchor="74.0" AnchorPane.topAnchor="87.0" />
             </HBox>
