@@ -54,13 +54,13 @@ public class dashBaseController implements Initializable {
         contacts.setMinWidth(65);
         contacts.getStyleClass().add("btnMenuBox");
         contacts.setAlignment(Pos.CENTER);
-        contacts.setOnAction(event -> changeSettingType(1, contacts));
+        contacts.setOnAction(event -> changeViewType(1, contacts));
 
         clients.setMinHeight(50);
         clients.setMinWidth(65);
         clients.getStyleClass().add("btnMenuBox");
         clients.setAlignment(Pos.CENTER);
-        clients.setOnAction(event -> changeSettingType(2, clients));
+        clients.setOnAction(event -> changeViewType(2, clients));
 
         vbox_menu.getChildren().addAll(contacts, clients);
 
@@ -68,7 +68,7 @@ public class dashBaseController implements Initializable {
 
     }
 
-    private void changeSettingType(int i, JFXButton btn) {
+    private void changeViewType(int i, JFXButton btn) {
 
         menu_clients.getMenus().clear();
 

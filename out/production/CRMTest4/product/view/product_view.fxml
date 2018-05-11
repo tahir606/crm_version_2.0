@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane xmlns="http://javafx.com/javafx"
+            xmlns:fx="http://javafx.com/fxml"
+            fx:controller="product.view.ProductViewController"
+            prefHeight="400.0" prefWidth="600.0">
+    <children>
+        <TableView fx:id="table_contact" layoutY="34.0" prefHeight="438.0" prefWidth="1000.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="34.0">
+            <columns>
+                <TableColumn fx:id="col_name" prefWidth="130.0" text="Name" />
+                <TableColumn fx:id="col_city" prefWidth="90.0" text="City" />
+                <TableColumn fx:id="col_country" prefWidth="90.0" text="Country" />
+                <TableColumn fx:id="col_website" prefWidth="200.0" text="Website" />
+            </columns>
+        </TableView>
+        <AnchorPane fx:id="toolbar_contacts" prefHeight="35.0" prefWidth="1000.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+            <children>
+                <Label fx:id="txt_no" layoutX="20.0" layoutY="8.0" text="0" />
+                <Label layoutX="43.0" layoutY="8.0" text="Contacts Selected" />
+            </children>
+        </AnchorPane>
+    </children>
+</AnchorPane>

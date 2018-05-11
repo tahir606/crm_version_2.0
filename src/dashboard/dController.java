@@ -15,6 +15,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.geometry.Pos;
+import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
@@ -59,7 +60,6 @@ public class dController implements Initializable {
 
     private static int currentPane;
 
-
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         img_load = img_loader;
@@ -84,7 +84,7 @@ public class dController implements Initializable {
 
         DrawerPane(); //Populate Drawer
 
-        inflateHomeonThread();
+        changeSelection(homeBtn, "Home/Home.fxml", 1);
 
         if (user.isEmail()) {
             emailCtrl();
@@ -120,7 +120,7 @@ public class dController implements Initializable {
                         break;
                     }
                     case 4: {
-                        adminButton();
+                        settingsButton();
                         break;
                     }
                 }
@@ -136,173 +136,46 @@ public class dController implements Initializable {
     //---------------------------BUTTONS-------------------------
 
     private void mailButton() {
-
-        EventHandler myEmailsEvent = new EventHandler() {
-            @Override
-            public void handle(Event event) {
-                img_loader.setVisible(true);
-
-                new Thread(new Runnable() {
-                    @Override
-                    public void run() {
-
-                        if (currentPane == 2) {
-                            img_loader.setVisible(false);
-                            return;
-                        }
-
-                        Platform.runLater(() -> {
-                            try {
-                                border_pane.setCenter(FXMLLoader.load(getClass().getClassLoader().getResource("Email/emailDash.fxml")));
-                            } catch (IOException e) {
-                                e.printStackTrace();
-                            }
-                            currentPane = 2;
-                            img_loader.setVisible(false);
-                        });
-                    }
-                }).start();
-            }
-        };
-
         JFXButton button = new JFXButton("Email");
         Image image = new Image(getClass().getResourceAsStream("/res/img/mail.png"));
         button.setPrefSize(menu_pane.getPrefWidth(), 40);
         button.getStyleClass().add("btn");
-        button.addEventHandler(MouseEvent.MOUSE_PRESSED, myEmailsEvent);
+        button.addEventHandler(MouseEvent.MOUSE_PRESSED, event -> changeSelection(button, "Email/emailDash.fxml", 2));
         button.setGraphic(new ImageView(image));
         button.setAlignment(Pos.CENTER_LEFT);
         Platform.runLater(() -> menu_pane.getChildren().add(button));
-
     }
 
     private void clientButton() {
-
-        EventHandler myClientsEvent = new EventHandler() {
-            @Override
-            public void handle(Event event) {
-                img_loader.setVisible(true);
-
-                boolean connection = mySqlConn.pingHost(network.getHost(), network.getPort(), 2000);
-
-                if (!connection) {
-                    tHelper.displayNotification("Error", "Database Not Found!");
-                    img_loader.setVisible(false);
-                    return;
-                }
-
-                new Thread(new Runnable() {
-                    @Override
-                    public void run() {
-
-                        if (currentPane == 4) {
-                            img_loader.setVisible(false);
-                            return;
-                        }
-
-                        Platform.runLater(() -> {
-                            try {
-                                border_pane.setCenter(FXMLLoader.load(getClass().getClassLoader().getResource("client/dashBase.fxml")));
-                            } catch (IOException e) {
-                                e.printStackTrace();
-                            }
-                            currentPane = 4;
-                            img_loader.setVisible(false);
-                        });
-                    }
-                }).start();
-            }
-        };
-
         JFXButton button = new JFXButton("Client");
         Image image = new Image(getClass().getResourceAsStream("/res/img/clients.png"));
         button.setPrefSize(menu_pane.getPrefWidth(), 40);
         button.getStyleClass().add("btn");
-        button.addEventHandler(MouseEvent.MOUSE_PRESSED, myClientsEvent);
+        button.addEventHandler(MouseEvent.MOUSE_PRESSED, event -> changeSelection(button, "client/dashBase.fxml", 3));
         button.setGraphic(new ImageView(image));
         button.setAlignment(Pos.CENTER_LEFT);
-
         Platform.runLater(() -> menu_pane.getChildren().add(button));
     }
 
     private void productButton() {
-
-        EventHandler myEmailsEvent = new EventHandler() {
-            @Override
-            public void handle(Event event) {
-                img_loader.setVisible(true);
-
-                new Thread(new Runnable() {
-                    @Override
-                    public void run() {
-
-                        if (currentPane == 3) {
-                            img_loader.setVisible(false);
-                            return;
-                        }
-
-                        Platform.runLater(() -> {
-                            try {
-                                border_pane.setCenter(FXMLLoader.load(getClass().getClassLoader().getResource("Email/emailDash.fxml")));
-                            } catch (IOException e) {
-                                e.printStackTrace();
-                            }
-                            currentPane = 3;
-                            img_loader.setVisible(false);
-                        });
-                    }
-                }).start();
-            }
-        };
-
         JFXButton button = new JFXButton("Products");
         Image image = new Image(getClass().getResourceAsStream("/res/img/product.png"));
         button.setPrefSize(menu_pane.getPrefWidth(), 40);
         button.getStyleClass().add("btn");
-        button.addEventHandler(MouseEvent.MOUSE_PRESSED, myEmailsEvent);
+        button.addEventHandler(MouseEvent.MOUSE_PRESSED, event -> changeSelection(button, "product/product_dash.fxml", 4));
         button.setGraphic(new ImageView(image));
         button.setAlignment(Pos.CENTER_LEFT);
         Platform.runLater(() -> menu_pane.getChildren().add(button));
-
     }
 
-    private void adminButton() {
-
-        EventHandler myAdminEvent = new EventHandler() {
-            @Override
-            public void handle(Event event) {
-                img_loader.setVisible(true);
-                new Thread(new Runnable() {
-                    @Override
-                    public void run() {
-
-                        if (currentPane == 4) {
-                            img_loader.setVisible(false);
-                            return;
-                        }
-
-                        Platform.runLater(() -> {
-                            try {
-                                border_pane.setCenter(FXMLLoader.load(getClass().getClassLoader().getResource("settings/settings.fxml")));
-                            } catch (IOException e) {
-                                e.printStackTrace();
-                            }
-                            currentPane = 4;
-                            img_loader.setVisible(false);
-                        });
-                    }
-                }).start();
-            }
-        };
-
+    private void settingsButton() {
         JFXButton button = new JFXButton("Setting");
         Image image = new Image(getClass().getResourceAsStream("/res/img/admin.png"));
         button.setPrefSize(menu_pane.getPrefWidth(), 40);
-        button.addEventHandler(MouseEvent.MOUSE_PRESSED, myAdminEvent);
+        button.addEventHandler(MouseEvent.MOUSE_PRESSED, event -> changeSelection(button, "settings/settings.fxml", 5));
         button.setGraphic(new ImageView(image));
         button.getStyleClass().add("btn");
         button.setAlignment(Pos.CENTER_LEFT);
-
         Platform.runLater(() -> menu_pane.getChildren().add(button));
     }
 
@@ -315,9 +188,7 @@ public class dController implements Initializable {
         logoutBtn.setGraphic(new ImageView(image));
         logoutBtn.getStyleClass().add("btn");
         logoutBtn.setAlignment(Pos.CENTER_LEFT);
-
         Platform.runLater(() -> menu_pane.getChildren().add(logoutBtn));
-
 
         logoutBtn.addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler<MouseEvent>() {
             @Override
@@ -364,7 +235,6 @@ public class dController implements Initializable {
     }
 
     private void powerButton() {
-
         Image image = new Image(getClass().getResourceAsStream("/res/img/power-off.png"));
 
         JFXButton powerBtn = new JFXButton("Power");
@@ -379,60 +249,21 @@ public class dController implements Initializable {
     }
 
     //---------------------------EVENT HANDLERS---------------------------
-
-    Pane home_pane = null;
+    JFXButton homeBtn = new JFXButton("Home");
 
     private void homeButton() {
-
         img_loader.setVisible(true);
 
         Image image = new Image(this.getClass().getResourceAsStream("/res/img/home.png"));
 
-        JFXButton homeBtn = new JFXButton("Home");
         homeBtn.setPrefSize(menu_pane.getPrefWidth(), 40);
         homeBtn.setGraphic(new ImageView(image));
         homeBtn.getStyleClass().add("btn");
         homeBtn.setAlignment(Pos.CENTER_LEFT);
+        homeBtn.setAccessibleText("HomeBtn");
         Platform.runLater(() -> menu_pane.getChildren().add(homeBtn));
 
-        homeBtn.setOnAction(event -> inflateHome());
-    }
-
-    private void inflateHome() {
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-
-                if (currentPane == 1) {
-                    img_loader.setVisible(false);
-                    return;
-                }
-
-                Platform.runLater(() -> {
-                    try {
-                        border_pane.setCenter(FXMLLoader.load(getClass().getClassLoader().getResource("Home/Home.fxml")));
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                    currentPane = 1;
-                    img_loader.setVisible(false);
-                });
-            }
-        }).start();
-    }
-
-    private void inflateHomeonThread() {
-        try {
-
-            border_pane.setCenter(FXMLLoader.load(getClass().getClassLoader().getResource("Home/Home.fxml")));
-//            home_pane = FXMLLoader.load(getClass().getClassLoader().getResource("Home/Home.fxml"));
-//            main_pane.getChildren().add(home_pane);
-            currentPane = 1;
-            img_loader.setVisible(false);
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        homeBtn.setOnAction(event -> changeSelection(homeBtn, "Home/Home.fxml", 1));
     }
 
     Thread emailThread;
@@ -478,6 +309,39 @@ public class dController implements Initializable {
         });
 
         emailThread.start();
+
+    }
+
+    private void changeSelection(JFXButton btn, String path, int pane) {
+
+        img_loader.setVisible(true);
+
+        for (Node node : menu_pane.getChildren()) {
+            node.getStyleClass().remove("btnMenuBoxPressed");
+        }
+
+        btn.getStyleClass().add("btnMenuBoxPressed");
+
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+
+                if (currentPane == pane) {
+                    img_loader.setVisible(false);
+                    return;
+                }
+
+                Platform.runLater(() -> {
+                    try {
+                        border_pane.setCenter(FXMLLoader.load(getClass().getClassLoader().getResource(path)));
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                    currentPane = pane;
+                    img_loader.setVisible(false);
+                });
+            }
+        }).start();
 
     }
 

@@ -8,7 +8,7 @@
 
 <AnchorPane xmlns="http://javafx.com/javafx"
             xmlns:fx="http://javafx.com/fxml"
-            fx:controller="product.ProductViewController"
+            fx:controller="product.view.ProductViewController"
             prefHeight="400.0" prefWidth="600.0">
     <children>
         <TableView fx:id="table_contact" layoutY="34.0" prefHeight="438.0" prefWidth="1000.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="34.0">
