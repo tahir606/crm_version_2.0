@@ -1228,9 +1228,6 @@ public class mySqlConn {
 
     public void saveEmailSettings(ESetting eSetting) {
 
-//        String query = "INSERT INTO EMAIL_SETTINGS(ECODE,HOST,EMAIL,PASS) " +
-//                " SELECT IFNULL(max(ECODE),0)+1,?,?,? from EMAIL_SETTINGS";
-
         String query = "UPDATE EMAIL_SETTINGS SET HOST = ?,EMAIL = ?, PASS = ?, FSPATH = ?," +
                 " AUTOCHK = ?, DISCCHK = ?, AUTOTXT = ?, DISCTXT = ?, SOLVTXT = ?, SOLVCHK = ? WHERE ECODE = 1";
 
@@ -1993,6 +1990,37 @@ public class mySqlConn {
         }
 
         return 0;
+    }
+
+    //----------------------------Products-----------------------------
+    public void insertProduct(ProductProperty product) {
+
+        String query = "INSERT INTO PRODUCT_STORE(PS_ID, PS_NAME ,PS_PRICE ,PS_DESC ,PS_STATUS ,PS_TYPE , " +
+                "PS_STARTED ,PS_PRIORITY ,FREZE , CREATEDON, CREATEDBY) " +
+                " SELECT IFNULL(max(PS_ID),0)+1,?,?,?,?,?,?,?,?,?,? from PRODUCT_STORE";
+
+        // Connection con = getConnection();
+        PreparedStatement statement = null;
+
+        try {
+            statement = static_con.prepareStatement(query);
+            statement.setString(1, product.getName());
+            statement.setInt(2, product.getPrice());
+            statement.setString(3, product.getDesc());
+            statement.setInt(4, product.getStatus());
+            statement.setInt(5, product.getType());
+            statement.setString(6, product.getStartedtimeStmp());
+            statement.setInt(7, product.getPriority());
+            statement.setBoolean(8, product.isFreeze());
+            statement.setString(9, CommonTasks.getCurrentTimeStamp());
+            statement.setInt(10, fHelper.ReadUserDetails().getUCODE());
+
+            statement.executeUpdate();
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
     }
 
     public static boolean pingHost(String host, int port, int timeout) {
