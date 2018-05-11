@@ -105,14 +105,13 @@ public class Controller implements Initializable {
                                 ("dashboard/dashboard.fxml"));
                         Parent root1 = null;
                         try {
-                            root1 = (Parent) fxmlLoader.load();
+                            root1 = fxmlLoader.load();
                         } catch (IOException e) {
                             e.printStackTrace();
                         }
                         Stage stage = new Stage();
                         stage.setTitle("Burhani It Solutions - Customer Relationship Management");
                         stage.setScene(new Scene(root1));
-                        stage.setResizable(false);
                         tHelper.createTrayIcon(stage);
                         tHelper.createIcon(stage);
                         stage.show();
