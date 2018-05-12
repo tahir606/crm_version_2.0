@@ -1,7 +1,9 @@
 package product.newProduct;
 
 import JCode.Toast;
+import JCode.mySqlConn;
 import com.jfoenix.controls.JFXButton;
+import com.jfoenix.controls.JFXComboBox;
 import com.jfoenix.controls.JFXDatePicker;
 import com.jfoenix.controls.JFXTextField;
 import javafx.event.ActionEvent;
@@ -10,26 +12,26 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
+import javafx.scene.control.TextArea;
 import javafx.stage.Stage;
 import objects.ClientProperty;
+import objects.ProductProperty;
 
 import java.net.URL;
 import java.util.ResourceBundle;
 
 public class NewProductController implements Initializable {
 
-    public static char stInstance;
-
     @FXML
     private JFXTextField txt_name;
     @FXML
     private JFXTextField txt_price;
     @FXML
-    private JFXTextField combo_status;
+    private JFXComboBox combo_status;
     @FXML
-    private JFXTextField combo_type;
+    private JFXComboBox combo_type;
     @FXML
-    private JFXButton txt_desc;
+    private TextArea txt_desc;
     @FXML
     private JFXButton btn_save;
     @FXML
@@ -37,36 +39,35 @@ public class NewProductController implements Initializable {
     @FXML
     private JFXDatePicker started_date;
 
+    public static char stInstance;
+
+    private ProductProperty product;
+    private mySqlConn sql;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-
+        sql = new mySqlConn();
+        product = new ProductProperty();
     }
 
     public void saveChanges(ActionEvent actionEvent) {
         String name = txt_name.getText(),
                 price = txt_price.getText(),
-                desc = txt_email.getText(),
-                mobile = txt_mobile.getText(),
-                addr = txt_addr.getText(),
-                city = txt_city.getText(),
-                country = txt_country.getText(),
-                note = txt_note.getText(),
-                jdate = String.valueOf(date_of_birth.getValue());
+                desc = txt_desc.getText(),
+                started = String.valueOf(started_date.getValue());
 
-
-        if (fname.equals("") || lname.equals("") || city.equals("") || country.equals("")) {
+        if (name.equals("") || desc.equals("")) {
             Toast.makeText((Stage) btn_save.getScene().getWindow(), "Required Fields Are Empty");
             return;
         } else {
             String msg = "";
             switch (stInstance) {
                 case 'N': {
-                    msg = "Are you sure you want to add Contact?";
+                    msg = "Are you sure you want to add Product?";
                     break;
                 }
                 case 'U': {
-                    msg = "Are you sure you want to update Contact?";
+                    msg = "Are you sure you want to update Product?";
                     break;
                 }
                 default: {
@@ -79,38 +80,22 @@ public class NewProductController implements Initializable {
 
             if (alert2.getResult() == ButtonType.YES) {
 
-                fname = fname.substring(0, 1).toUpperCase() + fname.substring(1);   //Make First Letter to Uppercase
-                lname = lname.substring(0, 1).toUpperCase() + lname.substring(1);
-
-                contact.setFirstName(fname);
-                contact.setLastName(lname);
-                contact.setAddress(addr);
-                contact.setCity(city);
-                contact.setCountry(country);
-                contact.setNote(note);
-                if (jdate.equals("null"))
-                    contact.setDob(null);
+                product.setName(name);
+                product.setPrice(Integer.parseInt(price));
+                product.setDesc(desc);
+                if (started.equals("null"))
+                    product.setStartedtimeStmp(null);
                 else
-                    contact.setDob(jdate);
-//                contact.setEmails(new String[]{email});
-//                contact.setPhones(new String[]{mobile});
-                contact.setEmail(email);
-                contact.setMobile(mobile);
-
-                ClientProperty c = (ClientProperty) client_list.getSelectionModel().getSelectedItem();
-
-                if (c != null)
-                    contact.setClID(c.getCode());
-
-                System.out.println(contact);
+                    product.setStartedtimeStmp(started);
+                product.setFreeze(false);
 
                 switch (stInstance) {
                     case 'N': {
-                        sql.insertContact(contact);
+                        sql.insertProduct(product);
                         break;
                     }
                     case 'U': {
-                        sql.updateContact(contact);
+//                        sql.updateP(product);
                         break;
                     }
                     default: {

@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import com.jfoenix.controls.JFXButton?>
+<?import com.jfoenix.controls.JFXComboBox?>
 <?import com.jfoenix.controls.JFXDatePicker?>
 <?import com.jfoenix.controls.JFXTextField?>
 <?import javafx.scene.control.Label?>
@@ -27,12 +28,12 @@
                         <JFXTextField fx:id="txt_price" focusColor="#006e0e" prefHeight="30.0" prefWidth="181.0" promptText="PKR" />
                     </children>
                 </HBox>
-                <HBox prefHeight="30.0" prefWidth="200.0" spacing="10.0">
+                <HBox prefHeight="30.0" prefWidth="200.0" spacing="10.0" visible="false">
                     <children>
                         <Label prefHeight="35.0" prefWidth="80.0" text="Status" />
-                        <JFXTextField fx:id="txt_city" focusColor="#006e0e" prefHeight="35.0" prefWidth="85.0" />
+                        <JFXComboBox fx:id="combo_status" focusColor="#006e0e" prefHeight="35.0" prefWidth="85.0" />
                         <Label prefHeight="35.0" prefWidth="80.0" text="Type" />
-                        <JFXTextField fx:id="txt_country" focusColor="#006e0e" prefHeight="35.0" prefWidth="85.0" />
+                        <JFXComboBox fx:id="combo_type" focusColor="#006e0e" prefHeight="35.0" prefWidth="85.0" />
                     </children>
                 </HBox>
                 <HBox prefHeight="15.0" prefWidth="200.0" spacing="10.0" />
@@ -46,7 +47,7 @@
                 <HBox prefHeight="61.0" prefWidth="578.0" spacing="10.0">
                     <children>
                         <Label prefHeight="35.0" prefWidth="80.0" text="Description" />
-                  <TextArea prefHeight="60.0" prefWidth="391.0" />
+                  <TextArea fx:id="txt_desc" prefHeight="60.0" prefWidth="391.0" />
                     </children>
                 </HBox>
                 <HBox prefHeight="15.0" prefWidth="200.0" spacing="10.0" />

@@ -11,6 +11,19 @@ public class ProductProperty {
     SimpleBooleanProperty freeze;
 
     public ProductProperty() {
+        code = new SimpleIntegerProperty();
+        price = new SimpleIntegerProperty();
+        status = new SimpleIntegerProperty();
+        type = new SimpleIntegerProperty();
+        createdBy = new SimpleIntegerProperty();
+        priority = new SimpleIntegerProperty();
+
+        name = new SimpleStringProperty();
+        desc = new SimpleStringProperty();
+        startedtimeStmp = new SimpleStringProperty();
+        createdOn = new SimpleStringProperty();
+
+        freeze = new SimpleBooleanProperty();
     }
 
     public ProductProperty(SimpleIntegerProperty code, SimpleIntegerProperty price, SimpleIntegerProperty status, SimpleIntegerProperty type, SimpleIntegerProperty createdBy, SimpleIntegerProperty priority,

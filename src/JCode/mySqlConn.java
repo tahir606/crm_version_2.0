@@ -2023,6 +2023,50 @@ public class mySqlConn {
 
     }
 
+    public List<ProductProperty> getAllProducts(String where) {
+        String query = "SELECT ";
+
+        if (where == null) {
+            query = query + " AND FREZE = 0 ORDER BY CS.CS_ID";
+        } else {
+            query = query + " AND " + where;
+        }
+
+        List<ContactProperty> allContacts = new ArrayList<>();
+
+        try {
+            System.out.println(query);
+            PreparedStatement statement = static_con.prepareStatement(query);
+            ResultSet set = statement.executeQuery();
+            //-------------Creating Email-------------
+            while (set.next()) {
+                ContactProperty contact = new ContactProperty();
+                contact.setCode(set.getInt("CS_ID"));
+                contact.setFirstName(set.getString("CS_FNAME"));
+                contact.setLastName(set.getString("CS_LNAME"));
+                contact.setAddress(set.getString("CS_ADDR"));
+                contact.setCity(set.getString("CS_CITY"));
+                contact.setCountry(set.getString("CS_COUNTRY"));
+                contact.setEmail(set.getString("EM_NAME"));
+                contact.setMobile(set.getString("PH_NUM"));
+                contact.setDob(set.getString("CS_DOB"));
+                contact.setClID(set.getInt("CL_ID"));
+                contact.setClientName(set.getString("CL_NAME"));
+                contact.setAge(CommonTasks.getAge(contact.getDob()));
+                contact.setNote(set.getString("CS_NOTE"));
+                contact.setIsFreeze(set.getBoolean("FREZE"));
+
+                allContacts.add(contact);
+            }
+
+            // doRelease(con);
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+
+        return allContacts;
+    }
+
     public static boolean pingHost(String host, int port, int timeout) {
         try (Socket socket = new Socket()) {
             socket.connect(new InetSocketAddress(host, port), timeout);
