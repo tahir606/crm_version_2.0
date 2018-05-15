@@ -2,14 +2,18 @@ package product.view;
 
 import JCode.mySqlConn;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableRow;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.AnchorPane;
 import objects.ProductProperty;
+import product.ProductDashController;
 
+import java.io.IOException;
 import java.net.URL;
 import java.util.List;
 import java.util.ResourceBundle;
@@ -47,11 +51,11 @@ public class ProductViewController implements Initializable {
 
         col_name.setCellValueFactory(new PropertyValueFactory<>("name"));
         col_price.setCellValueFactory(new PropertyValueFactory<>("price"));
-        col_started_on.setCellValueFactory(new PropertyValueFactory<>("startedtimeStmp"));
+        col_started_on.setCellValueFactory(new PropertyValueFactory<>("formattedDate"));
         col_status.setCellValueFactory(new PropertyValueFactory<>("status"));
         col_type.setCellValueFactory(new PropertyValueFactory<>("type"));
 
-        table_product.getItems().setAll(sql.getAllContactsProperty(null));
+        table_product.getItems().setAll(sql.getAllProducts(null));
 //
 //        table_contact.addEventHandler(javafx.scene.input.MouseEvent.MOUSE_CLICKED, event -> {
 //            selectedContacts = table_contact.getSelectionModel().getSelectedItems();
@@ -66,23 +70,23 @@ public class ProductViewController implements Initializable {
 //
 //        });
 //
-//        table_contact.setRowFactory(tv -> {
-//            TableRow<ContactProperty> row = new TableRow<>();
-//            row.setOnMouseClicked(event -> {
-//                if (event.getClickCount() == 2 && (!row.isEmpty())) {
-//                    staticContact = row.getItem();
-//                    try {
-//                        dashBaseController.main_paneF.setCenter(
-//                                FXMLLoader.load(
-//                                        getClass().getClassLoader().getResource
-//                                                ("client/dash/contactView/contactDetails/contactDetails.fxml")));
-//                    } catch (IOException e) {
-//                        e.printStackTrace();
-//                    }
-//                }
-//            });
-//            return row;
-//        });
+        table_product.setRowFactory(tv -> {
+            TableRow<ProductProperty> row = new TableRow<>();
+            row.setOnMouseClicked(event -> {
+                if (event.getClickCount() == 2 && (!row.isEmpty())) {
+                    staticProduct = row.getItem();
+                    try {
+                        ProductDashController.main_paneF.setCenter(
+                                FXMLLoader.load(
+                                        getClass().getClassLoader().getResource
+                                                ("product/details/product_details.fxml")));
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+            });
+            return row;
+        });
 
     }
 }

@@ -1,5 +1,6 @@
 package objects;
 
+import JCode.CommonTasks;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
@@ -7,7 +8,7 @@ import javafx.beans.property.SimpleStringProperty;
 public class ProductProperty {
 
     SimpleIntegerProperty code, price, status, type, createdBy, priority;
-    SimpleStringProperty name, desc, startedtimeStmp, createdOn;
+    SimpleStringProperty name, desc, startedtimeStmp, formattedDate, createdOn;
     SimpleBooleanProperty freeze;
 
     public ProductProperty() {
@@ -23,22 +24,9 @@ public class ProductProperty {
         startedtimeStmp = new SimpleStringProperty();
         createdOn = new SimpleStringProperty();
 
-        freeze = new SimpleBooleanProperty();
-    }
+        formattedDate = new SimpleStringProperty();
 
-    public ProductProperty(SimpleIntegerProperty code, SimpleIntegerProperty price, SimpleIntegerProperty status, SimpleIntegerProperty type, SimpleIntegerProperty createdBy, SimpleIntegerProperty priority,
-                           SimpleStringProperty name, SimpleStringProperty desc, SimpleStringProperty startedtimeStmp, SimpleStringProperty createdOn, SimpleBooleanProperty freeze) {
-        this.code = code;
-        this.price = price;
-        this.status = status;
-        this.type = type;
-        this.createdBy = createdBy;
-        this.priority = priority;
-        this.name = name;
-        this.desc = desc;
-        this.startedtimeStmp = startedtimeStmp;
-        this.createdOn = createdOn;
-        this.freeze = freeze;
+        freeze = new SimpleBooleanProperty();
     }
 
     @Override
@@ -155,6 +143,11 @@ public class ProductProperty {
 
     public void setStartedtimeStmp(String startedtimeStmp) {
         this.startedtimeStmp.set(startedtimeStmp);
+        this.formattedDate.setValue(CommonTasks.getDateFormatted(startedtimeStmp));
+    }
+
+    public String getFormattedDate() {
+        return formattedDate.get();
     }
 
     public String getCreatedOn() {

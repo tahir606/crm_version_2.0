@@ -14,11 +14,11 @@
         <TableView fx:id="table_product" layoutY="34.0" prefHeight="438.0" prefWidth="1000.0"
                    AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="34.0">
             <columns>
-                <TableColumn fx:id="col_name" prefWidth="130.0" text="Name" />
-                <TableColumn fx:id="col_price" prefWidth="90.0" text="Price" />
-                <TableColumn fx:id="col_started_on" prefWidth="90.0" text="Started On" />
-                <TableColumn fx:id="col_status" prefWidth="90.0" text="Status" />
-                <TableColumn fx:id="col_type" prefWidth="200.0" text="Type" />
+                <TableColumn fx:id="col_name" prefWidth="200.0" text="Name" />
+                <TableColumn fx:id="col_price" prefWidth="100.0" text="Price" />
+                <TableColumn fx:id="col_started_on" prefWidth="100.0" text="Started On" />
+                <TableColumn fx:id="col_status" prefWidth="80.0" text="Status" />
+                <TableColumn fx:id="col_type" prefWidth="80.0" text="Type" />
             </columns>
         </TableView>
         <AnchorPane fx:id="toolbar_products" prefHeight="35.0" prefWidth="1000.0" AnchorPane.leftAnchor="0.0"

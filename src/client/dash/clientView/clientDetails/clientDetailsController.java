@@ -52,7 +52,7 @@ public class clientDetailsController implements Initializable {
         Image image = new Image(this.getClass().getResourceAsStream("/res/img/left-arrow.png"));
         btn_back.setGraphic(new ImageView(image));
         btn_back.setAlignment(Pos.CENTER_LEFT);
-        btn_back.setTooltip(new Tooltip("Back to Contacts"));
+        btn_back.setTooltip(new Tooltip("Back to Clients"));
         btn_back.setOnAction(event -> {
             try {
                 dashBaseController.main_paneF.setCenter(

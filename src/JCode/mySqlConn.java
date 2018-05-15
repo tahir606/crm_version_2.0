@@ -1996,8 +1996,8 @@ public class mySqlConn {
     public void insertProduct(ProductProperty product) {
 
         String query = "INSERT INTO PRODUCT_STORE(PS_ID, PS_NAME ,PS_PRICE ,PS_DESC ,PS_STATUS ,PS_TYPE , " +
-                "PS_STARTED ,PS_PRIORITY ,FREZE , CREATEDON, CREATEDBY) " +
-                " SELECT IFNULL(max(PS_ID),0)+1,?,?,?,?,?,?,?,?,?,? from PRODUCT_STORE";
+                "PS_STARTED ,PS_PRIORITY , CREATEDON, CREATEDBY) " +
+                " SELECT IFNULL(max(PS_ID),0)+1,?,?,?,?,?,?,?,?,? from PRODUCT_STORE";
 
         // Connection con = getConnection();
         PreparedStatement statement = null;
@@ -2011,9 +2011,8 @@ public class mySqlConn {
             statement.setInt(5, product.getType());
             statement.setString(6, product.getStartedtimeStmp());
             statement.setInt(7, product.getPriority());
-            statement.setBoolean(8, product.isFreeze());
-            statement.setString(9, CommonTasks.getCurrentTimeStamp());
-            statement.setInt(10, fHelper.ReadUserDetails().getUCODE());
+            statement.setString(8, CommonTasks.getCurrentTimeStamp());
+            statement.setInt(9, fHelper.ReadUserDetails().getUCODE());
 
             statement.executeUpdate();
 
@@ -2024,15 +2023,15 @@ public class mySqlConn {
     }
 
     public List<ProductProperty> getAllProducts(String where) {
-        String query = "SELECT ";
+        String query = "SELECT PS_ID, PS_NAME ,PS_PRICE ,PS_DESC ,PS_STATUS ,PS_TYPE ,PS_STARTED ,PS_PRIORITY ,CREATEDON, CREATEDBY FROM PRODUCT_STORE WHERE 1 ";
 
         if (where == null) {
-            query = query + " AND FREZE = 0 ORDER BY CS.CS_ID";
+//            query = query + " AND FREZE = 0";
         } else {
             query = query + " AND " + where;
         }
 
-        List<ContactProperty> allContacts = new ArrayList<>();
+        List<ProductProperty> allProducts = new ArrayList<>();
 
         try {
             System.out.println(query);
@@ -2040,23 +2039,18 @@ public class mySqlConn {
             ResultSet set = statement.executeQuery();
             //-------------Creating Email-------------
             while (set.next()) {
-                ContactProperty contact = new ContactProperty();
-                contact.setCode(set.getInt("CS_ID"));
-                contact.setFirstName(set.getString("CS_FNAME"));
-                contact.setLastName(set.getString("CS_LNAME"));
-                contact.setAddress(set.getString("CS_ADDR"));
-                contact.setCity(set.getString("CS_CITY"));
-                contact.setCountry(set.getString("CS_COUNTRY"));
-                contact.setEmail(set.getString("EM_NAME"));
-                contact.setMobile(set.getString("PH_NUM"));
-                contact.setDob(set.getString("CS_DOB"));
-                contact.setClID(set.getInt("CL_ID"));
-                contact.setClientName(set.getString("CL_NAME"));
-                contact.setAge(CommonTasks.getAge(contact.getDob()));
-                contact.setNote(set.getString("CS_NOTE"));
-                contact.setIsFreeze(set.getBoolean("FREZE"));
-
-                allContacts.add(contact);
+                ProductProperty product = new ProductProperty();
+                product.setCode(set.getInt("PS_ID"));
+                product.setName(set.getString("PS_NAME"));
+                product.setPrice(set.getInt("PS_PRICE"));
+                product.setDesc(set.getString("PS_DESC"));
+                product.setStatus(set.getInt("PS_STATUS"));
+                product.setType(set.getInt("PS_TYPE"));
+                product.setStartedtimeStmp(set.getString("PS_STARTED"));
+                product.setPriority(set.getInt("PS_PRIORITY"));
+                product.setCreatedOn(set.getString("CREATEDON"));
+                product.setCreatedBy(set.getInt("CREATEDBY"));
+                allProducts.add(product);
             }
 
             // doRelease(con);
@@ -2064,7 +2058,7 @@ public class mySqlConn {
             ex.printStackTrace();
         }
 
-        return allContacts;
+        return allProducts;
     }
 
     public static boolean pingHost(String host, int port, int timeout) {

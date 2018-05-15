@@ -1,6 +1,5 @@
 package product;
 
-import client.newContact.newContactController;
 import dashboard.dController;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
@@ -29,6 +28,8 @@ public class ProductDashController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        main_paneF = main_pane;
+
         populateContactsMenuBar();
 
         inflatePane("view/product_view.fxml");
