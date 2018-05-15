@@ -2022,6 +2022,36 @@ public class mySqlConn {
 
     }
 
+    public void updateProduct(ProductProperty product) {
+
+        String query = "UPDATE PRODUCT_STORE SET PS_NAME=?,PS_PRICE=? ,PS_DESC=? ,PS_STATUS=? ,PS_TYPE=? , " +
+                " PS_STARTED=? ,PS_PRIORITY=? , CREATEDON=?, CREATEDBY=?  " +
+                " WHERE PS_ID = ? ";
+
+        // Connection con = getConnection();
+        PreparedStatement statement = null;
+
+        try {
+            statement = static_con.prepareStatement(query);
+            statement.setString(1, product.getName());
+            statement.setInt(2, product.getPrice());
+            statement.setString(3, product.getDesc());
+            statement.setInt(4, product.getStatus());
+            statement.setInt(5, product.getType());
+            statement.setString(6, product.getStartedtimeStmp());
+            statement.setInt(7, product.getPriority());
+            statement.setString(8, CommonTasks.getCurrentTimeStamp());
+            statement.setInt(9, fHelper.ReadUserDetails().getUCODE());
+            statement.setInt(10, product.getCode());
+
+            statement.executeUpdate();
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+    }
+
     public List<ProductProperty> getAllProducts(String where) {
         String query = "SELECT PS_ID, PS_NAME ,PS_PRICE ,PS_DESC ,PS_STATUS ,PS_TYPE ,PS_STARTED ,PS_PRIORITY ,CREATEDON, CREATEDBY FROM PRODUCT_STORE WHERE 1 ";
 

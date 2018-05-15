@@ -61,6 +61,21 @@ public class CommonTasks {
         return outputText;
     }
 
+    public static String getDataFormattedOnlyData(String timeStamp) {
+        // Note, MM is months, not mm
+        DateFormat inputFormat = new SimpleDateFormat("yyyy-MM-dd");
+        DateFormat outputFormat = new SimpleDateFormat("dd-MMM-yyyy");
+
+        Date date = null;
+        try {
+            date = inputFormat.parse(timeStamp);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        String outputText = outputFormat.format(date);
+        return outputText;
+    }
+
     public static String getAge(String timeStamp) {
 
         // Note, MM is months, not mm

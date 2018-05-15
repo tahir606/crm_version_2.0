@@ -1,5 +1,6 @@
 package product.newProduct;
 
+import JCode.CommonTasks;
 import JCode.Toast;
 import JCode.mySqlConn;
 import com.jfoenix.controls.JFXButton;
@@ -8,16 +9,21 @@ import com.jfoenix.controls.JFXDatePicker;
 import com.jfoenix.controls.JFXTextField;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
-import javafx.scene.control.Alert;
-import javafx.scene.control.ButtonType;
-import javafx.scene.control.Label;
-import javafx.scene.control.TextArea;
+import javafx.geometry.Pos;
+import javafx.scene.control.*;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.stage.Stage;
 import objects.ClientProperty;
 import objects.ProductProperty;
+import product.ProductDashController;
+import product.view.ProductViewController;
 
+import java.io.IOException;
 import java.net.URL;
+import java.time.LocalDate;
 import java.util.ResourceBundle;
 
 public class NewProductController implements Initializable {
@@ -38,6 +44,8 @@ public class NewProductController implements Initializable {
     private Label txt_heading;
     @FXML
     private JFXDatePicker started_date;
+    @FXML
+    private JFXButton btn_back;
 
     public static char stInstance;
 
@@ -48,7 +56,62 @@ public class NewProductController implements Initializable {
     public void initialize(URL location, ResourceBundle resources) {
         sql = new mySqlConn();
         product = new ProductProperty();
+
+        Image image = new Image(this.getClass().getResourceAsStream("/res/img/left-arrow.png"));
+        btn_back.setGraphic(new ImageView(image));
+        btn_back.setAlignment(Pos.CENTER_LEFT);
+        btn_back.setTooltip(new Tooltip("Back to Products"));
+        btn_back.setOnAction(event -> {
+            try {
+                ProductDashController.main_paneF.setCenter(
+                        FXMLLoader.load(
+                                getClass().getClassLoader().getResource("product/view/product_view.fxml")));
+
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        });
+
+        if (stInstance == 'N') {
+            product = new ProductProperty();
+            txt_heading.setText("New Product");
+            btn_save.setText("Add");
+        } else if (stInstance == 'U') {
+            btn_save.setText("Update");
+            product = ProductViewController.staticProduct;
+            populateDetails(product);
+            txt_heading.setText("Update Product");
+        }
     }
+
+//    private void init() {
+//
+//        product = new ProductProperty();
+//        product.setName(" + Create New");
+//        product.setPrice('\0');
+//        product.setDesc("");
+//        product.set
+//
+//    }
+
+    private void populateDetails(ProductProperty newValue) {
+        if (newValue == null)
+            return;
+        else if (newValue.getName().equals(" + Create New"))
+            txt_name.setText("");
+        else
+            txt_name.setText(newValue.getName());
+
+        txt_name.setText(product.getName());
+        txt_price.setText(String.valueOf(product.getPrice()));
+        txt_desc.setText(product.getDesc());
+        if (newValue.getStartedtimeStmp() != null)
+            started_date.setValue(CommonTasks.createLocalDate(newValue.getStartedtimeStmp()));
+        else
+            started_date.setValue(null);
+
+    }
+
 
     public void saveChanges(ActionEvent actionEvent) {
         String name = txt_name.getText(),
@@ -95,7 +158,7 @@ public class NewProductController implements Initializable {
                         break;
                     }
                     case 'U': {
-//                        sql.updateP(product);
+                        sql.updateProduct(product);
                         break;
                     }
                     default: {

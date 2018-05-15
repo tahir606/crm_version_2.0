@@ -69,6 +69,7 @@ public class ProductDetailsController implements Initializable {
         txt_pname.setText(product.getName());
         txt_price.setText(String.valueOf(product.getPrice()));
         txt_desc.setText(product.getDesc());
+        txt_startedOn.setText(product.getFormattedDate());
 
     }
 }

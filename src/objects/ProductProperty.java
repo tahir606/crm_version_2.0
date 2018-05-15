@@ -143,7 +143,7 @@ public class ProductProperty {
 
     public void setStartedtimeStmp(String startedtimeStmp) {
         this.startedtimeStmp.set(startedtimeStmp);
-        this.formattedDate.setValue(CommonTasks.getDateFormatted(startedtimeStmp));
+        this.formattedDate.setValue(CommonTasks.getDataFormattedOnlyData(startedtimeStmp));
     }
 
     public String getFormattedDate() {

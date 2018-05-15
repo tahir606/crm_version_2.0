@@ -1,5 +1,6 @@
 package client.newClient;
 
+import JCode.CommonTasks;
 import JCode.Toast;
 import JCode.mySqlConn;
 import JCode.trayHelper;
@@ -109,7 +110,6 @@ public class newClientController implements Initializable {
             }
             case 'U': {      //Update
                 txt_heading.setText("Update Client");
-//                clientSel.setCode(contactViewController.staticContact.getCode());
                 clientSel = clientViewController.staticClient;
                 btn_save.setText("Update");
                 populateDetails(clientSel);
@@ -121,8 +121,6 @@ public class newClientController implements Initializable {
     }
 
     private void init() {
-
-//        combo_client.getItems().clear();
         clientList = sql.getAllClients(null);
 
         try {
@@ -143,17 +141,8 @@ public class newClientController implements Initializable {
         clientSel.setEmails(new String[noOfFields]);
         clientSel.setPhones(new String[noOfFields]);
 
-//        combo_client.getItems().add(c);
-//
-//        if (nClient != 1)   //If there are no clients previously, else this throws a null pointer exception
-//            combo_client.getItems().addAll(clientList);
-//
-//        combo_client.valueProperty().addListener((observable, oldValue, newValue) -> {
-//            populateDetails(newValue);
-//            clientSel = newValue;
-//        });
         combo_type.getSelectionModel().select(0);
-//        combo_client.getSelectionModel().select(0);
+
     }
 
     private void populateDetails(ClientProperty newValue) {
@@ -170,7 +159,7 @@ public class newClientController implements Initializable {
         txt_city.setText(newValue.getCity());
         txt_country.setText(newValue.getCountry());
         if (newValue.getJoinDate() != null)
-            joining_date.setValue(LocalDate.parse(newValue.getJoinDate()));
+            joining_date.setValue(CommonTasks.createLocalDate(newValue.getJoinDate()));
         else
             joining_date.setValue(null);
 
