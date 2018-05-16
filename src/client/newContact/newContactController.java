@@ -2,7 +2,7 @@ package client.newContact;
 
 import JCode.CommonTasks;
 import JCode.Toast;
-import JCode.mySqlConn;
+import JCode.mysql.mySqlConn;
 import client.dash.contactView.contactViewController;
 import client.dashBaseController;
 import com.jfoenix.controls.JFXButton;

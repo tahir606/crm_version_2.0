@@ -2,14 +2,13 @@ package dashboard;
 
 import JCode.emailControl;
 import JCode.fileHelper;
-import JCode.mySqlConn;
+import JCode.mysql.mySqlConn;
 import JCode.trayHelper;
 import JSockets.JClient;
 import JSockets.JServer;
 import SplashScreen.SplashScreenThread;
 import com.jfoenix.controls.JFXButton;
 import javafx.application.Platform;
-import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -25,14 +24,12 @@ import javafx.scene.layout.*;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
 import objects.ESetting;
-import objects.Email;
 import objects.Network;
 import objects.Users;
 
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.ResourceBundle;
 
 

@@ -2,7 +2,7 @@ package product.newProduct;
 
 import JCode.CommonTasks;
 import JCode.Toast;
-import JCode.mySqlConn;
+import JCode.mysql.mySqlConn;
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXComboBox;
 import com.jfoenix.controls.JFXDatePicker;
@@ -16,14 +16,12 @@ import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.stage.Stage;
-import objects.ClientProperty;
 import objects.ProductProperty;
 import product.ProductDashController;
 import product.view.ProductViewController;
 
 import java.io.IOException;
 import java.net.URL;
-import java.time.LocalDate;
 import java.util.ResourceBundle;
 
 public class NewProductController implements Initializable {

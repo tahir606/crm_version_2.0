@@ -1,6 +1,6 @@
 package product.view;
 
-import JCode.mySqlConn;
+import JCode.mysql.mySqlConn;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -15,7 +15,6 @@ import product.ProductDashController;
 
 import java.io.IOException;
 import java.net.URL;
-import java.util.List;
 import java.util.ResourceBundle;
 
 public class ProductViewController implements Initializable {

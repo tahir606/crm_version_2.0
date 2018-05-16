@@ -1,15 +1,12 @@
 package Home;
 
 import JCode.fileHelper;
-import JCode.mySqlConn;
-import com.jfoenix.controls.JFXButton;
+import JCode.mysql.mySqlConn;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.geometry.Pos;
 import javafx.scene.control.Label;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
-import javafx.stage.Stage;
 import objects.Users;
 
 import java.net.URL;

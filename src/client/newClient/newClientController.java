@@ -2,10 +2,9 @@ package client.newClient;
 
 import JCode.CommonTasks;
 import JCode.Toast;
-import JCode.mySqlConn;
+import JCode.mysql.mySqlConn;
 import JCode.trayHelper;
 import client.dash.clientView.clientViewController;
-import client.dash.contactView.contactViewController;
 import client.dashBaseController;
 import com.jfoenix.controls.*;
 import javafx.application.Platform;
@@ -19,21 +18,15 @@ import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
-import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import objects.ClientProperty;
-import objects.ESetting;
-import objects.Users;
 
 import java.io.IOException;
 import java.net.URL;
-import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
 

@@ -1,7 +1,7 @@
 package client.dash.clientView;
 
 import Email.EResponse.EResponseController;
-import JCode.mySqlConn;
+import JCode.mysql.mySqlConn;
 import JCode.trayHelper;
 import client.dashBaseController;
 import com.jfoenix.controls.*;

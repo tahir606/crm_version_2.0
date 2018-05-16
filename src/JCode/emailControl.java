@@ -1,6 +1,7 @@
 package JCode;
 
 
+import JCode.mysql.mySqlConn;
 import JSockets.JServer;
 import objects.ESetting;
 import objects.Email;

@@ -1,5 +1,8 @@
-package JCode;
+package JCode.mysql;
 
+import JCode.CommonTasks;
+import JCode.emailControl;
+import JCode.fileHelper;
 import client.newClient.newClientController;
 import client.newContact.newContactController;
 import javafx.application.Platform;
@@ -2090,6 +2093,8 @@ public class mySqlConn {
 
         return allProducts;
     }
+    
+    
 
     public static boolean pingHost(String host, int port, int timeout) {
         try (Socket socket = new Socket()) {

@@ -2,7 +2,7 @@ package settings.network;
 
 import JCode.Toast;
 import JCode.fileHelper;
-import JCode.mySqlConn;
+import JCode.mysql.mySqlConn;
 import JCode.trayHelper;
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXTextField;

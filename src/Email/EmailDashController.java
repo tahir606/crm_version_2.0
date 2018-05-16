@@ -2,6 +2,7 @@ package Email;
 
 import Email.EResponse.EResponseController;
 import JCode.*;
+import JCode.mysql.mySqlConn;
 import JSockets.JClient;
 import JSockets.JServer;
 import com.jfoenix.controls.JFXButton;
@@ -10,14 +11,10 @@ import com.jfoenix.controls.JFXComboBox;
 import com.jfoenix.controls.JFXTextField;
 import dashboard.dController;
 import javafx.application.Platform;
-import javafx.beans.binding.Bindings;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
 import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -31,18 +28,12 @@ import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.TextArea;
-import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.input.ContextMenuEvent;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
-import javafx.stage.Modality;
 import javafx.stage.Stage;
-import javafx.stage.StageStyle;
-import javafx.stage.Window;
 import javafx.util.Callback;
 import objects.*;
 
@@ -53,9 +44,7 @@ import java.io.*;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.ResourceBundle;
-import java.util.stream.IntStream;
 
 public class EmailDashController implements Initializable {
 
@@ -202,165 +191,6 @@ public class EmailDashController implements Initializable {
         });
     }
 
-
-    private void instantiateEmail() {
-        EResponseController.stTo = "";
-        EResponseController.stSubject = "";
-        EResponseController.stBody = "";
-        EResponseController.stInstance = 'N'; //N for New.
-    }
-
-    static JFXButton allMail = new JFXButton("General"),
-            tickets = new JFXButton("Tickets"),
-            sentMail = new JFXButton("Sent");
-
-    private void populateCategoryBoxes() {
-
-        prepBtn(tickets);
-        tickets.setOnAction(event -> changeEmailType(1, tickets));
-
-        prepBtn(allMail);
-        allMail.setOnAction(event -> changeEmailType(2, allMail));
-
-        prepBtn(sentMail);
-        sentMail.setOnAction(event -> changeEmailType(3, sentMail));
-
-        category_box.getChildren().addAll(tickets, allMail, sentMail);
-
-        switch (Email_Type) {
-            case 1:
-                tickets.fire();
-                break;
-            case 2:
-                allMail.fire();
-                break;
-            case 3:
-                sentMail.fire();
-                break;
-        }
-    }
-
-    JFXComboBox sortBy, ascDesc;
-    JFXCheckBox solved, unSolved, locked, unLocked, archived;
-
-    private void populateFilters() {
-        vbox_filter.setSpacing(10);
-
-        Filters filter = Filters.readFromFile();
-
-        //Sort By (ComboBox)
-        HBox sort = new HBox();
-        sortBy = new JFXComboBox();
-        setUpCombo(sortBy, "Sorted By", new String[]{"Tickets", "From", "Subject"});
-        sortBy.setOnAction(event -> saveFilters());
-        sortBy.getSelectionModel().select(filter.getSortBy());
-
-        ascDesc = new JFXComboBox();
-        setUpCombo(ascDesc, "Asc/Desc", new String[]{"Asc", "Desc"});
-        ascDesc.setOnAction(event -> saveFilters());
-        ascDesc.getSelectionModel().select(filter.getAscDesc());
-        sort.getChildren().addAll(sortBy, ascDesc);
-        vbox_filter.getChildren().add(sort);
-
-        //Checkboxes
-        solved = new JFXCheckBox("Solved");
-        solved.selectedProperty().addListener((observable, oldValue, newValue) -> saveFilters());
-        setUpCheck(solved);
-        solved.setSelected(filter.isSolved());
-
-        unSolved = new JFXCheckBox("Unsolved");
-        unSolved.selectedProperty().addListener((observable, oldValue, newValue) -> saveFilters());
-        setUpCheck(unSolved);
-        unSolved.setSelected(filter.isUnsolved());
-
-        locked = new JFXCheckBox("Locked");
-        locked.selectedProperty().addListener((observable, oldValue, newValue) -> saveFilters());
-        setUpCheck(locked);
-        locked.setSelected(filter.isLocked());
-
-        unLocked = new JFXCheckBox("Unlocked");
-        setUpCheck(unLocked);
-        unLocked.selectedProperty().addListener((observable, oldValue, newValue) -> saveFilters());
-        unLocked.setSelected(filter.isUnlocked());
-
-        archived = new JFXCheckBox("Archived");
-        setUpCheck(archived);
-        archived.selectedProperty().addListener((observable, oldValue, newValue) -> saveFilters());
-        archived.setSelected(filter.isArchived());
-    }
-
-    private void populateMenuBar() {
-        Menu newMenu = new Menu("New");
-        MenuItem newEmail = new MenuItem("New Email");
-        newEmail.setOnAction(event -> {
-            instantiateEmail();
-            inflateEResponse(1);
-        });
-        newMenu.getItems().add(newEmail);
-        MenuItem newTicket = new MenuItem("New Ticket");
-        newTicket.setOnAction(event -> {
-            instantiateEmail();
-            inflateEResponse(2);
-        });
-        newMenu.getItems().add(newTicket);
-        menu_bar.getMenus().add(newMenu);
-
-        Menu edit = new Menu("Edit");
-        MenuItem reload = new MenuItem("Refresh");
-        reload.setOnAction(event -> loadEmails());
-        edit.getItems().add(reload);
-
-        MenuItem filter = new MenuItem("Filters");
-        filter.setOnAction(event -> inflateFilters());
-        edit.getItems().add(filter);
-
-        MenuItem archive = new MenuItem("Move to Archive");
-        archive.setOnAction(event -> inflateArchive());
-        edit.getItems().add(archive);
-
-        menu_bar.getMenus().add(edit);
-    }
-
-    private void prepBtn(JFXButton btn) {
-        btn.setMinHeight(50);
-        btn.setMinWidth(60);
-        btn.getStyleClass().add("btnMenuBox");
-        btn.setAlignment(Pos.CENTER_LEFT);
-    }
-
-    private void saveFilters() {
-        imgLoader.setVisible(true);
-        try {
-            Filters filter = new Filters();
-            filter.setSortBy(sortBy.getSelectionModel().getSelectedItem().toString());
-            filter.setAscDesc(ascDesc.getSelectionModel().getSelectedItem().toString());
-            filter.setSolved(solved.isSelected());
-            filter.setUnsolved(unSolved.isSelected());
-            filter.setLocked(locked.isSelected());
-            filter.setUnlocked(unLocked.isSelected());
-            filter.setArchived(archived.isSelected());
-            filter.writeToFile();
-
-            loadEmailsStatic();
-        } catch (NullPointerException e) {
-            System.out.println("x--x");
-        }
-    }
-
-    private void setUpCheck(JFXCheckBox combo) {
-        combo.getStyleClass().add("check_box_style");
-        VBox.setMargin(combo, new Insets(5, 5, 0, 10));
-        vbox_filter.getChildren().add(combo);
-    }
-
-    private void setUpCombo(JFXComboBox combo, String prompt, String[] options) {
-        combo.setPromptText(prompt);
-        combo.setMinWidth((vbox_filter.getPrefWidth() * 0.4) - 5);
-        combo.getItems().addAll(options);
-        combo.getStyleClass().add("check_box_style");
-        HBox.setMargin(combo, new Insets(0, 5, 0, 5));
-    }
-
     private void changeEmailType(int type, JFXButton btn) {
 
         tickets.getStyleClass().remove("btnMenuBoxPressed");
@@ -440,6 +270,79 @@ public class EmailDashController implements Initializable {
         list_emails.setOnContextMenuRequested(event -> event.consume());
     }
 
+    private List<Email> checkIfEmailsExist() {
+
+        List<Email> emails = null;
+        switch (Email_Type) {
+            case 1:     //Tickets
+                emails = sql.readAllEmails(Filters.readFromFile());
+                break;
+            case 2:     //General
+                emails = sql.readAllEmailsGeneral(" WHERE FREZE = 0");
+                break;
+            case 3:     //Sent
+                emails = sql.readAllEmailsSent(null);
+                break;
+        }
+
+        if (emails == null) {
+            emails = new ArrayList<>();
+            Email nEm = new Email();
+            nEm.setSubject("Emails Found");
+            nEm.setEmailNo(0);
+            nEm.setFromAddress(new Address[]{new InternetAddress()});
+            nEm.setAttch("");
+            emails.add(nEm);
+
+            list_emails.setDisable(true);
+            enableDisable(1);
+
+        } else {
+            list_emails.setDisable(false);
+        }
+
+        return emails;
+    }
+
+    //OPENING THE Archive
+    private void inflateArchive() {
+        inflateWindow("Archive", "Archive/archive.fxml");
+    }
+
+    private void instantiateEmail() {
+        EResponseController.stTo = "";
+        EResponseController.stSubject = "";
+        EResponseController.stBody = "";
+        EResponseController.stInstance = 'N'; //N for New.
+    }
+
+    //OPENING RESPONSE STAGE
+    private void inflateEResponse(int i) {
+        EResponseController.choice = i;
+        inflateWindow("New Email", "EResponse/EResponse.fxml");
+    }
+
+    //OPENING THE FILTER
+    private void inflateFilters() {
+        inflateWindow("Filters", "Search/filter.fxml");
+    }
+
+    private void inflateWindow(String title, String path) {
+        try {
+            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource(path));
+            Parent root1 = fxmlLoader.load();
+            Stage stage2 = new Stage();
+            stage2.setTitle(title);
+            stage2.setScene(new Scene(root1));
+            trayHelper tray = new trayHelper();
+            tray.createIcon(stage2);
+            Platform.setImplicitExit(true);
+            stage2.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
     public void loadEmails() {
         Email temp = selectedEmail;
         list_emails.setItems(null);
@@ -477,16 +380,6 @@ public class EmailDashController implements Initializable {
         }
     }
 
-    private void setSearch(FilteredList<Email> filteredList) {
-        enableDisable(1);
-        String filter = search_txt.getText();
-        if (filter == null || filter.length() == 0) {
-            filteredList.setPredicate(s -> true);
-        } else {
-            filteredList.setPredicate(s -> s.toString().toUpperCase().contains(filter.toUpperCase()));
-        }
-    }
-
     public static void loadEmailsStatic() {      //Load Emails from other controller
         imgLoader.setVisible(true);
 
@@ -497,38 +390,34 @@ public class EmailDashController implements Initializable {
         }
     }
 
-    private List<Email> checkIfEmailsExist() {
+    static JFXButton allMail = new JFXButton("General"),
+            tickets = new JFXButton("Tickets"),
+            sentMail = new JFXButton("Sent");
 
-        List<Email> emails = null;
+    private void populateCategoryBoxes() {
+
+        prepBtn(tickets);
+        tickets.setOnAction(event -> changeEmailType(1, tickets));
+
+        prepBtn(allMail);
+        allMail.setOnAction(event -> changeEmailType(2, allMail));
+
+        prepBtn(sentMail);
+        sentMail.setOnAction(event -> changeEmailType(3, sentMail));
+
+        category_box.getChildren().addAll(tickets, allMail, sentMail);
+
         switch (Email_Type) {
-            case 1:     //Tickets
-                emails = sql.readAllEmails(Filters.readFromFile());
+            case 1:
+                tickets.fire();
                 break;
-            case 2:     //General
-                emails = sql.readAllEmailsGeneral(" WHERE FREZE = 0");
+            case 2:
+                allMail.fire();
                 break;
-            case 3:     //Sent
-                emails = sql.readAllEmailsSent(null);
+            case 3:
+                sentMail.fire();
                 break;
         }
-
-        if (emails == null) {
-            emails = new ArrayList<>();
-            Email nEm = new Email();
-            nEm.setSubject("Emails Found");
-            nEm.setEmailNo(0);
-            nEm.setFromAddress(new Address[]{new InternetAddress()});
-            nEm.setAttch("");
-            emails.add(nEm);
-
-            list_emails.setDisable(true);
-            enableDisable(1);
-
-        } else {
-            list_emails.setDisable(false);
-        }
-
-        return emails;
     }
 
     Address[] from, cc;
@@ -697,17 +586,150 @@ public class EmailDashController implements Initializable {
         })).start();
     }
 
+    JFXComboBox sortBy, ascDesc;
+    JFXCheckBox solved, unSolved, locked, unLocked, archived;
+
+    private void populateFilters() {
+        vbox_filter.setSpacing(10);
+
+        Filters filter = Filters.readFromFile();
+
+        //Sort By (ComboBox)
+        HBox sort = new HBox();
+        sortBy = new JFXComboBox();
+        setUpCombo(sortBy, "Sorted By", new String[]{"Tickets", "From", "Subject"});
+        sortBy.setOnAction(event -> saveFilters());
+        sortBy.getSelectionModel().select(filter.getSortBy());
+
+        ascDesc = new JFXComboBox();
+        setUpCombo(ascDesc, "Asc/Desc", new String[]{"Asc", "Desc"});
+        ascDesc.setOnAction(event -> saveFilters());
+        ascDesc.getSelectionModel().select(filter.getAscDesc());
+        sort.getChildren().addAll(sortBy, ascDesc);
+        vbox_filter.getChildren().add(sort);
+
+        //Checkboxes
+        solved = new JFXCheckBox("Solved");
+        solved.selectedProperty().addListener((observable, oldValue, newValue) -> saveFilters());
+        setUpCheck(solved);
+        solved.setSelected(filter.isSolved());
+
+        unSolved = new JFXCheckBox("Unsolved");
+        unSolved.selectedProperty().addListener((observable, oldValue, newValue) -> saveFilters());
+        setUpCheck(unSolved);
+        unSolved.setSelected(filter.isUnsolved());
+
+        locked = new JFXCheckBox("Locked");
+        locked.selectedProperty().addListener((observable, oldValue, newValue) -> saveFilters());
+        setUpCheck(locked);
+        locked.setSelected(filter.isLocked());
+
+        unLocked = new JFXCheckBox("Unlocked");
+        setUpCheck(unLocked);
+        unLocked.selectedProperty().addListener((observable, oldValue, newValue) -> saveFilters());
+        unLocked.setSelected(filter.isUnlocked());
+
+        archived = new JFXCheckBox("Archived");
+        setUpCheck(archived);
+        archived.selectedProperty().addListener((observable, oldValue, newValue) -> saveFilters());
+        archived.setSelected(filter.isArchived());
+    }
+
+    private void populateMenuBar() {
+        Menu newMenu = new Menu("New");
+        MenuItem newEmail = new MenuItem("New Email");
+        newEmail.setOnAction(event -> {
+            instantiateEmail();
+            inflateEResponse(1);
+        });
+        newMenu.getItems().add(newEmail);
+        MenuItem newTicket = new MenuItem("New Ticket");
+        newTicket.setOnAction(event -> {
+            instantiateEmail();
+            inflateEResponse(2);
+        });
+        newMenu.getItems().add(newTicket);
+        menu_bar.getMenus().add(newMenu);
+
+        Menu edit = new Menu("Edit");
+        MenuItem reload = new MenuItem("Refresh");
+        reload.setOnAction(event -> loadEmails());
+        edit.getItems().add(reload);
+
+        MenuItem filter = new MenuItem("Filters");
+        filter.setOnAction(event -> inflateFilters());
+        edit.getItems().add(filter);
+
+        MenuItem archive = new MenuItem("Move to Archive");
+        archive.setOnAction(event -> inflateArchive());
+        edit.getItems().add(archive);
+
+        menu_bar.getMenus().add(edit);
+    }
+
+    private void prepBtn(JFXButton btn) {
+        btn.setMinHeight(50);
+        btn.setMinWidth(60);
+        btn.getStyleClass().add("btnMenuBox");
+        btn.setAlignment(Pos.CENTER_LEFT);
+    }
+
+    public static void reloadInstances() {
+        // comment this line
+        new Thread(() -> {
+            if (dController.isServer == true) {
+                JServer.broadcastMessages("R");
+            } else
+                JClient.sendMessage("R");   //Function was made so that if ever this feature is not needed i can just
+        }).start();
+    }
+
+    private void saveFilters() {
+        imgLoader.setVisible(true);
+        try {
+            Filters filter = new Filters();
+            filter.setSortBy(sortBy.getSelectionModel().getSelectedItem().toString());
+            filter.setAscDesc(ascDesc.getSelectionModel().getSelectedItem().toString());
+            filter.setSolved(solved.isSelected());
+            filter.setUnsolved(unSolved.isSelected());
+            filter.setLocked(locked.isSelected());
+            filter.setUnlocked(unLocked.isSelected());
+            filter.setArchived(archived.isSelected());
+            filter.writeToFile();
+
+            loadEmailsStatic();
+        } catch (NullPointerException e) {
+            System.out.println("x--x");
+        }
+    }
+
+    private void setSearch(FilteredList<Email> filteredList) {
+        enableDisable(1);
+        String filter = search_txt.getText();
+        if (filter == null || filter.length() == 0) {
+            filteredList.setPredicate(s -> true);
+        } else {
+            filteredList.setPredicate(s -> s.toString().toUpperCase().contains(filter.toUpperCase()));
+        }
+    }
+
+    private void setUpCheck(JFXCheckBox combo) {
+        combo.getStyleClass().add("check_box_style");
+        VBox.setMargin(combo, new Insets(5, 5, 0, 10));
+        vbox_filter.getChildren().add(combo);
+    }
+
+    private void setUpCombo(JFXComboBox combo, String prompt, String[] options) {
+        combo.setPromptText(prompt);
+        combo.setMinWidth((vbox_filter.getPrefWidth() * 0.4) - 5);
+        combo.getItems().addAll(options);
+        combo.getStyleClass().add("check_box_style");
+        HBox.setMargin(combo, new Insets(0, 5, 0, 5));
+    }
+
     public void onLock(ActionEvent actionEvent) {
         imgLoader.setVisible(true);
         sql.lockEmail(selectedEmail, 1);
-        loadEmailsStatic();
-        reloadInstances();
-    }
-
-    public void unLock(ActionEvent actionEvent) {
-        imgLoader.setVisible(true);
-        Email email = selectedEmail;
-        sql.lockEmail(email, 0);
         loadEmailsStatic();
         reloadInstances();
     }
@@ -734,46 +756,12 @@ public class EmailDashController implements Initializable {
         }
     }
 
-    public static void reloadInstances() {
-        // comment this line
-        new Thread(() -> {
-            if (dController.isServer == true) {
-                JServer.broadcastMessages("R");
-            } else
-                JClient.sendMessage("R");   //Function was made so that if ever this feature is not needed i can just
-        }).start();
-    }
-
-    //OPENING RESPONSE STAGE
-    private void inflateEResponse(int i) {
-        EResponseController.choice = i;
-        inflateWindow("New Email", "EResponse/EResponse.fxml");
-    }
-
-    //OPENING THE FILTER
-    private void inflateFilters() {
-        inflateWindow("Filters", "Search/filter.fxml");
-    }
-
-    //OPENING THE Archive
-    private void inflateArchive() {
-        inflateWindow("Archive", "Archive/archive.fxml");
-    }
-
-    private void inflateWindow(String title, String path) {
-        try {
-            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource(path));
-            Parent root1 = fxmlLoader.load();
-            Stage stage2 = new Stage();
-            stage2.setTitle(title);
-            stage2.setScene(new Scene(root1));
-            trayHelper tray = new trayHelper();
-            tray.createIcon(stage2);
-            Platform.setImplicitExit(true);
-            stage2.show();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+    public void unLock(ActionEvent actionEvent) {
+        imgLoader.setVisible(true);
+        Email email = selectedEmail;
+        sql.lockEmail(email, 0);
+        loadEmailsStatic();
+        reloadInstances();
     }
 
     private void enableDisable(int i) {
@@ -815,6 +803,5 @@ public class EmailDashController implements Initializable {
 
             combo_respond.setDisable(true);
         }
-
     }
 }

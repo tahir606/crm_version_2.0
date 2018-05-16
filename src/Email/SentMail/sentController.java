@@ -1,7 +1,7 @@
 package Email.SentMail;
 
 import JCode.FileDev;
-import JCode.mySqlConn;
+import JCode.mysql.mySqlConn;
 import com.jfoenix.controls.JFXComboBox;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
