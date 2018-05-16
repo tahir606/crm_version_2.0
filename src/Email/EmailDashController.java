@@ -202,37 +202,6 @@ public class EmailDashController implements Initializable {
         });
     }
 
-    private void populateMenuBar() {
-        Menu newMenu = new Menu("New");
-        MenuItem newEmail = new MenuItem("New Email");
-        newEmail.setOnAction(event -> {
-            instantiateEmail();
-            inflateEResponse(1);
-        });
-        newMenu.getItems().add(newEmail);
-        MenuItem newTicket = new MenuItem("New Ticket");
-        newTicket.setOnAction(event -> {
-            instantiateEmail();
-            inflateEResponse(2);
-        });
-        newMenu.getItems().add(newTicket);
-        menu_bar.getMenus().add(newMenu);
-
-        Menu edit = new Menu("Edit");
-        MenuItem reload = new MenuItem("Refresh");
-        reload.setOnAction(event -> loadEmails());
-        edit.getItems().add(reload);
-
-        MenuItem filter = new MenuItem("Filters");
-        filter.setOnAction(event -> inflateFilters());
-        edit.getItems().add(filter);
-
-        MenuItem archive = new MenuItem("Move to Archive");
-        archive.setOnAction(event -> inflateArchive());
-        edit.getItems().add(archive);
-
-        menu_bar.getMenus().add(edit);
-    }
 
     private void instantiateEmail() {
         EResponseController.stTo = "";
@@ -269,13 +238,6 @@ public class EmailDashController implements Initializable {
                 sentMail.fire();
                 break;
         }
-    }
-
-    private void prepBtn(JFXButton btn) {
-        btn.setMinHeight(50);
-        btn.setMinWidth(60);
-        btn.getStyleClass().add("btnMenuBox");
-        btn.setAlignment(Pos.CENTER_LEFT);
     }
 
     JFXComboBox sortBy, ascDesc;
@@ -327,6 +289,45 @@ public class EmailDashController implements Initializable {
         archived.setSelected(filter.isArchived());
     }
 
+    private void populateMenuBar() {
+        Menu newMenu = new Menu("New");
+        MenuItem newEmail = new MenuItem("New Email");
+        newEmail.setOnAction(event -> {
+            instantiateEmail();
+            inflateEResponse(1);
+        });
+        newMenu.getItems().add(newEmail);
+        MenuItem newTicket = new MenuItem("New Ticket");
+        newTicket.setOnAction(event -> {
+            instantiateEmail();
+            inflateEResponse(2);
+        });
+        newMenu.getItems().add(newTicket);
+        menu_bar.getMenus().add(newMenu);
+
+        Menu edit = new Menu("Edit");
+        MenuItem reload = new MenuItem("Refresh");
+        reload.setOnAction(event -> loadEmails());
+        edit.getItems().add(reload);
+
+        MenuItem filter = new MenuItem("Filters");
+        filter.setOnAction(event -> inflateFilters());
+        edit.getItems().add(filter);
+
+        MenuItem archive = new MenuItem("Move to Archive");
+        archive.setOnAction(event -> inflateArchive());
+        edit.getItems().add(archive);
+
+        menu_bar.getMenus().add(edit);
+    }
+
+    private void prepBtn(JFXButton btn) {
+        btn.setMinHeight(50);
+        btn.setMinWidth(60);
+        btn.getStyleClass().add("btnMenuBox");
+        btn.setAlignment(Pos.CENTER_LEFT);
+    }
+
     private void saveFilters() {
         imgLoader.setVisible(true);
         try {
@@ -346,18 +347,18 @@ public class EmailDashController implements Initializable {
         }
     }
 
+    private void setUpCheck(JFXCheckBox combo) {
+        combo.getStyleClass().add("check_box_style");
+        VBox.setMargin(combo, new Insets(5, 5, 0, 10));
+        vbox_filter.getChildren().add(combo);
+    }
+
     private void setUpCombo(JFXComboBox combo, String prompt, String[] options) {
         combo.setPromptText(prompt);
         combo.setMinWidth((vbox_filter.getPrefWidth() * 0.4) - 5);
         combo.getItems().addAll(options);
         combo.getStyleClass().add("check_box_style");
         HBox.setMargin(combo, new Insets(0, 5, 0, 5));
-    }
-
-    private void setUpCheck(JFXCheckBox combo) {
-        combo.getStyleClass().add("check_box_style");
-        VBox.setMargin(combo, new Insets(5, 5, 0, 10));
-        vbox_filter.getChildren().add(combo);
     }
 
     private void changeEmailType(int type, JFXButton btn) {
@@ -461,13 +462,19 @@ public class EmailDashController implements Initializable {
         }
 
         int index = -1;
+        boolean isFound = false;
         for (Email email : list_emails.getItems()) {
             index++;
             if (email.getEmailNo() == selectedEmail.getEmailNo()) {
+                isFound = true;
                 break;
             }
         }
-        list_emails.getSelectionModel().select(index);
+        if (isFound)
+            list_emails.getSelectionModel().select(index);
+        else {
+            enableDisable(1);
+        }
     }
 
     private void setSearch(FilteredList<Email> filteredList) {

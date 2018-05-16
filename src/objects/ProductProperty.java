@@ -7,9 +7,9 @@ import javafx.beans.property.SimpleStringProperty;
 
 public class ProductProperty {
 
-    SimpleIntegerProperty code, price, status, type, createdBy, priority;
-    SimpleStringProperty name, desc, startedtimeStmp, formattedDate, createdOn;
-    SimpleBooleanProperty freeze;
+    private SimpleIntegerProperty code, price, status, type, createdBy, priority;
+    private SimpleStringProperty name, desc, startedtimeStmp, formattedDate, createdOn;
+    private SimpleBooleanProperty freeze;
 
     public ProductProperty() {
         code = new SimpleIntegerProperty();
