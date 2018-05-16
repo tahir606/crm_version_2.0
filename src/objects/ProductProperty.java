@@ -5,11 +5,15 @@ import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class ProductProperty {
 
     private SimpleIntegerProperty code, price, status, type, createdBy, priority;
     private SimpleStringProperty name, desc, startedtimeStmp, formattedDate, createdOn;
     private SimpleBooleanProperty freeze;
+    private List<ProductModule> productModules;
 
     public ProductProperty() {
         code = new SimpleIntegerProperty();
@@ -27,6 +31,8 @@ public class ProductProperty {
         formattedDate = new SimpleStringProperty();
 
         freeze = new SimpleBooleanProperty();
+        
+        productModules = new ArrayList<>();
     }
 
     @Override
@@ -161,7 +167,15 @@ public class ProductProperty {
     public void setCreatedOn(String createdOn) {
         this.createdOn.set(createdOn);
     }
-
+    
+    public List<ProductModule> getProductModules() {
+        return productModules;
+    }
+    
+    public void setProductModules(List<ProductModule> productModules) {
+        this.productModules = productModules;
+    }
+    
     public boolean isFreeze() {
         return freeze.get();
     }

@@ -62,7 +62,7 @@ public class mySqlConn {
             try {
                 System.out.println("Trying times: " + times);
                 Class.forName("com.mysql.jdbc.Driver");
-                System.out.println(URL + "\n" + USER + "\n" + PASSWORD);
+//                System.out.println(URL + "\n" + USER + "\n" + PASSWORD);
                 Connection con = DriverManager.getConnection(
                         URL, USER, PASSWORD);
                 return con;
@@ -2094,6 +2094,81 @@ public class mySqlConn {
         return allProducts;
     }
     
+    public void insertProductModule(ProductModule productModule) {
+        String query = "INSERT INTO PRODUCT_MODULE(PM_ID, PM_NAME ,PM_DESC, PS_ID, CREATEDON, CREATEDBY) " +
+                " SELECT IFNULL(max(PM_ID),0)+1,?,?,?,?,? from PRODUCT_MODULE WHERE PS_ID =?";
+    
+        // Connection con = getConnection();
+        PreparedStatement statement = null;
+    
+        try {
+            statement = static_con.prepareStatement(query);
+            statement.setString(1, productModule.getName());
+            statement.setString(2, productModule.getDesc());
+            statement.setInt(3, productModule.getProductCode());
+            statement.setString(4, CommonTasks.getCurrentTimeStamp());
+            statement.setInt(5, fHelper.ReadUserDetails().getUCODE());
+            statement.setInt(6, productModule.getProductCode());
+        
+            statement.executeUpdate();
+        
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    
+    }
+    
+    public void updateProductModule(ProductModule productModule) {
+        String query = "UPDATE PRODUCT_MODULE SET PM_ID=? ,PM_NAME=? ,PM_DESC=? ,PS_ID=? ,CREATEDON=? ,CREATEDBY=? " +
+                " WHERE PM_ID=? " +
+                " AND PS_ID=? ";
+        
+        // Connection con = getConnection();
+        PreparedStatement statement = null;
+        
+        try {
+            statement = static_con.prepareStatement(query);
+            statement.setString(1, productModule.getName());
+            statement.setString(2, productModule.getDesc());
+            statement.setInt(3, productModule.getProductCode());
+            statement.setString(4, CommonTasks.getCurrentTimeStamp());
+            statement.setInt(5, fHelper.ReadUserDetails().getUCODE());
+            statement.setInt(6, productModule.getProductCode());
+            
+            statement.executeUpdate();
+            
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        
+    }
+    
+    public List<ProductModule> getAllProductModules(int productCode) {
+        String query = " SELECT PM_ID, PM_NAME, PM_DESC, CREATEDBY, CREATEDON " +
+                " FROM PRODUCT_MODULE " +
+                " WHERE PS_ID = ?";
+    
+        ArrayList<ProductModule> modules = new ArrayList<>();
+        
+        try {
+            PreparedStatement statement = static_con.prepareStatement(query);
+            ResultSet set = statement.executeQuery();
+            
+            while (set.next()) {
+                ProductModule module = new ProductModule();
+                module.setCode(set.getInt("PM_ID"));
+                module.setName(set.getString("PM_NAME"));
+                module.setDesc(set.getString("PM_DESC"));
+                module.setProductCode(set.getInt("PS_ID"));
+                
+                modules.add(module);
+            }
+            
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    
+    }
     
 
     public static boolean pingHost(String host, int port, int timeout) {

@@ -84,7 +84,7 @@
             </children>
         </VBox>
         <JFXButton fx:id="btn_save" buttonType="RAISED" layoutX="932.0" layoutY="427.0" onAction="#saveChanges" prefHeight="45.0" prefWidth="80.0" styleClass="hbox_menu" text="Save" AnchorPane.bottomAnchor="28.0" AnchorPane.rightAnchor="88.0" />
-      <Label fx:id="txt_heading" layoutX="85.0" layoutY="15.0" prefHeight="38.0" prefWidth="404.0" text="New Contact" textFill="#0a2811" AnchorPane.topAnchor="15.0">
+      <Label fx:id="txt_heading" layoutX="85.0" layoutY="15.0" prefHeight="38.0" prefWidth="404.0" text="New Contact" textFill="#0a2811" AnchorPane.leftAnchor="85.0" AnchorPane.topAnchor="15.0">
          <font>
             <Font name="Arial Unicode MS" size="28.0" />
          </font>

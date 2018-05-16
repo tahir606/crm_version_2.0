@@ -8,6 +8,7 @@ import com.jfoenix.controls.JFXComboBox;
 import com.jfoenix.controls.JFXDatePicker;
 import com.jfoenix.controls.JFXTextField;
 import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -15,6 +16,8 @@ import javafx.geometry.Pos;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import objects.ProductProperty;
 import product.ProductDashController;
@@ -25,7 +28,7 @@ import java.net.URL;
 import java.util.ResourceBundle;
 
 public class NewProductController implements Initializable {
-
+    
     @FXML
     private JFXTextField txt_name;
     @FXML
@@ -44,17 +47,22 @@ public class NewProductController implements Initializable {
     private JFXDatePicker started_date;
     @FXML
     private JFXButton btn_back;
-
+    @FXML
+    private JFXButton btn_add_module;
+    @FXML
+    private VBox vbox_modules;
+    
     public static char stInstance;
-
+    
     private ProductProperty product;
     private mySqlConn sql;
-
+    
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         sql = new mySqlConn();
         product = new ProductProperty();
-
+        vbox_modules.setSpacing(10);
+        
         Image image = new Image(this.getClass().getResourceAsStream("/res/img/left-arrow.png"));
         btn_back.setGraphic(new ImageView(image));
         btn_back.setAlignment(Pos.CENTER_LEFT);
@@ -63,13 +71,44 @@ public class NewProductController implements Initializable {
             try {
                 ProductDashController.main_paneF.setCenter(
                         FXMLLoader.load(
-                                getClass().getClassLoader().getResource("product/view/product_view.fxml")));
-
+                                getClass().getClassLoader().getResource("product/view/plus-green.fxml")));
+                
             } catch (IOException e) {
                 e.printStackTrace();
             }
         });
-
+        
+        image = new Image(this.getClass().getResourceAsStream("/res/img/plus-green.png"));
+        btn_add_module.setGraphic(new ImageView(image));
+        btn_add_module.setAlignment(Pos.CENTER_LEFT);
+        btn_add_module.setTooltip(new Tooltip("Add Module"));
+        btn_add_module.setOnAction(event -> {
+            HBox hBox = new HBox();
+            hBox.setSpacing(5);
+            
+            JFXTextField txt_name = new JFXTextField();
+            txt_name.setAccessibleText("name");
+            txt_name.setPromptText("Name");
+            txt_name.setMaxWidth(100);
+            txt_name.setMaxHeight(20);
+            txt_name.getStyleClass().add("blackText");
+            
+            TextArea txt_desc = new TextArea();
+            txt_desc.setAccessibleText("desc");
+            txt_desc.setPromptText("Description");
+            txt_desc.setMaxWidth(220);
+            txt_desc.setMaxHeight(20);
+            txt_desc.setWrapText(true);
+            txt_desc.getStyleClass().add("blackText");
+            
+            JFXButton btn_delete = new JFXButton("X");
+            btn_delete.setOnAction(event1 -> vbox_modules.getChildren().remove(hBox));
+            
+            hBox.getChildren().addAll(txt_name, txt_desc, btn_delete);
+            
+            vbox_modules.getChildren().add(hBox);
+        });
+        
         if (stInstance == 'N') {
             product = new ProductProperty();
             txt_heading.setText("New Product");
@@ -81,17 +120,7 @@ public class NewProductController implements Initializable {
             txt_heading.setText("Update Product");
         }
     }
-
-//    private void init() {
-//
-//        product = new ProductProperty();
-//        product.setName(" + Create New");
-//        product.setPrice('\0');
-//        product.setDesc("");
-//        product.set
-//
-//    }
-
+    
     private void populateDetails(ProductProperty newValue) {
         if (newValue == null)
             return;
@@ -99,7 +128,7 @@ public class NewProductController implements Initializable {
             txt_name.setText("");
         else
             txt_name.setText(newValue.getName());
-
+        
         txt_name.setText(product.getName());
         txt_price.setText(String.valueOf(product.getPrice()));
         txt_desc.setText(product.getDesc());
@@ -107,16 +136,16 @@ public class NewProductController implements Initializable {
             started_date.setValue(CommonTasks.createLocalDate(newValue.getStartedtimeStmp()));
         else
             started_date.setValue(null);
-
+        
     }
-
-
+    
+    
     public void saveChanges(ActionEvent actionEvent) {
         String name = txt_name.getText(),
                 price = txt_price.getText(),
                 desc = txt_desc.getText(),
                 started = String.valueOf(started_date.getValue());
-
+        
         if (name.equals("") || desc.equals("")) {
             Toast.makeText((Stage) btn_save.getScene().getWindow(), "Required Fields Are Empty");
             return;
@@ -138,9 +167,9 @@ public class NewProductController implements Initializable {
             Alert alert2 = new Alert(Alert.AlertType.CONFIRMATION, msg,
                     ButtonType.YES, ButtonType.NO);
             alert2.showAndWait();
-
+            
             if (alert2.getResult() == ButtonType.YES) {
-
+                
                 product.setName(name);
                 product.setPrice(Integer.parseInt(price));
                 product.setDesc(desc);
@@ -149,7 +178,7 @@ public class NewProductController implements Initializable {
                 else
                     product.setStartedtimeStmp(started);
                 product.setFreeze(false);
-
+                
                 switch (stInstance) {
                     case 'N': {
                         sql.insertProduct(product);
@@ -163,7 +192,7 @@ public class NewProductController implements Initializable {
                         break;
                     }
                 }
-
+                
             } else {
                 return;
             }

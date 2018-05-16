@@ -2,8 +2,8 @@ package objects;
 
 public class ProductModule {
     
-    int code, productCode;
-    String name, desc;
+    int code, productCode, createdBy;
+    String name, desc, createdOn;
     
     public ProductModule() {
     }
@@ -38,5 +38,21 @@ public class ProductModule {
     
     public void setDesc(String desc) {
         this.desc = desc;
+    }
+    
+    public int getCreatedBy() {
+        return createdBy;
+    }
+    
+    public void setCreatedBy(int createdBy) {
+        this.createdBy = createdBy;
+    }
+    
+    public String getCreatedOn() {
+        return createdOn;
+    }
+    
+    public void setCreatedOn(String createdOn) {
+        this.createdOn = createdOn;
     }
 }
