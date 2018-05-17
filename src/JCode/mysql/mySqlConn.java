@@ -2237,7 +2237,7 @@ public class mySqlConn {
     
     public int unlockModule(ProductModule module) {
         String query = "INSERT INTO PRODUCT_MODULE(PM_ID, PM_NAME ,PM_DESC, PS_ID, CREATEDON, CREATEDBY) " +
-                " SELECT IFNULL(max(PM_ID),0)+1,?,?,?,?,? from PRODUCT_MODULE WHERE PS_ID =?";
+                " VALUES (?,?,?,?) ";
         
         // Connection con = getConnection();
         PreparedStatement statement = null;
@@ -2249,7 +2249,6 @@ public class mySqlConn {
             statement.setInt(3, productModule.getProductCode());
             statement.setString(4, CommonTasks.getCurrentTimeStamp());
             statement.setInt(5, fHelper.ReadUserDetails().getUCODE());
-            statement.setInt(6, productModule.getProductCode());
             
             statement.executeUpdate();
         } catch (SQLException e) {
