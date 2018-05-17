@@ -8,6 +8,16 @@ public class ProductModule {
     public ProductModule() {
     }
     
+    @Override
+    public String toString() {
+        return "ProductModule{" +
+                "code=" + code +
+                ", productCode=" + productCode +
+                ", name='" + name + '\'' +
+                ", desc='" + desc + '\'' +
+                '}';
+    }
+    
     public int getCode() {
         return code;
     }

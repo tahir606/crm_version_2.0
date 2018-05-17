@@ -40,6 +40,15 @@
     -fx-background-insets: 1;
 }
 
+.moduleDetails {
+    -fx-text-fill: #ffffff;
+    -fx-font-size: 9pt;
+}
+
+.moduleDetails:hover {
+    -fx-background-color: #d7ffc6;
+}
+
 .emailListview {
     -fx-focus-color: transparent;
     -fx-faint-focus-color: transparent;

@@ -70,5 +70,10 @@
             </styleClass>
         </ScrollPane>
       <JFXButton fx:id="btn_add_module" layoutX="930.0" layoutY="42.0" prefHeight="25.0" prefWidth="27.0" text=" " AnchorPane.rightAnchor="128.0" AnchorPane.topAnchor="42.0" />
+      <Label layoutX="765.0" layoutY="41.0" text="Modules" AnchorPane.topAnchor="41.0">
+         <font>
+            <Font name="Arial Unicode MS" size="18.0" />
+         </font>
+      </Label>
     </children>
 </AnchorPane>
