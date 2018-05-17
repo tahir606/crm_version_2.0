@@ -133,9 +133,11 @@ public class NewProductController implements Initializable {
             HBox box = (HBox) node;
             for (Node n : box.getChildren()) {
                 if (n.getAccessibleText().equals("name")) {
-                    module.setName(((JFXTextField) n).getText().toString());
+                    String name = ((JFXTextField) n).getText().toString();
+                    module.setName(name);
                 } else if (n.getAccessibleText().equals("desc")) {
-                    module.setDesc(((TextArea) n).getText().toString());
+                    String desc = ((TextArea) n).getText().toString();
+                    module.setDesc(desc);
                 }
             }
         }
