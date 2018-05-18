@@ -2236,19 +2236,19 @@ public class mySqlConn {
     }
     
     public int unlockModule(ProductModule module) {
-        String query = "INSERT INTO PRODUCT_MODULE(PM_ID, PM_NAME ,PM_DESC, PS_ID, CREATEDON, CREATEDBY) " +
-                " VALUES (?,?,?,?) ";
+        String query = " UPDATE MODULE_LOCKING SET LOCKEDTIME = ?, DESC = ? " +
+                " WHERE LOCKEDTIME != NULL " +
+                " AND UCODE = ? ";
         
         // Connection con = getConnection();
         PreparedStatement statement = null;
         
         try {
             statement = static_con.prepareStatement(query);
-            statement.setString(1, productModule.getName());
+            statement.setInt(1, module.getCode());
             statement.setString(2, productModule.getDesc());
-            statement.setInt(3, productModule.getProductCode());
-            statement.setString(4, CommonTasks.getCurrentTimeStamp());
-            statement.setInt(5, fHelper.ReadUserDetails().getUCODE());
+            statement.setString(3, CommonTasks.getCurrentTimeStamp());
+            statement.setInt(4, fHelper.ReadUserDetails().getUCODE());
             
             statement.executeUpdate();
         } catch (SQLException e) {
