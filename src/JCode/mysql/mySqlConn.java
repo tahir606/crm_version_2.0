@@ -2215,13 +2215,11 @@ public class mySqlConn {
         return 0;
     }
     
-    public int lockModule(ProductModule module) {
+    public void lockModule(ProductModule module) {
         String query = "INSERT INTO MODULE_LOCKING(PM_ID, UCODE, LOCKEDTIME, PS_ID) " +
                 " VALUES(?,?,?,?) ";
         
-        // Connection con = getConnection();
         PreparedStatement statement = null;
-        
         try {
             statement = static_con.prepareStatement(query);
             statement.setInt(1, module.getCode());
@@ -2235,20 +2233,21 @@ public class mySqlConn {
         }
     }
     
-    public int unlockModule(ProductModule module) {
+    public void unlockModule(ProductModule module) {
         String query = " UPDATE MODULE_LOCKING SET LOCKEDTIME = ?, DESC = ? " +
                 " WHERE LOCKEDTIME != NULL " +
-                " AND UCODE = ? ";
+                " AND UCODE = ? " +
+                " AND PM_ID = ? " +
+                " AND PS_ID = ?";
         
-        // Connection con = getConnection();
         PreparedStatement statement = null;
-        
         try {
             statement = static_con.prepareStatement(query);
-            statement.setInt(1, module.getCode());
-            statement.setString(2, productModule.getDesc());
-            statement.setString(3, CommonTasks.getCurrentTimeStamp());
-            statement.setInt(4, fHelper.ReadUserDetails().getUCODE());
+            statement.setString(1, CommonTasks.getCurrentTimeStamp());
+            statement.setString(2, module.getDesc());
+            statement.setInt(3, fHelper.ReadUserDetails().getUCODE());
+            statement.setInt(4, module.getCode());
+            statement.setInt(5, module.getProductCode());
             
             statement.executeUpdate();
         } catch (SQLException e) {
