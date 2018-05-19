@@ -55,7 +55,7 @@
                                 <Font size="14.0" />
                             </font>
                         </Label>
-                        <TextArea fx:id="txt_desc" styleClass="scroll-view" editable="false" prefHeight="67.0" prefWidth="323.0" />
+                        <TextArea fx:id="txt_desc" editable="false" prefHeight="67.0" prefWidth="323.0" styleClass="scroll-view" />
                     </children>
                 </HBox>
             </children>
@@ -66,8 +66,8 @@
                 <JFXButton fx:id="btn_edit" prefHeight="38.0" prefWidth="84.0" styleClass="emailDetailsButton" text="Edit" />
             </children>
         </HBox>
-        <ScrollPane layoutX="610.0" layoutY="116.0" prefHeight="259.0" prefWidth="254.0" AnchorPane.bottomAnchor="25.0" AnchorPane.topAnchor="116.0">
-            <VBox fx:id="vbox_modules" prefHeight="252.0" prefWidth="239.0">
+        <ScrollPane layoutX="610.0" layoutY="116.0" prefHeight="259.0" prefWidth="361.0" AnchorPane.bottomAnchor="25.0" AnchorPane.topAnchor="116.0">
+            <VBox fx:id="vbox_modules" prefHeight="252.0" prefWidth="356.0">
 
             </VBox>
             <styleClass>

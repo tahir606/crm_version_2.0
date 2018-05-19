@@ -3,7 +3,7 @@ package objects;
 public class ProductModule {
     
     int code, productCode, createdBy;
-    String name, desc, createdOn;
+    String name, desc, createdOn, state;
     
     public ProductModule() {
     }
@@ -49,7 +49,15 @@ public class ProductModule {
     public void setDesc(String desc) {
         this.desc = desc;
     }
-    
+
+    public String getState() {
+        return state;
+    }
+
+    public void setState(String state) {
+        this.state = state;
+    }
+
     public int getCreatedBy() {
         return createdBy;
     }
