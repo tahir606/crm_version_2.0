@@ -2263,13 +2263,11 @@ public class mySqlConn {
     }
     
     public void unlockModule(ProductModule module, String desc) {
-        String query = " UPDATE MODULE_LOCKING SET LOCKEDTIME = ?, DESCRIPTION = ? " +
-                " WHERE LOCKEDTIME != NULL " +
+        String query = " UPDATE MODULE_LOCKING SET UNLOCKEDTIME = ?, DESCRIPTION = ? " +
+                " WHERE LOCKEDTIME IS NOT NULL " +
                 " AND UCODE = ? " +
                 " AND PM_ID = ? " +
                 " AND PS_ID = ? ";
-    
-        System.out.println(query);
         
         PreparedStatement statement = null;
         try {
