@@ -2,8 +2,8 @@ package objects;
 
 public class ProductModule {
     
-    int code, productCode, createdBy;
-    String name, desc, createdOn, state;
+    int code, productCode, createdBy, state, lockedBy;
+    String name, desc, createdOn, lockedByName;
     
     public ProductModule() {
     }
@@ -49,15 +49,31 @@ public class ProductModule {
     public void setDesc(String desc) {
         this.desc = desc;
     }
-
-    public String getState() {
+    
+    public int getState() {
         return state;
     }
-
-    public void setState(String state) {
+    
+    public void setState(int state) {
         this.state = state;
     }
-
+    
+    public int getLockedBy() {
+        return lockedBy;
+    }
+    
+    public void setLockedBy(int lockedBy) {
+        this.lockedBy = lockedBy;
+    }
+    
+    public String getLockedByName() {
+        return lockedByName;
+    }
+    
+    public void setLockedByName(String lockedByName) {
+        this.lockedByName = lockedByName;
+    }
+    
     public int getCreatedBy() {
         return createdBy;
     }

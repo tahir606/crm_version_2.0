@@ -2156,9 +2156,9 @@ public class mySqlConn {
     }
     
     public List<ProductModule> getAllProductModules(int productCode) {
-        String query = " SELECT PM_ID, PM_NAME, PM_DESC, PS_ID, CREATEDBY, CREATEDON " +
+        String query = " SELECT PM_ID, PM_NAME, PM_DESC, PS_ID, CREATEDBY, CREATEDON  " +
                 " FROM PRODUCT_MODULE " +
-                " WHERE PS_ID = ?";
+                " WHERE PS_ID = ? ";
         
         ArrayList<ProductModule> modules = new ArrayList<>();
         try {
@@ -2181,6 +2181,35 @@ public class mySqlConn {
         
         return modules;
         
+    }
+    
+    public ProductProperty getProductModuleStates(ProductProperty product) {
+        String query = " SELECT LOCKEDTIME " +
+                " FROM MODULE_LOCKING " +
+                " WHERE PM_ID = ? " +
+                " AND PS_ID = ? " +
+                " AND UNLOCKEDTIME is NULL ";
+        for (ProductModule module : product.getProductModules()) {
+            try {
+                PreparedStatement statement = static_con.prepareStatement(query);
+                statement.setInt(1, module.getCode());
+                statement.setInt(2, module.getProductCode());
+                
+                ResultSet set = statement.executeQuery();
+                if (!set.isBeforeFirst())          // 0 is for unlocked 1 is for locked
+                    module.setState(0);
+                else
+                    module.setState(1);
+                
+                
+                set.close();
+                statement.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+        
+        return product;
     }
     
     public void deleteAllProductModules(int product) {
@@ -2217,7 +2246,7 @@ public class mySqlConn {
     
     public void lockModule(ProductModule module) {
         String query = "INSERT INTO MODULE_LOCKING(PM_ID, UCODE, LOCKEDTIME, PS_ID) " +
-                " VALUES(?,?,?,?) ";
+                " VALUES(?,?,?,?)";
         
         PreparedStatement statement = null;
         try {
@@ -2233,18 +2262,20 @@ public class mySqlConn {
         }
     }
     
-    public void unlockModule(ProductModule module) {
-        String query = " UPDATE MODULE_LOCKING SET LOCKEDTIME = ?, DESC = ? " +
+    public void unlockModule(ProductModule module, String desc) {
+        String query = " UPDATE MODULE_LOCKING SET LOCKEDTIME = ?, DESCRIPTION = ? " +
                 " WHERE LOCKEDTIME != NULL " +
                 " AND UCODE = ? " +
                 " AND PM_ID = ? " +
-                " AND PS_ID = ?";
+                " AND PS_ID = ? ";
+    
+        System.out.println(query);
         
         PreparedStatement statement = null;
         try {
             statement = static_con.prepareStatement(query);
             statement.setString(1, CommonTasks.getCurrentTimeStamp());
-            statement.setString(2, module.getDesc());
+            statement.setString(2, desc);
             statement.setInt(3, fHelper.ReadUserDetails().getUCODE());
             statement.setInt(4, module.getCode());
             statement.setInt(5, module.getProductCode());

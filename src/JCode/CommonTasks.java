@@ -8,6 +8,8 @@ import javafx.scene.Scene;
 import javafx.stage.Stage;
 
 import java.io.IOException;
+import java.net.URL;
+import java.nio.charset.Charset;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -125,6 +127,22 @@ public class CommonTasks {
         LocalDate localDate = LocalDate.of(year, month, day);
         
         return localDate;
+    }
+    
+    public static void inflateDialog(String title, URL path) {
+        try {
+            FXMLLoader fxmlLoader = new FXMLLoader(path);
+            Parent root1 = fxmlLoader.load();
+            Stage stage2 = new Stage();
+            stage2.setTitle(title);
+            stage2.setScene(new Scene(root1));
+            trayHelper tray = new trayHelper();
+            tray.createIcon(stage2);
+            Platform.setImplicitExit(true);
+            stage2.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
     
 }
