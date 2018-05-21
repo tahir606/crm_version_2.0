@@ -3,7 +3,7 @@ package objects;
 public class ProductModule {
     
     int code, productCode, createdBy, state, lockedBy;
-    String name, desc, createdOn, lockedByName;
+    String name, desc, productName, createdOn, lockedByName, lockedTime;
     
     public ProductModule() {
     }
@@ -32,6 +32,14 @@ public class ProductModule {
     
     public void setProductCode(int productCode) {
         this.productCode = productCode;
+    }
+    
+    public String getProductName() {
+        return productName;
+    }
+    
+    public void setProductName(String productName) {
+        this.productName = productName;
     }
     
     public String getName() {
@@ -72,6 +80,14 @@ public class ProductModule {
     
     public void setLockedByName(String lockedByName) {
         this.lockedByName = lockedByName;
+    }
+    
+    public String getLockedTime() {
+        return lockedTime;
+    }
+    
+    public void setLockedTime(String lockedTime) {
+        this.lockedTime = lockedTime;
     }
     
     public int getCreatedBy() {

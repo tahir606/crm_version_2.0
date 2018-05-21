@@ -2184,11 +2184,12 @@ public class mySqlConn {
     }
     
     public ProductProperty getProductModuleStates(ProductProperty product) {
-        String query = " SELECT LOCKEDTIME " +
+        String query = " SELECT LOCKEDTIME, UCODE " +
                 " FROM MODULE_LOCKING " +
                 " WHERE PM_ID = ? " +
                 " AND PS_ID = ? " +
                 " AND UNLOCKEDTIME is NULL ";
+        
         for (ProductModule module : product.getProductModules()) {
             try {
                 PreparedStatement statement = static_con.prepareStatement(query);
@@ -2198,9 +2199,14 @@ public class mySqlConn {
                 ResultSet set = statement.executeQuery();
                 if (!set.isBeforeFirst())          // 0 is for unlocked 1 is for locked
                     module.setState(0);
-                else
-                    module.setState(1);
-                
+                else {
+                    while (set.next()) {
+                        if (set.getInt("UCODE") == fHelper.ReadUserDetails().getUCODE())
+                            module.setState(1);
+                        else
+                            module.setState(2);
+                    }
+                }
                 
                 set.close();
                 statement.close();
@@ -2210,6 +2216,39 @@ public class mySqlConn {
         }
         
         return product;
+    }
+    
+    public ArrayList<ProductModule> getLockedModules() {
+        String query = "SELECT ML.PM_ID, ML.PS_ID, LOCKEDTIME, FNAME, PM_NAME, PS_NAME " +
+                "FROM MODULE_LOCKING AS ML, PRODUCT_MODULE AS PM, PRODUCT_STORE AS PS, USERS AS U " +
+                "WHERE UNLOCKEDTIME IS NULL " +
+                "AND ML.PS_ID = PM.PS_ID " +
+                "AND ML.PM_ID = PM.PM_ID " +
+                "AND ML.PS_ID = PS.PS_ID " +
+                "AND ML.UCODE = U.UCODE ";
+    
+        ArrayList<ProductModule> modules = new ArrayList<>();
+        try {
+            PreparedStatement statement = static_con.prepareStatement(query);
+            ResultSet set = statement.executeQuery();
+            while (set.next()) {
+                ProductModule module = new ProductModule();
+                module.setCode(set.getInt("PM_ID"));
+                module.setName(set.getString("PM_NAME"));
+                module.setProductCode(set.getInt("PS_ID"));
+                module.setProductName(set.getString("PS_NAME"));
+                module.setLockedByName(set.getString("FNAME"));
+                module.setLockedTime(set.getString("LOCKEDTIME"));
+                
+                modules.add(module);
+            }
+        
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    
+        return modules;
+    
     }
     
     public void deleteAllProductModules(int product) {
@@ -2244,7 +2283,42 @@ public class mySqlConn {
         return 0;
     }
     
-    public void lockModule(ProductModule module) {
+    private int getModuleState(ProductModule module) {
+        String query = " SELECT LOCKEDTIME, UCODE " +
+                " FROM MODULE_LOCKING " +
+                " WHERE PM_ID = ? " +
+                " AND PS_ID = ? " +
+                " AND UNLOCKEDTIME is NULL ";
+    
+        PreparedStatement statement = null;
+        try {
+            statement = static_con.prepareStatement(query);
+            statement.setInt(1, module.getCode());
+            statement.setInt(2, module.getProductCode());
+    
+            ResultSet set = statement.executeQuery();
+            if (!set.isBeforeFirst())          // 0 is for unlocked 1 is for locked 2 is for locked but not by you
+                return 0;
+            else {
+                while (set.next()) {
+                    if (set.getInt("UCODE") == fHelper.ReadUserDetails().getUCODE())
+                        return 1;
+                    else
+                        return 2;
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        
+        return 1;
+    }
+    
+    public boolean lockModule(ProductModule module) {
+        
+        if (getModuleState(module) != 0)
+            return false;
+        
         String query = "INSERT INTO MODULE_LOCKING(PM_ID, UCODE, LOCKEDTIME, PS_ID) " +
                 " VALUES(?,?,?,?)";
         
@@ -2257,9 +2331,14 @@ public class mySqlConn {
             statement.setInt(4, module.getProductCode());
             
             statement.executeUpdate();
+            
+            statement.close();
+            
         } catch (SQLException e) {
             e.printStackTrace();
         }
+    
+        return true;
     }
     
     public void unlockModule(ProductModule module, String desc) {

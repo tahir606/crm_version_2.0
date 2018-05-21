@@ -63,7 +63,7 @@ public class CommonTasks {
         return outputText;
     }
     
-    public static String getDataFormattedOnlyData(String timeStamp) {
+    public static String getDateFormattedOnly(String timeStamp) {
         // Note, MM is months, not mm
         DateFormat inputFormat = new SimpleDateFormat("yyyy-MM-dd");
         DateFormat outputFormat = new SimpleDateFormat("dd-MMM-yyyy");

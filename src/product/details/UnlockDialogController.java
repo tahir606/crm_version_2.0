@@ -44,6 +44,7 @@ public class UnlockDialogController implements Initializable {
             String desc = txt_desc.getText().toString();
             sql.unlockModule(module, desc);
             
+            ProductDetailsController.init(this.getClass().getResource("unlock_dialog.fxml"));
             Stage stage = (Stage) btn_unlock.getScene().getWindow();
             stage.close();
         });

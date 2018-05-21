@@ -43,15 +43,15 @@ public class ProductDetailsController implements Initializable {
     private JFXButton btn_edit;
     @FXML
     private VBox vbox_modules;
+    private static VBox vbox_modulesS;
     
-    private ProductProperty product;
+    private static ProductProperty product;
     public static ProductModule selectedModule;
-    
-    private mySqlConn sql;
+    private static mySqlConn sql;
     
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        
+        vbox_modulesS = vbox_modules;
         sql = new mySqlConn();
         
         Image image = new Image(this.getClass().getResourceAsStream("/res/img/left-arrow.png"));
@@ -88,17 +88,17 @@ public class ProductDetailsController implements Initializable {
         txt_startedOn.setText(product.getFormattedDate());
         
         vbox_modules.setSpacing(10);
-        init();
+        init(this.getClass().getResource("unlock_dialog.fxml"));
         
     }
     
-    private void init() {
+    public static void init(URL path) {
         ProductProperty prod = sql.getProductModuleStates(product);
-        populateModules(prod);
+        populateModules(prod, path);
     }
     
-    private void populateModules(ProductProperty product) {
-        vbox_modules.getChildren().clear();
+    private static void populateModules(ProductProperty product, URL path) {
+        vbox_modulesS.getChildren().clear();
         for (ProductModule module : product.getProductModules()) {
             HBox box = new HBox();
             box.setSpacing(10);
@@ -106,6 +106,7 @@ public class ProductDetailsController implements Initializable {
             Label name = new Label();
             name.setText(module.getName());
             name.setMinWidth(60);
+            name.setMaxWidth(60);
             
             TextArea desc = new TextArea();
             desc.setMaxWidth(200);
@@ -113,6 +114,7 @@ public class ProductDetailsController implements Initializable {
             desc.setWrapText(true);
             desc.setEditable(false);
             desc.setText(module.getDesc());
+            desc.getStyleClass().add("scroll-view");
             
             JFXButton btnState = new JFXButton();
             if (module.getState() == '\0')
@@ -122,11 +124,19 @@ public class ProductDetailsController implements Initializable {
                 case 0: {
                     btnState.getStyleClass().removeAll();
                     btnState.setStyle("-fx-background-color: #feffe0;");
+                    btnState.setDisable(false);
                     break;
                 }
                 case 1: {
                     btnState.getStyleClass().removeAll();
                     btnState.getStyleClass().add("unlockedEmail");
+                    btnState.setDisable(false);
+                    break;
+                }
+                case 2: {   //When module is not locked by you
+                    btnState.getStyleClass().removeAll();
+                    btnState.getStyleClass().add("unlockedEmail");
+                    btnState.setDisable(true);
                     break;
                 }
             }
@@ -138,19 +148,22 @@ public class ProductDetailsController implements Initializable {
                 switch (module.getState()) {
                     case 0: {
                         sql.lockModule(module);
+                        init(path);
                         break;
                     }
                     case 1: {
-                        CommonTasks.inflateDialog("Confirmation?", this.getClass().getResource("unlock_dialog.fxml"));
+                        CommonTasks.inflateDialog("Confirmation?", path);
+                        break;
+                    }
+                    case 2: {
                         break;
                     }
                 }
-                init();
             });
             
             box.getChildren().addAll(name, desc, btnState);
             box.getStyleClass().add("moduleDetails");
-            vbox_modules.getChildren().add(box);
+            vbox_modulesS.getChildren().add(box);
         }
     }
 }

@@ -3,3 +3,12 @@
     -fx-text-fill: #002b05;
     -fx-font-weight: bold;
 }
+
+.moduleDetails {
+    -fx-text-fill: #ffffff;
+    -fx-font-size: 9pt;
+}
+
+.moduleDetails:hover {
+    -fx-background-color: #d7ffc6;
+}

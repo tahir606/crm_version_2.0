@@ -225,7 +225,12 @@ public class NewProductController implements Initializable {
             if (alert2.getResult() == ButtonType.YES) {
                 
                 product.setName(name);
-                product.setPrice(Integer.parseInt(price));
+                try {
+                    product.setPrice(Integer.parseInt(price));
+                } catch (NumberFormatException e) {
+                    System.out.println("Number Format Exception");
+                    product.setPrice('\0');
+                }
                 product.setDesc(desc);
                 if (started.equals("null"))
                     product.setStartedtimeStmp(null);
