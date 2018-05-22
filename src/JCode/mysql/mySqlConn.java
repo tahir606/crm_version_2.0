@@ -20,7 +20,7 @@ public class mySqlConn {
     private static String URL;
     
     private fileHelper fHelper;
-    private ESetting eSetting;
+//    private ESetting eSetting;
     
     private Users user;
     
@@ -45,10 +45,16 @@ public class mySqlConn {
         user = fHelper.ReadUserDetails();
         if (static_con == null)
             static_con = getConnection();
-        
-        eSetting = getEmailSettings();
-        
+
         userQueries = new UserQueries(static_con, fHelper);
+        emailQueries = new EmailQueries(static_con, user);
+        emailSettingsQueries = new EmailSettingsQueries(static_con, fHelper);
+        contactQueries = new ContactQueries(static_con, fHelper);
+        clientQueries = new ClientQueries(static_con, fHelper);
+        productQueries = new ProductQueries(static_con, fHelper);
+        domainQueries = new DomainQueries(static_con);
+
+//        eSetting = getEmailSettings();
     }
     
     private Connection getConnection() {
@@ -223,7 +229,7 @@ public class mySqlConn {
     }
     
     public List<ClientProperty> getAllClientsProperty(String where) {
-        return getAllClientsProperty(where);
+        return clientQueries.getAllClientsProperty(where);
     }
     
     public List<String> getClientTypes() {

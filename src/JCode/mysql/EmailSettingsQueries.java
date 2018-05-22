@@ -12,13 +12,17 @@ public class EmailSettingsQueries {
     
     private Connection static_con;
     private fileHelper fHelper;
-    
+
+    public EmailSettingsQueries(Connection static_con, fileHelper fHelper) {
+        this.static_con = static_con;
+        this.fHelper = fHelper;
+    }
+
     public ESetting getEmailSettings() {
-        
+
         String query = "SELECT HOST, EMAIL, PASS, FSPATH, AUTOCHK, DISCCHK, SOLVCHK, AUTOTXT, DISCTXT, SOLVTXT FROM " +
                 "EMAIL_SETTINGS " +
                 "WHERE 1";
-//        // Connection con = getConnection();
         try {
             PreparedStatement statement = static_con.prepareStatement(query);
             ResultSet set = statement.executeQuery();

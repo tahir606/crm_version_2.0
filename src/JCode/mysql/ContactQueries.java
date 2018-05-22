@@ -15,7 +15,12 @@ public class ContactQueries {
     
     private Connection static_con;
     private fileHelper fHelper;
-    
+
+    public ContactQueries(Connection static_con, fileHelper fHelper) {
+        this.static_con = static_con;
+        this.fHelper = fHelper;
+    }
+
     public void insertContact(ContactProperty contact) {
         
         String query = "INSERT INTO CONTACT_STORE(CS_ID, CS_FNAME ,CS_LNAME ,CS_DOB ,CS_ADDR ,CS_CITY , " +

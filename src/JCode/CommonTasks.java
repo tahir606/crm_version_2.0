@@ -58,6 +58,8 @@ public class CommonTasks {
             date = inputFormat.parse(timeStamp);
         } catch (ParseException e) {
             e.printStackTrace();
+        } catch (NullPointerException e) {
+            return "";
         }
         String outputText = outputFormat.format(date);
         return outputText;

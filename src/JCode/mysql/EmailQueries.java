@@ -26,9 +26,8 @@ public class EmailQueries {
     private ESetting eSetting;
     private Users user;
     
-    public EmailQueries(Connection static_con, ESetting eSetting, Users user) {
+    public EmailQueries(Connection static_con, Users user) {
         this.static_con = static_con;
-        this.eSetting = eSetting;
         this.user = user;
     }
     
