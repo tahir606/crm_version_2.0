@@ -1,14 +1,8 @@
 package JCode.mysql;
 
-import JCode.CommonTasks;
-import JCode.emailControl;
 import JCode.fileHelper;
-import client.newClient.newClientController;
-import client.newContact.newContactController;
-import javafx.application.Platform;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
-import javafx.stage.Stage;
 import objects.*;
 
 import javax.mail.Message;
@@ -38,6 +32,7 @@ public class mySqlConn {
     private ContactQueries contactQueries;
     private ClientQueries clientQueries;
     private ProductQueries productQueries;
+    private DomainQueries domainQueries;
     
     public mySqlConn() {
         fHelper = new fileHelper();
@@ -203,131 +198,20 @@ public class mySqlConn {
         clientQueries.updateClient(client);
     }
     
-    private void EmailsListInsertion(String[] emails) {
-        
-        String emailList = "INSERT INTO EMAIL_LIST(EM_ID,EM_NAME,CL_ID,UCODE,CS_ID) " +
-                "SELECT IFNULL(max(EM_ID),0)+1,?,?,?,? from EMAIL_LIST";
-        
-        try {
-            PreparedStatement statement = null;
-            
-            for (int i = 0; i < emails.length; i++) {   //Inserting Emailss
-                statement = null;
-                if (emails[i] == null || emails[i].equals(""))
-                    continue;
-                
-                statement = static_con.prepareStatement(emailList);
-                statement.setString(1, emails[i]);
-                statement.setInt(2, 0);
-                statement.setInt(3, 0);
-                statement.setInt(4, 0);
-                statement.executeUpdate();
-            }
-            
-            if (statement != null)
-                statement.close();
-        } catch (SQLException e) {
-            System.out.println(e);
-        }
-    }
-    
     public void insertDomainsWhitelist(String domain) {
-        String query = "INSERT INTO DOMAIN_LIST(DCODE,DNAME,DWB) " +
-                " SELECT IFNULL(max(DCODE),0)+1,?,? from DOMAIN_LIST";
-        
-        PreparedStatement statement = null;
-
-//        if (con == null)
-//            con = getConnection();
-        
-        try {
-            statement = static_con.prepareStatement(query);
-            statement.setString(1, domain);
-            statement.setInt(2, 1); //WhiteList
-            statement.executeUpdate();
-            if (statement != null)
-                statement.close();
-//            // doRelease(con);
-        } catch (SQLException e) {
-            System.out.println(e);
-            if (statement != null) {
-                try {
-                    statement.close();
-                } catch (SQLException e1) {
-                    e1.printStackTrace();
-                }
-            }
-        }
+        domainQueries.insertDomainsWhitelist(domain);
     }
     
     public void insertDomainsWhitelist(String[] list) {
-        String query = "INSERT INTO DOMAIN_LIST(DCODE,DNAME,DWB) " +
-                " SELECT IFNULL(max(DCODE),0)+1,?,? from DOMAIN_LIST";
-        
-        PreparedStatement statement = null;
-        // Connection con = getConnection();
-        try {
-            
-            for (int i = 0; i < list.length; i++) {
-                if (list[i] == null || list[i].equals(""))
-                    continue;
-                statement = null;
-                statement = static_con.prepareStatement(query);
-                statement.setString(1, list[i]);
-                statement.setInt(2, 1); //WhiteList
-                statement.executeUpdate();
-            }
-            if (statement != null)
-                statement.close();
-        } catch (SQLException e) {
-            System.out.println(e);
-            if (statement != null) {
-                try {
-                    statement.close();
-                } catch (SQLException e1) {
-                    e1.printStackTrace();
-                }
-            }
-        }
+        domainQueries.insertDomainsWhitelist(list);
     }
     
-    public void updateDomainType(int type, String domain) {    //1 for White List 2 for Black List
-        String query = "UPDATE  DOMAIN_LIST  SET  DWB = ? WHERE DNAME = ?";
-        PreparedStatement statement = null;
-        try {
-            statement = static_con.prepareStatement(query);
-            statement.setInt(1, type);
-            statement.setString(2, domain);
-            statement.executeUpdate();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        } finally {
-            // doRelease(con);
-        }
+    public void updateDomainType(int type, String domain) {
+        domainQueries.updateDomainType(type, domain);
     }
     
     public List<String> getWhiteBlackListDomains(int type) {
-        String query = "SELECT DNAME FROM domain_list WHERE DWB = ?";
-        
-        try {
-            // Connection con = getConnection();
-            PreparedStatement statement = static_con.prepareStatement(query);
-            statement.setInt(1, type);
-            ResultSet set = statement.executeQuery();
-            
-            List<String> l = new ArrayList<>();
-            
-            while (set.next()) {
-                l.add(set.getString("DNAME"));
-            }
-            
-            return l;
-            
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        
-        return null;
+        return domainQueries.getWhiteBlackListDomains(type);
     }
     
     public int getNoClients() {
@@ -344,47 +228,6 @@ public class mySqlConn {
     
     public List<String> getClientTypes() {
         return clientQueries.getClientTypes();
-    }
-    
-    public String[] getAllEmailIDs(String where) {
-        String query = "SELECT DISTINCT EM_NAME FROM EMAIL_LIST ";
-        
-        if (where == null)
-            query = query + " ORDER BY EM_NAME";
-        else
-            query = query + where;
-        
-        Connection con = null;
-        try {
-            con = getConnection();
-            PreparedStatement statement = static_con.prepareStatement(query);
-            ResultSet set = statement.executeQuery();
-            //-------------Creating Email-------------
-            if (!set.isBeforeFirst()) {
-                return null;
-            }
-            
-            set.last();
-            int size = set.getRow();
-            set.beforeFirst();
-            
-            String[] ems = new String[size];
-            
-            int c = 0;
-            while (set.next()) {
-                ems[c] = set.getString("EM_NAME");
-                c++;
-            }
-            
-            return ems;
-            
-        } catch (SQLException ex) {
-            ex.printStackTrace();
-        } finally {
-            // doRelease(con);
-        }
-        
-        return null;
     }
     
     public void insertContact(ContactProperty contact) {
@@ -449,6 +292,76 @@ public class mySqlConn {
     
     public void unlockModule(ProductModule module, String desc) {
         productQueries.unlockModule(module, desc);
+    }
+    
+    
+    private void EmailsListInsertion(String[] emails) {
+        
+        String emailList = "INSERT INTO EMAIL_LIST(EM_ID,EM_NAME,CL_ID,UCODE,CS_ID) " +
+                "SELECT IFNULL(max(EM_ID),0)+1,?,?,?,? from EMAIL_LIST";
+        
+        try {
+            PreparedStatement statement = null;
+            
+            for (int i = 0; i < emails.length; i++) {   //Inserting Emailss
+                statement = null;
+                if (emails[i] == null || emails[i].equals(""))
+                    continue;
+                
+                statement = static_con.prepareStatement(emailList);
+                statement.setString(1, emails[i]);
+                statement.setInt(2, 0);
+                statement.setInt(3, 0);
+                statement.setInt(4, 0);
+                statement.executeUpdate();
+            }
+            
+            if (statement != null)
+                statement.close();
+        } catch (SQLException e) {
+            System.out.println(e);
+        }
+    }
+    
+    public String[] getAllEmailIDs(String where) {
+        String query = "SELECT DISTINCT EM_NAME FROM EMAIL_LIST ";
+        
+        if (where == null)
+            query = query + " ORDER BY EM_NAME";
+        else
+            query = query + where;
+        
+        Connection con = null;
+        try {
+            con = getConnection();
+            PreparedStatement statement = static_con.prepareStatement(query);
+            ResultSet set = statement.executeQuery();
+            //-------------Creating Email-------------
+            if (!set.isBeforeFirst()) {
+                return null;
+            }
+            
+            set.last();
+            int size = set.getRow();
+            set.beforeFirst();
+            
+            String[] ems = new String[size];
+            
+            int c = 0;
+            while (set.next()) {
+                ems[c] = set.getString("EM_NAME");
+                c++;
+            }
+            
+            return ems;
+            
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        } finally {
+            // doRelease(con);
+        }
+        
+        return null;
     }
     
     

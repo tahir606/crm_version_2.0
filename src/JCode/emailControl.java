@@ -1,6 +1,7 @@
 package JCode;
 
 
+import JCode.mysql.EmailQueries;
 import JCode.mysql.mySqlConn;
 import JSockets.JServer;
 import objects.ESetting;
@@ -365,7 +366,7 @@ public class emailControl {
                 try {
                     Transport.send(message);
                     System.out.println("Sent E-Mail to: " + email.getToAddress()[0].toString());
-                    if (!message.getSubject().contains(mySqlConn.autoReplySubject))
+                    if (!message.getSubject().contains(EmailQueries.autoReplySubject))
                         sqlConn.insertEmailSent(email);
                 } catch (MessagingException ex) {
                     ex.printStackTrace();
