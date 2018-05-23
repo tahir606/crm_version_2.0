@@ -20,7 +20,7 @@ public class mySqlConn {
     private static String URL;
     
     private fileHelper fHelper;
-//    private ESetting eSetting;
+    private ESetting eSetting;
     
     private Users user;
     
@@ -47,14 +47,15 @@ public class mySqlConn {
             static_con = getConnection();
 
         userQueries = new UserQueries(static_con, fHelper);
-        emailQueries = new EmailQueries(static_con, user);
         emailSettingsQueries = new EmailSettingsQueries(static_con, fHelper);
+        eSetting = getEmailSettings();
+        emailQueries = new EmailQueries(static_con, user, eSetting);
         contactQueries = new ContactQueries(static_con, fHelper);
         clientQueries = new ClientQueries(static_con, fHelper);
         productQueries = new ProductQueries(static_con, fHelper);
         domainQueries = new DomainQueries(static_con);
 
-//        eSetting = getEmailSettings();
+        
     }
     
     private Connection getConnection() {

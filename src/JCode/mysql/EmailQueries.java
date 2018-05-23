@@ -26,9 +26,10 @@ public class EmailQueries {
     private ESetting eSetting;
     private Users user;
     
-    public EmailQueries(Connection static_con, Users user) {
+    public EmailQueries(Connection static_con, Users user, ESetting eSetting) {
         this.static_con = static_con;
         this.user = user;
+        this.eSetting = eSetting;
     }
     
     public Users getNoOfSolvedEmails(Users user) {
