@@ -19,6 +19,8 @@
                 <TableColumn fx:id="col_cname" prefWidth="100.0" text="Company" />
                 <TableColumn fx:id="col_title" prefWidth="100.0" text="Title" />
                 <TableColumn fx:id="col_website" prefWidth="80.0" text="Website" />
+                <TableColumn fx:id="col_city" prefWidth="80.0" text="City" />
+                <TableColumn fx:id="col_country" prefWidth="80.0" text="Country" />
             </columns>
         </TableView>
         <AnchorPane fx:id="toolbar_products" prefHeight="35.0" prefWidth="1000.0" AnchorPane.leftAnchor="0.0"
