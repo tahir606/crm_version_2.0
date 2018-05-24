@@ -61,6 +61,7 @@ public class emailControl {
             Session session = Session.getDefaultInstance(props, null);
             Store store = session.getStore("imaps");
             //store.connect("imap.gmail.com", "tahirshakir606@gmail.com", "king786786");
+            System.out.println(ESETTING.getHost() + " " + ESETTING.getEmail() + " " + ESETTING.getPass());
             store.connect(ESETTING.getHost(), ESETTING.getEmail(), ESETTING.getPass());
 
             Folder inbox = store.getFolder("Inbox");

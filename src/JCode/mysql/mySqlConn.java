@@ -29,9 +29,11 @@ public class mySqlConn {
     private UserQueries userQueries;
     private EmailQueries emailQueries;
     private EmailSettingsQueries emailSettingsQueries;
+    private EmailPhoneQueries emailPhoneQueries;
     private ContactQueries contactQueries;
     private ClientQueries clientQueries;
     private ProductQueries productQueries;
+    private LeadQueries leadQueries;
     private DomainQueries domainQueries;
     
     public mySqlConn() {
@@ -45,16 +47,16 @@ public class mySqlConn {
         user = fHelper.ReadUserDetails();
         if (static_con == null)
             static_con = getConnection();
-
         userQueries = new UserQueries(static_con, fHelper);
         emailSettingsQueries = new EmailSettingsQueries(static_con, fHelper);
         eSetting = getEmailSettings();
         emailQueries = new EmailQueries(static_con, user, eSetting);
+        emailPhoneQueries = new EmailPhoneQueries(static_con);
         contactQueries = new ContactQueries(static_con, fHelper);
         clientQueries = new ClientQueries(static_con, fHelper);
         productQueries = new ProductQueries(static_con, fHelper);
         domainQueries = new DomainQueries(static_con);
-
+        leadQueries = new LeadQueries(static_con, fHelper, emailPhoneQueries);
         
     }
     
@@ -301,6 +303,13 @@ public class mySqlConn {
         productQueries.unlockModule(module, desc);
     }
     
+    public void insertLead(Lead lead) {
+        leadQueries.insertLead(lead);
+    }
+    
+    public void updateLead(Lead lead) {
+        leadQueries.updateLead(lead);
+    }
     
     private void EmailsListInsertion(String[] emails) {
         
