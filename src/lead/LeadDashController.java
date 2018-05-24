@@ -34,7 +34,7 @@ public class LeadDashController implements Initializable {
         
         populateContactsMenuBar();
         
-        inflatePane("view/product_view.fxml");
+        inflatePane("view/lead_view.fxml");
     }
     
     private void populateContactsMenuBar() {
@@ -44,7 +44,7 @@ public class LeadDashController implements Initializable {
         MenuItem newProduct = new MenuItem("New Lead");
         newProduct.setOnAction(event -> {
             NewLeadController.stInstance = 'N';
-            inflatePane("newProduct/new_product.fxml");
+            inflatePane("newLead/new_lead.fxml");
         });
         menuNew.getItems().addAll(newProduct);
     

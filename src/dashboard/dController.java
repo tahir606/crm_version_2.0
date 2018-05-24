@@ -113,10 +113,14 @@ public class dController implements Initializable {
                         break;
                     }
                     case 3: {
-                        productButton();
+                        leadButton();
                         break;
                     }
                     case 4: {
+                        productButton();
+                        break;
+                    }
+                    case 5: {
                         settingsButton();
                         break;
                     }
@@ -132,48 +136,35 @@ public class dController implements Initializable {
 
     //---------------------------BUTTONS-------------------------
 
-    private void mailButton() {
-        JFXButton button = new JFXButton("Email");
-        Image image = new Image(getClass().getResourceAsStream("/res/img/mail.png"));
+    private void buttonSettings(String btnName, String path, int paneNo) {
+        JFXButton button = new JFXButton(btnName);
+        Image image = new Image(getClass().getResourceAsStream("/res/img/" + btnName + ".png"));
         button.setPrefSize(menu_pane.getPrefWidth(), 40);
         button.getStyleClass().add("btn");
-        button.addEventHandler(MouseEvent.MOUSE_PRESSED, event -> changeSelection(button, "Email/emailDash.fxml", 2));
+        button.addEventHandler(MouseEvent.MOUSE_PRESSED, event -> changeSelection(button, path, paneNo));
         button.setGraphic(new ImageView(image));
         button.setAlignment(Pos.CENTER_LEFT);
         Platform.runLater(() -> menu_pane.getChildren().add(button));
+    }
+
+    private void mailButton() {
+        buttonSettings("Emails", "Email/emailDash.fxml", 2);
     }
 
     private void clientButton() {
-        JFXButton button = new JFXButton("Client");
-        Image image = new Image(getClass().getResourceAsStream("/res/img/clients.png"));
-        button.setPrefSize(menu_pane.getPrefWidth(), 40);
-        button.getStyleClass().add("btn");
-        button.addEventHandler(MouseEvent.MOUSE_PRESSED, event -> changeSelection(button, "client/dashBase.fxml", 3));
-        button.setGraphic(new ImageView(image));
-        button.setAlignment(Pos.CENTER_LEFT);
-        Platform.runLater(() -> menu_pane.getChildren().add(button));
+        buttonSettings("Clients", "client/dashBase.fxml", 3);
+    }
+
+    private void leadButton() {
+        buttonSettings("Leads", "lead/lead_dash.fxml", 4);
     }
 
     private void productButton() {
-        JFXButton button = new JFXButton("Products");
-        Image image = new Image(getClass().getResourceAsStream("/res/img/product.png"));
-        button.setPrefSize(menu_pane.getPrefWidth(), 40);
-        button.getStyleClass().add("btn");
-        button.addEventHandler(MouseEvent.MOUSE_PRESSED, event -> changeSelection(button, "product/product_dash.fxml", 4));
-        button.setGraphic(new ImageView(image));
-        button.setAlignment(Pos.CENTER_LEFT);
-        Platform.runLater(() -> menu_pane.getChildren().add(button));
+        buttonSettings("Products", "product/product_dash.fxml", 5);
     }
 
     private void settingsButton() {
-        JFXButton button = new JFXButton("Setting");
-        Image image = new Image(getClass().getResourceAsStream("/res/img/admin.png"));
-        button.setPrefSize(menu_pane.getPrefWidth(), 40);
-        button.addEventHandler(MouseEvent.MOUSE_PRESSED, event -> changeSelection(button, "settings/settings.fxml", 5));
-        button.setGraphic(new ImageView(image));
-        button.getStyleClass().add("btn");
-        button.setAlignment(Pos.CENTER_LEFT);
-        Platform.runLater(() -> menu_pane.getChildren().add(button));
+        buttonSettings("Settings", "settings/settings.fxml", 6);
     }
 
     private void logoutButton() {

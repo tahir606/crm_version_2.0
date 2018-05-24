@@ -1,13 +1,16 @@
 package objects;
 
+import client.newClient.newClientController;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
+import lead.newLead.NewLeadController;
 
 public class Lead {
     
     private int code;
-    private String firstName, lastName, company, title, website, desc;
+    private String firstName, lastName, company, title, website, city, country, desc, email, phone;
+
 //    private SimpleIntegerProperty codeProperty;
 //    private SimpleStringProperty firstNameProperty;
     
@@ -84,7 +87,39 @@ public class Lead {
     public void setWebsite(String website) {
         this.website = website;
     }
-    
+
+    public String getCity() {
+        return city;
+    }
+
+    public void setCity(String city) {
+        this.city = city;
+    }
+
+    public String getCountry() {
+        return country;
+    }
+
+    public void setCountry(String country) {
+        this.country = country;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public String getPhone() {
+        return phone;
+    }
+
+    public void setPhone(String phone) {
+        this.phone = phone;
+    }
+
     public String getDesc() {
         return desc;
     }

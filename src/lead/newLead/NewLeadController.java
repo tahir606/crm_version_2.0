@@ -5,6 +5,7 @@ import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXComboBox;
 import com.jfoenix.controls.JFXDatePicker;
 import com.jfoenix.controls.JFXTextField;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -50,6 +51,8 @@ public class NewLeadController implements Initializable {
     
     private Lead lead;
     private mySqlConn sql;
+
+    public static int noOfFields = 2;   //No of emails and phones
     
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -59,12 +62,12 @@ public class NewLeadController implements Initializable {
         Image image = new Image(this.getClass().getResourceAsStream("/res/img/left-arrow.png"));
         btn_back.setGraphic(new ImageView(image));
         btn_back.setAlignment(Pos.CENTER_LEFT);
-        btn_back.setTooltip(new Tooltip("Back to Products"));
+        btn_back.setTooltip(new Tooltip("Back to Leads"));
         btn_back.setOnAction(event -> {
             try {
                 ProductDashController.main_paneF.setCenter(
                         FXMLLoader.load(
-                                getClass().getClassLoader().getResource("product/view/product_view.fxml")));
+                                getClass().getClassLoader().getResource("lead/view/lead_view.fxml")));
                 
             } catch (IOException e) {
                 e.printStackTrace();
@@ -75,16 +78,23 @@ public class NewLeadController implements Initializable {
             btn_save.setText("Add");
             lead = new Lead();
 //            lead.setCode(sql.getNewProductCode());
+            txt_heading.setText("New Lead");
         } else if (stInstance == 'U') {
             btn_save.setText("Update");
+<<<<<<< HEAD
             lead = LeadViewController.staticLead;
+=======
+//            lead = LeadViewController.staticProduct;
+>>>>>>> 8b4cc617419df437319097482d3c22dde026bb48
             populateDetails(lead);
-            txt_heading.setText("Update Product");
+            txt_heading.setText("Update Lead");
         }
     }
     
     private void populateDetails(Lead lead) {
     
     }
-    
+
+    public void saveChanges(ActionEvent actionEvent) {
+    }
 }
