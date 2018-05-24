@@ -15,6 +15,7 @@ import javafx.scene.control.Tooltip;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.VBox;
+import lead.view.LeadViewController;
 import objects.Lead;
 import objects.ProductProperty;
 import product.ProductDashController;
@@ -76,7 +77,7 @@ public class NewLeadController implements Initializable {
 //            lead.setCode(sql.getNewProductCode());
         } else if (stInstance == 'U') {
             btn_save.setText("Update");
-            lead = LeadViewController.staticProduct;
+            lead = LeadViewController.staticLead;
             populateDetails(lead);
             txt_heading.setText("Update Product");
         }

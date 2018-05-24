@@ -55,20 +55,7 @@ public class ProductViewController implements Initializable {
         col_type.setCellValueFactory(new PropertyValueFactory<>("type"));
 
         table_product.getItems().setAll(sql.getAllProducts(null));
-//
-//        table_contact.addEventHandler(javafx.scene.input.MouseEvent.MOUSE_CLICKED, event -> {
-//            selectedContacts = table_contact.getSelectionModel().getSelectedItems();
-//
-//            if (selectedContacts == null || selectedContacts.size() == 0) {
-//                toolbar_contacts.setVisible(false);
-//                return;
-//            } else {
-//                toolbar_contacts.setVisible(true);
-//                txt_no.setText(String.valueOf(selectedContacts.size()));
-//            }
-//
-//        });
-//
+        
         table_product.setRowFactory(tv -> {
             TableRow<ProductProperty> row = new TableRow<>();
             row.setOnMouseClicked(event -> {
