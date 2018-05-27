@@ -29,8 +29,7 @@ public class ContactProperty {
 
         clientName = new SimpleStringProperty();
         clID = new SimpleIntegerProperty();
-
-
+        
     }
 
     @Override

@@ -7,7 +7,10 @@ import objects.ProductModule;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class LeadQueries {
     
@@ -76,5 +79,72 @@ public class LeadQueries {
             e.printStackTrace();
         }
         
+    }
+    
+    public List<Lead> getAllLeads(String where) {
+//        String query = "SELECT CS.CS_ID AS CS_ID,CS_FNAME,CS_LNAME,CS_DOB,CS_ADDR," +
+//                " CS_CITY,CS_COUNTRY,CS_NOTE,CS.CREATEDON,FREZE,EM_NAME,PH_NUM,CL_NAME,CS.CL_ID AS CL_ID" +
+//                " FROM CONTACT_STORE AS CS, EMAIL_LIST AS EL, PHONE_LIST AS PL, CLIENT_STORE AS CL " +
+//                " WHERE EL.CS_ID = CS.CS_ID " +
+//                " AND PL.CS_ID = CS.CS_ID " +
+//                " AND CL.CL_ID = CS.CL_ID";
+    
+        String query = "SELECT LS.LS_ID AS LS_ID,LS_FNAME,LS_LNAME,LS_CNAME," +
+                " LS_CITY,LS_COUNTRY,LS_DESC,LS_WEBSITE " +
+                " FROM LEAD_STORE AS LS WHERE 1 ";
+    
+        if (where == null) {
+            query = query + " ORDER BY LS.LS_ID";
+        } else {
+            query = query + " AND " + where;
+        }
+        System.out.println(query);
+        List<Lead> allLeads = new ArrayList<>();
+        try {
+            
+            PreparedStatement statement = static_con.prepareStatement(query);
+            ResultSet set = statement.executeQuery();
+            //-------------Creating Email-------------
+            while (set.next()) {
+                Lead lead = new Lead();
+                lead.setCode(set.getInt("LS_ID"));
+                lead.setFirstName(set.getString("LS_FNAME"));
+                lead.setLastName(set.getString("LS_LNAME"));
+                lead.setCity(set.getString("LS_CITY"));
+                lead.setCountry(set.getString("LS_COUNTRY"));
+                lead.setWebsite(set.getString("LS_WEBSITE"));
+                lead.setCompany(set.getString("LS_CNAME"));
+                lead.setDesc(set.getString("LS_DESC"));
+    
+                allLeads.add(lead);
+            }
+        
+            // doRelease(con);
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+    
+        return allLeads;
+    }
+    
+    public int getNewContactCode() {
+        String query = "SELECT IFNULL(max(CS_ID),0)+1 AS CS_ID FROM CONTACT_STORE";
+        
+        // Connection con = getConnection();
+        PreparedStatement statement = null;
+        
+        try {
+            statement = static_con.prepareStatement(query);
+            
+            ResultSet set = statement.executeQuery();
+            while (set.next()) {
+                return set.getInt("CS_ID");
+            }
+            
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        
+        return 0;
     }
 }

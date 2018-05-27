@@ -17,7 +17,6 @@
             <columns>
                 <TableColumn fx:id="col_name" prefWidth="200.0" text="Name" />
                 <TableColumn fx:id="col_cname" prefWidth="100.0" text="Company" />
-                <TableColumn fx:id="col_title" prefWidth="100.0" text="Title" />
                 <TableColumn fx:id="col_website" prefWidth="80.0" text="Website" />
                 <TableColumn fx:id="col_city" prefWidth="80.0" text="City" />
                 <TableColumn fx:id="col_country" prefWidth="80.0" text="Country" />

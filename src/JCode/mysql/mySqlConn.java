@@ -311,6 +311,10 @@ public class mySqlConn {
         leadQueries.updateLead(lead);
     }
     
+    public List<Lead> getAllLeads(String where) {
+        return leadQueries.getAllLeads(where);
+    }
+    
     private void EmailsListInsertion(String[] emails) {
         
         String emailList = "INSERT INTO EMAIL_LIST(EM_ID,EM_NAME,CL_ID,UCODE,CS_ID) " +
