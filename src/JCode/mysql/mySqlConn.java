@@ -302,6 +302,10 @@ public class mySqlConn {
     public void unlockModule(ProductModule module, String desc) {
         productQueries.unlockModule(module, desc);
     }
+
+    public int getNewLeadCode() {
+        return leadQueries.getNewLeadCode();
+    }
     
     public void insertLead(Lead lead) {
         leadQueries.insertLead(lead);

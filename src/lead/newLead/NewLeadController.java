@@ -16,6 +16,7 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+import lead.LeadDashController;
 import lead.view.LeadViewController;
 import objects.Lead;
 import objects.ProductProperty;
@@ -70,7 +71,7 @@ public class NewLeadController implements Initializable {
         btn_back.setTooltip(new Tooltip("Back to Leads"));
         btn_back.setOnAction(event -> {
             try {
-                ProductDashController.main_paneF.setCenter(
+                LeadDashController.main_paneF.setCenter(
                         FXMLLoader.load(
                                 getClass().getClassLoader().getResource("lead/view/lead_view.fxml")));
                 
@@ -82,18 +83,27 @@ public class NewLeadController implements Initializable {
         if (stInstance == 'N') {
             btn_save.setText("Add");
             lead = new Lead();
-//            lead.setCode(sql.getNewProductCode());
+            lead.setCode(sql.getNewLeadCode());
             txt_heading.setText("New Lead");
         } else if (stInstance == 'U') {
             btn_save.setText("Update");
-            lead = LeadViewController.staticLead;
-            populateDetails(lead);
+            populateLead();
             txt_heading.setText("Update Lead");
         }
     }
     
-    private void populateDetails(Lead lead) {
-    
+    private void populateLead() {
+        lead = LeadViewController.staticLead;
+
+        txt_fname.setText(lead.getFirstName());
+        txt_lname.setText(lead.getLastName());
+        txt_website.setText(lead.getWebsite());
+        txt_company.setText(lead.getCompany());
+        txt_email.setText(lead.getEmail());
+        txt_mobile.setText(lead.getPhone());
+        txt_city.setText(lead.getCity());
+        txt_country.setText(lead.getCountry());
+        txt_note.setText(lead.getNote());
     }
     
     public void saveChanges(ActionEvent actionEvent) {
@@ -141,7 +151,7 @@ public class NewLeadController implements Initializable {
                 lead.setCompany(company);
                 lead.setCity(city);
                 lead.setCountry(country);
-                lead.setDesc(desc);
+                lead.setNote(desc);
                 lead.setEmail(email);
                 lead.setPhone(phone);
                 lead.setWebsite(website);

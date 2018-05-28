@@ -9,10 +9,10 @@ import lead.newLead.NewLeadController;
 public class Lead {
     
     private int code;
-    private String firstName, lastName, company, title, website, city, country, addr, desc, email, phone;
+    private String firstName, lastName, company, title, website, city, country, addr, note, email, phone;
     private SimpleIntegerProperty codeProperty;
     private SimpleStringProperty fullNameProperty, companyProperty, titleProperty, websiteProperty,
-            cityProperty, countryProperty, addrProperty, descProperty, emailProperty, phoneProperty;
+            cityProperty, countryProperty, addrProperty, noteProperty, emailProperty, phoneProperty;
     
     public Lead() {
     }
@@ -118,12 +118,12 @@ public class Lead {
     public void setPhone(String phone) {
         this.phone = phone;
     }
-    
-    public String getDesc() {
-        return desc;
+
+    public String getNote() {
+        return note;
     }
-    
-    public void setDesc(String desc) {
-        this.desc = desc;
+
+    public void setNote(String note) {
+        this.note = note;
     }
 }

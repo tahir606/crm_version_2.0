@@ -37,9 +37,9 @@ public class LeadDetailsController implements Initializable {
     private JFXButton btn_back;
     @FXML
     private JFXButton btn_edit;
-    
+
     private Lead lead;
-    
+
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         Image image = new Image(this.getClass().getResourceAsStream("/res/img/left-arrow.png"));
@@ -51,35 +51,38 @@ public class LeadDetailsController implements Initializable {
                 LeadDashController.main_paneF.setCenter(
                         FXMLLoader.load(
                                 getClass().getClassLoader().getResource("lead/view/lead_view.fxml")));
-                
+
             } catch (IOException e) {
                 e.printStackTrace();
             }
         });
-        
+
         lead = LeadViewController.staticLead;
         populateDetails();
-        
+
     }
-    
+
     private void populateDetails() {
         txt_fname.setText(lead.getFullNameProperty());
+        txt_company.setText(lead.getCompany());
+        txt_website.setText(lead.getWebsite());
         txt_email.setText(lead.getEmail());
         txt_mobile.setText(lead.getPhone());
-        
+        txt_desc.setText(lead.getNote());
+
 //        btn_email.setOnAction(event -> {
 //            EResponseController.stTo = contact.getEmail();
 //            EResponseController.stInstance = 'N';
 //            inflateEResponse(1);
 //        });
-    
+
         btn_edit.setOnAction(event -> {
             NewLeadController.stInstance = 'U';
             try {
-                dashBaseController.main_paneF.setCenter(
+                LeadDashController.main_paneF.setCenter(
                         FXMLLoader.load(
                                 getClass().getClassLoader().getResource("lead/newLead/new_lead.fxml")));
-            
+
             } catch (IOException e) {
                 e.printStackTrace();
             }

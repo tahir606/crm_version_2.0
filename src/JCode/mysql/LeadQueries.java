@@ -54,7 +54,7 @@ public class LeadQueries {
     public void updateLead(Lead lead) {
         
         String query = "UPDATE LEAD_STORE SET LS_FNAME=?,LS_LNAME=?,LS_WEBSITE=,LS_CNAME=?,LS_CITY=?," +
-                "LS_COUNTRY=?,LS_DESC,CREATEDON=?,CREATEDBY=?,FREZE=?" +
+                "LS_COUNTRY=?,LS_NOTE=?,CREATEDON=?,CREATEDBY=?,FREZE=?" +
                 "WHERE CS_ID=?";
         
         // Connection con = getConnection();
@@ -68,7 +68,7 @@ public class LeadQueries {
             statement.setString(4, lead.getCompany());
             statement.setString(5, lead.getCity());
             statement.setString(6, lead.getCountry());
-            statement.setString(7, lead.getDesc());
+            statement.setString(7, lead.getNote());
             statement.setString(8, CommonTasks.getCurrentTimeStamp());
             statement.setInt(9, fHelper.ReadUserDetails().getUCODE());
             statement.setBoolean(10, false);
@@ -90,7 +90,7 @@ public class LeadQueries {
 //                " AND CL.CL_ID = CS.CL_ID";
     
         String query = "SELECT LS.LS_ID AS LS_ID,LS_FNAME,LS_LNAME,LS_CNAME," +
-                " LS_CITY,LS_COUNTRY,LS_DESC,LS_WEBSITE " +
+                " LS_CITY,LS_COUNTRY,LS_NOTE,LS_WEBSITE " +
                 " FROM LEAD_STORE AS LS WHERE 1 ";
     
         if (where == null) {
@@ -114,7 +114,7 @@ public class LeadQueries {
                 lead.setCountry(set.getString("LS_COUNTRY"));
                 lead.setWebsite(set.getString("LS_WEBSITE"));
                 lead.setCompany(set.getString("LS_CNAME"));
-                lead.setDesc(set.getString("LS_DESC"));
+                lead.setNote(set.getString("LS_NOTE"));
     
                 allLeads.add(lead);
             }
@@ -127,8 +127,8 @@ public class LeadQueries {
         return allLeads;
     }
     
-    public int getNewContactCode() {
-        String query = "SELECT IFNULL(max(CS_ID),0)+1 AS CS_ID FROM CONTACT_STORE";
+    public int getNewLeadCode() {
+        String query = "SELECT IFNULL(max(LS_ID),0)+1 AS LS_ID FROM LEAD_STORE";
         
         // Connection con = getConnection();
         PreparedStatement statement = null;
@@ -138,7 +138,7 @@ public class LeadQueries {
             
             ResultSet set = statement.executeQuery();
             while (set.next()) {
-                return set.getInt("CS_ID");
+                return set.getInt("LS_ID");
             }
             
         } catch (SQLException e) {
