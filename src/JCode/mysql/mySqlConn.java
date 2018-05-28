@@ -52,8 +52,8 @@ public class mySqlConn {
         eSetting = getEmailSettings();
         emailQueries = new EmailQueries(static_con, user, eSetting);
         emailPhoneQueries = new EmailPhoneQueries(static_con);
-        contactQueries = new ContactQueries(static_con, fHelper);
-        clientQueries = new ClientQueries(static_con, fHelper);
+        contactQueries = new ContactQueries(static_con, fHelper, emailPhoneQueries);
+        clientQueries = new ClientQueries(static_con, fHelper, emailPhoneQueries);
         productQueries = new ProductQueries(static_con, fHelper);
         domainQueries = new DomainQueries(static_con);
         leadQueries = new LeadQueries(static_con, fHelper, emailPhoneQueries);
@@ -302,7 +302,7 @@ public class mySqlConn {
     public void unlockModule(ProductModule module, String desc) {
         productQueries.unlockModule(module, desc);
     }
-
+    
     public int getNewLeadCode() {
         return leadQueries.getNewLeadCode();
     }
@@ -317,34 +317,6 @@ public class mySqlConn {
     
     public List<Lead> getAllLeads(String where) {
         return leadQueries.getAllLeads(where);
-    }
-    
-    private void EmailsListInsertion(String[] emails) {
-        
-        String emailList = "INSERT INTO EMAIL_LIST(EM_ID,EM_NAME,CL_ID,UCODE,CS_ID) " +
-                "SELECT IFNULL(max(EM_ID),0)+1,?,?,?,? from EMAIL_LIST";
-        
-        try {
-            PreparedStatement statement = null;
-            
-            for (int i = 0; i < emails.length; i++) {   //Inserting Emailss
-                statement = null;
-                if (emails[i] == null || emails[i].equals(""))
-                    continue;
-                
-                statement = static_con.prepareStatement(emailList);
-                statement.setString(1, emails[i]);
-                statement.setInt(2, 0);
-                statement.setInt(3, 0);
-                statement.setInt(4, 0);
-                statement.executeUpdate();
-            }
-            
-            if (statement != null)
-                statement.close();
-        } catch (SQLException e) {
-            System.out.println(e);
-        }
     }
     
     public String[] getAllEmailIDs(String where) {

@@ -15,10 +15,12 @@ public class ContactQueries {
     
     private Connection static_con;
     private fileHelper fHelper;
+    private EmailPhoneQueries emailPhoneQueries;
 
-    public ContactQueries(Connection static_con, fileHelper fHelper) {
+    public ContactQueries(Connection static_con, fileHelper fHelper, EmailPhoneQueries emailPhoneQueries) {
         this.static_con = static_con;
         this.fHelper = fHelper;
+        this.emailPhoneQueries = emailPhoneQueries;
     }
 
     public void insertContact(ContactProperty contact) {
@@ -47,7 +49,7 @@ public class ContactQueries {
             statement.executeUpdate();
             
             
-            EmailsPhoneInsertion(statement, contact);
+            emailPhoneQueries.emailsPhoneInsertion(statement, contact);
             
         } catch (SQLException e) {
             e.printStackTrace();
@@ -81,7 +83,7 @@ public class ContactQueries {
             
             statement.executeUpdate();
             
-            EmailsPhoneInsertion(statement, contact);
+            emailPhoneQueries.emailsPhoneInsertion(statement, contact);
             
         } catch (SQLException e) {
             e.printStackTrace();
@@ -157,68 +159,6 @@ public class ContactQueries {
         }
         
         return 0;
-    }
-    
-    private void EmailsPhoneInsertion(PreparedStatement statement, ContactProperty contact) {
-        
-        String deleteEmails = "DELETE FROM EMAIL_LIST WHERE CS_ID = ?";
-        
-        String deletePhones = "DELETE FROM PHONE_LIST WHERE CS_ID = ?";
-        
-        String emailList = "INSERT INTO EMAIL_LIST(EM_ID,EM_NAME,CS_ID,UCODE,CL_ID) " +
-                "SELECT IFNULL(max(EM_ID),0)+1,?,?,?,? from EMAIL_LIST";
-        
-        String phoneList = "INSERT INTO PHONE_LIST(PH_ID,PH_NUM,CS_ID,UCODE,CL_ID) " +
-                "SELECT IFNULL(max(PH_ID),0)+1,?,?,?,? from PHONE_LIST";
-        
-        try {
-            statement = null;
-            statement = static_con.prepareStatement(deleteEmails);
-            statement.setInt(1, contact.getCode());
-            statement.executeUpdate();
-            //Adding Emails
-            String[] emails = new String[]{contact.getEmail()};
-            
-            for (int i = 0; i < emails.length; i++) {   //Inserting Emailss
-                statement = null;
-                if (emails[i] == null)
-                    continue;
-                
-                statement = static_con.prepareStatement(emailList);
-                statement.setString(1, emails[i]);
-                statement.setInt(2, contact.getCode());
-                statement.setInt(3, 0);
-                statement.setInt(4, 0);
-                statement.executeUpdate();
-            }
-            
-            statement = null;
-            statement = static_con.prepareStatement(deletePhones);
-            statement.setInt(1, contact.getCode());
-            statement.executeUpdate();
-            
-            //Adding Phones
-            String[] phones = new String[]{contact.getMobile()};
-            
-            for (int i = 0; i < phones.length; i++) {   //Inserting Emailss
-                statement = null;
-                if (phones[i] == null)
-                    continue;
-                
-                statement = static_con.prepareStatement(phoneList);
-                statement.setString(1, phones[i]);
-                statement.setInt(2, contact.getCode());
-                statement.setInt(3, 0);
-                statement.setInt(4, 0);
-                statement.executeUpdate();
-            }
-            
-            
-            if (statement != null)
-                statement.close();
-        } catch (SQLException e) {
-            System.out.println(e);
-        }
     }
     
 }

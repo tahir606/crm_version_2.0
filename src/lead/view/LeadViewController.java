@@ -43,8 +43,8 @@ public class LeadViewController implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         sql = new mySqlConn();
-        
-        table_product.setVisible(true);
+    
+        toolbar_products.setVisible(false);
 
 //        table_contact.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
         

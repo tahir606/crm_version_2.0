@@ -27,7 +27,7 @@ public class LeadQueries {
     public void insertLead(Lead lead) {
         
         String query = "INSERT INTO LEAD_STORE(LS_ID, LS_FNAME ,LS_LNAME ,LS_CNAME ,LS_WEBSITE ,LS_CITY , " +
-                " LS_COUNTRY, CREATEDON, CREATEDBY) " +
+                " LS_COUNTRY, LS_NOTE, CREATEDON, CREATEDBY) " +
                 " SELECT IFNULL(max(LS_ID),0)+1,?,?,?,?,?,?,?,? from LEAD_STORE";
         
         PreparedStatement statement = null;
@@ -40,10 +40,13 @@ public class LeadQueries {
             statement.setString(4, lead.getWebsite());
             statement.setString(5, lead.getCity());
             statement.setString(6, lead.getCountry());
-            statement.setString(7, CommonTasks.getCurrentTimeStamp());
-            statement.setInt(8, fHelper.ReadUserDetails().getUCODE());
+            statement.setString(7, lead.getNote());
+            statement.setString(8, CommonTasks.getCurrentTimeStamp());
+            statement.setInt(9, fHelper.ReadUserDetails().getUCODE());
             
             statement.executeUpdate();
+            
+            emailPhoneQueries.emailsPhoneInsertion(statement, lead);
             
         } catch (SQLException e) {
             e.printStackTrace();
@@ -53,9 +56,11 @@ public class LeadQueries {
     
     public void updateLead(Lead lead) {
         
-        String query = "UPDATE LEAD_STORE SET LS_FNAME=?,LS_LNAME=?,LS_WEBSITE=,LS_CNAME=?,LS_CITY=?," +
-                "LS_COUNTRY=?,LS_NOTE=?,CREATEDON=?,CREATEDBY=?,FREZE=?" +
-                "WHERE CS_ID=?";
+        String query = "UPDATE LEAD_STORE SET LS_FNAME=?,LS_LNAME=?,LS_WEBSITE=?,LS_CNAME=?,LS_CITY=?, " +
+                " LS_COUNTRY=?,LS_NOTE=?,CREATEDON=?,CREATEDBY=?" +
+                " WHERE LS_ID=?";
+        
+        System.out.println(query);
         
         // Connection con = getConnection();
         PreparedStatement statement = null;
@@ -71,9 +76,11 @@ public class LeadQueries {
             statement.setString(7, lead.getNote());
             statement.setString(8, CommonTasks.getCurrentTimeStamp());
             statement.setInt(9, fHelper.ReadUserDetails().getUCODE());
-            statement.setBoolean(10, false);
+            statement.setInt(10, lead.getCode());
             
             statement.executeUpdate();
+            
+            emailPhoneQueries.emailsPhoneInsertion(statement, lead);
             
         } catch (SQLException e) {
             e.printStackTrace();
@@ -88,11 +95,13 @@ public class LeadQueries {
 //                " WHERE EL.CS_ID = CS.CS_ID " +
 //                " AND PL.CS_ID = CS.CS_ID " +
 //                " AND CL.CL_ID = CS.CL_ID";
-    
-        String query = "SELECT LS.LS_ID AS LS_ID,LS_FNAME,LS_LNAME,LS_CNAME," +
-                " LS_CITY,LS_COUNTRY,LS_NOTE,LS_WEBSITE " +
-                " FROM LEAD_STORE AS LS WHERE 1 ";
-    
+        
+        String query = "SELECT LS.LS_ID AS LS_ID,LS_FNAME,LS_LNAME,LS_CNAME, " +
+                " LS_CITY,LS_COUNTRY,LS_NOTE,LS_WEBSITE,EM_NAME,PH_NUM " +
+                " FROM LEAD_STORE AS LS, EMAIL_LIST AS EL, PHONE_LIST AS PL " +
+                " WHERE EL.LS_ID = LS.LS_ID " +
+                " AND PL.LS_ID = LS.LS_ID ";
+        
         if (where == null) {
             query = query + " ORDER BY LS.LS_ID";
         } else {
@@ -112,18 +121,20 @@ public class LeadQueries {
                 lead.setLastName(set.getString("LS_LNAME"));
                 lead.setCity(set.getString("LS_CITY"));
                 lead.setCountry(set.getString("LS_COUNTRY"));
-                lead.setWebsite(set.getString("LS_WEBSITE"));
+                lead.setWebsite(set.getString("LS_WEBSITE") );
                 lead.setCompany(set.getString("LS_CNAME"));
                 lead.setNote(set.getString("LS_NOTE"));
-    
+                lead.setEmail(set.getString("EM_NAME"));
+                lead.setPhone(set.getString("PH_NUM"));
+                
                 allLeads.add(lead);
             }
-        
+            
             // doRelease(con);
         } catch (SQLException ex) {
             ex.printStackTrace();
         }
-    
+        
         return allLeads;
     }
     

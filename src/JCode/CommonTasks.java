@@ -109,9 +109,9 @@ public class CommonTasks {
     }
     
     public static LocalDate createLocalDate(String timeStamp) {
-        
-        DateFormat inputFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.S");
-        
+
+//        DateFormat inputFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.S");
+        DateFormat inputFormat = new SimpleDateFormat("yyyy-MM-dd");
         Date date = null;
         try {
             date = inputFormat.parse(timeStamp);
@@ -120,6 +120,8 @@ public class CommonTasks {
         }
         
         Calendar calendar = new GregorianCalendar();
+        if (date == null)
+            return null;
         calendar.setTime(date);
         int year = calendar.get(Calendar.YEAR);
         //Add one to month {0 - 11}

@@ -27,8 +27,8 @@ import java.util.List;
 import java.util.ResourceBundle;
 
 public class newContactController implements Initializable {
-
-
+    
+    
     @FXML
     private Label txt_heading;
     @FXML
@@ -55,20 +55,20 @@ public class newContactController implements Initializable {
     private JFXButton btn_save;
     @FXML
     private JFXComboBox client_list;
-
+    
     mySqlConn sql;
-
+    
     static ContactProperty contact;
-
+    
     private List<ClientProperty> allClients;
-
+    
     public static char stInstance;
-
+    
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         sql = new mySqlConn();
         contact = new ContactProperty();
-
+        
         Image image = new Image(this.getClass().getResourceAsStream("/res/img/left-arrow.png"));
         btn_back.setGraphic(new ImageView(image));
         btn_back.setAlignment(Pos.CENTER_LEFT);
@@ -78,29 +78,29 @@ public class newContactController implements Initializable {
                 dashBaseController.main_paneF.setCenter(
                         FXMLLoader.load(
                                 getClass().getClassLoader().getResource("client/dash/contactView/contactView.fxml")));
-
+                
             } catch (IOException e) {
                 e.printStackTrace();
             }
         });
-
+        
         allClients = sql.getAllClients("CL_TYPE = 1");
         client_list.getItems().addAll(allClients);
-
+        
         txt_fname.textProperty().addListener((observable, oldValue, newValue) -> {
             if (newValue.contains(" ")) {
                 //prevents from the new space char
                 txt_fname.setText(oldValue);
             }
         });
-
+        
         txt_lname.textProperty().addListener((observable, oldValue, newValue) -> {
             if (newValue.contains(" ")) {
                 //prevents from the new space char
                 txt_lname.setText(oldValue);
             }
         });
-
+        
         switch (stInstance) {
             case 'N': {      //New
                 txt_heading.setText("New Contact");
@@ -118,9 +118,9 @@ public class newContactController implements Initializable {
             default:
                 break;
         }
-
+        
     }
-
+    
     public void populateContact() {
         ContactProperty contact = contactViewController.staticContact;
         txt_fname.setText(contact.getFirstName());
@@ -131,9 +131,9 @@ public class newContactController implements Initializable {
         txt_city.setText(contact.getCity());
         txt_country.setText(contact.getCountry());
         txt_note.setText(contact.getNote());
-
+        
         date_of_birth.setValue(CommonTasks.createLocalDate(contact.getDob()));
-
+        
         for (ClientProperty c : allClients) {
             if (c.getCode() == contact.getClID()) {
                 client_list.getSelectionModel().select(c);
@@ -141,7 +141,7 @@ public class newContactController implements Initializable {
             }
         }
     }
-
+    
     public void saveChanges(ActionEvent actionEvent) {
         String fname = txt_fname.getText(),
                 lname = txt_lname.getText(),
@@ -152,8 +152,8 @@ public class newContactController implements Initializable {
                 country = txt_country.getText(),
                 note = txt_note.getText(),
                 jdate = String.valueOf(date_of_birth.getValue());
-
-
+        
+        
         if (fname.equals("") || lname.equals("") || city.equals("") || country.equals("")) {
             Toast.makeText((Stage) btn_save.getScene().getWindow(), "Required Fields Are Empty");
             return;
@@ -175,12 +175,12 @@ public class newContactController implements Initializable {
             Alert alert2 = new Alert(Alert.AlertType.CONFIRMATION, msg,
                     ButtonType.YES, ButtonType.NO);
             alert2.showAndWait();
-
+            
             if (alert2.getResult() == ButtonType.YES) {
-
+                
                 fname = fname.substring(0, 1).toUpperCase() + fname.substring(1);   //Make First Letter to Uppercase
                 lname = lname.substring(0, 1).toUpperCase() + lname.substring(1);
-
+                
                 contact.setFirstName(fname);
                 contact.setLastName(lname);
                 contact.setAddress(addr);
@@ -195,14 +195,14 @@ public class newContactController implements Initializable {
 //                contact.setPhones(new String[]{mobile});
                 contact.setEmail(email);
                 contact.setMobile(mobile);
-
+                
                 ClientProperty c = (ClientProperty) client_list.getSelectionModel().getSelectedItem();
-
+                
                 if (c != null)
                     contact.setClID(c.getCode());
-
+                
                 System.out.println(contact);
-
+                
                 switch (stInstance) {
                     case 'N': {
                         sql.insertContact(contact);
@@ -216,12 +216,12 @@ public class newContactController implements Initializable {
                         break;
                     }
                 }
-
+                
             } else {
                 return;
             }
         }
-
+        
     }
-
+    
 }
