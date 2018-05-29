@@ -71,7 +71,7 @@ public class dController implements Initializable {
         //Setting Loading Image to ImageView
         img_loader.setVisible(true);
         
-        drawer_pane.setStyle("-fx-border-style: solid solid none solid; -fx-border-width: 2;");
+        drawer_pane.setStyle("-fx-border-width: 0 2 0 0; -fx-border-color: red black green yellow;");
 
         network = fHelper.getNetworkDetails();
 
