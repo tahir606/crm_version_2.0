@@ -70,8 +70,8 @@ public class dController implements Initializable {
                 new Image(getClass().getResourceAsStream("/res/img/loader.gif")));
         //Setting Loading Image to ImageView
         img_loader.setVisible(true);
-        
-        drawer_pane.setStyle("-fx-border-width: 0 2 0 0; -fx-border-color: red black green yellow;");
+        //Setting border to the right side
+//        drawer_pane.setStyle("-fx-border-width: 0 2 0 0; -fx-border-color: red black green yellow;");
 
         network = fHelper.getNetworkDetails();
 
