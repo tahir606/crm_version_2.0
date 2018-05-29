@@ -89,12 +89,6 @@ public class LeadQueries {
     }
 
     public List<Lead> getAllLeads(String where) {
-//        String query = "SELECT CS.CS_ID AS CS_ID,CS_FNAME,CS_LNAME,CS_DOB,CS_ADDR," +
-//                " CS_CITY,CS_COUNTRY,CS_NOTE,CS.CREATEDON,FREZE,EM_NAME,PH_NUM,CL_NAME,CS.CL_ID AS CL_ID" +
-//                " FROM CONTACT_STORE AS CS, EMAIL_LIST AS EL, PHONE_LIST AS PL, CLIENT_STORE AS CL " +
-//                " WHERE EL.CS_ID = CS.CS_ID " +
-//                " AND PL.CS_ID = CS.CS_ID " +
-//                " AND CL.CL_ID = CS.CL_ID";
 
         String query = " SELECT LS.LS_ID AS LS_ID,LS_FNAME,LS_LNAME,LS_CNAME,LS_CITY,LS_COUNTRY,LS_NOTE,LS_WEBSITE,EM_NAME,PH_NUM " +
                 " FROM LEAD_STORE AS LS, EMAIL_LIST AS EL,  PHONE_LIST AS PL  " +

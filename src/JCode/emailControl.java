@@ -227,7 +227,7 @@ public class emailControl {
 
     public static void sendEmail(Email email, Message messageReply) {
 
-        String perDisc = null;
+        String perDisc;
 
         if (email.getDisclaimer() == null) {
             email.setDisclaimer("");

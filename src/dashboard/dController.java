@@ -41,6 +41,8 @@ public class dController implements Initializable {
     private ImageView img_loader;
     @FXML
     private VBox menu_pane;
+    @FXML
+    private Pane drawer_pane;
 
     public static ImageView img_load;
 
@@ -68,6 +70,8 @@ public class dController implements Initializable {
                 new Image(getClass().getResourceAsStream("/res/img/loader.gif")));
         //Setting Loading Image to ImageView
         img_loader.setVisible(true);
+        
+        drawer_pane.setStyle("-fx-border-style: solid solid none solid; -fx-border-width: 2;");
 
         network = fHelper.getNetworkDetails();
 

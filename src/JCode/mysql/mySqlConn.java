@@ -50,8 +50,8 @@ public class mySqlConn {
         userQueries = new UserQueries(static_con, fHelper);
         emailSettingsQueries = new EmailSettingsQueries(static_con, fHelper);
         eSetting = getEmailSettings();
-        emailQueries = new EmailQueries(static_con, user, eSetting);
         emailPhoneQueries = new EmailPhoneQueries(static_con);
+        emailQueries = new EmailQueries(static_con, user, eSetting, emailPhoneQueries);
         contactQueries = new ContactQueries(static_con, fHelper, emailPhoneQueries);
         clientQueries = new ClientQueries(static_con, fHelper, emailPhoneQueries);
         productQueries = new ProductQueries(static_con, fHelper);

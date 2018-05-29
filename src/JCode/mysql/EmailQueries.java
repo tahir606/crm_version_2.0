@@ -25,11 +25,13 @@ public class EmailQueries {
     private Connection static_con;
     private ESetting eSetting;
     private Users user;
+    private EmailPhoneQueries emailPhoneQueries;
     
-    public EmailQueries(Connection static_con, Users user, ESetting eSetting) {
+    public EmailQueries(Connection static_con, Users user, ESetting eSetting, EmailPhoneQueries emailPhoneQueries) {
         this.static_con = static_con;
         this.user = user;
         this.eSetting = eSetting;
+        this.emailPhoneQueries = emailPhoneQueries;
     }
     
     public Users getNoOfSolvedEmails(Users user) {
@@ -580,7 +582,7 @@ public class EmailQueries {
                     + email.getCcAddressString() + "^"
                     + email.getBccAddressString()).split("\\^");
             
-            EmailsListInsertion(allEmails);
+            emailPhoneQueries.emailsListInsertion(allEmails);
             
         } catch (SQLException e) {
             e.printStackTrace();
