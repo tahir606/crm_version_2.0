@@ -464,6 +464,7 @@ public class EmailDashController implements Initializable {
                 try {
                     Label label = new Label(f.toString());
                     label.setPadding(new Insets(2, 2, 2, 5));
+                    label.getStyleClass().add("moduleDetails");
                     vbox_from.getChildren().add(label);
                 } catch (NullPointerException ex) {
                     //Because null is saved
@@ -474,6 +475,7 @@ public class EmailDashController implements Initializable {
                     try {
                         Label label = new Label(c.toString());
                         label.setPadding(new Insets(2, 5, 2, 5));
+                        label.getStyleClass().add("moduleDetails");
                         vbox_cc.getChildren().add(label);
                     } catch (NullPointerException ex) {
                         //Because null is saved
@@ -491,6 +493,7 @@ public class EmailDashController implements Initializable {
                         try {
                             Label label = new Label(c.toString());
                             label.setPadding(new Insets(2, 5, 2, 5));
+                            label.getStyleClass().add("moduleDetails");
                             vbox_contacts.getChildren().add(label);
                         } catch (NullPointerException ex) {
                             //Because null is saved
@@ -506,6 +509,7 @@ public class EmailDashController implements Initializable {
                         try {
                             Label label = new Label(c.toString());
                             label.setPadding(new Insets(2, 5, 2, 5));
+                            label.getStyleClass().add("moduleDetails");
                             vbox_clients.getChildren().add(label);
                         } catch (NullPointerException ex) {
                             //Because null is saved

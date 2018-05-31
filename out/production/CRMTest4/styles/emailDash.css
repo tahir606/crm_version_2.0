@@ -31,6 +31,7 @@
 
 .scroll-view {
     -fx-background-color: transparent;
+    -fx-background: #fcfcfc;
 }
 
 /*, .list-cell:filled:selected*/
@@ -41,7 +42,7 @@
 }
 
 .moduleDetails {
-    -fx-text-fill: #ffffff;
+    -fx-text-fill: #000000;
     -fx-font-size: 9pt;
 }
 
