@@ -27,6 +27,7 @@ import objects.ESetting;
 import objects.Network;
 import objects.Users;
 
+import java.awt.*;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -34,7 +35,7 @@ import java.util.ResourceBundle;
 
 
 public class dController implements Initializable {
-
+    
     @FXML
     private BorderPane border_pane;
     @FXML
@@ -43,50 +44,50 @@ public class dController implements Initializable {
     private VBox menu_pane;
     @FXML
     private Pane drawer_pane;
-
+    
     public static ImageView img_load;
-
+    
     private fileHelper fHelper;
     private mySqlConn sql;
     private static Users user;
     private static Network network;
     private static ESetting eSetting;
     private ArrayList<Users.uRights> rightsList;
-
+    
     public static boolean isServer = false;
-
+    
     trayHelper tHelper;
-
+    
     private static int currentPane;
-
+    
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         img_load = img_loader;
-
+        
         fHelper = new fileHelper();
         tHelper = new trayHelper();
-
+        
         img_loader.setImage(
                 new Image(getClass().getResourceAsStream("/res/img/loader.gif")));
         //Setting Loading Image to ImageView
         img_loader.setVisible(true);
         //Setting border to the right side
 //        drawer_pane.setStyle("-fx-border-width: 0 2 0 0; -fx-border-color: red black green yellow;");
-
+        
         network = fHelper.getNetworkDetails();
-
+        
         sql = new mySqlConn();
-
+        
         eSetting = sql.getEmailSettings();
         user = fHelper.ReadUserDetails();
         rightsList = user.getuRightsList();
-
+        
         SplashScreenThread.hideSplashScreen();
-
+        
         DrawerPane(); //Populate Drawer
-
+        
         changeSelection(homeBtn, "Home/Home.fxml", 1);
-
+        
         if (user.isEmail()) {
             emailCtrl();
             isServer = true;
@@ -95,17 +96,17 @@ public class dController implements Initializable {
             isServer = false;
             new Thread(() -> new JClient()).start();
         }
-
+        
         Platform.setImplicitExit(false);
     }
-
+    
     private void DrawerPane() {
-
+        
         new Thread(() -> {
-
+            
             //Is an awarded right for everyone
             homeButton();
-
+            
             for (Users.uRights r : rightsList) {
                 switch (r.getRCODE()) {
                     case 1: {
@@ -130,65 +131,71 @@ public class dController implements Initializable {
                     }
                 }
             }
-
+            
             logoutButton();
             powerButton();
-
+            
             img_loader.setVisible(false);
         }).start();
     }
-
+    
     //---------------------------BUTTONS-------------------------
-
-    private void buttonSettings(String btnName, String path, int paneNo) {
-        JFXButton button = new JFXButton(btnName);
+    private void buttonSubSettings(JFXButton button, String btnName) {
+        button.setText(btnName.toUpperCase());
         Image image = new Image(getClass().getResourceAsStream("/res/img/" + btnName + ".png"));
-        button.setPrefSize(menu_pane.getPrefWidth(), 40);
+        button.setMinSize(menu_pane.getPrefWidth(), 35);
+        button.setMaxSize(menu_pane.getPrefWidth(), 35);
         button.getStyleClass().add("btn");
-        button.addEventHandler(MouseEvent.MOUSE_PRESSED, event -> changeSelection(button, path, paneNo));
+        
         button.setGraphic(new ImageView(image));
         button.setAlignment(Pos.CENTER_LEFT);
         Platform.runLater(() -> menu_pane.getChildren().add(button));
     }
-
+    
+    private void buttonSettings(String btnName, String path, int paneNo) {
+        JFXButton button = new JFXButton();
+        buttonSubSettings(button, btnName);
+        button.addEventHandler(MouseEvent.MOUSE_PRESSED, event -> changeSelection(button, path, paneNo));
+        
+    }
+    
+    JFXButton homeBtn = new JFXButton("Home");
+    
+    private void homeButton() {
+        buttonSettings("Home", "Home/Home.fxml", 1);
+    }
+    
     private void mailButton() {
         buttonSettings("Emails", "Email/emailDash.fxml", 2);
     }
-
+    
     private void clientButton() {
         buttonSettings("Clients", "client/dashBase.fxml", 3);
     }
-
+    
     private void leadButton() {
         buttonSettings("Leads", "lead/lead_dash.fxml", 4);
     }
-
+    
     private void productButton() {
         buttonSettings("Products", "product/product_dash.fxml", 5);
     }
-
+    
     private void settingsButton() {
         buttonSettings("Settings", "settings/settings.fxml", 6);
     }
-
+    
     private void logoutButton() {
-
-        Image image = new Image(getClass().getResourceAsStream("/res/img/logout.png"));
-
+        
         JFXButton logoutBtn = new JFXButton("Logout");
-        logoutBtn.setPrefSize(menu_pane.getPrefWidth(), 40);
-        logoutBtn.setGraphic(new ImageView(image));
-        logoutBtn.getStyleClass().add("btn");
-        logoutBtn.setAlignment(Pos.CENTER_LEFT);
-        Platform.runLater(() -> menu_pane.getChildren().add(logoutBtn));
-
+        buttonSubSettings(logoutBtn, "Logout");
         logoutBtn.addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent event) {
                 img_loader.setVisible(true);
-
+                
                 sql.setLogin(user.getUCODE(), false);
-
+                
                 if (isServer == true) {
                     JServer.closeThread();
                 } else {
@@ -198,16 +205,16 @@ public class dController implements Initializable {
                         e.printStackTrace();
                     }
                 }
-
+                
                 Stage dash = (Stage) menu_pane.getScene().getWindow();
                 dash.close();
-
+                
                 fHelper.DeleteUserDetails();
                 fHelper.DeleteESettings();
-
+                
                 if (emailThread != null)
                     emailThread.interrupt();
-
+                
                 FXMLLoader fxmlLoader = new FXMLLoader(getClass().getClassLoader().getResource("login/login.fxml"));
                 Parent root1 = null;
                 try {
@@ -225,45 +232,22 @@ public class dController implements Initializable {
             }
         });
     }
-
+    
     private void powerButton() {
-        Image image = new Image(getClass().getResourceAsStream("/res/img/power-off.png"));
-
         JFXButton powerBtn = new JFXButton("Power");
-        powerBtn.setPrefSize(menu_pane.getPrefWidth(), 40);
-        powerBtn.setGraphic(new ImageView(image));
-        powerBtn.getStyleClass().add("btn");
-        powerBtn.setAlignment(Pos.CENTER_LEFT);
-
-        Platform.runLater(() -> menu_pane.getChildren().add(powerBtn));
-
+        buttonSubSettings(powerBtn, "Power");
         powerBtn.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> System.exit(0));
     }
-
+    
     //---------------------------EVENT HANDLERS---------------------------
-    JFXButton homeBtn = new JFXButton("Home");
-
-    private void homeButton() {
-        img_loader.setVisible(true);
-
-        Image image = new Image(this.getClass().getResourceAsStream("/res/img/home.png"));
-
-        homeBtn.setPrefSize(menu_pane.getPrefWidth(), 40);
-        homeBtn.setGraphic(new ImageView(image));
-        homeBtn.getStyleClass().add("btn");
-        homeBtn.setAlignment(Pos.CENTER_LEFT);
-        homeBtn.setAccessibleText("HomeBtn");
-        Platform.runLater(() -> menu_pane.getChildren().add(homeBtn));
-
-        homeBtn.setOnAction(event -> changeSelection(homeBtn, "Home/Home.fxml", 1));
-    }
-
+    
+    
     Thread emailThread;
-
+    
     private void emailCtrl() {
-
+        
         emailControl ec = new emailControl();
-
+        
         emailThread = new Thread(() -> {
             while (true) {
                 if (!mySqlConn.pingHost(network.getHost(), network.getPort(), 2000)) {          //MySQL Database Not Found!!
@@ -295,34 +279,34 @@ public class dController implements Initializable {
                         }
                     }
                 }
-
+                
             }
-
+            
         });
-
+        
         emailThread.start();
-
+        
     }
-
+    
     private void changeSelection(JFXButton btn, String path, int pane) {
-
+        
         img_loader.setVisible(true);
-
+        
         for (Node node : menu_pane.getChildren()) {
             node.getStyleClass().remove("btnMenuBoxPressed");
         }
-
+        
         btn.getStyleClass().add("btnMenuBoxPressed");
-
+        
         new Thread(new Runnable() {
             @Override
             public void run() {
-
+                
                 if (currentPane == pane) {
                     img_loader.setVisible(false);
                     return;
                 }
-
+                
                 Platform.runLater(() -> {
                     try {
                         border_pane.setCenter(FXMLLoader.load(getClass().getClassLoader().getResource(path)));
@@ -334,8 +318,8 @@ public class dController implements Initializable {
                 });
             }
         }).start();
-
+        
     }
-
-
+    
+    
 }

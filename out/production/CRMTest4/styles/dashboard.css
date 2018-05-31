@@ -47,8 +47,8 @@
 }
 
 .btn {
-    -fx-padding: 10;
-    -fx-font-size: 12;
+    -fx-padding: 5;
+    -fx-font-size: 11.5;
 }
 
 .btn:hover {
