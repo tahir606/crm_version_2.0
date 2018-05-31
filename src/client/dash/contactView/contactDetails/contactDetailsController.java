@@ -15,9 +15,12 @@ import javafx.geometry.Pos;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
+import javafx.scene.control.TextArea;
 import javafx.scene.control.Tooltip;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import objects.ContactProperty;
 
@@ -45,6 +48,14 @@ public class contactDetailsController implements Initializable {
     private JFXButton btn_email;
     @FXML
     private JFXButton btn_edit;
+    @FXML
+    private VBox notes_list;
+    @FXML
+    private HBox new_note;
+    @FXML
+    private TextArea txt_note;
+    @FXML
+    private JFXButton btn_add_note;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -89,6 +100,10 @@ public class contactDetailsController implements Initializable {
             } catch (IOException e) {
                 e.printStackTrace();
             }
+        });
+        
+        btn_add_note.setOnAction(event -> {
+        
         });
 
     }

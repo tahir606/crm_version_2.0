@@ -13,12 +13,12 @@
             xmlns="http://javafx.com/javafx/9" xmlns:fx="http://javafx.com/fxml/1"
             fx:controller="client.dash.contactView.contactDetails.contactDetailsController">
     <children>
-        <ScrollPane layoutX="24.0" layoutY="68.0">
+        <ScrollPane layoutX="24.0" layoutY="68.0" AnchorPane.bottomAnchor="20.0" AnchorPane.topAnchor="50.0"
+                    AnchorPane.leftAnchor="24.0">
             <styleClass>
-                <String fx:value="scroll-view" />
+                <String fx:value="scroll-view"/>
             </styleClass>
-            <VBox prefHeight="297.0" prefWidth="613.0" spacing="10.0"
-                  AnchorPane.bottomAnchor="107.0" AnchorPane.leftAnchor="24.0" AnchorPane.topAnchor="55.0">
+            <VBox prefHeight="297.0" prefWidth="613.0" spacing="10.0">
                 <children>
                     <Label fx:id="txt_fname" layoutX="28.0" layoutY="65.0" text="First Last Name">
                         <font>
@@ -98,7 +98,15 @@
                             </Label>
                         </children>
                     </HBox>
-                    <HBox prefHeight="8.0" prefWidth="316.0"/>
+                    <HBox prefHeight="8.0" prefWidth="316.0">
+                        <children>
+                            <Label prefHeight="20.0" prefWidth="60.0" text="Notes">
+                                <font>
+                                    <Font size="14.0"/>
+                                </font>
+                            </Label>
+                        </children>
+                    </HBox>
                     <HBox prefHeight="8.0" prefWidth="316.0"/>
                 </children>
             </VBox>
