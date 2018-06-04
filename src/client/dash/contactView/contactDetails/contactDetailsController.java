@@ -2,6 +2,7 @@ package client.dash.contactView.contactDetails;
 
 import Email.EResponse.EResponseController;
 import JCode.CommonTasks;
+import JCode.GUIConstructor;
 import JCode.Toast;
 import JCode.mysql.mySqlConn;
 import JCode.trayHelper;
@@ -56,11 +57,13 @@ public class contactDetailsController implements Initializable {
     private VBox notes_list;
     
     private mySqlConn sql;
+    private GUIConstructor guiConstructor;
     
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         
         sql = new mySqlConn();
+        guiConstructor = new GUIConstructor(notes_list, sql);
         
         Image image = new Image(this.getClass().getResourceAsStream("/res/img/left-arrow.png"));
         btn_back.setGraphic(new ImageView(image));
@@ -83,35 +86,6 @@ public class contactDetailsController implements Initializable {
     
     TextArea noteTxt;
     JFXButton btnAdd;
-    
-    private void populateDetails(ContactProperty contact) {
-        txt_fname.setText(contact.getFullName());
-        txt_email.setText(contact.getEmail());
-        txt_mobile.setText(contact.getMobile());
-        txt_client.setText(contact.getClientName());
-        txt_dob.setText(CommonTasks.getDateFormatted(contact.getDob()));
-        txt_age.setText(String.valueOf(contact.getAge()));
-    
-        btn_email.setOnAction(event -> {
-            EResponseController.stTo = contact.getEmail();
-            EResponseController.stInstance = 'N';
-            inflateEResponse(1);
-        });
-    
-        btn_edit.setOnAction(event -> {
-            newContactController.stInstance = 'U';
-            try {
-                dashBaseController.main_paneF.setCenter(
-                        FXMLLoader.load(
-                                getClass().getClassLoader().getResource("client/newContact/newContact.fxml")));
-            
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        });
-        
-        constructingNotes(contact);
-    }
     
     private void constructingNotes(ContactProperty contact) {
         notes_list.getChildren().clear();
@@ -230,5 +204,39 @@ public class contactDetailsController implements Initializable {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+    
+    private void populateDetails(ContactProperty contact) {
+        txt_fname.setText(contact.getFullName());
+        txt_email.setText(contact.getEmail());
+        txt_mobile.setText(contact.getMobile());
+        txt_client.setText(contact.getClientName());
+        txt_dob.setText(CommonTasks.getDateFormatted(contact.getDob()));
+        txt_age.setText(String.valueOf(contact.getAge()));
+        
+        btn_email.setOnAction(event -> {
+            EResponseController.stTo = contact.getEmail();
+            EResponseController.stInstance = 'N';
+            inflateEResponse(1);
+        });
+        
+        btn_edit.setOnAction(event -> {
+            newContactController.stInstance = 'U';
+            try {
+                dashBaseController.main_paneF.setCenter(
+                        FXMLLoader.load(
+                                getClass().getClassLoader().getResource("client/newContact/newContact.fxml")));
+                
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        });
+        
+        guiConstructor.constructingNotes(contact);
+//      constructingNotes(contact);
+    }
+    
+    private static void populateDetailsStatic() {
+    
     }
 }
