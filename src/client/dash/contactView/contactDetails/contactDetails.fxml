@@ -14,8 +14,8 @@
             xmlns="http://javafx.com/javafx/9" xmlns:fx="http://javafx.com/fxml/1"
             fx:controller="client.dash.contactView.contactDetails.contactDetailsController">
     <children>
-        <ScrollPane layoutX="24.0" layoutY="68.0" AnchorPane.bottomAnchor="20.0" AnchorPane.topAnchor="50.0"
-                    AnchorPane.leftAnchor="24.0">
+        <ScrollPane layoutX="24.0" layoutY="68.0" AnchorPane.bottomAnchor="5.0" AnchorPane.topAnchor="52.0"
+                    AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0">
             <styleClass>
                 <String fx:value="scroll-view"/>
             </styleClass>
@@ -100,9 +100,11 @@
                         </children>
                     </HBox>
                     <HBox prefHeight="8.0" prefWidth="316.0"/>
+                    <HBox prefHeight="8.0" prefWidth="316.0"/>
+                    <HBox prefHeight="8.0" prefWidth="316.0"/>
                     <HBox prefHeight="8.0" prefWidth="316.0">
                         <children>
-                            <Label prefHeight="20.0" prefWidth="60.0" text="Notes">
+                            <Label prefHeight="20.0" prefWidth="60.0" text="Notes" style="-fx-font-weight: bold;">
                                 <font>
                                     <Font size="14.0"/>
                                 </font>
@@ -112,11 +114,11 @@
                     <HBox prefHeight="8.0" prefWidth="316.0">
                         <children>
                             <VBox fx:id="notes_list" spacing="3">
-                                <HBox fx:id="new_note" spacing="5">
-                                    <TextArea fx:id="txt_note" promptText="New Note"/>
-                                    <JFXButton fx:id="btn_add_note" text="Add" buttonType="RAISED"
-                                               style="-fx-background-color: #efefef;"/>
-                                </HBox>
+                                <!--<HBox fx:id="new_note" spacing="5">-->
+                                    <!--<TextArea fx:id="txt_note" promptText="New Note"/>-->
+                                    <!--<JFXButton fx:id="btn_add_note" text="Add" buttonType="RAISED"-->
+                                               <!--style="-fx-background-color: #efefef;"/>-->
+                                <!--</HBox>-->
                             </VBox>
                         </children>
                     </HBox>
