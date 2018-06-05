@@ -2,48 +2,72 @@
 
 <?import com.jfoenix.controls.JFXButton?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ListView?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<?import javafx.scene.control.ListView?>
-<AnchorPane prefHeight="472.0" prefWidth="1000.0" stylesheets="@../../../../styles/emailDash.css" xmlns="http://javafx.com/javafx/9" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.dash.clientView.clientDetails.clientDetailsController">
-   <children>
-      <Label fx:id="txt_fname" layoutX="28.0" layoutY="65.0" text="Client Name">
-         <font>
-            <Font name="Arial Narrow" size="20.0" />
-         </font>
-      </Label>
-      <VBox layoutX="28.0" layoutY="104.0" prefHeight="331.0" prefWidth="316.0" spacing="10.0" AnchorPane.bottomAnchor="37.0" AnchorPane.leftAnchor="28.0" AnchorPane.topAnchor="104.0">
-         <children>
-            <HBox prefHeight="8.0" prefWidth="316.0" />
-            <HBox prefHeight="26.0" prefWidth="316.0" spacing="25.0">
-               <children>
-                  <Label prefHeight="20.0" prefWidth="60.0" text="Website">
-                     <font>
-                        <Font size="14.0" />
-                     </font>
-                  </Label>
-                  <Label fx:id="txt_website" text="www.example.com">
-                     <font>
-                        <Font size="14.0" />
-                     </font>
-                  </Label>
-               </children>
-            </HBox>
-         </children>
-      </VBox>
-      <Label fx:id="label_email" layoutX="435.0" layoutY="80.0" text="EMAIL" />
-      <ListView fx:id="email_list" layoutX="330.0" layoutY="113.0" prefHeight="311.0" prefWidth="237.0" />
-      <Label fx:id="label_phone" layoutX="732.0" layoutY="80.0" text="PHONE" />
-      <ListView fx:id="phone_list" layoutX="633.0" layoutY="113.0" prefHeight="311.0" prefWidth="237.0" />
-      <JFXButton fx:id="btn_back" layoutX="14.0" layoutY="14.0" pickOnBounds="true" ripplerFill="#99ff9f" text=" " AnchorPane.leftAnchor="14.0" AnchorPane.topAnchor="14.0" />
-      <HBox layoutX="639.0" layoutY="19.0" prefHeight="34.0" prefWidth="361.0" spacing="20.0">
-         <children>
-            <JFXButton fx:id="btn_email" prefHeight="42.0" prefWidth="84.0" styleClass="emailDetailsButton" text="Send Email" />
-            <JFXButton fx:id="btn_edit" prefHeight="38.0" prefWidth="84.0" styleClass="emailDetailsButton" text="Edit" />
-         </children>
-      </HBox>
-   </children>
+<?import javafx.scene.control.ScrollPane?>
+<?import java.lang.String?>
+<AnchorPane prefHeight="472.0" prefWidth="1000.0" stylesheets="@../../../../styles/emailDash.css"
+            xmlns="http://javafx.com/javafx/9" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="client.dash.clientView.clientDetails.clientDetailsController">
+    <children>
+        <Label fx:id="txt_fname" layoutX="28.0" layoutY="65.0" text="Client Name">
+            <font>
+                <Font name="Arial Narrow" size="20.0"/>
+            </font>
+        </Label>
+        <ScrollPane layoutX="28.0" layoutY="104.0" prefHeight="331.0" prefWidth="466.0"
+                    AnchorPane.bottomAnchor="37.0" AnchorPane.leftAnchor="28.0" AnchorPane.rightAnchor="506.0"
+                    AnchorPane.topAnchor="104.0">
+            <styleClass>
+                <String fx:value="scroll-view"/>
+            </styleClass>
+            <VBox prefHeight="297.0" prefWidth="613.0" spacing="10.0">
+                <children>
+                    <HBox prefHeight="8.0" prefWidth="316.0"/>
+                    <HBox prefHeight="26.0" prefWidth="316.0" spacing="25.0">
+                        <children>
+                            <Label prefHeight="20.0" prefWidth="60.0" text="Website">
+                                <font>
+                                    <Font size="14.0"/>
+                                </font>
+                            </Label>
+                            <Label fx:id="txt_website" text="www.example.com">
+                                <font>
+                                    <Font size="14.0"/>
+                                </font>
+                            </Label>
+                        </children>
+                    </HBox>
+                    <HBox prefHeight="8.0" prefWidth="316.0">
+                        <children>
+                            <VBox fx:id="notes_list" spacing="3">
+                            </VBox>
+                        </children>
+                    </HBox>
+                </children>
+            </VBox>
+        </ScrollPane>
+        <Label fx:id="label_email" layoutX="602.0" layoutY="80.0" text="EMAIL" AnchorPane.rightAnchor="364.0"
+               AnchorPane.topAnchor="80.0"/>
+        <ListView fx:id="email_list" layoutX="500.0" layoutY="114.0" prefHeight="311.0" prefWidth="237.0"
+                  AnchorPane.bottomAnchor="47.0" AnchorPane.rightAnchor="263.0" AnchorPane.topAnchor="114.0"/>
+        <Label fx:id="label_phone" layoutX="848.0" layoutY="80.0" text="PHONE" AnchorPane.rightAnchor="112.0"/>
+        <ListView fx:id="phone_list" layoutX="749.0" layoutY="114.0" prefHeight="311.0" prefWidth="237.0"
+                  AnchorPane.bottomAnchor="47.0" AnchorPane.rightAnchor="14.0" AnchorPane.topAnchor="114.0"/>
+        <JFXButton fx:id="btn_back" layoutX="14.0" layoutY="14.0" pickOnBounds="true" ripplerFill="#99ff9f" text=" "
+                   AnchorPane.leftAnchor="14.0" AnchorPane.topAnchor="14.0"/>
+        <HBox layoutX="678.0" layoutY="22.0" prefHeight="34.0" prefWidth="202.0" spacing="20.0"
+              AnchorPane.rightAnchor="20.0">
+            <children>
+                <JFXButton fx:id="btn_email" prefHeight="42.0" prefWidth="84.0" styleClass="emailDetailsButton"
+                           text="Send Email"/>
+                <JFXButton fx:id="btn_edit" prefHeight="38.0" prefWidth="84.0" styleClass="emailDetailsButton"
+                           text="Edit"/>
+            </children>
+        </HBox>
+    </children>
 </AnchorPane>

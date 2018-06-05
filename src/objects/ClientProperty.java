@@ -4,12 +4,16 @@ import client.newClient.newClientController;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class ClientProperty {
 
     private SimpleIntegerProperty Code, Type;
     private SimpleStringProperty Name, owner, Addr, City, Country, Website, JoinDate, note;
     private String[] emails = new String[newClientController.noOfFields],
             phones = new String[newClientController.noOfFields];
+    private List<Note> notes;
 
     public ClientProperty() {
 
@@ -25,6 +29,7 @@ public class ClientProperty {
         JoinDate = new SimpleStringProperty();
         note = new SimpleStringProperty();
 
+        notes = new ArrayList<>();
     }
 
     @Override
@@ -175,5 +180,13 @@ public class ClientProperty {
 
     public void setPhones(String[] phones) {
         this.phones = phones;
+    }
+
+    public List<Note> getNotes() {
+        return notes;
+    }
+
+    public void setNotes(List<Note> notes) {
+        this.notes = notes;
     }
 }

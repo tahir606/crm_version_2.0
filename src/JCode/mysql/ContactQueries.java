@@ -130,7 +130,7 @@ public class ContactQueries {
                 contact.setAge(CommonTasks.getAge(contact.getDob()));
                 contact.setNote(set.getString("CS_NOTE"));
                 contact.setIsFreeze(set.getBoolean("FREZE"));
-                contact.setContactNotes(noteQueries.getContactNotes(contact));
+                contact.setContactNotes(noteQueries.getNotes(contact));
                 allContacts.add(contact);
             }
             
@@ -197,7 +197,7 @@ public class ContactQueries {
                 contact.setAge(CommonTasks.getAge(contact.getDob()));
                 contact.setNote(set.getString("CS_NOTE"));
                 contact.setIsFreeze(set.getBoolean("FREZE"));
-                contact.setContactNotes(noteQueries.getContactNotes(contact));
+                contact.setContactNotes(noteQueries.getNotes(contact));
                 return contact;
             }
             
