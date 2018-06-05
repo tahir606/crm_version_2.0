@@ -4,11 +4,15 @@ import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class ContactProperty {
 
     SimpleIntegerProperty code, clID;
     SimpleStringProperty firstName, lastName, fullName, address, city, country, age, email, mobile, dob, note, clientName;
     SimpleBooleanProperty isFreeze;
+    List<Note> contactNotes;
 
     public ContactProperty() {
 
@@ -29,6 +33,8 @@ public class ContactProperty {
 
         clientName = new SimpleStringProperty();
         clID = new SimpleIntegerProperty();
+        
+        contactNotes = new ArrayList<>();
         
     }
 
@@ -207,5 +213,13 @@ public class ContactProperty {
 
     public void setClientName(String clientName) {
         this.clientName.set(clientName);
+    }
+    
+    public List<Note> getContactNotes() {
+        return contactNotes;
+    }
+    
+    public void setContactNotes(List<Note> contactNotes) {
+        this.contactNotes = contactNotes;
     }
 }

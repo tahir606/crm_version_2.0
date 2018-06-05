@@ -35,6 +35,7 @@ public class mySqlConn {
     private ProductQueries productQueries;
     private LeadQueries leadQueries;
     private DomainQueries domainQueries;
+    private NoteQueries noteQueries;
     
     public mySqlConn() {
         fHelper = new fileHelper();
@@ -51,13 +52,13 @@ public class mySqlConn {
         emailSettingsQueries = new EmailSettingsQueries(static_con, fHelper);
         eSetting = getEmailSettings();
         emailPhoneQueries = new EmailPhoneQueries(static_con);
+        noteQueries = new NoteQueries(static_con, fHelper);
         emailQueries = new EmailQueries(static_con, user, eSetting, emailPhoneQueries);
-        contactQueries = new ContactQueries(static_con, fHelper, emailPhoneQueries);
+        contactQueries = new ContactQueries(static_con, fHelper, emailPhoneQueries, noteQueries);
         clientQueries = new ClientQueries(static_con, fHelper, emailPhoneQueries);
         productQueries = new ProductQueries(static_con, fHelper);
         domainQueries = new DomainQueries(static_con);
         leadQueries = new LeadQueries(static_con, fHelper, emailPhoneQueries);
-        
     }
     
     private Connection getConnection() {
@@ -99,7 +100,6 @@ public class mySqlConn {
     public boolean getRights(Users user) {
         return userQueries.getRights(user);
     }
-    
     
     public String getUserName(int ucode) {
         return userQueries.getUserName(ucode);
@@ -161,7 +161,6 @@ public class mySqlConn {
         return emailQueries.readAllEmails(filters, userQueries);
     }
     
-    
     public void insertEmailGeneral(Email email) {
         emailQueries.insertEmailGeneral(email);
     }
@@ -177,7 +176,6 @@ public class mySqlConn {
     public List<Email> readAllEmailsSent(String where) {
         return emailQueries.readAllEmailsSent(where);
     }
-    
     
     public void lockEmail(Email email, int op) {
         emailQueries.lockEmail(email, op);
@@ -255,6 +253,10 @@ public class mySqlConn {
         return contactQueries.getNewContactCode();
     }
     
+    public ContactProperty getParticularContact(ContactProperty contact) {
+        return contactQueries.getParticularContact(contact);
+    }
+    
     public void insertProduct(ProductProperty product) {
         productQueries.insertProduct(product);
     }
@@ -319,6 +321,22 @@ public class mySqlConn {
         return leadQueries.getAllLeads(where);
     }
     
+    public void addContactNote(String text, ContactProperty contact) {
+        noteQueries.addNewNote(text, contact);
+    }
+    
+    public void updateContactNote(Note note, ContactProperty contactProperty) {
+        noteQueries.updateNote(note, contactProperty);
+    }
+    
+    public List<Note> getContactNotes(ContactProperty contact) {
+        return noteQueries.getContactNotes(contact);
+    }
+    
+    public void deleteContactNote(Note note, ContactProperty contact) {
+        noteQueries.deleteNote(note, contact);
+    }
+    
     public String[] getAllEmailIDs(String where) {
         String query = "SELECT DISTINCT EM_NAME FROM EMAIL_LIST ";
         
@@ -371,7 +389,6 @@ public class mySqlConn {
     }
     
     private void showAlertDialog() {
-        
         Alert alert2 = new Alert(Alert.AlertType.ERROR, "Cannot Connect to the Database!",
                 ButtonType.OK);
         alert2.showAndWait();
@@ -379,18 +396,15 @@ public class mySqlConn {
         if (alert2.getResult() == ButtonType.OK) {
             System.exit(0);
         }
-        
     }
     
     private void doRelease(Connection con) {
-        
         try {
             if (con != null)
                 static_con.close();
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        
     }
     
 }

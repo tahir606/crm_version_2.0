@@ -16,13 +16,16 @@ public class ContactQueries {
     private Connection static_con;
     private fileHelper fHelper;
     private EmailPhoneQueries emailPhoneQueries;
-
-    public ContactQueries(Connection static_con, fileHelper fHelper, EmailPhoneQueries emailPhoneQueries) {
+    private NoteQueries noteQueries;
+    
+    public ContactQueries(Connection static_con, fileHelper fHelper, EmailPhoneQueries emailPhoneQueries, NoteQueries
+            noteQueries) {
         this.static_con = static_con;
         this.fHelper = fHelper;
         this.emailPhoneQueries = emailPhoneQueries;
+        this.noteQueries = noteQueries;
     }
-
+    
     public void insertContact(ContactProperty contact) {
         
         String query = "INSERT INTO CONTACT_STORE(CS_ID, CS_FNAME ,CS_LNAME ,CS_DOB ,CS_ADDR ,CS_CITY , " +
@@ -108,7 +111,6 @@ public class ContactQueries {
         List<ContactProperty> allContacts = new ArrayList<>();
         
         try {
-            System.out.println(query);
             PreparedStatement statement = static_con.prepareStatement(query);
             ResultSet set = statement.executeQuery();
             //-------------Creating Email-------------
@@ -128,7 +130,7 @@ public class ContactQueries {
                 contact.setAge(CommonTasks.getAge(contact.getDob()));
                 contact.setNote(set.getString("CS_NOTE"));
                 contact.setIsFreeze(set.getBoolean("FREZE"));
-                
+                contact.setContactNotes(noteQueries.getContactNotes(contact));
                 allContacts.add(contact);
             }
             
@@ -159,6 +161,52 @@ public class ContactQueries {
         }
         
         return 0;
+    }
+    
+    public ContactProperty getParticularContact(ContactProperty where) {
+        String query = "SELECT CS.CS_ID AS CS_ID,CS_FNAME,CS_LNAME,CS_DOB,CS_ADDR," +
+                " CS_CITY,CS_COUNTRY,CS_NOTE,CS.CREATEDON,FREZE,EM_NAME,PH_NUM,CL_NAME,CS.CL_ID AS CL_ID" +
+                " FROM CONTACT_STORE AS CS, EMAIL_LIST AS EL, PHONE_LIST AS PL, CLIENT_STORE AS CL " +
+                " WHERE EL.CS_ID = CS.CS_ID " +
+                " AND PL.CS_ID = CS.CS_ID " +
+                " AND CL.CL_ID = CS.CL_ID " +
+                " AND CS.CS_ID = ? ";
+        
+        query = query + " AND FREZE = 0 ORDER BY CS.CS_ID";
+        
+        System.out.println(where.getCode());
+        System.out.println(query);
+        try {
+            PreparedStatement statement = static_con.prepareStatement(query);
+            statement.setInt(1, where.getCode());
+            ResultSet set = statement.executeQuery();
+            //-------------Creating Email-------------
+            while (set.next()) {
+                ContactProperty contact = new ContactProperty();
+                contact.setCode(set.getInt("CS_ID"));
+                contact.setFirstName(set.getString("CS_FNAME"));
+                contact.setLastName(set.getString("CS_LNAME"));
+                contact.setAddress(set.getString("CS_ADDR"));
+                contact.setCity(set.getString("CS_CITY"));
+                contact.setCountry(set.getString("CS_COUNTRY"));
+                contact.setEmail(set.getString("EM_NAME"));
+                contact.setMobile(set.getString("PH_NUM"));
+                contact.setDob(set.getString("CS_DOB"));
+                contact.setClID(set.getInt("CL_ID"));
+                contact.setClientName(set.getString("CL_NAME"));
+                contact.setAge(CommonTasks.getAge(contact.getDob()));
+                contact.setNote(set.getString("CS_NOTE"));
+                contact.setIsFreeze(set.getBoolean("FREZE"));
+                contact.setContactNotes(noteQueries.getContactNotes(contact));
+                return contact;
+            }
+            
+            // doRelease(con);
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+        
+        return null;
     }
     
 }
