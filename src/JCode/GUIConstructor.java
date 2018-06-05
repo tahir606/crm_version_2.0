@@ -36,7 +36,8 @@ public class GUIConstructor {
         this.sql = sql;
     }
     
-    public void constructingNotes(ContactProperty contact) {
+    public void constructingNotes(ContactProperty c) {
+        ContactProperty contact = sql.getParticularContact(c);
         notes_list.getChildren().clear();
         //Constructing Notes
         for (Note note : contact.getContactNotes()) {
