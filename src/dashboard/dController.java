@@ -142,7 +142,7 @@ public class dController implements Initializable {
     //---------------------------BUTTONS-------------------------
     private void buttonSubSettings(JFXButton button, String btnName) {
         button.setText(btnName.toUpperCase());
-        Image image = new Image(getClass().getResourceAsStream("/res/img/" + btnName + ".png"));
+        Image image = new Image(getClass().getResourceAsStream("/res/img/" + btnName.toLowerCase() + ".png"));
         button.setMinSize(menu_pane.getPrefWidth(), 35);
         button.setMaxSize(menu_pane.getPrefWidth(), 35);
         button.getStyleClass().add("btn");
@@ -170,19 +170,19 @@ public class dController implements Initializable {
     }
     
     private void clientButton() {
-        buttonSettings("Clients", "client/dashBase.fxml", 3);
+        buttonSettings("clients", "client/dashBase.fxml", 3);
     }
     
     private void leadButton() {
-        buttonSettings("Leads", "lead/lead_dash.fxml", 4);
+        buttonSettings("leads", "lead/lead_dash.fxml", 4);
     }
     
     private void productButton() {
-        buttonSettings("Products", "product/product_dash.fxml", 5);
+        buttonSettings("products", "product/product_dash.fxml", 5);
     }
     
     private void settingsButton() {
-        buttonSettings("Settings", "settings/settings.fxml", 6);
+        buttonSettings("settings", "settings/settings.fxml", 6);
     }
     
     private void logoutButton() {
