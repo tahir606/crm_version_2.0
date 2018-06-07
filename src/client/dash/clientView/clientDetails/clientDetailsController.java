@@ -2,6 +2,8 @@ package client.dash.clientView.clientDetails;
 
 import Email.EResponse.EResponseController;
 import JCode.CommonTasks;
+import JCode.GUIConstructor;
+import JCode.mysql.mySqlConn;
 import JCode.trayHelper;
 import client.dash.clientView.clientViewController;
 import client.dashBaseController;
@@ -45,9 +47,15 @@ public class clientDetailsController implements Initializable {
     private JFXButton btn_email;
     @FXML
     private JFXButton btn_edit;
+    @FXML
+    private VBox notes_list;
+
+    private mySqlConn sql;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+
+        sql = new mySqlConn();
 
         Image image = new Image(this.getClass().getResourceAsStream("/res/img/left-arrow.png"));
         btn_back.setGraphic(new ImageView(image));
@@ -97,6 +105,7 @@ public class clientDetailsController implements Initializable {
                 phone_list.getItems().add(phone);
         }
 
+        new GUIConstructor(notes_list, sql, client).generalConstructor(2);
     }
 
     private void inflateEResponse(int i) {
