@@ -67,6 +67,16 @@ public class GUIConstructor {
 
         createNew(choice);
     }
+    
+    public void constructingClientNotes(int choice) {
+        ClientProperty client = sql.getParticularClient(this.client);
+        notes_list.getChildren().clear();
+        //Constructing Notes
+        for (Note note : client.getNotes())
+            constructNote(note, choice);
+        
+        createNew(choice);
+    }
 
     private void constructNote(Note note, int choice) {
         //The First Part
