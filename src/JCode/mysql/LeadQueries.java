@@ -134,6 +134,53 @@ public class LeadQueries {
 
         return allLeads;
     }
+    
+    public Lead getParticularLead(Lead where) {
+        
+        String query = " SELECT LS.LS_ID AS LS_ID,LS_FNAME,LS_LNAME,LS_CNAME,LS_CITY,LS_COUNTRY,LS_NOTE,LS_WEBSITE,EM_NAME,PH_NUM " +
+                " FROM LEAD_STORE AS LS, EMAIL_LIST AS EL,  PHONE_LIST AS PL  " +
+                " WHERE EL.LS_ID = LS.LS_ID   " +
+                " AND PL.LS_ID = LS.LS_ID " +
+                " UNION ALL " +
+                " SELECT LS.LS_ID AS LS_ID,LS_FNAME,LS_LNAME,LS_CNAME, LS_CITY,LS_COUNTRY,LS_NOTE,LS_WEBSITE,null EM_NAME,null PH_NUM FROM LEAD_STORE AS LS  " +
+                " WHERE LS.LS_ID NOT IN (SELECT IFNULL(LS_ID,0) FROM EMAIL_LIST) " +
+                " AND LS.LS_ID NOT IN (SELECT IFNULL(LS_ID,0) FROM phone_list) " +
+                " AND LS_ID = ? ";
+        
+        if (where == null) {
+            query = query + " ";
+        } else {
+            query = query + " AND " + where;
+        }
+        try {
+            
+            PreparedStatement statement = static_con.prepareStatement(query);
+            statement.setInt(1, where.getCode());
+            ResultSet set = statement.executeQuery();
+            //-------------Creating Email-------------
+            while (set.next()) {
+                Lead lead = new Lead();
+                lead.setCode(set.getInt("LS_ID"));
+                lead.setFirstName(set.getString("LS_FNAME"));
+                lead.setLastName(set.getString("LS_LNAME"));
+                lead.setCity(set.getString("LS_CITY"));
+                lead.setCountry(set.getString("LS_COUNTRY"));
+                lead.setWebsite(set.getString("LS_WEBSITE"));
+                lead.setCompany(set.getString("LS_CNAME"));
+                lead.setNote(set.getString("LS_NOTE"));
+                lead.setEmail(set.getString("EM_NAME"));
+                lead.setPhone(set.getString("PH_NUM"));
+                
+                return lead;
+            }
+            
+            // doRelease(con);
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+        
+        return null;
+    }
 
     public int getNewLeadCode() {
         String query = "SELECT IFNULL(max(LS_ID),0)+1 AS LS_ID FROM LEAD_STORE";

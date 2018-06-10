@@ -6,6 +6,8 @@ import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import lead.newLead.NewLeadController;
 
+import java.util.List;
+
 public class Lead {
     
     private int code;
@@ -13,6 +15,7 @@ public class Lead {
     private SimpleIntegerProperty codeProperty;
     private SimpleStringProperty fullNameProperty, companyProperty, titleProperty, websiteProperty,
             cityProperty, countryProperty, addrProperty, noteProperty, emailProperty, phoneProperty;
+    private List<Note> notes;
     
     public Lead() {
     }
@@ -125,5 +128,13 @@ public class Lead {
 
     public void setNote(String note) {
         this.note = note;
+    }
+    
+    public List<Note> getNotes() {
+        return notes;
+    }
+    
+    public void setNotes(List<Note> notes) {
+        this.notes = notes;
     }
 }
