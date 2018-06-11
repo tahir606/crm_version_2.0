@@ -1,5 +1,7 @@
 package lead.details;
 
+import JCode.GUIConstructor;
+import JCode.mysql.mySqlConn;
 import client.dashBaseController;
 import com.jfoenix.controls.JFXButton;
 import javafx.fxml.FXML;
@@ -11,6 +13,7 @@ import javafx.scene.control.TextArea;
 import javafx.scene.control.Tooltip;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.VBox;
 import lead.LeadDashController;
 import lead.newLead.NewLeadController;
 import lead.view.LeadViewController;
@@ -37,13 +40,17 @@ public class LeadDetailsController implements Initializable {
     private JFXButton btn_back;
     @FXML
     private JFXButton btn_edit;
+    @FXML
+    private VBox notes_list;
 
+    private mySqlConn sql;
+    
     private Lead lead;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         
-        
+        sql = new mySqlConn();
         
         Image image = new Image(this.getClass().getResourceAsStream("/res/img/left-arrow.png"));
         btn_back.setGraphic(new ImageView(image));
@@ -90,5 +97,7 @@ public class LeadDetailsController implements Initializable {
                 e.printStackTrace();
             }
         });
+    
+        new GUIConstructor(notes_list, sql, lead).generalConstructor(3);
     }
 }

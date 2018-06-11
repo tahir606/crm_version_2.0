@@ -1,6 +1,7 @@
 package product.details;
 
 import JCode.CommonTasks;
+import JCode.GUIConstructor;
 import JCode.mysql.mySqlConn;
 import com.jfoenix.controls.JFXButton;
 import javafx.event.ActionEvent;
@@ -42,6 +43,8 @@ public class ProductDetailsController implements Initializable {
     @FXML
     private JFXButton btn_edit;
     @FXML
+    private VBox notes_list;
+    @FXML
     private VBox vbox_modules;
     private static VBox vbox_modulesS;
     
@@ -81,13 +84,7 @@ public class ProductDetailsController implements Initializable {
             }
         });
         
-        product = ProductViewController.staticProduct;
-        txt_pname.setText(product.getName());
-        txt_price.setText(String.valueOf(product.getPrice()));
-        txt_desc.setText(product.getDesc());
-        txt_startedOn.setText(product.getFormattedDate());
-        
-        vbox_modules.setSpacing(10);
+        populateDetails();
         init(this.getClass().getResource("unlock_dialog.fxml"));
         
     }
@@ -95,6 +92,18 @@ public class ProductDetailsController implements Initializable {
     public static void init(URL path) {
         ProductProperty prod = sql.getProductModuleStates(product);
         populateModules(prod, path);
+    }
+    
+    private void populateDetails() {
+        product = ProductViewController.staticProduct;
+        txt_pname.setText(product.getName());
+        txt_price.setText(String.valueOf(product.getPrice()));
+        txt_desc.setText(product.getDesc());
+        txt_startedOn.setText(product.getFormattedDate());
+    
+        vbox_modules.setSpacing(10);
+    
+        new GUIConstructor(notes_list, sql, product).generalConstructor(4);
     }
     
     private static void populateModules(ProductProperty product, URL path) {

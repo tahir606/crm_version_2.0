@@ -156,7 +156,6 @@ public class dController implements Initializable {
         JFXButton button = new JFXButton();
         buttonSubSettings(button, btnName);
         button.addEventHandler(MouseEvent.MOUSE_PRESSED, event -> changeSelection(button, path, paneNo));
-        
     }
     
     JFXButton homeBtn = new JFXButton("Home");

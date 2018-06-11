@@ -56,9 +56,9 @@ public class mySqlConn {
         emailQueries = new EmailQueries(static_con, user, eSetting, emailPhoneQueries);
         contactQueries = new ContactQueries(static_con, fHelper, emailPhoneQueries, noteQueries);
         clientQueries = new ClientQueries(static_con, fHelper, emailPhoneQueries, noteQueries);
-        productQueries = new ProductQueries(static_con, fHelper);
+        leadQueries = new LeadQueries(static_con, fHelper, emailPhoneQueries, noteQueries);
+        productQueries = new ProductQueries(static_con, fHelper, noteQueries);
         domainQueries = new DomainQueries(static_con);
-        leadQueries = new LeadQueries(static_con, fHelper, emailPhoneQueries);
     }
     
     private Connection getConnection() {
@@ -273,6 +273,10 @@ public class mySqlConn {
         return productQueries.getAllProducts(where);
     }
     
+    public ProductProperty getParticularProduct(ProductProperty product) {
+        return productQueries.getParticularProduct(product);
+    }
+    
     public void insertProductModule(ProductModule productModule) {
         productQueries.insertProductModule(productModule);
     }
@@ -337,12 +341,28 @@ public class mySqlConn {
         noteQueries.addNewNote(text, client);
     }
     
+    public void addNote(String text, Lead lead) {
+        noteQueries.addNewNote(text, lead);
+    }
+    
+    public void addNote(String text, ProductProperty product) {
+        noteQueries.addNewNote(text, product);
+    }
+    
     public void updateNote(Note note, ContactProperty contact) {
         noteQueries.updateNote(note, contact);
     }
     
     public void updateNote(Note note, ClientProperty client) {
         noteQueries.updateNote(note, client);
+    }
+    
+    public void updateNote(Note note, Lead lead) {
+        noteQueries.updateNote(note, lead);
+    }
+    
+    public void updateNote(Note note, ProductProperty product) {
+        noteQueries.updateNote(note, product);
     }
     
     public List<Note> getContactNotes(ContactProperty contact) {
@@ -355,6 +375,14 @@ public class mySqlConn {
     
     public void deleteNote(Note note, ClientProperty client) {
         noteQueries.deleteNote(note, client);
+    }
+    
+    public void deleteNote(Note note, Lead lead) {
+        noteQueries.deleteNote(note, lead);
+    }
+    
+    public void deleteNote(Note note, ProductProperty product) {
+        noteQueries.deleteNote(note, product);
     }
     
     public String[] getAllEmailIDs(String where) {

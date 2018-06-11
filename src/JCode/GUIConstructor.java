@@ -19,10 +19,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
-import objects.ClientProperty;
-import objects.ContactProperty;
-import objects.Lead;
-import objects.Note;
+import objects.*;
 
 import java.io.IOException;
 
@@ -37,6 +34,7 @@ public class GUIConstructor {
     ContactProperty contact;
     ClientProperty client;
     Lead lead;
+    ProductProperty product;
     
     public GUIConstructor(VBox notes_list, mySqlConn sql, ContactProperty contact) {
         this.notes_list = notes_list;
@@ -54,6 +52,12 @@ public class GUIConstructor {
         this.notes_list = notes_list;
         this.sql = sql;
         this.lead = lead;
+    }
+    
+    public GUIConstructor(VBox notes_list, mySqlConn sql, ProductProperty product) {
+        this.notes_list = notes_list;
+        this.sql = sql;
+        this.product = product;
     }
     
     public void constructingContactNotes(int choice) {
@@ -81,6 +85,16 @@ public class GUIConstructor {
         notes_list.getChildren().clear();
         //Constructing Notes
         for (Note note : lead.getNotes())
+            constructNote(note, choice);
+        
+        createNew(choice);
+    }
+    
+    public void constructingProductNotes(int choice) {
+        ProductProperty product = sql.getParticularProduct(this.product);
+        notes_list.getChildren().clear();
+        //Constructing Notes
+        for (Note note : product.getNotes())
             constructNote(note, choice);
         
         createNew(choice);
@@ -136,6 +150,12 @@ public class GUIConstructor {
                     case 2:
                         sql.updateNote(note, client);
                         break;
+                    case 3:
+                        sql.updateNote(note, lead);
+                        break;
+                    case 4:
+                        sql.updateNote(note, product);
+                        break;
                 }
                 generalConstructor(choice);
             });
@@ -156,6 +176,12 @@ public class GUIConstructor {
                     break;
                 case 2:
                     sql.deleteNote(note, client);
+                    break;
+                case 3:
+                    sql.deleteNote(note, lead);
+                    break;
+                case 4:
+                    sql.deleteNote(note, product);
                     break;
             }
             generalConstructor(choice);
@@ -208,6 +234,10 @@ public class GUIConstructor {
                         break;
                     case 3:
                         sql.addNote(note, lead);
+                        break;
+                    case 4:
+                        sql.addNote(note, product);
+                        break;
                 }
                 generalConstructor(choice);
             }
@@ -226,6 +256,10 @@ public class GUIConstructor {
             }
             case 3: { //Clients
                 constructingLeadNotes(choice);
+                break;
+            }
+            case 4: {
+                constructingProductNotes(choice);
                 break;
             }
         }

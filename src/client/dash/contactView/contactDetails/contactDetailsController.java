@@ -57,13 +57,10 @@ public class contactDetailsController implements Initializable {
     private VBox notes_list;
 
     private mySqlConn sql;
-//    private GUIConstructor guiConstructor;
-
     @Override
     public void initialize(URL location, ResourceBundle resources) {
 
         sql = new mySqlConn();
-//        guiConstructor = new GUIConstructor(notes_list, sql, null);
 
         Image image = new Image(this.getClass().getResourceAsStream("/res/img/left-arrow.png"));
         btn_back.setGraphic(new ImageView(image));
@@ -128,7 +125,6 @@ public class contactDetailsController implements Initializable {
         });
 
         new GUIConstructor(notes_list, sql, contact).generalConstructor(1);
-//      constructingNotes(contact);
     }
 
 }

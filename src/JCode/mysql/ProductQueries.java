@@ -16,10 +16,12 @@ public class ProductQueries {
     
     private Connection static_con;
     private fileHelper fHelper;
+    private NoteQueries noteQueries;
     
-    public ProductQueries(Connection static_con, fileHelper fHelper) {
+    public ProductQueries(Connection static_con, fileHelper fHelper, NoteQueries noteQueries) {
         this.static_con = static_con;
         this.fHelper = fHelper;
+        this.noteQueries = noteQueries;
     }
     
     public void insertProduct(ProductProperty product) {
@@ -132,6 +134,44 @@ public class ProductQueries {
         }
         
         return allProducts;
+    }
+    
+    public ProductProperty getParticularProduct(ProductProperty where) {
+        String query = "SELECT PS_ID, PS_NAME ,PS_PRICE ,PS_DESC ,PS_STATUS ,PS_TYPE ,PS_STARTED ,PS_PRIORITY ,CREATEDON, CREATEDBY FROM PRODUCT_STORE WHERE 1 " +
+                " AND PS_ID = ? ";
+        
+        try {
+//            System.out.println(query);
+            PreparedStatement statement = static_con.prepareStatement(query);
+            statement.setInt(1, where.getCode());
+            ResultSet set = statement.executeQuery();
+            //-------------Creating Email-------------
+            while (set.next()) {
+                ProductProperty product = new ProductProperty();
+                product.setCode(set.getInt("PS_ID"));
+                product.setName(set.getString("PS_NAME"));
+                product.setPrice(set.getInt("PS_PRICE"));
+                product.setDesc(set.getString("PS_DESC"));
+                product.setStatus(set.getInt("PS_STATUS"));
+                product.setType(set.getInt("PS_TYPE"));
+                product.setStartedtimeStmp(set.getString("PS_STARTED"));
+                product.setPriority(set.getInt("PS_PRIORITY"));
+                product.setCreatedOn(set.getString("CREATEDON"));
+                product.setCreatedBy(set.getInt("CREATEDBY"));
+                
+                product.setProductModules(getAllProductModules(product.getCode()));
+                
+                product.setNotes(noteQueries.getNotes(product));
+                
+                return product;
+            }
+            
+            // doRelease(con);
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+        
+        return null;
     }
     
     public void insertProductModule(ProductModule productModule) {

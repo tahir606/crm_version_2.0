@@ -14,6 +14,7 @@ public class ProductProperty {
     private SimpleStringProperty name, desc, startedtimeStmp, formattedDate, createdOn;
     private SimpleBooleanProperty freeze;
     private List<ProductModule> productModules;
+    private List<Note> notes;
 
     public ProductProperty() {
         code = new SimpleIntegerProperty();
@@ -186,5 +187,13 @@ public class ProductProperty {
 
     public void setFreeze(boolean freeze) {
         this.freeze.set(freeze);
+    }
+    
+    public List<Note> getNotes() {
+        return notes;
+    }
+    
+    public void setNotes(List<Note> notes) {
+        this.notes = notes;
     }
 }
