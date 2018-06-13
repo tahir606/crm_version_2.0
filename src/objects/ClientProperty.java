@@ -14,6 +14,7 @@ public class ClientProperty {
     private String[] emails = new String[newClientController.noOfFields],
             phones = new String[newClientController.noOfFields];
     private List<Note> notes;
+    private List<Task> tasks;
 
     public ClientProperty() {
 
@@ -188,5 +189,13 @@ public class ClientProperty {
 
     public void setNotes(List<Note> notes) {
         this.notes = notes;
+    }
+
+    public List<Task> getTasks() {
+        return tasks;
+    }
+
+    public void setTasks(List<Task> tasks) {
+        this.tasks = tasks;
     }
 }
