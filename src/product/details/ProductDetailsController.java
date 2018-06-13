@@ -1,11 +1,9 @@
 package product.details;
 
 import JCode.CommonTasks;
-import JCode.GUIConstructor;
+import gui.NotesConstructor;
 import JCode.mysql.mySqlConn;
 import com.jfoenix.controls.JFXButton;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -103,7 +101,7 @@ public class ProductDetailsController implements Initializable {
     
         vbox_modules.setSpacing(10);
     
-        new GUIConstructor(notes_list, sql, product).generalConstructor(4);
+        new NotesConstructor(notes_list, sql, product).generalConstructor(4);
     }
     
     private static void populateModules(ProductProperty product, URL path) {

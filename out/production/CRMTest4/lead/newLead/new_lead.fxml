@@ -64,14 +64,6 @@
                     </children>
                 </HBox>
                 <HBox prefHeight="5.0" prefWidth="200.0" spacing="10.0" />
-                <!--<HBox prefHeight="35.0" prefWidth="200.0" spacing="10.0">-->
-                <!--<children>-->
-                <!--<JFXButton fx:id="btn_email" onAction="#inflateEmail" prefHeight="47.0" prefWidth="59.0"-->
-                <!--style="-fx-background-color: #9bc685;" styleClass="btnMenu" text="Email"/>-->
-                <!--<JFXButton fx:id="btn_phone" onAction="#inflatePhone" prefHeight="82.0" prefWidth="62.0"-->
-                <!--style="-fx-background-color: #9bc685;" styleClass="btnMenu" text="Phone"/>-->
-                <!--</children>-->
-                <!--</HBox>-->
             </children>
         </VBox>
         <JFXButton fx:id="btn_save" buttonType="RAISED" layoutX="932.0" layoutY="427.0" onAction="#saveChanges" prefHeight="45.0" prefWidth="80.0" styleClass="hbox_menu" text="Save" AnchorPane.bottomAnchor="28.0" AnchorPane.rightAnchor="88.0" />

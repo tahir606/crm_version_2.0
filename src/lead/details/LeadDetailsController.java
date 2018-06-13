@@ -1,8 +1,7 @@
 package lead.details;
 
-import JCode.GUIConstructor;
+import gui.NotesConstructor;
 import JCode.mysql.mySqlConn;
-import client.dashBaseController;
 import com.jfoenix.controls.JFXButton;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -98,6 +97,6 @@ public class LeadDetailsController implements Initializable {
             }
         });
     
-        new GUIConstructor(notes_list, sql, lead).generalConstructor(3);
+        new NotesConstructor(notes_list, sql, lead).generalConstructor(3);
     }
 }

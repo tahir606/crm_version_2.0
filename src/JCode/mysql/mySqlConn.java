@@ -36,6 +36,7 @@ public class mySqlConn {
     private LeadQueries leadQueries;
     private DomainQueries domainQueries;
     private NoteQueries noteQueries;
+    private TaskQueries taskQueries;
     
     public mySqlConn() {
         fHelper = new fileHelper();
@@ -59,6 +60,7 @@ public class mySqlConn {
         leadQueries = new LeadQueries(static_con, fHelper, emailPhoneQueries, noteQueries);
         productQueries = new ProductQueries(static_con, fHelper, noteQueries);
         domainQueries = new DomainQueries(static_con);
+        taskQueries = new TaskQueries(static_con, fHelper);
     }
     
     private Connection getConnection() {

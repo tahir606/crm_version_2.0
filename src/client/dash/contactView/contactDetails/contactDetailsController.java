@@ -2,8 +2,7 @@ package client.dash.contactView.contactDetails;
 
 import Email.EResponse.EResponseController;
 import JCode.CommonTasks;
-import JCode.GUIConstructor;
-import JCode.Toast;
+import gui.NotesConstructor;
 import JCode.mysql.mySqlConn;
 import JCode.trayHelper;
 import client.dash.contactView.contactViewController;
@@ -14,20 +13,15 @@ import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
-import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.input.MouseButton;
-import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import objects.ContactProperty;
-import objects.Note;
 
 import java.io.IOException;
 import java.net.URL;
@@ -124,7 +118,7 @@ public class contactDetailsController implements Initializable {
             }
         });
 
-        new GUIConstructor(notes_list, sql, contact).generalConstructor(1);
+        new NotesConstructor(notes_list, sql, contact).generalConstructor(1);
     }
 
 }

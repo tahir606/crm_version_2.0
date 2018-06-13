@@ -48,6 +48,12 @@
                             </VBox>
                         </children>
                     </HBox>
+                    <HBox prefHeight="8.0" prefWidth="316.0">
+                        <children>
+                            <VBox fx:id="open_activities_list" spacing="3">
+                            </VBox>
+                        </children>
+                    </HBox>
                 </children>
             </VBox>
         </ScrollPane>

@@ -1,6 +1,7 @@
-package JCode;
+package gui;
 
 import Email.EResponse.EResponseController;
+import JCode.Toast;
 import JCode.mysql.mySqlConn;
 import client.dashBaseController;
 import client.newContact.newContactController;
@@ -23,7 +24,7 @@ import objects.*;
 
 import java.io.IOException;
 
-public class GUIConstructor {
+public class NotesConstructor {
     
     TextArea noteTxt;
     JFXButton btnAdd;
@@ -36,25 +37,25 @@ public class GUIConstructor {
     Lead lead;
     ProductProperty product;
     
-    public GUIConstructor(VBox notes_list, mySqlConn sql, ContactProperty contact) {
+    public NotesConstructor(VBox notes_list, mySqlConn sql, ContactProperty contact) {
         this.notes_list = notes_list;
         this.sql = sql;
         this.contact = contact;
     }
     
-    public GUIConstructor(VBox notes_list, mySqlConn sql, ClientProperty client) {
+    public NotesConstructor(VBox notes_list, mySqlConn sql, ClientProperty client) {
         this.notes_list = notes_list;
         this.sql = sql;
         this.client = client;
     }
     
-    public GUIConstructor(VBox notes_list, mySqlConn sql, Lead lead) {
+    public NotesConstructor(VBox notes_list, mySqlConn sql, Lead lead) {
         this.notes_list = notes_list;
         this.sql = sql;
         this.lead = lead;
     }
     
-    public GUIConstructor(VBox notes_list, mySqlConn sql, ProductProperty product) {
+    public NotesConstructor(VBox notes_list, mySqlConn sql, ProductProperty product) {
         this.notes_list = notes_list;
         this.sql = sql;
         this.product = product;
