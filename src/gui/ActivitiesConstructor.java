@@ -14,6 +14,9 @@ public class ActivitiesConstructor {
     
     VBox open_activities_list;
     ClientProperty client;
+
+    //Which choice is selected
+    private static int choice;
     
     public ActivitiesConstructor(VBox open_activities_list, ClientProperty client) {
         this.open_activities_list = open_activities_list;
@@ -54,9 +57,11 @@ public class ActivitiesConstructor {
     
     public void generalConstructor(int choice) {
         switch (choice) {
-            case 2:     //Clients
+            case 2: {     //Clients
+                this.choice = choice;
                 constructClientActivities();
                 break;
+            }
         }
     }
 }

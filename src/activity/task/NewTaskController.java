@@ -31,7 +31,9 @@ public class NewTaskController implements Initializable {
     private JFXButton btn_save;
     @FXML
     private JFXButton btn_cancel;
-    
+
+
+
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         

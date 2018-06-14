@@ -2,7 +2,7 @@ package objects;
 
 public class Task {
     
-    private int code, createdByCode;
+    private int code, createdByCode, contact, client, lead, product;
     private String subject, dueDate, desc, createdOn, createdBy, contactName, clientName, leadName, productName;
     private boolean isRepeat;
     
@@ -64,7 +64,39 @@ public class Task {
     public void setCreatedBy(String createdBy) {
         this.createdBy = createdBy;
     }
-    
+
+    public int getContact() {
+        return contact;
+    }
+
+    public void setContact(int contact) {
+        this.contact = contact;
+    }
+
+    public int getClient() {
+        return client;
+    }
+
+    public void setClient(int client) {
+        this.client = client;
+    }
+
+    public int getLead() {
+        return lead;
+    }
+
+    public void setLead(int lead) {
+        this.lead = lead;
+    }
+
+    public int getProduct() {
+        return product;
+    }
+
+    public void setProduct(int product) {
+        this.product = product;
+    }
+
     public String getContactName() {
         return contactName;
     }
