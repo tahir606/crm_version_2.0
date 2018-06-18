@@ -194,6 +194,9 @@ public class ActivitiesConstructor {
     }
     
     public static void generalConstructor(int choice, URL url, InputStream imagePath) {
+        
+        open_activities_list.getChildren().clear();
+        
         switch (choice) {
             case 2: {     //Clients
                 ActivitiesConstructor.choice = choice;
