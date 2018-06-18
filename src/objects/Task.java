@@ -9,6 +9,19 @@ public class Task {
     public Task() {
     }
     
+    @Override
+    public String toString() {
+        return "Task{" +
+                "code=" + code +
+                ", subject='" + subject + '\'' +
+                ", dueDate='" + dueDate + '\'' +
+                ", desc='" + desc + '\'' +
+                ", createdOn='" + createdOn + '\'' +
+                ", createdBy='" + createdBy + '\'' +
+                ", isRepeat=" + isRepeat +
+                '}';
+    }
+    
     public int getCode() {
         return code;
     }
