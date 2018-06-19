@@ -52,6 +52,8 @@
                         <children>
                             <VBox fx:id="open_activities_list" spacing="3">
                             </VBox>
+                            <VBox fx:id="closed_activities_list" spacing="3">
+                            </VBox>
                         </children>
                     </HBox>
                 </children>

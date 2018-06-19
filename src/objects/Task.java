@@ -1,10 +1,12 @@
 package objects;
 
+import JCode.CommonTasks;
+
 public class Task {
     
     private int code, createdByCode, contact, client, lead, product;
     private String subject, dueDate, desc, createdOn, createdBy, contactName, clientName, leadName, productName;
-    private boolean isRepeat;
+    private boolean isRepeat, status;   //Status: 0 is open ? 1 is closed
     
     public Task() {
     }
@@ -67,7 +69,7 @@ public class Task {
     }
     
     public void setCreatedOn(String createdOn) {
-        this.createdOn = createdOn;
+        this.createdOn = CommonTasks.getTimeFormatted(createdOn);
     }
     
     public String getCreatedBy() {
@@ -148,5 +150,13 @@ public class Task {
     
     public void setRepeat(boolean repeat) {
         isRepeat = repeat;
+    }
+
+    public boolean isStatus() {
+        return status;
+    }
+
+    public void setStatus(boolean status) {
+        this.status = status;
     }
 }

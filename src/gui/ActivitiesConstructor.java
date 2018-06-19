@@ -27,61 +27,56 @@ import java.net.URL;
 import java.util.List;
 
 public class ActivitiesConstructor {
-    
+
     private static VBox open_activities_list;
     private ClientProperty client;
     private static mySqlConn sql;
-    
+
     //Which property is selected
     public static int choice;
-    
-    public ActivitiesConstructor(VBox open_activities_list, ClientProperty client) {
+
+    public ActivitiesConstructor(VBox open_activities_list, VBox closed_activities_list, ClientProperty client) {
         this.open_activities_list = open_activities_list;
         this.client = client;
-        
+
         sql = new mySqlConn();
     }
-    
-    private static void constructClientActivities(URL url, InputStream imageUrl) {
-        constructingButtons(url);
-        
+
+    private static void constructClientActivities() {
+        constructingButtons();
+
         //Heading
         String labelCss = "-fx-font-weight: bold;";
         Label label = new Label("Open Activities");
         label.setStyle(labelCss);
         open_activities_list.getChildren().addAll(label);
-        
+
         List<Task> tasks = sql.getTasks(clientViewController.staticClient);
         for (Task task : tasks) {
-            constructingTask(task, url, imageUrl);
+            if (!task.isStatus())
+                constructingOpenTask(task);
+//            else
+//                constructingCloseTask(task, url, imageUrl);
         }
     }
-    
-    private static void constructingButtons(URL url) {
+
+    private static void constructingButtons() {
         HBox box = new HBox();
-        JFXButton newTask = new JFXButton("+ New Task"),
-                newEvent = new JFXButton("+ New Event");
-        
-        String css = "-fx-text-fill: #011b44;";
-        
+        JFXButton newTask = new JFXButton("+ New Task");
+
+        String css = "-fx-text-fill: #005ff7;";
+
         newTask.setStyle(css);
-        newEvent.setStyle(css);
-        
         newTask.setOnAction(event -> {
             NewTaskController.stInstance = 'N';
-            CommonTasks.inflateDialog("New Task", url);
+            CommonTasks.inflateDialog("New Task", ActivitiesConstructor.class.getResource("../activity/task/new_task.fxml"));
         });
-        
-        newEvent.setOnAction(event -> {
-        
-        });
-        
-        box.getChildren().addAll(newTask, newEvent);
-        
+        box.getChildren().addAll(newTask);
+
         open_activities_list.getChildren().addAll(box);
     }
-    
-    private static void constructingTask(Task task, URL url, InputStream imagePath) {
+
+    private static void constructingOpenTask(Task task) {
         //The Subject
         HBox subject = new HBox();
         subject.setSpacing(5);
@@ -112,72 +107,25 @@ public class ActivitiesConstructor {
         createdOn.setMinWidth(150);
         createdBy.setMinWidth(280);
         JFXButton options = new JFXButton();
-        
-        Image image = new Image(imagePath);
+
+        Image image = new Image(ActivitiesConstructor.class.getResourceAsStream("/res/img/options.png"));
         options.setGraphic(new ImageView(image));
         details.getChildren().addAll(createdOn, createdBy, options);
         ContextMenu contextMenu = new ContextMenu();
         MenuItem closeItem = new MenuItem("Close"),
-                editItem = new MenuItem("Edit");
+                editItem = new MenuItem("Edit"),
+                delItem = new MenuItem("Delete");
         editItem.setOnAction(t -> {
-            area.setEditable(true);
-            area.setStyle("-fx-background: #fcfcfc;");
-            area.requestFocus();
-            JFXButton saveBtn = new JFXButton("Save"),
-                    cancelBtn = new JFXButton("Cancel");
-            saveBtn.setMinWidth(60);
-            saveBtn.setButtonType(JFXButton.ButtonType.RAISED);
-            saveBtn.setStyle("-fx-background-color: #e8f0ff;");
-            cancelBtn.setMinWidth(60);
-            cancelBtn.setButtonType(JFXButton.ButtonType.RAISED);
-            cancelBtn.setStyle("-fx-background-color: #e8f0ff;");
-            
-            saveBtn.setOnAction(event -> {
-                task.setDesc(area.getText().toString());
-                switch (choice) {
-                    case 1:
-//                        sql.updateTask(note, contact);
-                        break;
-                    case 2:
-//                        sql.updateNote(note, client);
-                        break;
-                    case 3:
-//                        sql.updateNote(note, lead);
-                        break;
-                    case 4:
-//                        sql.updateNote(note, product);
-                        break;
-                }
-                generalConstructor(choice, url, imagePath);
-            });
-            cancelBtn.setOnAction(event -> {
-                body.getChildren().remove(saveBtn);
-                body.getChildren().remove(cancelBtn);
-                area.setEditable(false);
-                area.setStyle("-fx-background-color: #fcfcfc;" +
-                        "-fx-background: transparent;");
-            });
-            
-            body.getChildren().addAll(saveBtn, cancelBtn);
+
         });
         closeItem.setOnAction(t -> {
-            switch (choice) {
-                case 1:
-//                    sql.closeTask(note, contact);
-                    break;
-                case 2:
-//                    sql.deleteNote(note, client);
-                    break;
-                case 3:
-//                    sql.deleteNote(note, lead);
-                    break;
-                case 4:
-//                    sql.deleteNote(note, product);
-                    break;
-            }
-            generalConstructor(choice, url, imagePath);
+            sql.closeTask(task);
+            generalConstructor(choice);
         });
-        contextMenu.getItems().addAll(editItem, closeItem);
+        delItem.setOnAction(t -> {
+
+        });
+        contextMenu.getItems().addAll(editItem, closeItem, delItem);
         options.addEventHandler(MouseEvent.MOUSE_CLICKED, (MouseEvent me) -> {
             if (me.getButton() == MouseButton.PRIMARY) {
                 contextMenu.show(options, me.getScreenX(), me.getScreenY());
@@ -185,22 +133,22 @@ public class ActivitiesConstructor {
                 contextMenu.hide();
             }
         });
-        
+
         VBox box = new VBox();
 //            box.setStyle("-fx-border-color: #033300;");
         box.getChildren().addAll(subject, body, details);
         open_activities_list.setSpacing(10);
         open_activities_list.getChildren().add(box);
     }
-    
-    public static void generalConstructor(int choice, URL url, InputStream imagePath) {
-        
+
+    public static void generalConstructor(int choice) {
+
         open_activities_list.getChildren().clear();
-        
+
         switch (choice) {
             case 2: {     //Clients
                 ActivitiesConstructor.choice = choice;
-                constructClientActivities(url, imagePath);
+                constructClientActivities();
                 break;
             }
         }

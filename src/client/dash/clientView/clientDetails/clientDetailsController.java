@@ -30,7 +30,7 @@ import java.net.URL;
 import java.util.ResourceBundle;
 
 public class clientDetailsController implements Initializable {
-    
+
     @FXML
     private Label txt_fname;
     @FXML
@@ -49,14 +49,16 @@ public class clientDetailsController implements Initializable {
     private VBox notes_list;
     @FXML
     private VBox open_activities_list;
-    
+    @FXML
+    private VBox closed_activities_list;
+
     private mySqlConn sql;
-    
+
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        
+
         sql = new mySqlConn();
-        
+
         Image image = new Image(this.getClass().getResourceAsStream("/res/img/left-arrow.png"));
         btn_back.setGraphic(new ImageView(image));
         btn_back.setAlignment(Pos.CENTER_LEFT);
@@ -66,50 +68,49 @@ public class clientDetailsController implements Initializable {
                 dashBaseController.main_paneF.setCenter(
                         FXMLLoader.load(
                                 getClass().getClassLoader().getResource("client/dash/clientView/clientView.fxml")));
-                
+
             } catch (IOException e) {
                 e.printStackTrace();
             }
         });
-        
+
         ClientProperty client = clientViewController.staticClient;
-        
+
         btn_email.setOnAction(event -> {
             EResponseController.stTo = client.getEmailsString();
             EResponseController.stInstance = 'N';
             inflateEResponse(1);
         });
-        
+
         btn_edit.setOnAction(event -> {
             newClientController.stInstance = 'U';
             try {
                 dashBaseController.main_paneF.setCenter(
                         FXMLLoader.load(
                                 getClass().getClassLoader().getResource("client/newClient/newClient.fxml")));
-                
+
             } catch (IOException e) {
                 e.printStackTrace();
             }
         });
-        
+
         txt_fname.setText(client.getName());
         txt_website.setText(client.getWebsite());
-        
+
         for (String email : client.getEmails()) {
             if (email != null)
                 email_list.getItems().add(email);
         }
-        
+
         for (String phone : client.getPhones()) {
             if (phone != null)
                 phone_list.getItems().add(phone);
         }
-        
+
         new NotesConstructor(notes_list, sql, client).generalConstructor(2);
-        new ActivitiesConstructor(open_activities_list, client).generalConstructor(2, this.getClass().getResource
-                ("../../../../activity/task/new_task.fxml"), getClass().getResourceAsStream("/res/img/options.png"));
+        new ActivitiesConstructor(open_activities_list, closed_activities_list, client).generalConstructor(2);
     }
-    
+
     private void inflateEResponse(int i) {
         try {
             EResponseController.choice = i;

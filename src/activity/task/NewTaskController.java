@@ -23,7 +23,7 @@ import java.net.URL;
 import java.util.ResourceBundle;
 
 public class NewTaskController implements Initializable {
-    
+
     @FXML
     private JFXTextField txt_subject;
     @FXML
@@ -42,24 +42,24 @@ public class NewTaskController implements Initializable {
     private JFXButton btn_save;
     @FXML
     private JFXButton btn_cancel;
-    
+
     //Which property is selected
     private int choice;
     private mySqlConn sql;
-    
+
     public static char stInstance;
-    
+
     private ClientProperty client;
-    
+
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        
+
         sql = new mySqlConn();
-        
+
         relation_type.getItems().addAll("Contact", "Client", "Lead", "Product");
-        
+
         choice = ActivitiesConstructor.choice;
-        
+
         switch (choice) {
             case 1: {       //Contacts
                 ContactProperty contact = contactViewController.staticContact;
@@ -74,7 +74,7 @@ public class NewTaskController implements Initializable {
                 break;
             }
         }
-        
+
         btn_save.setOnAction(event -> {
             String subject = txt_subject.getText().toString(),
                     desc = txt_desc.getText().toString(),
@@ -82,9 +82,9 @@ public class NewTaskController implements Initializable {
                     type = relation_type.getSelectionModel().getSelectedItem(),
                     name = txt_name.getText().toString();
             boolean repeat = check_repeat.isSelected();
-            
+
             Task task = new Task();
-            
+
             if (subject.equals("") || desc.equals("") || dueDate.equals("")) {
                 Toast.makeText((Stage) btn_save.getScene().getWindow(), "Required Fields Are Empty");
                 return;
@@ -106,24 +106,24 @@ public class NewTaskController implements Initializable {
                 Alert alert2 = new Alert(Alert.AlertType.CONFIRMATION, msg,
                         ButtonType.YES, ButtonType.NO);
                 alert2.showAndWait();
-                
+
                 if (alert2.getResult() == ButtonType.YES) {
-                    
+
                     switch (stInstance) {
                         case 'N': {
                             task.setSubject(subject);
                             task.setDueDate(dueDate);
                             task.setDesc(desc);
                             task.setRepeat(repeat);
-                            
+
                             if (type.equals("Contact")) {
-                            
+
                             } else if (type.equals("Client")) {
                                 task.setClient(client.getCode());
                             }
-                            
+
                             sql.addTask(task);
-                            
+
                             break;
                         }
                         case 'U': {
@@ -134,28 +134,27 @@ public class NewTaskController implements Initializable {
                             break;
                         }
                     }
-                    
+
                 } else {
                     return;
                 }
                 closeStage();
             }
         });
-        
+
         btn_cancel.setOnAction(event -> closeStage());
     }
-    
+
     private void closeStage() {
         Stage stage = (Stage) btn_cancel.getScene().getWindow();
         stage.close();
-        
+
         switch (choice) {
             case 1: {
                 break;
             }
             case 2: {
-                ActivitiesConstructor.generalConstructor(2,this.getClass().getResource
-                        ("new_task.fxml"), getClass().getResourceAsStream("/res/img/options.png"));
+                ActivitiesConstructor.generalConstructor(2);
                 break;
             }
         }
