@@ -28,7 +28,7 @@ import java.util.List;
 
 public class ActivitiesConstructor {
 
-    private static VBox open_activities_list;
+    private static VBox open_activities_list, closed_activities_list;
     private ClientProperty client;
     private static mySqlConn sql;
 
@@ -37,6 +37,7 @@ public class ActivitiesConstructor {
 
     public ActivitiesConstructor(VBox open_activities_list, VBox closed_activities_list, ClientProperty client) {
         this.open_activities_list = open_activities_list;
+        this.closed_activities_list = closed_activities_list;
         this.client = client;
 
         sql = new mySqlConn();
@@ -51,12 +52,16 @@ public class ActivitiesConstructor {
         label.setStyle(labelCss);
         open_activities_list.getChildren().addAll(label);
 
+        Label label2 = new Label("Closed Activities");
+        label2.setStyle(labelCss);
+        closed_activities_list.getChildren().addAll(label2);
+
         List<Task> tasks = sql.getTasks(clientViewController.staticClient);
         for (Task task : tasks) {
             if (!task.isStatus())
                 constructingOpenTask(task);
-//            else
-//                constructingCloseTask(task, url, imageUrl);
+            else
+                constructingCloseTask(task);
         }
     }
 
@@ -137,8 +142,71 @@ public class ActivitiesConstructor {
         VBox box = new VBox();
 //            box.setStyle("-fx-border-color: #033300;");
         box.getChildren().addAll(subject, body, details);
-        open_activities_list.setSpacing(10);
         open_activities_list.getChildren().add(box);
+    }
+
+    private static void constructingCloseTask(Task task) {
+        //The Subject
+        HBox subject = new HBox();
+        subject.setSpacing(5);
+        //Note Text
+        Label title = new Label("Subject: ");
+        title.setStyle("-fx-font-weight: bold;");
+        Label sbjct = new Label(task.getSubject());
+        sbjct.setWrapText(true);
+        subject.getChildren().addAll(title, sbjct);
+        //The First Part
+        HBox body = new HBox();
+        body.setSpacing(5);
+        //Note Text
+        TextArea area = new TextArea(task.getDesc());
+        area.setWrapText(true);
+        area.setEditable(false);
+        area.setMinHeight(50);
+        area.setStyle("-fx-background-color: #fcfcfc;" +
+                "-fx-background: transparent;");
+        body.getChildren().add(area);
+        //The Second Part
+        HBox details = new HBox();
+        details.setSpacing(10);
+        details.setMinHeight(25);
+        details.setPadding(new Insets(3));
+        Label createdBy = new Label(task.getCreatedBy()),
+                createdOn = new Label(task.getCreatedOn());
+        createdOn.setMinWidth(150);
+        createdBy.setMinWidth(280);
+//        JFXButton options = new JFXButton();
+
+//        Image image = new Image(ActivitiesConstructor.class.getResourceAsStream("/res/img/options.png"));
+//        options.setGraphic(new ImageView(image));
+        details.getChildren().addAll(createdOn, createdBy);
+        ContextMenu contextMenu = new ContextMenu();
+//        MenuItem closeItem = new MenuItem("Close"),
+//                editItem = new MenuItem("Edit"),
+//                delItem = new MenuItem("Delete");
+//        editItem.setOnAction(t -> {
+//
+//        });
+//        closeItem.setOnAction(t -> {
+//            sql.closeTask(task);
+//            generalConstructor(choice);
+//        });
+//        delItem.setOnAction(t -> {
+//
+//        });
+//        contextMenu.getItems().addAll(editItem, closeItem, delItem);
+//        options.addEventHandler(MouseEvent.MOUSE_CLICKED, (MouseEvent me) -> {
+//            if (me.getButton() == MouseButton.PRIMARY) {
+//                contextMenu.show(options, me.getScreenX(), me.getScreenY());
+//            } else {
+//                contextMenu.hide();
+//            }
+//        });
+
+        VBox box = new VBox();
+//            box.setStyle("-fx-border-color: #033300;");
+        box.getChildren().addAll(subject, body, details);
+        closed_activities_list.getChildren().add(box);
     }
 
     public static void generalConstructor(int choice) {

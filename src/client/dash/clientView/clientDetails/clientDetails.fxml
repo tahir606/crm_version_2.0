@@ -10,6 +10,7 @@
 
 <?import javafx.scene.control.ScrollPane?>
 <?import java.lang.String?>
+<?import javafx.scene.control.Separator?>
 <AnchorPane prefHeight="472.0" prefWidth="1000.0" stylesheets="@../../../../styles/emailDash.css"
             xmlns="http://javafx.com/javafx/9" xmlns:fx="http://javafx.com/fxml/1"
             fx:controller="client.dash.clientView.clientDetails.clientDetailsController">
@@ -48,11 +49,17 @@
                             </VBox>
                         </children>
                     </HBox>
+                    <Separator/>
                     <HBox prefHeight="8.0" prefWidth="316.0">
                         <children>
-                            <VBox fx:id="open_activities_list" spacing="3">
+                            <VBox fx:id="open_activities_list" spacing="10">
                             </VBox>
-                            <VBox fx:id="closed_activities_list" spacing="3">
+                        </children>
+                    </HBox>
+                    <Separator/>
+                    <HBox prefHeight="8.0" prefWidth="316.0">
+                        <children>
+                            <VBox fx:id="closed_activities_list" spacing="10">
                             </VBox>
                         </children>
                     </HBox>
