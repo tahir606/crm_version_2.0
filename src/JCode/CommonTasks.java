@@ -137,13 +137,14 @@ public class CommonTasks {
         try {
             FXMLLoader fxmlLoader = new FXMLLoader(path);
             Parent root1 = fxmlLoader.load();
-            Stage stage2 = new Stage();
-            stage2.setTitle(title);
-            stage2.setScene(new Scene(root1));
+            Stage stage = new Stage();
+            stage.setTitle(title);
+            stage.setScene(new Scene(root1));
+            stage.setResizable(false);
             trayHelper tray = new trayHelper();
-            tray.createIcon(stage2);
+            tray.createIcon(stage);
             Platform.setImplicitExit(true);
-            stage2.show();
+            stage.show();
         } catch (IOException e) {
             e.printStackTrace();
         }

@@ -34,6 +34,7 @@ public class ActivitiesConstructor {
 
     //Which property is selected
     public static int choice;
+    public static Task updatingTask;
 
     public ActivitiesConstructor(VBox open_activities_list, VBox closed_activities_list, ClientProperty client) {
         this.open_activities_list = open_activities_list;
@@ -121,14 +122,17 @@ public class ActivitiesConstructor {
                 editItem = new MenuItem("Edit"),
                 delItem = new MenuItem("Delete");
         editItem.setOnAction(t -> {
-
+            NewTaskController.stInstance = 'U';
+            updatingTask = task;
+            CommonTasks.inflateDialog("Update Task", ActivitiesConstructor.class.getResource("../activity/task/new_task.fxml"));
         });
         closeItem.setOnAction(t -> {
             sql.closeTask(task);
             generalConstructor(choice);
         });
         delItem.setOnAction(t -> {
-
+            sql.freezeTask(task);
+            generalConstructor(choice);
         });
         contextMenu.getItems().addAll(editItem, closeItem, delItem);
         options.addEventHandler(MouseEvent.MOUSE_CLICKED, (MouseEvent me) -> {

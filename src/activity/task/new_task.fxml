@@ -56,7 +56,7 @@
                 </HBox>
             </children>
         </VBox>
-        <JFXButton fx:id="btn_save" buttonType="RAISED" layoutX="271.0" layoutY="375.0" prefHeight="25.0" prefWidth="52.0" style="-fx-background-color: #d9e5f9;" text="Save" />
-        <JFXButton fx:id="btn_cancel" buttonType="RAISED" layoutX="333.0" layoutY="375.0" style="-fx-background-color: #fcfcfc;" text="Cancel" />
+        <JFXButton fx:id="btn_save" buttonType="RAISED" layoutX="194.0" layoutY="375.0" prefHeight="25.0" prefWidth="90.0" style="-fx-background-color: #d9e5f9;" text="Save" />
+        <JFXButton fx:id="btn_cancel" buttonType="RAISED" layoutX="296.0" layoutY="375.0" prefHeight="25.0" prefWidth="90.0" style="-fx-background-color: #fcfcfc;" text="Cancel" />
     </children>
 </AnchorPane>

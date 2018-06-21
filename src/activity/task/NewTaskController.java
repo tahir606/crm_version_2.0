@@ -1,5 +1,6 @@
 package activity.task;
 
+import JCode.CommonTasks;
 import JCode.Toast;
 import JCode.mysql.mySqlConn;
 import client.dash.clientView.clientViewController;
@@ -45,11 +46,14 @@ public class NewTaskController implements Initializable {
 
     //Which property is selected
     private int choice;
+
     private mySqlConn sql;
 
     public static char stInstance;
 
     private ClientProperty client;
+
+    private Task task;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -59,6 +63,32 @@ public class NewTaskController implements Initializable {
         relation_type.getItems().addAll("Contact", "Client", "Lead", "Product");
 
         choice = ActivitiesConstructor.choice;
+
+        switch (stInstance) {
+            case 'N': {
+                btn_save.setText("Add");
+                relation_type.setDisable(false);
+                txt_name.setDisable(false);
+
+                task = new Task();
+                break;
+            }
+            case 'U': {
+                btn_save.setText("Update");
+                relation_type.setDisable(true);
+                txt_name.setDisable(true);
+
+                task = ActivitiesConstructor.updatingTask;
+                txt_subject.setText(task.getSubject());
+                txt_desc.setText(task.getDesc());
+                if (task.getDueDate() != null)
+                    due_date.setValue(CommonTasks.createLocalDate(task.getDueDate()));
+                else
+                    due_date.setValue(null);
+                check_repeat.setSelected(task.isRepeat());
+                break;
+            }
+        }
 
         switch (choice) {
             case 1: {       //Contacts
@@ -82,8 +112,6 @@ public class NewTaskController implements Initializable {
                     type = relation_type.getSelectionModel().getSelectedItem(),
                     name = txt_name.getText().toString();
             boolean repeat = check_repeat.isSelected();
-
-            Task task = new Task();
 
             if (subject.equals("") || desc.equals("") || dueDate.equals("")) {
                 Toast.makeText((Stage) btn_save.getScene().getWindow(), "Required Fields Are Empty");
@@ -109,25 +137,23 @@ public class NewTaskController implements Initializable {
 
                 if (alert2.getResult() == ButtonType.YES) {
 
+                    task.setSubject(subject);
+                    task.setDueDate(dueDate);
+                    task.setDesc(desc);
+                    task.setRepeat(repeat);
+
                     switch (stInstance) {
                         case 'N': {
-                            task.setSubject(subject);
-                            task.setDueDate(dueDate);
-                            task.setDesc(desc);
-                            task.setRepeat(repeat);
-
                             if (type.equals("Contact")) {
 
                             } else if (type.equals("Client")) {
                                 task.setClient(client.getCode());
                             }
-
                             sql.addTask(task);
-
                             break;
                         }
                         case 'U': {
-//                            sql.updateTask(task);
+                            sql.updateTask(task);
                             break;
                         }
                         default: {

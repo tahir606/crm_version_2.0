@@ -391,8 +391,16 @@ public class mySqlConn {
         taskQueries.addTask(task);
     }
 
+    public void updateTask(Task task) {
+        taskQueries.updateTask(task);
+    }
+
     public void closeTask(Task task) {
         taskQueries.closeTask(task);
+    }
+
+    public void freezeTask(Task task) {
+        taskQueries.freezeTask(task);
     }
 
     public List<Task> getTasks(ContactProperty obj) {

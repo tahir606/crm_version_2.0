@@ -56,7 +56,8 @@ public class TaskQueries {
                 " FROM TASK_STORE AS NS, CONTACT_STORE AS CS, USERS AS US " +
                 " WHERE NS.CS_ID = ? " +
                 " AND NS.CS_ID = CS.CS_ID " +
-                " AND NS.CREATEDBY = US.UCODE";
+                " AND NS.CREATEDBY = US.UCODE " +
+                " AND FREZE = 0";
 
         List<Task> tasks = new ArrayList<>();
 
@@ -64,7 +65,7 @@ public class TaskQueries {
             PreparedStatement statement = static_con.prepareStatement(query);
             statement.setInt(1, contact.getCode());
             ResultSet set = statement.executeQuery();
-            //-------------Creating Email-------------
+            //-------------Creating Task-------------
             while (set.next()) {
                 Task task = new Task();
                 task.setCode(set.getInt("TS_ID"));
@@ -89,7 +90,8 @@ public class TaskQueries {
                 " FROM TASK_STORE AS NS, CLIENT_STORE AS CS, USERS AS US " +
                 " WHERE NS.CL_ID = ? " +
                 " AND NS.CL_ID = CS.CL_ID " +
-                " AND NS.CREATEDBY = US.UCODE";
+                " AND NS.CREATEDBY = US.UCODE " +
+                " AND NS.FREZE = 0 ";
 
         List<Task> tasks = new ArrayList<>();
 
@@ -97,7 +99,7 @@ public class TaskQueries {
             PreparedStatement statement = static_con.prepareStatement(query);
             statement.setInt(1, client.getCode());
             ResultSet set = statement.executeQuery();
-            //-------------Creating Email-------------
+            //-------------Creating Task-------------
             while (set.next()) {
                 Task task = new Task();
                 task.setCode(set.getInt("TS_ID"));
@@ -119,7 +121,22 @@ public class TaskQueries {
     }
 
     public void updateTask(Task task) {
+        String query = " UPDATE TASK_STORE SET " +
+                " TS_SUBJECT = ?, TS_DESC = ?, TS_DDATE = ?, TS_REPEAT = ? " +
+                " WHERE TS_ID = ? ";
 
+        PreparedStatement statement = null;
+        try {
+            statement = static_con.prepareStatement(query);
+            statement.setString(1, task.getSubject());
+            statement.setString(2, task.getDesc());
+            statement.setString(3, task.getDueDate());
+            statement.setBoolean(4, task.isRepeat());
+            statement.setInt(5, task.getCode());
+            statement.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
     public void closeTask(Task task) {
@@ -127,15 +144,26 @@ public class TaskQueries {
                 " WHERE TS_ID = ? ";
 
         PreparedStatement statement = null;
-
         try {
             statement = static_con.prepareStatement(query);
             statement.setBoolean(1, true);
             statement.setString(2, CommonTasks.getCurrentTimeStamp());
             statement.setInt(3, task.getCode());
-
             statement.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
 
+    public void freezeTask(Task task) {
+        String query = "UPDATE TASK_STORE SET FREZE = 1 " +
+                " WHERE TS_ID = ? ";
+
+        PreparedStatement statement = null;
+        try {
+            statement = static_con.prepareStatement(query);
+            statement.setInt(1, task.getCode());
+            statement.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
         }
