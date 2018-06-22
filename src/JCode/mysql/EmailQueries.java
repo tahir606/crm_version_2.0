@@ -21,19 +21,19 @@ import java.util.Date;
 import java.util.List;
 
 public class EmailQueries {
-    
+
     private Connection static_con;
     private ESetting eSetting;
     private Users user;
     private EmailPhoneQueries emailPhoneQueries;
-    
+
     public EmailQueries(Connection static_con, Users user, ESetting eSetting, EmailPhoneQueries emailPhoneQueries) {
         this.static_con = static_con;
         this.user = user;
         this.eSetting = eSetting;
         this.emailPhoneQueries = emailPhoneQueries;
     }
-    
+
     public Users getNoOfSolvedEmails(Users user) {
         String query = " SELECT COUNT(EMNO) AS EMNO FROM EMAIL_STORE " +
                 " WHERE SOLVBY = ?";
@@ -41,23 +41,23 @@ public class EmailQueries {
 //        // Connection con = getConnection();
         PreparedStatement statement = null;
         ResultSet set = null;
-        
+
         try {
             statement = static_con.prepareStatement(query);
             statement.setInt(1, user.getUCODE());
             set = statement.executeQuery();
-            
+
             while (set.next()) {
                 user.setSolved(set.getInt("EMNO"));
             }
-            
+
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        
+
         return user;
     }
-    
+
     public void createEmailRelations(Email email) {
         try {
             for (Address address : email.getFromAddress()) {
@@ -74,10 +74,10 @@ public class EmailQueries {
             e.getLocalizedMessage();
         }
     }
-    
+
     private String mainQuery = "SELECT DISTINCT EM_ID, EM_NAME, CL_ID, CS_ID, UCODE FROM EMAIL_LIST WHERE EM_NAME LIKE ";
     private String relQuery = "INSERT INTO EMAIL_RELATION (EMNO, EM_ID, EMTYPE, CL_ID, UCODE, CS_ID) VALUES (?, ?, ?, ?, ?, ?)";
-    
+
     private void subCreateEmailRelation(Address address, Email email) throws SQLException {
         if (address != null) {
             String splitted = "";
@@ -97,10 +97,10 @@ public class EmailQueries {
                         cl = set.getInt("CL_ID"),
                         cs = set.getInt("CS_ID"),
                         ucode = set.getInt("UCODE");
-                
+
                 if (cl == 0 && cs == 0 && ucode == 0)   //Unrelated Email
                     continue;
-                
+
                 PreparedStatement stmnt = static_con.prepareStatement(relQuery);
                 stmnt.setInt(1, emno);
                 stmnt.setInt(2, emid);
@@ -109,17 +109,17 @@ public class EmailQueries {
                 stmnt.setInt(5, ucode);
                 stmnt.setInt(6, cs);
                 stmnt.executeUpdate();
-                
+
             }
         }
     }
-    
+
     public List<ContactProperty> getEmailContactRelations(Email email) {
         String query = "SELECT DISTINCT CS.CS_ID, CS_FNAME, CS_LNAME " +
                 "FROM CONTACT_STORE as CS, EMAIL_RELATION as ER " +
                 "WHERE CS.CS_ID = ER.CS_ID " +
                 "AND ER.EMNO = ?";
-        
+
         PreparedStatement statement = null;
         List<ContactProperty> contacts = new ArrayList<>();
         try {
@@ -136,17 +136,17 @@ public class EmailQueries {
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        
+
         return contacts;
     }
-    
+
     public List<ClientProperty> getEmailClientRelations(Email email) {
         String query = "SELECT DISTINCT CS.CL_ID, CL_NAME " +
                 " FROM CLIENT_STORE AS CS, EMAIL_RELATION as ER " +
                 " WHERE CS.CL_ID = ER.CL_ID " +
                 " AND ER.CL_ID != 0 " +
                 " AND ER.EMNO = ?";
-        
+
         PreparedStatement statement = null;
         List<ClientProperty> clients = new ArrayList<>();
         try {
@@ -162,10 +162,10 @@ public class EmailQueries {
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        
+
         return clients;
     }
-    
+
     public int getNoOfUnsolved() {
         String query = " SELECT COUNT(EMNO) AS EMNO FROM EMAIL_STORE " +
                 " WHERE ESOLV != 'S' AND FREZE = 0";
@@ -173,22 +173,22 @@ public class EmailQueries {
 //        // Connection con = getConnection();
         PreparedStatement statement = null;
         ResultSet set = null;
-        
+
         try {
             statement = static_con.prepareStatement(query);
             set = statement.executeQuery();
-            
+
             while (set.next()) {
                 return set.getInt("EMNO");
             }
-            
+
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        
+
         return 0;
     }
-    
+
     public int getNoOfUnlocked() {
         String query = " SELECT COUNT(EMNO) AS EMNO FROM EMAIL_STORE " +
                 " WHERE LOCKD = 0 AND ESOLV != 'S' AND FREZE = 0";
@@ -196,32 +196,32 @@ public class EmailQueries {
 //        // Connection con = getConnection();
         PreparedStatement statement = null;
         ResultSet set = null;
-        
+
         try {
             statement = static_con.prepareStatement(query);
             set = statement.executeQuery();
-            
+
             while (set.next()) {
                 return set.getInt("EMNO");
             }
-            
+
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        
+
         return 0;
     }
-    
+
     public void insertEmail(Email email, Message message) {
-        
+
         String query = "INSERT INTO email_store(EMNO,SBJCT,TOADD,FRADD,TSTMP,EBODY,ATTCH,CCADD,ESOLV,MSGNO,LOCKD," +
                 "FREZE) SELECT IFNULL(max(EMNO),0)+1,?,?,?,?,?,?,?,?,?,?,? from EMAIL_STORE";
-        
+
         // Connection con = getConnection();
         PreparedStatement statement = null;
-        
+
         System.out.println(email.getTimestamp());
-        
+
         try {
             statement = static_con.prepareStatement(query);
             statement.setString(1, email.getSubject());
@@ -236,30 +236,30 @@ public class EmailQueries {
             statement.setInt(10, email.getLockd());
             statement.setBoolean(11, email.isFreze());
             statement.executeUpdate();
-            
+
             statement.close();
-            
+
             int emno = getEmailNo(email);
             email.setEmailNo(emno);
-            
+
             createEmailRelations(email);
-            
+
             if (eSetting.isAuto())
                 autoReply(email, message);
-            
+
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        
+
     }
-    
+
     public void insertEmailManual(Email email) {
-        
+
         String query = "INSERT INTO email_store(EMNO,SBJCT,TOADD,FRADD,TSTMP,EBODY,ATTCH,CCADD,ESOLV,MSGNO,LOCKD," +
                 "FREZE,MANUAL) SELECT IFNULL(max(EMNO),0)+1,?,?,?,?,?,?,?,?,?,?,?,? from EMAIL_STORE";
-        
+
         PreparedStatement statement = null;
-        
+
         try {
             statement = static_con.prepareStatement(query);
             statement.setString(1, email.getSubject());
@@ -275,78 +275,78 @@ public class EmailQueries {
             statement.setBoolean(11, email.isFreze());
             statement.setBoolean(12, true);
             statement.executeUpdate();
-            
+
             statement.close();
-            
+
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        
+
     }
-    
+
     public static String autoReplySubject = "Burhani Customer Support - Ticket Number: ";
-    
+
     private void autoReply(Email email, Message message) {
-        
+
         String body = "The Ticket Number Issued to you is: " + email.getEmailNo() + "\n" + eSetting.getAutotext();
-        
+
         Email e = new Email();
         e.setSubject(autoReplySubject + email.getEmailNo());
         e.setToAddress(new Address[]{email.getFromAddress()[0]});
         e.setBody(body + "\n\n\n" + "--------In Reply To--------" + "\n\nSubject:   " + email.getSubject() + "\n\n" + email.getBody());
-        
+
         emailControl.sendEmail(e, message);
-        
+
     }
-    
+
     private int getEmailNo(Email email) {
         String queryEMNO = "SELECT emno FROM email_store" +
                 " WHERE msgno = ?" +
                 " AND sbjct = ? " +
                 " AND tstmp = ?";
-        
+
         try {
-            
+
             PreparedStatement statementEMNO = static_con.prepareStatement(queryEMNO);
             statementEMNO.setInt(1, email.getMsgNo());
             statementEMNO.setString(2, email.getSubject());
             statementEMNO.setString(3, email.getTimestamp());
             ResultSet set = statementEMNO.executeQuery();
-            
+
             int emno = 0;
             //" Mr. " + RecieveName + "\n" +
             while (set.next()) {
                 emno = set.getInt(1);
             }
-            
+
             statementEMNO.close();
             set.close();
-            
+
             return emno;
-            
+
         } catch (SQLException e) {
             e.printStackTrace();
         } finally {
             // doRelease(con);
         }
-        
+
         return 0;
     }
-    
+
     //Reading tickets
     public List<Email> readAllEmails(Filters filters, UserQueries userQueries) {
-        
+
         String query = "SELECT EMNO, MSGNO, SBJCT, FRADD, TOADD, CCADD, TSTMP, " +
                 " EBODY, ATTCH, ESOLV, LOCKD, SOLVBY, SOLVTIME FROM EMAIL_STORE";
-        
+
         if (filters == null) {
             query = query + " ORDER BY EMNO DESC";
         } else {
             query = query + " WHERE " + filters.toString();
         }
-        
+
         List<Email> allEmails = new ArrayList<>();
-        
+
         try {
             // Connection con = getConnection();
             PreparedStatement statement = static_con.prepareStatement(query);
@@ -356,7 +356,7 @@ public class EmailQueries {
             if (!set.isBeforeFirst()) {
                 return null;
             }
-            
+
             while (set.next()) {
                 Email email = new Email();
                 email.setEmailNo(set.getInt("EMNO"));
@@ -364,7 +364,7 @@ public class EmailQueries {
                 email.setSubject(set.getString("SBJCT"));
                 email.setTimestamp(set.getString("TSTMP"));
                 email.setTimeFormatted(CommonTasks.getTimeFormatted(email.getTimestamp()));
-                
+
                 email.setBody(set.getString("EBODY"));
                 email.setAttch(set.getString("ATTCH"));
                 email.setSolvFlag(set.getString("ESOLV").charAt(0));
@@ -375,7 +375,7 @@ public class EmailQueries {
                     email.setLockedByName(userQueries.getUserName(email.getLockd())); //Getting name of username that
                     // locked
                 }                                                              // particular email
-                
+
                 //------From Address
                 String[] from = set.getString("FRADD").split("\\^");
                 Address[] fromAddress = new Address[from.length];
@@ -387,7 +387,7 @@ public class EmailQueries {
                     }
                 }
                 email.setFromAddress(fromAddress);
-                
+
                 //-----To Address
                 String[] to = set.getString("TOADD").split("\\^");
                 Address[] toAddress = new Address[to.length];
@@ -399,7 +399,7 @@ public class EmailQueries {
                     }
                 }
                 email.setToAddress(toAddress);
-                
+
                 //----- CC Address
                 String[] cc = set.getString("CCADD").split("\\^");
                 Address[] ccAddress = new Address[cc.length];
@@ -411,32 +411,32 @@ public class EmailQueries {
                     }
                 }
                 email.setCcAddress(ccAddress);
-                
+
                 email.setRelatedContacts(getEmailContactRelations(email));
                 email.setRelatedClients(getEmailClientRelations(email));
-                
+
                 allEmails.add(email);
             }
-            
+
             // doRelease(con);
         } catch (SQLException ex) {
             ex.printStackTrace();
         }
-        
+
         return allEmails;
     }
-    
-    
+
+
     public void insertEmailGeneral(Email email) {
-        
+
         String query = "INSERT INTO email_general(EMNO,SBJCT,TOADD,FRADD,TSTMP,EBODY,ATTCH,CCADD,MSGNO," +
                 "FREZE) SELECT IFNULL(max(EMNO),0)+1,?,?,?,?,?,?,?,?,? from EMAIL_GENERAL";
-        
+
         // Connection con = getConnection();
         PreparedStatement statement = null;
-        
+
         System.out.println(email);
-        
+
         try {
             statement = static_con.prepareStatement(query);
             statement.setString(1, email.getSubject());
@@ -449,27 +449,27 @@ public class EmailQueries {
             statement.setInt(8, email.getMsgNo());
             statement.setBoolean(9, email.isFreze());
             statement.executeUpdate();
-            
+
             statement.close();
-            
+
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        
+
     }
-    
+
     public List<Email> readAllEmailsGeneral(String where) {
-        
+
         String query = "SELECT EMNO,MSGNO,SBJCT,FRADD,TOADD,CCADD,TSTMP,EBODY,ATTCH FROM EMAIL_GENERAL";
-        
+
         if (where == null) {
             query = query + " ORDER BY EMNO DESC";
         } else {
             query = query + where + " ORDER BY EMNO DESC";
         }
-        
+
         List<Email> allEmails = new ArrayList<>();
-        
+
         try {
             // Connection con = getConnection();
             PreparedStatement statement = static_con.prepareStatement(query);
@@ -479,18 +479,18 @@ public class EmailQueries {
             if (!set.isBeforeFirst()) {
                 return null;
             }
-            
+
             while (set.next()) {
                 Email email = new Email();
                 email.setEmailNo(set.getInt("EMNO"));
                 email.setMsgNo(set.getInt("MSGNO"));
                 email.setSubject(set.getString("SBJCT"));
                 email.setTimestamp(set.getString("TSTMP"));
-                
+
                 // Note, MM is months, not mm
                 DateFormat inputFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.S");
                 DateFormat outputFormat = new SimpleDateFormat("dd-MMM-yyyy hh:mm a");
-                
+
                 Date date = null;
                 try {
                     date = inputFormat.parse(email.getTimestamp());
@@ -499,11 +499,11 @@ public class EmailQueries {
                 }
                 String outputText = outputFormat.format(date);
                 email.setTimeFormatted(outputText);
-                
+
                 email.setBody(set.getString("EBODY"));
                 email.setAttch(set.getString("ATTCH"));
                 // particular email
-                
+
                 //------From Address
                 String[] from = set.getString("FRADD").split("\\^");
                 Address[] fromAddress = new Address[from.length];
@@ -518,7 +518,7 @@ public class EmailQueries {
                     }
                 }
                 email.setFromAddress(fromAddress);
-                
+
                 //-----To Address
                 String[] to = set.getString("TOADD").split("\\^");
                 Address[] toAddress = new Address[to.length];
@@ -530,7 +530,7 @@ public class EmailQueries {
                     }
                 }
                 email.setToAddress(toAddress);
-                
+
                 //----- CC Address
                 String[] cc = set.getString("CCADD").split("\\^");
                 Address[] ccAddress = new Address[cc.length];
@@ -542,26 +542,26 @@ public class EmailQueries {
                     }
                 }
                 email.setCcAddress(ccAddress);
-                
+
                 allEmails.add(email);
             }
-            
+
             // doRelease(con);
         } catch (SQLException ex) {
             ex.printStackTrace();
         }
-        
+
         return allEmails;
     }
-    
+
     public void insertEmailSent(Email email) {
-        String query = "INSERT INTO EMAIL_SENT(EMNO,SBJCT,FRADD,TOADD,CCADD,BCCADD,TSTMP,EBODY,ATTCH,UCODE,FREZE" +
-                ") SELECT IFNULL(max(EMNO),0)+1,?,?,?,?,?,?,?,?,?,? from EMAIL_SENT";
-        
+        String query = "INSERT INTO EMAIL_SENT(EMNO,SBJCT,FRADD,TOADD,CCADD,BCCADD,TSTMP,EBODY,ATTCH,UCODE,FREZE,ESNO" +
+                ") SELECT IFNULL(max(EMNO),0)+1,?,?,?,?,?,?,?,?,?,?,? from EMAIL_SENT";
+
         PreparedStatement statement = null;
-        
+
         System.out.println(email.getTimestamp());
-        
+
         try {
             statement = static_con.prepareStatement(query);
             statement.setString(1, email.getSubject());
@@ -574,34 +574,35 @@ public class EmailQueries {
             statement.setString(8, email.getAttch());
             statement.setInt(9, user.getUCODE());
             statement.setBoolean(10, false);
+            statement.setInt(11, email.getEmailStoreNo());
             statement.executeUpdate();
-            
+
             statement.close();
-            
+
             String[] allEmails = (email.getToAddressString() + "^"
                     + email.getCcAddressString() + "^"
                     + email.getBccAddressString()).split("\\^");
-            
+
             emailPhoneQueries.emailsListInsertion(allEmails);
-            
+
         } catch (SQLException e) {
             e.printStackTrace();
         }
     }
-    
+
     public List<Email> readAllEmailsSent(String where) {
-        
+
         String query = "SELECT EMNO,SBJCT,FRADD,TOADD,CCADD,BCCADD,TSTMP,EBODY,ATTCH,U.FNAME FROM EMAIL_SENT E, users" +
                 " U WHERE E.UCODE = U.UCODE";
-        
+
         if (where == null) {
             query = query + " ORDER BY EMNO DESC";
         } else {
             query = query + where;
         }
-        
+
         List<Email> allEmails = new ArrayList<>();
-        
+
         try {
             // Connection con = getConnection();
             PreparedStatement statement = static_con.prepareStatement(query);
@@ -611,17 +612,17 @@ public class EmailQueries {
             if (!set.isBeforeFirst()) {
                 return null;
             }
-            
+
             while (set.next()) {
                 Email email = new Email();
                 email.setEmailNo(set.getInt("EMNO"));
                 email.setSubject(set.getString("SBJCT"));
                 email.setTimestamp(set.getString("TSTMP"));
-                
+
                 // Note, MM is months, not mm
                 DateFormat inputFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.S");
                 DateFormat outputFormat = new SimpleDateFormat("dd-MMM-yyyy hh:mm a");
-                
+
                 Date date = null;
                 try {
                     date = inputFormat.parse(email.getTimestamp());
@@ -630,10 +631,10 @@ public class EmailQueries {
                 }
                 String outputText = outputFormat.format(date);
                 email.setTimeFormatted(outputText);
-                
+
                 email.setBody(set.getString("EBODY"));
                 email.setAttch(set.getString("ATTCH"));
-                
+
                 //------From Address
                 String[] from = set.getString("FRADD").split("\\^");
                 Address[] fromAddress = new Address[from.length];
@@ -645,7 +646,7 @@ public class EmailQueries {
                     }
                 }
                 email.setFromAddress(fromAddress);
-                
+
                 //-----To Address
                 String[] to = set.getString("TOADD").split("\\^");
                 Address[] toAddress = new Address[to.length];
@@ -657,7 +658,7 @@ public class EmailQueries {
                     }
                 }
                 email.setToAddress(toAddress);
-                
+
                 //----- CC Address
                 String[] cc = set.getString("CCADD").split("\\^");
                 Address[] ccAddress = new Address[cc.length];
@@ -669,7 +670,7 @@ public class EmailQueries {
                     }
                 }
                 email.setCcAddress(ccAddress);
-                
+
                 //----- CC Address
                 String[] bcc = set.getString("BCCADD").split("\\^");
                 Address[] bccAddress = new Address[bcc.length];
@@ -682,31 +683,31 @@ public class EmailQueries {
                 }
                 email.setBccAddress(bccAddress);
                 email.setUser(set.getString("FNAME"));
-                
+
                 allEmails.add(email);
             }
-            
+
             // doRelease(con);
         } catch (SQLException ex) {
             ex.printStackTrace();
         }
-        
+
         return allEmails;
     }
-    
-    
+
+
     public void lockEmail(Email email, int op) {        //0 Unlock 1 Lock
-        
+
         String query = " UPDATE EMAIL_STORE " +
                 " SET LOCKD = ? " +
                 " WHERE EMNO = ? ";
-        
+
         // Connection con = getConnection();
         PreparedStatement statement = null;
-        
+
         try {
             statement = static_con.prepareStatement(query);
-            
+
             if (op == 1) {  //Locking
                 statement.setInt(1, user.getUCODE());
                 statement.setInt(2, email.getEmailNo());
@@ -715,28 +716,28 @@ public class EmailQueries {
                 statement.setInt(2, email.getEmailNo());
             }
             statement.executeUpdate();
-            
+
         } catch (SQLException e) {
             e.printStackTrace();
         } finally {
             // doRelease(con);
         }
-        
+
     }
-    
+
     public void solvEmail(Email email, String flag, Users user, boolean choice, String msg) {
-        
+
         String query = " UPDATE EMAIL_STORE " +     //Query to Update Email status to solve
                 " SET ESOLV = ?, " +
                 " SOLVBY = ?, " +
                 " SOLVTIME = ? " +
                 " WHERE EMNO = ? ";
-        
+
         String timeStamp = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.S").format(Calendar.getInstance().getTime());
         email.setTimestamp(timeStamp);
-        
+
         PreparedStatement statement = null;
-        
+
         try {
             statement = static_con.prepareStatement(query);
             statement.setString(1, flag);
@@ -745,40 +746,40 @@ public class EmailQueries {
             statement.setInt(4, email.getEmailNo());
             statement.executeUpdate();
             statement.close();
-            
+
             if (eSetting.isSolv() && choice) {
                 solvResponder(email, msg);
             }
-            
-            
+
+
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
             // doRelease(con);
         }
-        
+
     }
-    
+
     private void solvResponder(Email email, String msg) {
-        
+
         String sb = "Ticket Number: " + email.getEmailNo() + " Resolved";
-        
+
         String bd = msg;
-        
+
         Email send = new Email();
         send.setSubject(sb);
         send.setToAddress(email.getFromAddress());
         send.setCcAddress(email.getCcAddress());
         send.setBody(bd);
-        
+
         emailControl.sendEmail(send, null);
-        
+
     }
-    
+
     public void ArchiveEmail(int type, String where) {    //Verb
-        
+
         String query = "";
-        
+
         switch (type) {
             case 1:
                 query = "UPDATE EMAIL_STORE SET FREZE = 1 WHERE ";
@@ -786,36 +787,36 @@ public class EmailQueries {
             case 2:
                 query = "UPDATE EMAIL_GENERAL SET FREZE = 1 WHERE ";
         }
-        
+
         query = query + where;
-        
+
         // Connection con = getConnection();
         PreparedStatement statement = null;
-        
+
         try {
             statement = static_con.prepareStatement(query);
             statement.executeUpdate();
-            
+
             statement.close();
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        
+
     }
-    
+
     private void EmailsListInsertion(String[] emails) {
-        
+
         String emailList = "INSERT INTO EMAIL_LIST(EM_ID,EM_NAME,CL_ID,UCODE,CS_ID) " +
                 "SELECT IFNULL(max(EM_ID),0)+1,?,?,?,? from EMAIL_LIST";
-        
+
         try {
             PreparedStatement statement = null;
-            
+
             for (int i = 0; i < emails.length; i++) {   //Inserting Emailss
                 statement = null;
                 if (emails[i] == null || emails[i].equals(""))
                     continue;
-                
+
                 statement = static_con.prepareStatement(emailList);
                 statement.setString(1, emails[i]);
                 statement.setInt(2, 0);
@@ -823,12 +824,12 @@ public class EmailQueries {
                 statement.setInt(4, 0);
                 statement.executeUpdate();
             }
-            
+
             if (statement != null)
                 statement.close();
         } catch (SQLException e) {
-            System.out.println(e);
+            e.printStackTrace();
         }
     }
-    
+
 }

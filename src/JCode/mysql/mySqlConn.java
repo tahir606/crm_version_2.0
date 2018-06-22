@@ -76,7 +76,7 @@ public class mySqlConn {
                 return con;
             } catch (SQLException | ClassNotFoundException e) {
                 times++;
-                System.out.println(e);
+                e.printStackTrace();
                 try {
                     Thread.sleep(8000);
                 } catch (InterruptedException e1) {

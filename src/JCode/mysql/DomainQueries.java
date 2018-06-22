@@ -29,7 +29,7 @@ public class DomainQueries {
             if (statement != null)
                 statement.close();
         } catch (SQLException e) {
-            System.out.println(e);
+            e.printStackTrace();
             if (statement != null) {
                 try {
                     statement.close();
@@ -60,7 +60,7 @@ public class DomainQueries {
             if (statement != null)
                 statement.close();
         } catch (SQLException e) {
-            System.out.println(e);
+            e.printStackTrace();
             if (statement != null) {
                 try {
                     statement.close();

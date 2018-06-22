@@ -130,7 +130,7 @@ public class emailSetController implements Initializable {
             black_list.getItems().clear();
             black_list.getItems().addAll(blackList);
         } catch (NullPointerException e) {
-            System.out.println(e);
+            e.printStackTrace();
         }
 
         //Right click menu

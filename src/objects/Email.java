@@ -7,7 +7,7 @@ import java.util.List;
 
 public class Email {
 
-    private int EmailNo, msgNo, lockd, solvBy, type;
+    private int EmailNo, msgNo, lockd, solvBy, type, emailStoreNo;
     private Address[] toAddress, fromAddress, ccAddress, bccAddress;
     private String subject, timestamp, timeFormatted, body, attch, lockedByName, disclaimer, user, solvByName;
     private List<File> attachments;
@@ -294,6 +294,14 @@ public class Email {
 
     public void setType(int type) {
         this.type = type;
+    }
+
+    public int getEmailStoreNo() {
+        return emailStoreNo;
+    }
+
+    public void setEmailStoreNo(int emailStoreNo) {
+        this.emailStoreNo = emailStoreNo;
     }
 
     public boolean isFreze() {

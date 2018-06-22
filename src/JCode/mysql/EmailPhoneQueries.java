@@ -40,7 +40,7 @@ public class EmailPhoneQueries {
             if (statement != null)
                 statement.close();
         } catch (SQLException e) {
-            System.out.println(e);
+            e.printStackTrace();
         }
     }
     
