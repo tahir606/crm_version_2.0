@@ -2,9 +2,7 @@ package JCode.mysql;
 
 import JCode.CommonTasks;
 import JCode.fileHelper;
-import objects.ClientProperty;
-import objects.ContactProperty;
-import objects.Task;
+import objects.*;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -109,6 +107,76 @@ public class TaskQueries {
                 task.setRepeat(set.getBoolean("TS_REPEAT"));
                 task.setStatus(set.getBoolean("TS_STATUS"));
                 task.setClientName(set.getString("CL_NAME"));
+                task.setCreatedBy(set.getString("FNAME"));
+                task.setCreatedOn(set.getString("CREATEDON"));
+                tasks.add(task);
+            }
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+
+        return tasks;
+    }
+
+    public List<Task> getTasks(Lead lead) {
+        String query = "SELECT TS_ID, TS_SUBJECT, TS_DESC, TS_DDATE, TS_REPEAT, TS_STATUS, NS.CREATEDON AS CREATEDON, FNAME, LS_CNAME " +
+                " FROM TASK_STORE AS NS, LEAD_STORE AS CS, USERS AS US " +
+                " WHERE NS.LS_ID = ? " +
+                " AND NS.LS_ID = CS.LS_ID " +
+                " AND NS.CREATEDBY = US.UCODE " +
+                " AND NS.FREZE = 0 ";
+
+        List<Task> tasks = new ArrayList<>();
+
+        try {
+            PreparedStatement statement = static_con.prepareStatement(query);
+            statement.setInt(1, lead.getCode());
+            ResultSet set = statement.executeQuery();
+            //-------------Creating Task-------------
+            while (set.next()) {
+                Task task = new Task();
+                task.setCode(set.getInt("TS_ID"));
+                task.setSubject(set.getString("TS_SUBJECT"));
+                task.setDesc(set.getString("TS_DESC"));
+                task.setDueDate(set.getString("TS_DDATE"));
+                task.setRepeat(set.getBoolean("TS_REPEAT"));
+                task.setStatus(set.getBoolean("TS_STATUS"));
+                task.setClientName(set.getString("LS_CNAME"));
+                task.setCreatedBy(set.getString("FNAME"));
+                task.setCreatedOn(set.getString("CREATEDON"));
+                tasks.add(task);
+            }
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+
+        return tasks;
+    }
+
+    public List<Task> getTasks(ProductProperty product) {
+        String query = "SELECT TS_ID, TS_SUBJECT, TS_DESC, TS_DDATE, TS_REPEAT, TS_STATUS, NS.CREATEDON AS CREATEDON, FNAME, PS_NAME " +
+                " FROM TASK_STORE AS NS, PRODUCT_STORE AS CS, USERS AS US " +
+                " WHERE NS.PS_ID = ? " +
+                " AND NS.PS_ID = CS.PS_ID " +
+                " AND NS.CREATEDBY = US.UCODE " +
+                " AND NS.FREZE = 0 ";
+
+        List<Task> tasks = new ArrayList<>();
+
+        try {
+            PreparedStatement statement = static_con.prepareStatement(query);
+            statement.setInt(1, product.getCode());
+            ResultSet set = statement.executeQuery();
+            //-------------Creating Task-------------
+            while (set.next()) {
+                Task task = new Task();
+                task.setCode(set.getInt("TS_ID"));
+                task.setSubject(set.getString("TS_SUBJECT"));
+                task.setDesc(set.getString("TS_DESC"));
+                task.setDueDate(set.getString("TS_DDATE"));
+                task.setRepeat(set.getBoolean("TS_REPEAT"));
+                task.setStatus(set.getBoolean("TS_STATUS"));
+                task.setClientName(set.getString("PS_NAME"));
                 task.setCreatedBy(set.getString("FNAME"));
                 task.setCreatedOn(set.getString("CREATEDON"));
                 tasks.add(task);

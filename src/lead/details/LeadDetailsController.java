@@ -1,5 +1,6 @@
 package lead.details;
 
+import gui.ActivitiesConstructor;
 import gui.NotesConstructor;
 import JCode.mysql.mySqlConn;
 import com.jfoenix.controls.JFXButton;
@@ -41,6 +42,10 @@ public class LeadDetailsController implements Initializable {
     private JFXButton btn_edit;
     @FXML
     private VBox notes_list;
+    @FXML
+    private VBox open_activities_list;
+    @FXML
+    private VBox closed_activities_list;
 
     private mySqlConn sql;
     
@@ -98,5 +103,6 @@ public class LeadDetailsController implements Initializable {
         });
     
         new NotesConstructor(notes_list, sql, lead).generalConstructor(3);
+        new ActivitiesConstructor(open_activities_list, closed_activities_list, lead).generalConstructor(3);
     }
 }

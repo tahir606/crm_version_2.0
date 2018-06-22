@@ -411,6 +411,14 @@ public class mySqlConn {
         return taskQueries.getTasks(obj);
     }
 
+    public List<Task> getTasks(Lead obj) {
+        return taskQueries.getTasks(obj);
+    }
+
+    public List<Task> getTasks(ProductProperty obj) {
+        return taskQueries.getTasks(obj);
+    }
+
     public String[] getAllEmailIDs(String where) {
         String query = "SELECT DISTINCT EM_NAME FROM EMAIL_LIST ";
 

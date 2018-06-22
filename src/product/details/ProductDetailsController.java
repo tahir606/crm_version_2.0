@@ -1,6 +1,7 @@
 package product.details;
 
 import JCode.CommonTasks;
+import gui.ActivitiesConstructor;
 import gui.NotesConstructor;
 import JCode.mysql.mySqlConn;
 import com.jfoenix.controls.JFXButton;
@@ -27,7 +28,7 @@ import java.net.URL;
 import java.util.ResourceBundle;
 
 public class ProductDetailsController implements Initializable {
-    
+
     @FXML
     private Label txt_pname;
     @FXML
@@ -43,18 +44,22 @@ public class ProductDetailsController implements Initializable {
     @FXML
     private VBox notes_list;
     @FXML
+    private VBox open_activities_list;
+    @FXML
+    private VBox closed_activities_list;
+    @FXML
     private VBox vbox_modules;
     private static VBox vbox_modulesS;
-    
+
     private static ProductProperty product;
     public static ProductModule selectedModule;
     private static mySqlConn sql;
-    
+
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         vbox_modulesS = vbox_modules;
         sql = new mySqlConn();
-        
+
         Image image = new Image(this.getClass().getResourceAsStream("/res/img/left-arrow.png"));
         btn_back.setGraphic(new ImageView(image));
         btn_back.setAlignment(Pos.CENTER_LEFT);
@@ -64,46 +69,47 @@ public class ProductDetailsController implements Initializable {
                 ProductDashController.main_paneF.setCenter(
                         FXMLLoader.load(
                                 getClass().getClassLoader().getResource("product/view/product_view.fxml")));
-                
+
             } catch (IOException e) {
                 e.printStackTrace();
             }
         });
-        
+
         btn_edit.setOnAction(event -> {
             NewProductController.stInstance = 'U';
             try {
                 ProductDashController.main_paneF.setCenter(
                         FXMLLoader.load(
                                 getClass().getClassLoader().getResource("product/newProduct/new_product.fxml")));
-                
+
             } catch (IOException e) {
                 e.printStackTrace();
             }
         });
-        
+
         populateDetails();
         init(this.getClass().getResource("unlock_dialog.fxml"));
-        
+
     }
-    
+
     public static void init(URL path) {
         ProductProperty prod = sql.getProductModuleStates(product);
         populateModules(prod, path);
     }
-    
+
     private void populateDetails() {
         product = ProductViewController.staticProduct;
         txt_pname.setText(product.getName());
         txt_price.setText(String.valueOf(product.getPrice()));
         txt_desc.setText(product.getDesc());
         txt_startedOn.setText(product.getFormattedDate());
-    
+
         vbox_modules.setSpacing(10);
-    
+
         new NotesConstructor(notes_list, sql, product).generalConstructor(4);
+        new ActivitiesConstructor(open_activities_list, closed_activities_list, product).generalConstructor(4);
     }
-    
+
     private static void populateModules(ProductProperty product, URL path) {
         vbox_modulesS.getChildren().clear();
         for (ProductModule module : product.getProductModules()) {
@@ -114,7 +120,7 @@ public class ProductDetailsController implements Initializable {
             name.setText(module.getName());
             name.setMinWidth(60);
             name.setMaxWidth(60);
-            
+
             TextArea desc = new TextArea();
             desc.setMaxWidth(200);
             desc.setMaxHeight(60);
@@ -122,11 +128,11 @@ public class ProductDetailsController implements Initializable {
             desc.setEditable(false);
             desc.setText(module.getDesc());
             desc.getStyleClass().add("scroll-view");
-            
+
             JFXButton btnState = new JFXButton();
             if (module.getState() == '\0')
                 module.setState(0);
-            
+
             switch (module.getState()) {
                 case 0: {
                     btnState.getStyleClass().removeAll();
@@ -147,7 +153,7 @@ public class ProductDetailsController implements Initializable {
                     break;
                 }
             }
-            
+
             btnState.setText((module.getState() == 0 ? "LOCK" : "UNLOCK"));
             btnState.setMinWidth(60);
             btnState.setOnAction(event -> {
@@ -167,7 +173,7 @@ public class ProductDetailsController implements Initializable {
                     }
                 }
             });
-            
+
             box.getChildren().addAll(name, desc, btnState);
             box.getStyleClass().add("moduleDetails");
             vbox_modulesS.getChildren().add(box);

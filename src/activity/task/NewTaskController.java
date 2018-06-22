@@ -16,9 +16,9 @@ import javafx.scene.control.ButtonType;
 import javafx.scene.control.TextArea;
 import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
-import objects.ClientProperty;
-import objects.ContactProperty;
-import objects.Task;
+import lead.view.LeadViewController;
+import objects.*;
+import product.view.ProductViewController;
 
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -52,6 +52,8 @@ public class NewTaskController implements Initializable {
     public static char stInstance;
 
     private ClientProperty client;
+    private Lead lead;
+    private ProductProperty product;
 
     private Task task;
 
@@ -64,19 +66,18 @@ public class NewTaskController implements Initializable {
 
         choice = ActivitiesConstructor.choice;
 
+        relation_type.setDisable(true);
+        txt_name.setDisable(true);
+
         switch (stInstance) {
             case 'N': {
                 btn_save.setText("Add");
-                relation_type.setDisable(false);
-                txt_name.setDisable(false);
 
                 task = new Task();
                 break;
             }
             case 'U': {
                 btn_save.setText("Update");
-                relation_type.setDisable(true);
-                txt_name.setDisable(true);
 
                 task = ActivitiesConstructor.updatingTask;
                 txt_subject.setText(task.getSubject());
@@ -102,6 +103,16 @@ public class NewTaskController implements Initializable {
                 relation_type.getSelectionModel().select("Client");
                 txt_name.setText(client.getName());
                 break;
+            }
+            case 3: {
+                lead = LeadViewController.staticLead;
+                relation_type.getSelectionModel().select("Lead");
+                txt_name.setText(lead.getFullNameProperty().toString());
+            }
+            case 4: {
+                product = ProductViewController.staticProduct;
+                relation_type.getSelectionModel().select("Product");
+                txt_name.setText(product.getName().toString());
             }
         }
 
@@ -148,6 +159,10 @@ public class NewTaskController implements Initializable {
 
                             } else if (type.equals("Client")) {
                                 task.setClient(client.getCode());
+                            } else if (type.equals("Lead")) {
+                                task.setLead(lead.getCode());
+                            } else if (type.equals("Product")) {
+                                task.setProduct(product.getCode());
                             }
                             sql.addTask(task);
                             break;
@@ -175,14 +190,6 @@ public class NewTaskController implements Initializable {
         Stage stage = (Stage) btn_cancel.getScene().getWindow();
         stage.close();
 
-        switch (choice) {
-            case 1: {
-                break;
-            }
-            case 2: {
-                ActivitiesConstructor.generalConstructor(2);
-                break;
-            }
-        }
+        ActivitiesConstructor.generalConstructor(choice);
     }
 }

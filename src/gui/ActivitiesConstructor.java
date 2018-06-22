@@ -19,8 +19,12 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
+import lead.view.LeadViewController;
 import objects.ClientProperty;
+import objects.Lead;
+import objects.ProductProperty;
 import objects.Task;
+import product.view.ProductViewController;
 
 import java.io.InputStream;
 import java.net.URL;
@@ -29,7 +33,11 @@ import java.util.List;
 public class ActivitiesConstructor {
 
     private static VBox open_activities_list, closed_activities_list;
+
     private ClientProperty client;
+    private Lead lead;
+    private ProductProperty product;
+
     private static mySqlConn sql;
 
     //Which property is selected
@@ -40,6 +48,22 @@ public class ActivitiesConstructor {
         this.open_activities_list = open_activities_list;
         this.closed_activities_list = closed_activities_list;
         this.client = client;
+
+        sql = new mySqlConn();
+    }
+
+    public ActivitiesConstructor(VBox open_activities_list, VBox closed_activities_list, Lead lead) {
+        this.open_activities_list = open_activities_list;
+        this.closed_activities_list = closed_activities_list;
+        this.lead = lead;
+
+        sql = new mySqlConn();
+    }
+
+    public ActivitiesConstructor(VBox open_activities_list, VBox closed_activities_list, ProductProperty product) {
+        this.open_activities_list = open_activities_list;
+        this.closed_activities_list = closed_activities_list;
+        this.product = product;
 
         sql = new mySqlConn();
     }
@@ -58,6 +82,50 @@ public class ActivitiesConstructor {
         closed_activities_list.getChildren().addAll(label2);
 
         List<Task> tasks = sql.getTasks(clientViewController.staticClient);
+        for (Task task : tasks) {
+            if (!task.isStatus())
+                constructingOpenTask(task);
+            else
+                constructingCloseTask(task);
+        }
+    }
+
+    private static void constructLeadActivities() {
+        constructingButtons();
+
+        //Heading
+        String labelCss = "-fx-font-weight: bold;";
+        Label label = new Label("Open Activities");
+        label.setStyle(labelCss);
+        open_activities_list.getChildren().addAll(label);
+
+        Label label2 = new Label("Closed Activities");
+        label2.setStyle(labelCss);
+        closed_activities_list.getChildren().addAll(label2);
+
+        List<Task> tasks = sql.getTasks(LeadViewController.staticLead);
+        for (Task task : tasks) {
+            if (!task.isStatus())
+                constructingOpenTask(task);
+            else
+                constructingCloseTask(task);
+        }
+    }
+
+    private static void constructProductActivities() {
+        constructingButtons();
+
+        //Heading
+        String labelCss = "-fx-font-weight: bold;";
+        Label label = new Label("Open Activities");
+        label.setStyle(labelCss);
+        open_activities_list.getChildren().addAll(label);
+
+        Label label2 = new Label("Closed Activities");
+        label2.setStyle(labelCss);
+        closed_activities_list.getChildren().addAll(label2);
+
+        List<Task> tasks = sql.getTasks(ProductViewController.staticProduct);
         for (Task task : tasks) {
             if (!task.isStatus())
                 constructingOpenTask(task);
@@ -216,11 +284,20 @@ public class ActivitiesConstructor {
     public static void generalConstructor(int choice) {
 
         open_activities_list.getChildren().clear();
+        closed_activities_list.getChildren().clear();
 
+        ActivitiesConstructor.choice = choice;
         switch (choice) {
             case 2: {     //Clients
-                ActivitiesConstructor.choice = choice;
                 constructClientActivities();
+                break;
+            }
+            case 3: {
+                constructLeadActivities();
+                break;
+            }
+            case 4: {
+                constructProductActivities();
                 break;
             }
         }
