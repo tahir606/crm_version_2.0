@@ -248,11 +248,17 @@ public class dController implements Initializable {
         emailControl ec = new emailControl();
         
         emailThread = new Thread(() -> {
+            
+            int dbFirst = 0, connFirst = 0;
+            
             while (true) {
                 if (!mySqlConn.pingHost(network.getHost(), network.getPort(), 2000)) {          //MySQL Database Not Found!!
-                    tHelper.displayNotification("Error!", "Database Not Found!\n" +
-                            "Email Receiving has been stopped!\n" +
-                            "Will try again in 10 seconds");
+                    if (dbFirst < 2) {
+                        tHelper.displayNotification("Error!", "Database Not Found!\n" +
+                                "Email Receiving has been stopped!\n" +
+                                "Will try again every 10 seconds");
+                        dbFirst++;
+                    }
                     try {
                         Thread.sleep(10000);    //Wait for ten seconds before trying again
                     } catch (InterruptedException e) {
@@ -261,8 +267,11 @@ public class dController implements Initializable {
                     continue;
                 } else {
                     if (!emailControl.checkConnection()) {          //Internet Not Working!!
-                        tHelper.displayNotification("Error!", "Internet Not Working!\n" +
-                                "Will try again in 10 seconds!");
+                        if (connFirst < 2) {
+                            tHelper.displayNotification("Error!", "Internet Not Working!\n" +
+                                    "Will try again every 10 seconds!");
+                            connFirst++;
+                        }
                         try {
                             Thread.sleep(10000);    //Wait for ten seconds before trying again
                         } catch (InterruptedException e) {
