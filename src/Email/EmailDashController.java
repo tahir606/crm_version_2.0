@@ -149,15 +149,15 @@ public class EmailDashController implements Initializable {
         combo_attach.valueProperty().addListener((observable, oldValue, newValue) -> {
             if (newValue == null)
                 return;
-            try {
-                combo_attach.valueProperty().set(null);
-            } catch (IndexOutOfBoundsException e) {
-                e.printStackTrace();
-            }
 
             if (Desktop.isDesktopSupported()) {
                 try {
                     Desktop.getDesktop().open(newValue);
+//                    try {
+//                        combo_attach.valueProperty().set(null);
+//                    } catch (IndexOutOfBoundsException e) {
+//                        System.out.println(e);
+//                    }
                 } catch (IOException ex) {
                     ex.printStackTrace();
                 }
@@ -248,13 +248,22 @@ public class EmailDashController implements Initializable {
 
         //Right click menu
         ContextMenu contextMenu = new ContextMenu();
-        MenuItem editItem = new MenuItem("Move to Archive");
-        editItem.setOnAction(t -> {
-            Email selectedItem = list_emails.getSelectionModel().getSelectedItem();
-            sql.ArchiveEmail(Email_Type, " EMNO = " + selectedItem.getEmailNo());
-            loadEmails();
+        MenuItem archiveItem = new MenuItem("Move to Archive");
+        archiveItem.setOnAction(t -> {
+            Email email = list_emails.getSelectionModel().getSelectedItem();
+            if (email.getLockd() != '\0') {     //If Email is locked
+                if (email.getLockd() == user.getUCODE()) {      //If Email is locked by YOU
+                    sql.ArchiveEmail(Email_Type, " EMNO = " + email.getEmailNo());
+                    loadEmails();
+                } else {                        //If Email is locked but NOT by you
+                    Toast.makeText((Stage) btn.getScene().getWindow(), "You are not allowed to archive this email.");
+                }
+            } else {                            //If Email is not locked
+                sql.ArchiveEmail(Email_Type, " EMNO = " + email.getEmailNo());
+                loadEmails();
+            }
         });
-        contextMenu.getItems().add(editItem);
+        contextMenu.getItems().add(archiveItem);
         if (Email_Type == 2) {
             MenuItem createTicket = new MenuItem("Create Ticket");
             createTicket.setOnAction(t -> {
@@ -319,7 +328,16 @@ public class EmailDashController implements Initializable {
     //OPENING RESPONSE STAGE
     private void inflateEResponse(int i) {
         EResponseController.choice = i;
-        inflateWindow("New Email", "EResponse/EResponse.fxml");
+        String title = "";
+        switch (i) {
+            case 1:
+                title = "New Email";
+                break;
+            case 2:
+                title = "New Ticket";
+                break;
+        }
+        inflateWindow(title, "EResponse/EResponse.fxml");
     }
 
     //OPENING THE FILTER

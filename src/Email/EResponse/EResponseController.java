@@ -74,10 +74,6 @@ public class EResponseController implements Initializable {
 
         pullingEmails();
 
-        TextFields.bindAutoCompletion(txt_to, EMAILS_LIST);
-        TextFields.bindAutoCompletion(txt_cc, EMAILS_LIST);
-        TextFields.bindAutoCompletion(txt_bcc, EMAILS_LIST);
-
         populatHbox(txt_to, hbox_to);
         populatHbox(txt_cc, hbox_cc);
         populatHbox(txt_bcc, hbox_bcc);
@@ -106,7 +102,6 @@ public class EResponseController implements Initializable {
             btn_Send.setText("Forward");
         } else if (stInstance == 'N') {
             populateTo();
-            btn_Send.setText("Send");
         } else {
 
         }
@@ -319,10 +314,14 @@ public class EResponseController implements Initializable {
 
     //Pulling all email IDs from database
     public void pullingEmails() {
-//        new Thread(() -> {
-        mySqlConn sql = new mySqlConn();
-        EMAILS_LIST = sql.getAllEmailIDs(null);
-//        }).start();
+        new Thread(() -> {
+            mySqlConn sql = new mySqlConn();
+            EMAILS_LIST = sql.getAllEmailIDs(null);
+
+            TextFields.bindAutoCompletion(txt_to, EMAILS_LIST);
+            TextFields.bindAutoCompletion(txt_cc, EMAILS_LIST);
+            TextFields.bindAutoCompletion(txt_bcc, EMAILS_LIST);
+        }).start();
 
     }
 
