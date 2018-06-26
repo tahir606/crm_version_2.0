@@ -56,7 +56,7 @@ public class clientViewController implements Initializable {
 
         toolbar_contacts.setVisible(false);
 
-        table_contact.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
+//        table_contact.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
 
         col_name.setCellValueFactory(new PropertyValueFactory<>("Name"));
         col_website.setCellValueFactory(new PropertyValueFactory<>("Website"));

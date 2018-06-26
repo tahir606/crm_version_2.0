@@ -85,6 +85,8 @@ public class EmailDashController implements Initializable {
     @FXML
     private VBox vbox_clients;
     @FXML
+    private VBox vbox_details;
+    @FXML
     private HBox hbox_from;
     @FXML
     private HBox hbox_cc;
