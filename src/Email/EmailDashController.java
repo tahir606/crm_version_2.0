@@ -451,6 +451,8 @@ public class EmailDashController implements Initializable {
                 return;
             }
 
+            System.out.println("Attached: " + email.getRelatedEmails().size());
+
             label_time.setText(email.getTimeFormatted());
 
             vbox_from.getChildren().clear();  //Clearing

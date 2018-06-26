@@ -3,6 +3,7 @@ package objects;
 
 import javax.mail.Address;
 import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
 
 public class Email {
@@ -13,11 +14,11 @@ public class Email {
     private List<File> attachments;
     private List<ContactProperty> relatedContacts;
     private List<ClientProperty> relatedClients;
+    private List<Email> relatedEmails;
     private char solvFlag, isAttch;
     private boolean isManual, freze;
 
     public Email() {
-
     }
 
     @Override
@@ -25,7 +26,8 @@ public class Email {
 
         return EmailNo + " - " + fromAddress[0].toString() + "\n" +
                 getTimeFormatted() + "\n" +
-                ((subject.length() > 20) ? subject.substring(0, 20) + "..." : subject);
+                ((subject.length() > 20) ? subject.substring(0, 20) + "..." : subject); //+
+//                ((relatedEmails.size() > 0) ? "\nAttached @: " + relatedEmails.size() : "");
 
 //        return "Email{\n" +
 //                "EmailNo=" + EmailNo +
@@ -302,6 +304,14 @@ public class Email {
 
     public void setEmailStoreNo(int emailStoreNo) {
         this.emailStoreNo = emailStoreNo;
+    }
+
+    public List<Email> getRelatedEmails() {
+        return relatedEmails;
+    }
+
+    public void setRelatedEmails(List<Email> relatedEmails) {
+        this.relatedEmails = relatedEmails;
     }
 
     public boolean isFreze() {

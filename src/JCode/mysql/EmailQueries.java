@@ -214,6 +214,9 @@ public class EmailQueries {
 
     public void insertEmail(Email email, Message message) {
 
+        if (checkForRelatedEmails(email))
+            return;
+
         String query = "INSERT INTO email_store(EMNO,SBJCT,TOADD,FRADD,TSTMP,EBODY,ATTCH,CCADD,ESOLV,MSGNO,LOCKD," +
                 "FREZE) SELECT IFNULL(max(EMNO),0)+1,?,?,?,?,?,?,?,?,?,?,? from EMAIL_STORE";
 
@@ -283,6 +286,161 @@ public class EmailQueries {
         }
 
     }
+
+    //Store email tickets related
+    public boolean checkForRelatedEmails(Email email) {
+        List<Integer> ints = checkIfEmailIsRelated(email.getSubject());
+
+        if (ints == null || ints.size() == 0)
+            return false;
+        else {
+            for (int i : ints) {
+                email.setEmailNo(i);
+                insertEmailRelated(email);
+                System.out.println("Attached to: \n\t\t" + email);
+            }
+            return true;
+        }
+    }
+
+    private List<Integer> checkIfEmailIsRelated(String subject) {
+
+        String query = "SELECT EMNO FROM EMAIL_STORE " +
+                " WHERE SBJCT LIKE '%" + subject + " %' AND ESOLV = 'N' AND FREZE = 0 ";
+
+        PreparedStatement statement = null;
+
+        try {
+            statement = static_con.prepareStatement(query);
+            ResultSet set = statement.executeQuery();
+
+            if (!set.isBeforeFirst()) {
+                return null;
+            }
+
+            List<Integer> list = new ArrayList<>();
+
+            while (set.next()) {
+                list.add(set.getInt("EMNO"));
+            }
+
+            return list;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return null;
+    }
+
+    private void insertEmailRelated(Email email) {
+
+        String query = "INSERT INTO email_store_related(ESR_ID,EMNO,SBJCT,TOADD,FRADD,TSTMP,EBODY,ATTCH,CCADD,MSGNO)" +
+                " SELECT IFNULL(max(ESR_ID),0)+1,?,?,?,?,?,?,?,?,? from email_store_related";
+
+        PreparedStatement statement = null;
+
+        try {
+            statement = static_con.prepareStatement(query);
+            statement.setInt(1, email.getEmailNo());
+            statement.setString(2, email.getSubject());
+            statement.setString(3, email.getToAddressString());
+            statement.setString(4, email.getFromAddressString());
+            statement.setString(5, email.getTimestamp());
+            statement.setString(6, email.getBody());
+            statement.setString(7, email.getAttch());
+            statement.setString(8, email.getCcAddressString());
+            statement.setInt(9, email.getMsgNo());
+            statement.executeUpdate();
+
+            statement.close();
+
+//            int emno = getEmailNo(email);
+//            email.setEmailNo(emno);
+
+//            createEmailRelations(email);
+
+//            if (eSetting.isAuto())
+//                autoReply(email, message);
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    private List<Email> readRelatedEmails(Email where) {     //Emails related to every Emails
+
+        String query = "SELECT EMNO, MSGNO, SBJCT, FRADD, TOADD, CCADD, TSTMP, " +
+                " EBODY, ATTCH FROM EMAIL_STORE_RELATED WHERE EMNO = ?";
+
+        List<Email> allEmails = new ArrayList<>();
+
+        try {
+            PreparedStatement statement = static_con.prepareStatement(query);
+            statement.setInt(1, where.getEmailNo());
+            ResultSet set = statement.executeQuery();
+            //-------------Creating Email-------------
+            if (!set.isBeforeFirst()) {
+                return null;
+            }
+
+            while (set.next()) {
+                Email email = new Email();
+                email.setEmailNo(set.getInt("EMNO"));
+                email.setMsgNo(set.getInt("MSGNO"));
+                email.setSubject(set.getString("SBJCT"));
+                email.setTimestamp(set.getString("TSTMP"));
+                email.setTimeFormatted(CommonTasks.getTimeFormatted(email.getTimestamp()));
+
+                email.setBody(set.getString("EBODY"));
+                email.setAttch(set.getString("ATTCH"));
+                //------From Address
+                String[] from = set.getString("FRADD").split("\\^");
+                Address[] fromAddress = new Address[from.length];
+                for (int i = 1, j = 0; i < from.length; i++, j++) {
+                    try {
+                        fromAddress[j] = new InternetAddress(from[i]);
+                    } catch (AddressException e) {
+                        e.printStackTrace();
+                    }
+                }
+                email.setFromAddress(fromAddress);
+
+                //-----To Address
+                String[] to = set.getString("TOADD").split("\\^");
+                Address[] toAddress = new Address[to.length];
+                for (int i = 1, j = 0; i < to.length; i++, j++) {
+                    try {
+                        toAddress[j] = new InternetAddress(to[i]);
+                    } catch (AddressException e) {
+                        e.printStackTrace();
+                    }
+                }
+                email.setToAddress(toAddress);
+
+                //----- CC Address
+                String[] cc = set.getString("CCADD").split("\\^");
+                Address[] ccAddress = new Address[cc.length];
+                for (int i = 1, j = 0; i < cc.length; i++, j++) {
+                    try {
+                        ccAddress[j] = new InternetAddress(cc[i]);
+                    } catch (AddressException e) {
+                        e.printStackTrace();
+                    }
+                }
+                email.setCcAddress(ccAddress);
+
+                allEmails.add(email);
+            }
+
+            // doRelease(con);
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+
+        return allEmails;
+    }
+
 
     public static String autoReplySubject = "Burhani Customer Support - Ticket Number: ";
 
@@ -414,6 +572,8 @@ public class EmailQueries {
 
                 email.setRelatedContacts(getEmailContactRelations(email));
                 email.setRelatedClients(getEmailClientRelations(email));
+
+                email.setRelatedEmails(readRelatedEmails(email));
 
                 allEmails.add(email);
             }

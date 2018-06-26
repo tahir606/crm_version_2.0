@@ -20,7 +20,7 @@
       <AnchorPane fx:id="toolbar_contacts" prefHeight="35.0" prefWidth="1000.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <children>
             <Label fx:id="txt_no" layoutX="20.0" layoutY="8.0" text="0" />
-            <Label layoutX="43.0" layoutY="8.0" text="Contacts Selected" />
+            <Label layoutX="43.0" layoutY="8.0" text="Clients Selected" />
             <HBox layoutX="262.0" layoutY="4.0" prefHeight="17.0" prefWidth="449.0">
                <children>
                   <JFXButton fx:id="btn_email" alignment="CENTER" minHeight="21.0" onAction="#onEmailSending" prefHeight="34.0" prefWidth="85.0" styleClass="emailDetailsButton" text="Email" />
