@@ -85,6 +85,8 @@ public class EmailDashController implements Initializable {
     @FXML
     private VBox vbox_clients;
     @FXML
+    private VBox vbox_details;
+    @FXML
     private HBox hbox_from;
     @FXML
     private HBox hbox_cc;
@@ -450,8 +452,6 @@ public class EmailDashController implements Initializable {
             } catch (NullPointerException e) {
                 return;
             }
-
-            System.out.println("Attached: " + email.getRelatedEmails().size());
 
             label_time.setText(email.getTimeFormatted());
 

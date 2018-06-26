@@ -371,7 +371,7 @@ public class EmailQueries {
     private List<Email> readRelatedEmails(Email where) {     //Emails related to every Emails
 
         String query = "SELECT EMNO, MSGNO, SBJCT, FRADD, TOADD, CCADD, TSTMP, " +
-                " EBODY, ATTCH FROM EMAIL_STORE_RELATED WHERE EMNO = ?";
+                " EBODY, ATTCH FROM EMAIL_STORE_RELATED WHERE EMNO = ? ";
 
         List<Email> allEmails = new ArrayList<>();
 
@@ -380,10 +380,6 @@ public class EmailQueries {
             statement.setInt(1, where.getEmailNo());
             ResultSet set = statement.executeQuery();
             //-------------Creating Email-------------
-            if (!set.isBeforeFirst()) {
-                return null;
-            }
-
             while (set.next()) {
                 Email email = new Email();
                 email.setEmailNo(set.getInt("EMNO"));
@@ -437,6 +433,7 @@ public class EmailQueries {
         } catch (SQLException ex) {
             ex.printStackTrace();
         }
+
 
         return allEmails;
     }

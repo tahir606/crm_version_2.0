@@ -26,8 +26,8 @@ public class Email {
 
         return EmailNo + " - " + fromAddress[0].toString() + "\n" +
                 getTimeFormatted() + "\n" +
-                ((subject.length() > 20) ? subject.substring(0, 20) + "..." : subject); //+
-//                ((relatedEmails.size() > 0) ? "\nAttached @: " + relatedEmails.size() : "");
+                ((subject.length() > 20) ? subject.substring(0, 20) + "..." : subject) +
+                ((relatedEmails.size() > 0) ? "\nAttached @: " + relatedEmails.size() : "");
 
 //        return "Email{\n" +
 //                "EmailNo=" + EmailNo +
