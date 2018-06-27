@@ -32,7 +32,7 @@
             <AnchorPane fx:id="anchor_body" layoutX="737.0" prefHeight="448.0" prefWidth="303.0" styleClass="emailAnchorBody" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="737.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" BorderPane.alignment="CENTER" />
             <AnchorPane fx:id="anchor_details" layoutX="345.0" maxWidth="-Infinity" prefHeight="448.0" prefWidth="400.0" styleClass="emailAnchorDetails" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="345.0" AnchorPane.topAnchor="0.0" BorderPane.alignment="CENTER">
                 <children>
-                    <ScrollPane layoutX="13.0" layoutY="2.0" prefHeight="362.0" prefWidth="375.0" style="-fx-background: #fcfcfc;" styleClass="scroll-view" AnchorPane.bottomAnchor="84.0" AnchorPane.leftAnchor="13.0" AnchorPane.rightAnchor="12.0" AnchorPane.topAnchor="2.0">
+                    <ScrollPane layoutX="13.0" layoutY="2.0" prefHeight="362.0" prefWidth="375.0" style="-fx-background: #fcfcfc;" styleClass="scroll-view" AnchorPane.bottomAnchor="80.0" AnchorPane.leftAnchor="13.0" AnchorPane.rightAnchor="12.0" AnchorPane.topAnchor="2.0">
                         <VBox fx:id="vbox_details" prefHeight="354.0" prefWidth="370.0" spacing="2.0">
                             <HBox>
                                 <children>
@@ -83,7 +83,7 @@
                                         <Font size="11.0" />
                                     </font>
                                 </Label>
-                                <ScrollPane layoutX="94.0" layoutY="58.0" prefWidth="275.0" AnchorPane.leftAnchor="94.0" AnchorPane.rightAnchor="13.0">
+                                <ScrollPane layoutX="94.0" layoutY="58.0" minHeight="60.0" prefWidth="275.0" AnchorPane.leftAnchor="94.0" AnchorPane.rightAnchor="13.0">
                                     <content>
                                         <VBox fx:id="vbox_from" prefHeight="48.0" prefWidth="270.0" styleClass="blackText" />
                                     </content>
@@ -99,7 +99,7 @@
                                         <Font size="11.0" />
                                     </font>
                                 </Label>
-                                <ScrollPane layoutX="94.0" layoutY="99.0" prefHeight="65.0" prefWidth="275.0" AnchorPane.leftAnchor="94.0" AnchorPane.rightAnchor="13.0">
+                                <ScrollPane layoutX="94.0" layoutY="99.0" minHeight="60.0" prefHeight="65.0" prefWidth="275.0" AnchorPane.leftAnchor="94.0" AnchorPane.rightAnchor="13.0">
                                     <content>
                                         <VBox fx:id="vbox_cc" prefHeight="48.0" prefWidth="270.0" styleClass="blackText" />
                                     </content>
@@ -115,7 +115,7 @@
                                         <Font size="11.0" />
                                     </font>
                                 </Label>
-                                <TextArea fx:id="txt_subject" editable="false" layoutX="94.0" layoutY="140.0" prefHeight="94.0" prefWidth="275.0" styleClass="scroll-view" text="Subject" wrapText="true" AnchorPane.leftAnchor="94.0" AnchorPane.rightAnchor="13.0">
+                                <TextArea fx:id="txt_subject" editable="false" layoutX="94.0" layoutY="140.0" minHeight="60.0" prefHeight="94.0" prefWidth="275.0" styleClass="scroll-view" text="Subject" wrapText="true" AnchorPane.leftAnchor="94.0" AnchorPane.rightAnchor="13.0">
                                     <font>
                                         <Font size="11.0" />
                                     </font>
@@ -128,7 +128,7 @@
                                             <Font size="11.0" />
                                         </font>
                                     </Label>
-                                    <ScrollPane layoutX="94.0" layoutY="58.0" prefHeight="60.0" prefWidth="275.0" AnchorPane.leftAnchor="94.0" AnchorPane.rightAnchor="13.0">
+                                    <ScrollPane layoutX="94.0" layoutY="58.0" minHeight="60.0" prefHeight="60.0" prefWidth="275.0" AnchorPane.leftAnchor="94.0" AnchorPane.rightAnchor="13.0">
                                         <content>
                                             <VBox fx:id="vbox_contacts" prefHeight="48.0" prefWidth="270.0" styleClass="blackText" />
                                         </content>
@@ -146,7 +146,7 @@
                                             <Font size="11.0" />
                                         </font>
                                     </Label>
-                                    <ScrollPane layoutX="94.0" layoutY="99.0" prefHeight="65.0" prefWidth="275.0" AnchorPane.leftAnchor="94.0" AnchorPane.rightAnchor="13.0">
+                                    <ScrollPane layoutX="94.0" layoutY="99.0" minHeight="60.0" prefHeight="65.0" prefWidth="275.0" AnchorPane.leftAnchor="94.0" AnchorPane.rightAnchor="13.0">
                                         <content>
                                             <VBox fx:id="vbox_clients" prefHeight="48.0" prefWidth="270.0" styleClass="blackText" />
                                         </content>
@@ -155,6 +155,13 @@
                                             <String fx:value="hbox_border" />
                                         </styleClass>
                                     </ScrollPane>
+                                </children>
+                            </HBox>
+                            <HBox prefHeight="8" />
+                            <Label fx:id="label_related_emails" text="Related Emails:" styleClass="blackText"/>
+                            <HBox fx:id="hbox_related" prefHeight="80.0" prefWidth="327.0">
+                                <children>
+                                    <ListView fx:id="relatedEmails" minHeight="60.0" prefHeight="60.0" prefWidth="381.0" />
                                 </children>
                             </HBox>
                         </VBox>

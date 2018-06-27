@@ -14,7 +14,7 @@ public class Email {
     private List<File> attachments;
     private List<ContactProperty> relatedContacts;
     private List<ClientProperty> relatedClients;
-    private List<Email> relatedEmails;
+    private List<Email> relatedEmails = new ArrayList<>();
     private char solvFlag, isAttch;
     private boolean isManual, freze;
 
