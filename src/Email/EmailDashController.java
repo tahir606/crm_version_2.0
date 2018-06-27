@@ -11,6 +11,8 @@ import com.jfoenix.controls.JFXComboBox;
 import com.jfoenix.controls.JFXTextField;
 import dashboard.dController;
 import javafx.application.Platform;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
@@ -63,6 +65,8 @@ public class EmailDashController implements Initializable {
     @FXML
     private Label title_locked;
     @FXML
+    private Label label_related_emails;
+    @FXML
     private TextArea txt_subject;
     @FXML
     private JFXButton btn_lock;
@@ -102,6 +106,8 @@ public class EmailDashController implements Initializable {
     private JFXTextField search_txt;
     @FXML
     private ListView<Email> list_emails;
+    @FXML
+    ListView<Email> relatedEmails;
     @FXML
     private VBox vbox_filter;
 
@@ -190,6 +196,13 @@ public class EmailDashController implements Initializable {
             }
             inflateEResponse(1);
             combo_respond.getSelectionModel().select(0);
+        });
+
+        relatedEmails.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
+            populateDetails(newValue);
+            selectedEmail = null;
+            list_emails.getSelectionModel().select(null);
+            enableDisable(4);
         });
     }
 
@@ -507,36 +520,42 @@ public class EmailDashController implements Initializable {
 
             if (Email_Type == 1) {                              //Check for email relations only if ticket is selected
                 relatedContacts = email.getRelatedContacts();
-                if (relatedContacts.size() > 0) {
-                    hbox_contacts.setVisible(true);
-                    for (ContactProperty c : relatedContacts) {
-                        try {
-                            Label label = new Label(c.toString());
-                            label.setPadding(new Insets(2, 5, 2, 5));
-                            label.getStyleClass().add("moduleDetails");
-                            vbox_contacts.getChildren().add(label);
-                        } catch (NullPointerException ex) {
-                            //Because null is saved
+                if (relatedContacts == null) {
+                } else {
+                    if (relatedContacts.size() > 0) {
+                        hbox_contacts.setVisible(true);
+                        for (ContactProperty c : relatedContacts) {
+                            try {
+                                Label label = new Label(c.toString());
+                                label.setPadding(new Insets(2, 5, 2, 5));
+                                label.getStyleClass().add("moduleDetails");
+                                vbox_contacts.getChildren().add(label);
+                            } catch (NullPointerException ex) {
+                                //Because null is saved
+                            }
                         }
-                    }
-                } else
-                    hbox_contacts.setVisible(false);
+                    } else
+                        hbox_contacts.setVisible(false);
+                }
 
                 relatedClients = email.getRelatedClients();
-                if (relatedClients.size() > 0) {
-                    hbox_clients.setVisible(true);
-                    for (ClientProperty c : relatedClients) {
-                        try {
-                            Label label = new Label(c.toString());
-                            label.setPadding(new Insets(2, 5, 2, 5));
-                            label.getStyleClass().add("moduleDetails");
-                            vbox_clients.getChildren().add(label);
-                        } catch (NullPointerException ex) {
-                            //Because null is saved
+                if (relatedContacts == null) {
+                } else {
+                    if (relatedClients.size() > 0) {
+                        hbox_clients.setVisible(true);
+                        for (ClientProperty c : relatedClients) {
+                            try {
+                                Label label = new Label(c.toString());
+                                label.setPadding(new Insets(2, 5, 2, 5));
+                                label.getStyleClass().add("moduleDetails");
+                                vbox_clients.getChildren().add(label);
+                            } catch (NullPointerException ex) {
+                                //Because null is saved
+                            }
                         }
-                    }
-                } else
-                    hbox_clients.setVisible(false);
+                    } else
+                        hbox_clients.setVisible(false);
+                }
             } else {
                 hbox_contacts.setVisible(false);
                 hbox_clients.setVisible(false);
@@ -606,6 +625,21 @@ public class EmailDashController implements Initializable {
                     enableDisable(5);
                 }
             }
+
+            //Related Emails
+            relatedEmails.getItems().clear();
+
+            if (email.getRelatedEmails().size() > 0) {
+                ObservableList<Email> dataObj = FXCollections.observableArrayList(email.getRelatedEmails());
+                relatedEmails.setItems(dataObj);
+
+                relatedEmails.setVisible(true);
+                label_related_emails.setVisible(true);
+            } else {
+                label_related_emails.setVisible(false);
+                relatedEmails.setVisible(false);
+            }
+
             imgLoader.setVisible(false);
         })).start();
     }

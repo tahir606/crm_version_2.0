@@ -306,7 +306,7 @@ public class EmailQueries {
     private List<Integer> checkIfEmailIsRelated(String subject) {
 
         String query = "SELECT EMNO FROM EMAIL_STORE " +
-                " WHERE SBJCT LIKE '%" + subject + " %' AND ESOLV = 'N' AND FREZE = 0 ";
+                " WHERE SBJCT LIKE '%" + subject.trim() + "%' AND ESOLV = 'N' AND FREZE = 0 ";
 
         PreparedStatement statement = null;
 
@@ -321,6 +321,7 @@ public class EmailQueries {
             List<Integer> list = new ArrayList<>();
 
             while (set.next()) {
+                System.out.println("Attaching to: " + set.getInt("EMNO"));
                 list.add(set.getInt("EMNO"));
             }
 
