@@ -606,6 +606,13 @@ public class EmailDashController implements Initializable {
                     enableDisable(5);
                 }
             }
+            
+            
+            //Related emails
+            HBox hboxEmails = new HBox();
+            ListView<Email> relatedEmails = new ListView<>();
+            relatedEmails.setItems(email.getRelatedEmails());
+            
             imgLoader.setVisible(false);
         })).start();
     }

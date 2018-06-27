@@ -33,50 +33,50 @@
             <AnchorPane fx:id="anchor_details" layoutX="345.0" maxWidth="-Infinity" prefHeight="448.0" prefWidth="400.0" styleClass="emailAnchorDetails" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="345.0" AnchorPane.topAnchor="0.0" BorderPane.alignment="CENTER">
                 <children>
                     <ScrollPane layoutX="13.0" layoutY="2.0" prefHeight="362.0" prefWidth="375.0" style="-fx-background: #fcfcfc;" styleClass="scroll-view" AnchorPane.bottomAnchor="84.0" AnchorPane.leftAnchor="13.0" AnchorPane.rightAnchor="12.0" AnchorPane.topAnchor="2.0">
-                        <VBox prefHeight="354.0" prefWidth="370.0" spacing="2.0">
-                     <HBox>
-                        <children>
-                           <Label fx:id="label_ticket1" prefHeight="17.0" prefWidth="100.0" styleClass="blackText" text="Ticket Number:">
-                              <font>
-                                 <Font size="11.0" />
-                              </font>
-                           </Label>
-                           <Label fx:id="label_ticket" prefHeight="17.0" prefWidth="200.0" styleClass="normalText" text="Ticket Number">
-                              <font>
-                                 <Font size="11.0" />
-                              </font>
-                           </Label>
-                        </children>
-                     </HBox>
-                     <HBox>
-                        <children>
-                           <Label fx:id="label_time1" prefHeight="17.0" prefWidth="100.0" styleClass="blackText" text="Time Stamp:">
-                              <font>
-                                 <Font size="11.0" />
-                              </font>
-                           </Label>
-                           <Label fx:id="label_time" prefHeight="17.0" prefWidth="200.0" styleClass="normalText" text="Time Stamp">
-                              <font>
-                                 <Font size="11.0" />
-                              </font>
-                           </Label>
-                        </children>
-                     </HBox>
-                     <HBox>
-                        <children>
-                           <Label fx:id="title_locked" prefHeight="17.0" prefWidth="100.0" styleClass="blackText" text="Locked By:">
-                              <font>
-                                 <Font size="11.0" />
-                              </font>
-                           </Label>
-                           <Label fx:id="label_locked" prefHeight="17.0" prefWidth="200.0" styleClass="solvedText" text="Locked By">
-                              <font>
-                                 <Font size="11.0" />
-                              </font>
-                           </Label>
-                        </children>
-                     </HBox>
-                     <HBox minHeight="5.0" />
+                        <VBox fx:id="vbox_details" prefHeight="354.0" prefWidth="370.0" spacing="2.0">
+                            <HBox>
+                                <children>
+                                    <Label fx:id="label_ticket1" prefHeight="17.0" prefWidth="100.0" styleClass="blackText" text="Ticket Number:">
+                                        <font>
+                                            <Font size="11.0" />
+                                        </font>
+                                    </Label>
+                                    <Label fx:id="label_ticket" prefHeight="17.0" prefWidth="200.0" styleClass="normalText" text="Ticket Number">
+                                        <font>
+                                            <Font size="11.0" />
+                                        </font>
+                                    </Label>
+                                </children>
+                            </HBox>
+                            <HBox>
+                                <children>
+                                    <Label fx:id="label_time1" prefHeight="17.0" prefWidth="100.0" styleClass="blackText" text="Time Stamp:">
+                                        <font>
+                                            <Font size="11.0" />
+                                        </font>
+                                    </Label>
+                                    <Label fx:id="label_time" prefHeight="17.0" prefWidth="200.0" styleClass="normalText" text="Time Stamp">
+                                        <font>
+                                            <Font size="11.0" />
+                                        </font>
+                                    </Label>
+                                </children>
+                            </HBox>
+                            <HBox>
+                                <children>
+                                    <Label fx:id="title_locked" prefHeight="17.0" prefWidth="100.0" styleClass="blackText" text="Locked By:">
+                                        <font>
+                                            <Font size="11.0" />
+                                        </font>
+                                    </Label>
+                                    <Label fx:id="label_locked" prefHeight="17.0" prefWidth="200.0" styleClass="solvedText" text="Locked By">
+                                        <font>
+                                            <Font size="11.0" />
+                                        </font>
+                                    </Label>
+                                </children>
+                            </HBox>
+                            <HBox minHeight="5.0" />
                             <HBox fx:id="hbox_from" prefHeight="80.0" prefWidth="327.0">
                                 <Label fx:id="label_from" layoutX="14.0" layoutY="57.0" prefHeight="17.0" prefWidth="70.0" styleClass="blackText" text="From:">
                                     <font>
@@ -87,10 +87,10 @@
                                     <content>
                                         <VBox fx:id="vbox_from" prefHeight="48.0" prefWidth="270.0" styleClass="blackText" />
                                     </content>
-                           <styleClass>
-                              <String fx:value="hbox_border" />
-                              <String fx:value="scroll-view" />
-                           </styleClass>
+                                    <styleClass>
+                                        <String fx:value="hbox_border" />
+                                        <String fx:value="scroll-view" />
+                                    </styleClass>
                                 </ScrollPane>
                             </HBox>
                             <HBox fx:id="hbox_cc" prefHeight="80.0" prefWidth="327.0">
@@ -103,10 +103,10 @@
                                     <content>
                                         <VBox fx:id="vbox_cc" prefHeight="48.0" prefWidth="270.0" styleClass="blackText" />
                                     </content>
-                           <styleClass>
-                              <String fx:value="scroll-view" />
-                              <String fx:value="hbox_border" />
-                           </styleClass>
+                                    <styleClass>
+                                        <String fx:value="scroll-view" />
+                                        <String fx:value="hbox_border" />
+                                    </styleClass>
                                 </ScrollPane>
                             </HBox>
                             <HBox prefHeight="101.0" prefWidth="370.0">
@@ -121,42 +121,42 @@
                                     </font>
                                 </TextArea>
                             </HBox>
-                     <HBox fx:id="hbox_contacts" prefHeight="80.0" prefWidth="327.0">
-                        <children>
-                           <Label fx:id="label_from1" layoutX="14.0" layoutY="57.0" prefHeight="17.0" prefWidth="70.0" styleClass="blackText" text="Contacts:">
-                              <font>
-                                 <Font size="11.0" />
-                              </font>
-                           </Label>
-                           <ScrollPane layoutX="94.0" layoutY="58.0" prefHeight="60.0" prefWidth="275.0" AnchorPane.leftAnchor="94.0" AnchorPane.rightAnchor="13.0">
-                              <content>
-                                 <VBox fx:id="vbox_contacts" prefHeight="48.0" prefWidth="270.0" styleClass="blackText" />
-                              </content>
-                              <styleClass>
-                                 <String fx:value="scroll-view" />
-                                 <String fx:value="hbox_border" />
-                              </styleClass>
-                           </ScrollPane>
-                        </children>
-                     </HBox>
-                     <HBox fx:id="hbox_clients" prefHeight="80.0" prefWidth="327.0">
-                        <children>
-                           <Label fx:id="label_cc1" layoutX="14.0" layoutY="104.0" prefHeight="17.0" prefWidth="70.0" styleClass="blackText" text="Clients:">
-                              <font>
-                                 <Font size="11.0" />
-                              </font>
-                           </Label>
-                           <ScrollPane layoutX="94.0" layoutY="99.0" prefHeight="65.0" prefWidth="275.0" AnchorPane.leftAnchor="94.0" AnchorPane.rightAnchor="13.0">
-                              <content>
-                                 <VBox fx:id="vbox_clients" prefHeight="48.0" prefWidth="270.0" styleClass="blackText" />
-                              </content>
-                              <styleClass>
-                                 <String fx:value="scroll-view" />
-                                 <String fx:value="hbox_border" />
-                              </styleClass>
-                           </ScrollPane>
-                        </children>
-                     </HBox>
+                            <HBox fx:id="hbox_contacts" prefHeight="80.0" prefWidth="327.0">
+                                <children>
+                                    <Label fx:id="label_from1" layoutX="14.0" layoutY="57.0" prefHeight="17.0" prefWidth="70.0" styleClass="blackText" text="Contacts:">
+                                        <font>
+                                            <Font size="11.0" />
+                                        </font>
+                                    </Label>
+                                    <ScrollPane layoutX="94.0" layoutY="58.0" prefHeight="60.0" prefWidth="275.0" AnchorPane.leftAnchor="94.0" AnchorPane.rightAnchor="13.0">
+                                        <content>
+                                            <VBox fx:id="vbox_contacts" prefHeight="48.0" prefWidth="270.0" styleClass="blackText" />
+                                        </content>
+                                        <styleClass>
+                                            <String fx:value="scroll-view" />
+                                            <String fx:value="hbox_border" />
+                                        </styleClass>
+                                    </ScrollPane>
+                                </children>
+                            </HBox>
+                            <HBox fx:id="hbox_clients" prefHeight="80.0" prefWidth="327.0">
+                                <children>
+                                    <Label fx:id="label_cc1" layoutX="14.0" layoutY="104.0" prefHeight="17.0" prefWidth="70.0" styleClass="blackText" text="Clients:">
+                                        <font>
+                                            <Font size="11.0" />
+                                        </font>
+                                    </Label>
+                                    <ScrollPane layoutX="94.0" layoutY="99.0" prefHeight="65.0" prefWidth="275.0" AnchorPane.leftAnchor="94.0" AnchorPane.rightAnchor="13.0">
+                                        <content>
+                                            <VBox fx:id="vbox_clients" prefHeight="48.0" prefWidth="270.0" styleClass="blackText" />
+                                        </content>
+                                        <styleClass>
+                                            <String fx:value="scroll-view" />
+                                            <String fx:value="hbox_border" />
+                                        </styleClass>
+                                    </ScrollPane>
+                                </children>
+                            </HBox>
                         </VBox>
                     </ScrollPane>
                     <JFXButton fx:id="btn_lock" buttonType="RAISED" layoutX="28.0" layoutY="386.0" onAction="#onLock" styleClass="emailDetailsButton" text="Lock" AnchorPane.bottomAnchor="11.0" />
@@ -175,14 +175,15 @@
                 </children>
             </AnchorPane>
         </AnchorPane>
-      <VBox fx:id="vbox_filter" prefHeight="448.0" prefWidth="150.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0">
-         <children>
-            <HBox prefHeight="10.0" prefWidth="200.0" />
-         </children></VBox>
+        <VBox fx:id="vbox_filter" prefHeight="448.0" prefWidth="150.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0">
+            <children>
+                <HBox prefHeight="10.0" prefWidth="200.0" />
+            </children>
+        </VBox>
     </AnchorPane>
-   <JFXTextField fx:id="search_txt" layoutX="842.0" prefHeight="18.0" prefWidth="258.0" promptText="Search" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-      <font>
-         <Font size="11.0" />
-      </font>
-   </JFXTextField>
+    <JFXTextField fx:id="search_txt" layoutX="842.0" prefHeight="18.0" prefWidth="258.0" promptText="Search" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+        <font>
+            <Font size="11.0" />
+        </font>
+    </JFXTextField>
 </AnchorPane>
