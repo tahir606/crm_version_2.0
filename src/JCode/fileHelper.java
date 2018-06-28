@@ -462,7 +462,6 @@ public class fileHelper {
                 ex.printStackTrace();
             }
         }
-
     }
 
     public boolean deleteDashboardPanel() {
