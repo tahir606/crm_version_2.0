@@ -19,6 +19,8 @@ import java.util.Scanner;
 public class fileHelper {
 
     private static final String FADD = "C:/Users/" + System.getProperty("user.name") + "/Bits/CRM/";
+    //File Names
+    private static final String DASHBOARD_PANELS = "dashPanels";
 
     public fileHelper() {
 
@@ -77,20 +79,6 @@ public class fileHelper {
         }
         return null;
     }
-
-//    private void askForNetwork() {
-//        try {
-//            Stage primaryStage = new Stage();
-//            Parent root = FXMLLoader.load(getClass().getResource("../settings/network/networkSet.fxml"));
-//            primaryStage.setTitle("Dashboard- BITS-CRM");
-//            primaryStage.setScene(new Scene(root, 1200, 500));
-////            primaryStage.setResizable(false);
-////            .createIcon(primaryStage);
-//            primaryStage.show();
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
-//    }
 
     public boolean WriteNetwork(Network network) {
 
@@ -411,6 +399,78 @@ public class fileHelper {
         try {
             writer = new PrintWriter(
                     new File(FADD + f + ".txt"));
+
+            writer.write("");
+
+            return true;
+
+        } catch (IOException ex) {
+            ex.printStackTrace();
+            return false;
+        } finally {
+            writer.close();
+        }
+    }
+
+    //-----------------Dashboard Panels----------------
+    public boolean writeDashboardPanels(String[] dets) {
+
+        PrintWriter writer = null;
+
+        try {
+            writer = new PrintWriter(
+                    new File(FADD + DASHBOARD_PANELS + ".txt"));
+
+            for (String d : dets) {
+                writer.write(d + "^");
+            }
+
+            return true;
+
+        } catch (IOException ex) {
+            ex.printStackTrace();
+            return false;
+        } finally {
+            writer.close();
+        }
+    }
+
+    public String[] readDashboardPanels() {
+        String text = "";
+        InputStreamReader isReader = null;
+        try {
+            isReader =
+                    new InputStreamReader(new FileInputStream(new File(FADD + DASHBOARD_PANELS + ".txt")));
+            BufferedReader br = new BufferedReader(isReader);
+
+            text = br.readLine();
+
+            if (text == null) {
+                return null;
+            }
+
+            String[] ar = text.split("\\^");
+
+            return ar;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        } finally {
+            try {
+                isReader.close();
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            }
+        }
+    }
+
+    public boolean deleteDashboardPanel() {
+
+        PrintWriter writer = null;
+
+        try {
+            writer = new PrintWriter(
+                    new File(FADD + DASHBOARD_PANELS + ".txt"));
 
             writer.write("");
 

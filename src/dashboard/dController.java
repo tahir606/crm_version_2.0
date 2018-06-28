@@ -86,7 +86,8 @@ public class dController implements Initializable {
         
         DrawerPane(); //Populate Drawer
         
-        changeSelection(homeBtn, "Home/Home.fxml", 1);
+        changeSelection(homeBtn, "Home/home_split.fxml", 1);
+//        changeSelection(homeBtn, "Home/Home.fxml", 1);
         
         if (user.isEmail()) {
             emailCtrl();
@@ -161,7 +162,8 @@ public class dController implements Initializable {
     JFXButton homeBtn = new JFXButton("Home");
     
     private void homeButton() {
-        buttonSettings("Home", "Home/Home.fxml", 1);
+//        buttonSettings("Home", "Home/Home.fxml", 1);
+        buttonSettings("Home", "Home/home_split.fxml", 1);
     }
     
     private void mailButton() {

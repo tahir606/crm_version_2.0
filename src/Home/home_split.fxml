@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.control.SplitPane?>
+
+<AnchorPane fx:id="main_anchor" stylesheets="@../styles/home.css" prefHeight="500.0" prefWidth="1200.0" style="-fx-background-color: #4286f4;" xmlns="http://javafx.com/javafx/9" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Home.HomeSplitController">
+    <children>
+    <SplitPane dividerPositions="0.5" focusTraversable="true" prefHeight="160.0" prefWidth="200.0"
+               AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0"
+               AnchorPane.topAnchor="0.0">
+        <items>
+            <SplitPane dividerPositions="0.5" orientation="VERTICAL" prefHeight="200.0" prefWidth="160.0">
+                <items>
+                    <AnchorPane fx:id="pane_one" minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0"/>
+                    <AnchorPane fx:id="pane_three" minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0"/>
+                </items>
+            </SplitPane>
+            <SplitPane id="SplitPane" dividerPositions="0.5" orientation="VERTICAL">
+                <items>
+                    <AnchorPane fx:id="pane_two" minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0"/>
+                    <AnchorPane fx:id="pane_four" minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0"/>
+                </items>
+            </SplitPane>
+        </items>
+    </SplitPane>
+    </children>
+</AnchorPane>
