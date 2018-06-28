@@ -454,14 +454,15 @@ public class fileHelper {
             return ar;
         } catch (Exception e) {
             e.printStackTrace();
-            return null;
+            return new String[]{"null", "null", "null", "null"};
         } finally {
             try {
                 isReader.close();
-            } catch (IOException ex) {
+            } catch (Exception ex) {
                 ex.printStackTrace();
             }
         }
+
     }
 
     public boolean deleteDashboardPanel() {

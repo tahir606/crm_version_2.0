@@ -166,7 +166,7 @@ public class UserQueries {
     }
 
     public Users getUserDetails(Users user) {
-        String query = " SELECT FNAME, SOLV, LOCKD FROM USERS " +
+        String query = " SELECT FNAME, SOLV, LOCKD, EMAIL FROM USERS " +
                 " WHERE UCODE = ?";
 
 //        // Connection con = getConnection();
@@ -179,6 +179,7 @@ public class UserQueries {
             set = statement.executeQuery();
 
             while (set.next()) {
+                user.setEmail(set.getString("EMAIL"));
                 user.setLocked(set.getInt("LOCKD"));
                 user.setSolved(set.getInt("SOLV"));
             }

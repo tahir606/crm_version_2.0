@@ -1,7 +1,12 @@
-.homeText {
+.headingText {
     -fx-font-size: 11pt;
     -fx-text-fill: #002b05;
     -fx-font-weight: bold;
+}
+
+.dataText {
+    -fx-font-size: 10pt;
+    -fx-text-fill: #002b05;
 }
 
 .moduleDetails {
