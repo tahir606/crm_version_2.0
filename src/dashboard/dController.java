@@ -1,5 +1,6 @@
 package dashboard;
 
+import Home.HomeSplitController;
 import JCode.emailControl;
 import JCode.fileHelper;
 import JCode.mysql.mySqlConn;
@@ -82,7 +83,7 @@ public class dController implements Initializable {
         user = fHelper.ReadUserDetails();
         rightsList = user.getuRightsList();
         
-        SplashScreenThread.hideSplashScreen();
+//        SplashScreenThread.hideSplashScreen();
         
         DrawerPane(); //Populate Drawer
         
@@ -301,6 +302,9 @@ public class dController implements Initializable {
     private void changeSelection(JFXButton btn, String path, int pane) {
         
         img_loader.setVisible(true);
+    
+        //homesplit
+        HomeSplitController.saveDividerPositions();
         
         for (Node node : menu_pane.getChildren()) {
             node.getStyleClass().remove("btnMenuBoxPressed");
