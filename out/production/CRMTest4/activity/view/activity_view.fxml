@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane xmlns="http://javafx.com/javafx"
+            xmlns:fx="http://javafx.com/fxml"
+            fx:controller="activity.view.ActivityViewController"
+            prefHeight="400.0" prefWidth="600.0">
+    <children>
+        <TableView fx:id="table_product" layoutY="34.0" prefHeight="438.0" prefWidth="1000.0"
+                   AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="34.0">
+            <columns>
+                <TableColumn fx:id="col_subject" prefWidth="200.0" text="Subject" />
+                <TableColumn fx:id="col_due_date" prefWidth="100.0" text="Due Date" />
+                <TableColumn fx:id="col_created_on" prefWidth="100.0" text="Created On" />
+                <TableColumn fx:id="col_created_by" prefWidth="80.0" text="Created By" />
+            </columns>
+        </TableView>
+        <AnchorPane fx:id="toolbar_activity" prefHeight="35.0" prefWidth="1000.0" AnchorPane.leftAnchor="0.0"
+                    AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+            <children>
+                <Label fx:id="txt_no" layoutX="20.0" layoutY="8.0" text="0" />
+                <Label layoutX="43.0" layoutY="8.0" text="Activities Selected" />
+            </children>
+        </AnchorPane>
+    </children>
+</AnchorPane>

@@ -48,6 +48,38 @@ public class TaskQueries {
         }
     }
 
+    public List<Task> getAlLTasks(String where) {
+        String query = "SELECT TS_ID, TS_SUBJECT, TS_DESC, TS_DDATE, TS_REPEAT, NS.CREATEDON AS CREATEDON " +
+                " FROM TASK_STORE AS NS, USERS AS US " +
+                " AND NS.CREATEDBY = US.UCODE " +
+                " AND FREZE = 0";
+
+        if (where != null || where.equals(""))
+            query = query + where;
+
+        List<Task> tasks = new ArrayList<>();
+
+        try {
+            PreparedStatement statement = static_con.prepareStatement(query);
+            ResultSet set = statement.executeQuery();
+            //-------------Creating Task-------------
+            while (set.next()) {
+                Task task = new Task();
+                task.setCode(set.getInt("TS_ID"));
+                task.setSubject(set.getString("TS_SUBJECT"));
+                task.setDesc(set.getString("TS_DESC"));
+                task.setDueDate(set.getString("TS_DDATE"));
+                task.setRepeat(set.getBoolean("TS_REPEAT"));
+                task.setCreatedOn(set.getString("CREATEDON"));
+                tasks.add(task);
+            }
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+
+        return tasks;
+    }
+
     public List<Task> getTasks(ContactProperty contact) {
         String query = "SELECT TS_ID, TS_SUBJECT, TS_DESC, TS_DDATE, TS_REPEAT, NS.CREATEDON AS CREATEDON, FNAME, " +
                 "CS_FNAME " +

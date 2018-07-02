@@ -403,6 +403,10 @@ public class mySqlConn {
         taskQueries.freezeTask(task);
     }
 
+    public List<Task> getAllTasks(String where) {
+        return taskQueries.getAlLTasks(where);
+    }
+
     public List<Task> getTasks(ContactProperty obj) {
         return taskQueries.getTasks(obj);
     }
