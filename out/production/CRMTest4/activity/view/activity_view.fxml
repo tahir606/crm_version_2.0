@@ -11,8 +11,8 @@
             fx:controller="activity.view.ActivityViewController"
             prefHeight="400.0" prefWidth="600.0">
     <children>
-        <TableView fx:id="table_product" layoutY="34.0" prefHeight="438.0" prefWidth="1000.0"
-                   AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="34.0">
+        <TableView fx:id="table_activity" layoutY="34.0" prefHeight="438.0" prefWidth="1000.0"
+                   AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="2.0" AnchorPane.rightAnchor="2.0" AnchorPane.topAnchor="34.0">
             <columns>
                 <TableColumn fx:id="col_subject" prefWidth="200.0" text="Subject" />
                 <TableColumn fx:id="col_due_date" prefWidth="100.0" text="Due Date" />

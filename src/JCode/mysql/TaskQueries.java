@@ -51,10 +51,12 @@ public class TaskQueries {
     public List<Task> getAlLTasks(String where) {
         String query = "SELECT TS_ID, TS_SUBJECT, TS_DESC, TS_DDATE, TS_REPEAT, NS.CREATEDON AS CREATEDON " +
                 " FROM TASK_STORE AS NS, USERS AS US " +
-                " AND NS.CREATEDBY = US.UCODE " +
-                " AND FREZE = 0";
+                " WHERE NS.CREATEDBY = US.UCODE " +
+                " AND NS.FREZE = 0";
 
-        if (where != null || where.equals(""))
+        if (where == null || where.equals(""))
+            query = query + "";
+        else
             query = query + where;
 
         List<Task> tasks = new ArrayList<>();

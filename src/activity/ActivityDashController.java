@@ -32,7 +32,7 @@ public class ActivityDashController implements Initializable {
 
         populateContactsMenuBar();
 
-        inflatePane("view/lead_view.fxml");
+        inflatePane("view/activity_view.fxml");
     }
 
     private void populateContactsMenuBar() {
