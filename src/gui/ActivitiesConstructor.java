@@ -44,7 +44,8 @@ public class ActivitiesConstructor {
     public static int choice;
     public static Task updatingTask;
 
-    public ActivitiesConstructor(VBox open_activities_list, VBox closed_activities_list, ClientProperty client) {
+    public ActivitiesConstructor(VBox open_activities_list, VBox closed_activities_list, ClientProperty
+            client) {
         this.open_activities_list = open_activities_list;
         this.closed_activities_list = closed_activities_list;
         this.client = client;
@@ -68,8 +69,8 @@ public class ActivitiesConstructor {
         sql = new mySqlConn();
     }
 
-    private static void constructClientActivities() {
-        constructingButtons();
+    private static void constructClientActivities(URL path) {
+        constructingButtons(path);
 
         //Heading
         String labelCss = "-fx-font-weight: bold;";
@@ -84,14 +85,14 @@ public class ActivitiesConstructor {
         List<Task> tasks = sql.getTasks(clientViewController.staticClient);
         for (Task task : tasks) {
             if (!task.isStatus())
-                constructingOpenTask(task);
+                constructingOpenTask(task, path);
             else
                 constructingCloseTask(task);
         }
     }
 
-    private static void constructLeadActivities() {
-        constructingButtons();
+    private static void constructLeadActivities(URL path) {
+        constructingButtons(path);
 
         //Heading
         String labelCss = "-fx-font-weight: bold;";
@@ -106,14 +107,14 @@ public class ActivitiesConstructor {
         List<Task> tasks = sql.getTasks(LeadViewController.staticLead);
         for (Task task : tasks) {
             if (!task.isStatus())
-                constructingOpenTask(task);
+                constructingOpenTask(task, path);
             else
                 constructingCloseTask(task);
         }
     }
 
-    private static void constructProductActivities() {
-        constructingButtons();
+    private static void constructProductActivities(URL path) {
+        constructingButtons(path);
 
         //Heading
         String labelCss = "-fx-font-weight: bold;";
@@ -128,13 +129,13 @@ public class ActivitiesConstructor {
         List<Task> tasks = sql.getTasks(ProductViewController.staticProduct);
         for (Task task : tasks) {
             if (!task.isStatus())
-                constructingOpenTask(task);
+                constructingOpenTask(task, path);
             else
                 constructingCloseTask(task);
         }
     }
 
-    private static void constructingButtons() {
+    private static void constructingButtons(URL path) {
         HBox box = new HBox();
         JFXButton newTask = new JFXButton("+ New Task");
 
@@ -143,14 +144,16 @@ public class ActivitiesConstructor {
         newTask.setStyle(css);
         newTask.setOnAction(event -> {
             NewTaskController.stInstance = 'N';
-            CommonTasks.inflateDialog("New Task", ActivitiesConstructor.class.getResource("../activity/task/new_task.fxml"));
+//            CommonTasks.inflateDialog("New Task", ActivitiesConstructor.class.getResource("../activity/task/new_task" +
+//                    ".fxml"));
+            CommonTasks.inflateDialog("New Task", path);
         });
         box.getChildren().addAll(newTask);
 
         open_activities_list.getChildren().addAll(box);
     }
 
-    private static void constructingOpenTask(Task task) {
+    private static void constructingOpenTask(Task task, URL path) {
         //The Subject
         HBox subject = new HBox();
         subject.setSpacing(5);
@@ -196,11 +199,11 @@ public class ActivitiesConstructor {
         });
         closeItem.setOnAction(t -> {
             sql.closeTask(task);
-            generalConstructor(choice);
+            generalConstructor(choice, path);
         });
         delItem.setOnAction(t -> {
             sql.freezeTask(task);
-            generalConstructor(choice);
+            generalConstructor(choice, path);
         });
         contextMenu.getItems().addAll(editItem, closeItem, delItem);
         options.addEventHandler(MouseEvent.MOUSE_CLICKED, (MouseEvent me) -> {
@@ -256,7 +259,7 @@ public class ActivitiesConstructor {
         closed_activities_list.getChildren().add(box);
     }
 
-    public static void generalConstructor(int choice) throws NullPointerException {
+    public static void generalConstructor(int choice, URL path) throws NullPointerException {
 
         open_activities_list.getChildren().clear();
         closed_activities_list.getChildren().clear();
@@ -264,15 +267,15 @@ public class ActivitiesConstructor {
         ActivitiesConstructor.choice = choice;
         switch (choice) {
             case 2: {     //Clients
-                constructClientActivities();
+                constructClientActivities(path);
                 break;
             }
             case 3: {
-                constructLeadActivities();
+                constructLeadActivities(path);
                 break;
             }
             case 4: {
-                constructProductActivities();
+                constructProductActivities(path);
                 break;
             }
         }
