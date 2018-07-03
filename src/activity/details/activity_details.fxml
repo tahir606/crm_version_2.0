@@ -21,19 +21,19 @@
             </styleClass>
             <VBox spacing="10.0" prefHeight="297.0" prefWidth="613.0">
                 <children>
-                    <Label fx:id="txt_fname" layoutX="28.0" layoutY="65.0" text="First Last Name">
+                    <Label fx:id="txt_subject" layoutX="28.0" layoutY="65.0" text="Subject">
                         <font>
                             <Font name="Arial Narrow" size="20.0"/>
                         </font>
                     </Label>
                     <HBox prefHeight="26.0" prefWidth="316.0" spacing="25.0">
                         <children>
-                            <Label prefHeight="20.0" prefWidth="80.0" text="Company">
+                            <Label prefHeight="20.0" prefWidth="80.0" text="Due Date">
                                 <font>
                                     <Font size="14.0"/>
                                 </font>
                             </Label>
-                            <Label fx:id="txt_company" text="Company Name">
+                            <Label fx:id="txt_dueDate" text="Due Date">
                                 <font>
                                     <Font size="14.0"/>
                                 </font>
@@ -42,12 +42,12 @@
                     </HBox>
                     <HBox prefHeight="26.0" prefWidth="316.0" spacing="25.0">
                         <children>
-                            <Label prefHeight="20.0" prefWidth="80.0" text="Website">
+                            <Label prefHeight="20.0" prefWidth="80.0" text="Created On">
                                 <font>
                                     <Font size="14.0"/>
                                 </font>
                             </Label>
-                            <Label fx:id="txt_website" text="www.website.com">
+                            <Label fx:id="txt_createdOn" text="Created On">
                                 <font>
                                     <Font size="14.0"/>
                                 </font>
@@ -57,26 +57,12 @@
                     <HBox prefHeight="8.0" prefWidth="316.0"/>
                     <HBox prefHeight="26.0" prefWidth="316.0" spacing="25.0">
                         <children>
-                            <Label prefHeight="20.0" prefWidth="80.0" text="Email">
+                            <Label prefHeight="20.0" prefWidth="80.0" text="Created By">
                                 <font>
                                     <Font size="14.0"/>
                                 </font>
                             </Label>
-                            <Label fx:id="txt_email" text="example@domain.com">
-                                <font>
-                                    <Font size="14.0"/>
-                                </font>
-                            </Label>
-                        </children>
-                    </HBox>
-                    <HBox prefHeight="26.0" prefWidth="316.0" spacing="25.0">
-                        <children>
-                            <Label prefHeight="20.0" prefWidth="80.0" text="Mobile">
-                                <font>
-                                    <Font size="14.0"/>
-                                </font>
-                            </Label>
-                            <Label fx:id="txt_mobile" text="+92001000000">
+                            <Label fx:id="txt_createdBy" text="Created By">
                                 <font>
                                     <Font size="14.0"/>
                                 </font>

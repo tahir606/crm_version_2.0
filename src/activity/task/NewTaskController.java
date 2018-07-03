@@ -3,6 +3,7 @@ package activity.task;
 import JCode.CommonTasks;
 import JCode.Toast;
 import JCode.mysql.mySqlConn;
+import activity.view.ActivityViewController;
 import client.dash.clientView.clientViewController;
 import client.dash.contactView.contactViewController;
 import com.jfoenix.controls.*;
@@ -80,13 +81,14 @@ public class NewTaskController implements Initializable {
                 btn_save.setText("Update");
 
                 task = ActivitiesConstructor.updatingTask;
-                txt_subject.setText(task.getSubject());
-                txt_desc.setText(task.getDesc());
-                if (task.getDueDate() != null)
-                    due_date.setValue(CommonTasks.createLocalDate(task.getDueDate()));
-                else
-                    due_date.setValue(null);
-                check_repeat.setSelected(task.isRepeat());
+                populateFields(task);
+                break;
+            }
+            case 'D': { //D for from details
+                btn_save.setText("Update");
+
+                task = ActivityViewController.staticTask;
+                populateFields(task);
                 break;
             }
         }
@@ -191,5 +193,15 @@ public class NewTaskController implements Initializable {
         stage.close();
 
         ActivitiesConstructor.generalConstructor(choice);
+    }
+
+    private void populateFields(Task task) {
+        txt_subject.setText(task.getSubject());
+        txt_desc.setText(task.getDesc());
+        if (task.getDueDate() != null)
+            due_date.setValue(CommonTasks.createLocalDate(task.getDueDate()));
+        else
+            due_date.setValue(null);
+        check_repeat.setSelected(task.isRepeat());
     }
 }

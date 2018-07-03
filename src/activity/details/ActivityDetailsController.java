@@ -1,10 +1,12 @@
 package activity.details;
 
+import JCode.CommonTasks;
 import JCode.mysql.mySqlConn;
 import activity.ActivityDashController;
 import activity.task.NewTaskController;
 import activity.view.ActivityViewController;
 import com.jfoenix.controls.JFXButton;
+import gui.ActivitiesConstructor;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -23,15 +25,14 @@ import java.util.ResourceBundle;
 public class ActivityDetailsController implements Initializable {
 
     @FXML
-    private Label txt_fname;
+    private Label txt_subject;
     @FXML
-    private Label txt_company;
+    private Label txt_dueDate;
     @FXML
-    private Label txt_website;
+    private Label txt_createdOn;
     @FXML
-    private Label txt_email;
-    @FXML
-    private Label txt_mobile;
+    private Label txt_createdBy;
+
     @FXML
     private TextArea txt_desc;
     @FXML
@@ -69,12 +70,11 @@ public class ActivityDetailsController implements Initializable {
     }
 
     private void populateDetails() {
-        txt_fname.setText(lead.getFullNameProperty());
-        txt_company.setText(lead.getCompany());
-        txt_website.setText(lead.getWebsite());
-        txt_email.setText(lead.getEmail());
-        txt_mobile.setText(lead.getPhone());
-        txt_desc.setText(lead.getNote());
+        txt_subject.setText(task.getSubject());
+        txt_dueDate.setText(CommonTasks.getDateFormatted(task.getDueDate()));
+        txt_createdOn.setText(task.getCreatedOn());
+        txt_createdBy.setText(task.getCreatedBy());
+        txt_desc.setText(task.getDesc());
 
 //        btn_email.setOnAction(event -> {
 //            EResponseController.stTo = contact.getEmail();
@@ -83,19 +83,16 @@ public class ActivityDetailsController implements Initializable {
 //        });
 
         btn_edit.setOnAction(event -> {
-            NewTaskController.stInstance = 'U';
-            try {
-                ActivityDashController.main_paneF.setCenter(
-                        FXMLLoader.load(
-                                getClass().getClassLoader().getResource("lead/newLead/new_lead.fxml")));
+            NewTaskController.stInstance = 'D';
+//                ActivityDashController.main_paneF.setCenter(
+//                        FXMLLoader.load(
+//                                getClass().getClassLoader().getResource("activity/task/new_task.fxml")));
+            CommonTasks.inflateDialog("Update Task", ActivitiesConstructor.class.getResource("../activity/task/new_task.fxml"));
 
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
         });
 
 //        new NotesConstructor(notes_list, sql, lead).generalConstructor(3);
 //        new ActivitiesConstructor(open_activities_list, closed_activities_list, lead).generalConstructor(3);
     }
 }
-}
+

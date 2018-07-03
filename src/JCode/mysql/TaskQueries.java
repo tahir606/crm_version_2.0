@@ -48,10 +48,41 @@ public class TaskQueries {
         }
     }
 
-    public List<Task> getAlLTasks(String where) {
-        String query = "SELECT TS_ID, TS_SUBJECT, TS_DESC, TS_DDATE, TS_REPEAT, NS.CREATEDON AS CREATEDON " +
+    public Task getSpecificTask(Task where) {
+        String query = "SELECT TS_ID, TS_SUBJECT, TS_DESC, TS_DDATE, TS_REPEAT, NS.CREATEDON AS CREATEDON, FNAME " +
                 " FROM TASK_STORE AS NS, USERS AS US " +
                 " WHERE NS.CREATEDBY = US.UCODE " +
+                " AND NS.FREZE = 0";
+
+        try {
+            PreparedStatement statement = static_con.prepareStatement(query);
+            ResultSet set = statement.executeQuery();
+            //-------------Creating Task-------------
+            while (set.next()) {
+                Task task = new Task();
+                task.setCode(set.getInt("TS_ID"));
+                task.setSubject(set.getString("TS_SUBJECT"));
+                task.setDesc(set.getString("TS_DESC"));
+                task.setDueDate(set.getString("TS_DDATE"));
+                task.setCreatedBy(set.getString("FNAME"));
+                task.setRepeat(set.getBoolean("TS_REPEAT"));
+                task.setCreatedOn(set.getString("CREATEDON"));
+                return task;
+            }
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+        return null;
+    }
+
+    public List<Task> getAlLTasks(String where) {
+        String query = "SELECT TS_ID, TS_SUBJECT, TS_DESC, TS_DDATE, TS_REPEAT, NS.CREATEDON AS CREATEDON, FNAME,  " +
+                " NS.CS_ID, (SELECT CONCAT(CS_FNAME,' ',CS_LNAME) FROM contact_store as CS WHERE CS.CS_ID = NS.CS_ID) AS CSNAME , " +
+                " NS.CL_ID, (SELECT CL.CL_NAME FROM client_store as CL WHERE CL.CL_ID = NS.CL_ID) AS CLNAME , " +
+                " NS.LS_ID, (SELECT CONCAT(LS.LS_FNAME,' ',LS.LS_LNAME) FROM lead_store as LS WHERE LS.LS_ID = NS.LS_ID) AS LSNAME , " +
+                " NS.PS_ID, (SELECT PS.PS_NAME FROM product_store as PS WHERE PS.PS_ID = NS.PS_ID) AS PSNAME  " +
+                " FROM TASK_STORE AS NS, USERS AS US " +
+                " WHERE NS.CREATEDBY = US.UCODE                " +
                 " AND NS.FREZE = 0";
 
         if (where == null || where.equals(""))
@@ -71,8 +102,12 @@ public class TaskQueries {
                 task.setSubject(set.getString("TS_SUBJECT"));
                 task.setDesc(set.getString("TS_DESC"));
                 task.setDueDate(set.getString("TS_DDATE"));
+                task.setCreatedBy(set.getString("FNAME"));
                 task.setRepeat(set.getBoolean("TS_REPEAT"));
                 task.setCreatedOn(set.getString("CREATEDON"));
+                task.setClientName(set.getString("CLNAME"));
+                task.setLeadName(set.getString("LSNAME"));
+                task.setProductName(set.getString("PSNAME"));
                 tasks.add(task);
             }
         } catch (SQLException ex) {
