@@ -32,13 +32,16 @@ public class ActivityDetailsController implements Initializable {
     private Label txt_createdOn;
     @FXML
     private Label txt_createdBy;
-
     @FXML
     private TextArea txt_desc;
     @FXML
     private JFXButton btn_back;
     @FXML
-    private JFXButton btn_edit;
+    private JFXButton btn_close;
+    @FXML
+    private Label txt_type;
+    @FXML
+    private Label txt_name;
 //    @FXML
 //    private VBox notes_list;
 
@@ -75,20 +78,32 @@ public class ActivityDetailsController implements Initializable {
         txt_createdOn.setText(task.getCreatedOn());
         txt_createdBy.setText(task.getCreatedBy());
         txt_desc.setText(task.getDesc());
+    
+        txt_type.setVisible(true);
+        txt_name.setVisible(true);
+        
+        if (task.getClient() != 0 ) {
+            txt_type.setText("Client");
+            txt_name.setText(task.getClientName());
+        } else if (task.getLead() != 0 ) {
+            txt_type.setText("Lead");
+            txt_name.setText(task.getLeadName());
+        } else if (task.getProduct() != 0 ) {
+            txt_type.setText("Product");
+            txt_name.setText(task.getProductName());
+        } else {
+            txt_type.setVisible(false);
+            txt_name.setVisible(false);
+        }
+        
+        if (!task.isStatus())
+            btn_close.setDisable(false);
+        else
+            btn_close.setDisable(true);
 
-//        btn_email.setOnAction(event -> {
-//            EResponseController.stTo = contact.getEmail();
-//            EResponseController.stInstance = 'N';
-//            inflateEResponse(1);
-//        });
-
-        btn_edit.setOnAction(event -> {
-            NewTaskController.stInstance = 'D';
-//                ActivityDashController.main_paneF.setCenter(
-//                        FXMLLoader.load(
-//                                getClass().getClassLoader().getResource("activity/task/new_task.fxml")));
-            CommonTasks.inflateDialog("Update Task", ActivitiesConstructor.class.getResource("../activity/task/new_task.fxml"));
-
+        btn_close.setOnAction(event -> {
+            sql.closeTask(task);
+            btn_close.setDisable(true);
         });
 
 //        new NotesConstructor(notes_list, sql, lead).generalConstructor(3);

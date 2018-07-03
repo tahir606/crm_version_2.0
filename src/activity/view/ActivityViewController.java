@@ -30,6 +30,8 @@ public class ActivityViewController implements Initializable {
     @FXML
     private TableColumn<Task, String> col_created_by;
     @FXML
+    private TableColumn<Task, String> col_status;
+    @FXML
     private AnchorPane toolbar_activity;
     @FXML
     private Label txt_no;
@@ -48,6 +50,7 @@ public class ActivityViewController implements Initializable {
         col_due_date.setCellValueFactory(new PropertyValueFactory<>("dueDateFormatted"));
         col_created_on.setCellValueFactory(new PropertyValueFactory<>("createdOn"));
         col_created_by.setCellValueFactory(new PropertyValueFactory<>("createdBy"));
+        col_status.setCellValueFactory(new PropertyValueFactory<>("statusString"));
 
         table_activity.getItems().setAll(sql.getAllTasks(null));
 

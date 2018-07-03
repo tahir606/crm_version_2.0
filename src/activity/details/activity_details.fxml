@@ -5,9 +5,9 @@
 <?import javafx.scene.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
-
 <?import javafx.scene.text.Font?>
 <?import com.jfoenix.controls.JFXButton?>
+
 <AnchorPane xmlns="http://javafx.com/javafx"
             xmlns:fx="http://javafx.com/fxml"
             fx:controller="activity.details.ActivityDetailsController"
@@ -69,6 +69,20 @@
                             </Label>
                         </children>
                     </HBox>
+                    <HBox prefHeight="26.0" prefWidth="316.0" spacing="25.0">
+                        <children>
+                            <Label fx:id="txt_type" prefHeight="20.0" prefWidth="80.0" text="Type">
+                                <font>
+                                    <Font size="14.0"/>
+                                </font>
+                            </Label>
+                            <Label fx:id="txt_name" text="Name">
+                                <font>
+                                    <Font size="14.0"/>
+                                </font>
+                            </Label>
+                        </children>
+                    </HBox>
                     <HBox prefHeight="67.0" prefWidth="427.0" spacing="25.0">
                         <children>
                             <Label prefHeight="20.0" prefWidth="80.0" text="Description">
@@ -89,8 +103,8 @@
             <children>
                 <!--<JFXButton fx:id="btn_email" prefHeight="42.0" prefWidth="84.0" styleClass="emailDetailsButton"-->
                 <!--text="Send Email"/>-->
-                <JFXButton fx:id="btn_edit" prefHeight="38.0" prefWidth="84.0" styleClass="emailDetailsButton"
-                           text="Edit"/>
+                <JFXButton fx:id="btn_close" prefHeight="38.0" prefWidth="84.0" styleClass="emailDetailsButton"
+                           text="Close"/>
             </children>
         </HBox>
     </children>

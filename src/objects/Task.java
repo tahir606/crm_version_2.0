@@ -5,7 +5,8 @@ import JCode.CommonTasks;
 public class Task {
     
     private int code, createdByCode, contact, client, lead, product;
-    private String subject, dueDate, dueDateFormatted, desc, createdOn, createdBy, contactName, clientName, leadName, productName;
+    private String subject, dueDate, dueDateFormatted, desc, createdOn, createdBy, contactName, clientName, leadName,
+            productName, statusString;
     private boolean isRepeat, status;   //Status: 0 is open ? 1 is closed
     
     public Task() {
@@ -56,15 +57,15 @@ public class Task {
         this.dueDate = dueDate;
         setDueDateFormatted(CommonTasks.getDateFormatted(dueDate));
     }
-
+    
     public String getDueDateFormatted() {
         return dueDateFormatted;
     }
-
+    
     public void setDueDateFormatted(String dueDateFormatted) {
         this.dueDateFormatted = dueDateFormatted;
     }
-
+    
     public String getDesc() {
         return desc;
     }
@@ -88,39 +89,39 @@ public class Task {
     public void setCreatedBy(String createdBy) {
         this.createdBy = createdBy;
     }
-
+    
     public int getContact() {
         return contact;
     }
-
+    
     public void setContact(int contact) {
         this.contact = contact;
     }
-
+    
     public int getClient() {
         return client;
     }
-
+    
     public void setClient(int client) {
         this.client = client;
     }
-
+    
     public int getLead() {
         return lead;
     }
-
+    
     public void setLead(int lead) {
         this.lead = lead;
     }
-
+    
     public int getProduct() {
         return product;
     }
-
+    
     public void setProduct(int product) {
         this.product = product;
     }
-
+    
     public String getContactName() {
         return contactName;
     }
@@ -160,12 +161,21 @@ public class Task {
     public void setRepeat(boolean repeat) {
         isRepeat = repeat;
     }
-
+    
     public boolean isStatus() {
         return status;
     }
-
+    
     public void setStatus(boolean status) {
         this.status = status;
+        if (status)
+            statusString = "Closed";
+        else
+            statusString = "Open";
     }
+    
+    public String getStatusString() {
+        return statusString;
+    }
+    
 }

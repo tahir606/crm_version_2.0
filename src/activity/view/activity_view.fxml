@@ -16,8 +16,9 @@
             <columns>
                 <TableColumn fx:id="col_subject" prefWidth="200.0" text="Subject" />
                 <TableColumn fx:id="col_due_date" prefWidth="100.0" text="Due Date" />
-                <TableColumn fx:id="col_created_on" prefWidth="100.0" text="Created On" />
+                <TableColumn fx:id="col_created_on" prefWidth="140.0" text="Created On" />
                 <TableColumn fx:id="col_created_by" prefWidth="80.0" text="Created By" />
+                <TableColumn fx:id="col_status" prefWidth="80.0" text="Status" />
             </columns>
         </TableView>
         <AnchorPane fx:id="toolbar_activity" prefHeight="35.0" prefWidth="1000.0" AnchorPane.leftAnchor="0.0"

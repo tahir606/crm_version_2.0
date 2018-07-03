@@ -76,7 +76,8 @@ public class TaskQueries {
     }
 
     public List<Task> getAlLTasks(String where) {
-        String query = "SELECT TS_ID, TS_SUBJECT, TS_DESC, TS_DDATE, TS_REPEAT, NS.CREATEDON AS CREATEDON, FNAME,  " +
+        String query = "SELECT TS_ID, TS_SUBJECT, TS_DESC, TS_DDATE, TS_REPEAT, NS.CREATEDON AS CREATEDON, FNAME, " +
+                " TS_STATUS,  " +
                 " NS.CS_ID, (SELECT CONCAT(CS_FNAME,' ',CS_LNAME) FROM contact_store as CS WHERE CS.CS_ID = NS.CS_ID) AS CSNAME , " +
                 " NS.CL_ID, (SELECT CL.CL_NAME FROM client_store as CL WHERE CL.CL_ID = NS.CL_ID) AS CLNAME , " +
                 " NS.LS_ID, (SELECT CONCAT(LS.LS_FNAME,' ',LS.LS_LNAME) FROM lead_store as LS WHERE LS.LS_ID = NS.LS_ID) AS LSNAME , " +
@@ -105,6 +106,8 @@ public class TaskQueries {
                 task.setCreatedBy(set.getString("FNAME"));
                 task.setRepeat(set.getBoolean("TS_REPEAT"));
                 task.setCreatedOn(set.getString("CREATEDON"));
+                task.setStatus(set.getBoolean("TS_STATUS"));
+                
                 task.setClient(set.getInt("CL_ID"));
                 task.setClientName(set.getString("CLNAME"));
                 task.setLead(set.getInt("LS_ID"));
