@@ -105,8 +105,11 @@ public class TaskQueries {
                 task.setCreatedBy(set.getString("FNAME"));
                 task.setRepeat(set.getBoolean("TS_REPEAT"));
                 task.setCreatedOn(set.getString("CREATEDON"));
+                task.setClient(set.getInt("CL_ID"));
                 task.setClientName(set.getString("CLNAME"));
+                task.setLead(set.getInt("LS_ID"));
                 task.setLeadName(set.getString("LSNAME"));
+                task.setProduct(set.getInt("PS_ID"));
                 task.setProductName(set.getString("PSNAME"));
                 tasks.add(task);
             }

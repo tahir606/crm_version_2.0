@@ -93,28 +93,41 @@ public class NewTaskController implements Initializable {
             }
         }
 
-        switch (choice) {
-            case 1: {       //Contacts
-                ContactProperty contact = contactViewController.staticContact;
-                relation_type.getSelectionModel().select("Contact");
-                txt_name.setText(contact.getFullName());
-                break;
+        if (stInstance != 'D') {
+            switch (choice) {
+                case 1: {       //Contacts
+                    ContactProperty contact = contactViewController.staticContact;
+                    relation_type.getSelectionModel().select("Contact");
+                    txt_name.setText(contact.getFullName());
+                    break;
+                }
+                case 2: {       //Clients
+                    client = clientViewController.staticClient;
+                    relation_type.getSelectionModel().select("Client");
+                    txt_name.setText(client.getName());
+                    break;
+                }
+                case 3: {
+                    lead = LeadViewController.staticLead;
+                    relation_type.getSelectionModel().select("Lead");
+                    txt_name.setText(lead.getFullNameProperty().toString());
+                }
+                case 4: {
+                    product = ProductViewController.staticProduct;
+                    relation_type.getSelectionModel().select("Product");
+                    txt_name.setText(product.getName().toString());
+                }
             }
-            case 2: {       //Clients
-                client = clientViewController.staticClient;
+        } else {
+            if (task.getClient() != 0) {
                 relation_type.getSelectionModel().select("Client");
-                txt_name.setText(client.getName());
-                break;
-            }
-            case 3: {
-                lead = LeadViewController.staticLead;
+                txt_name.setText(task.getClientName());
+            } else if (task.getLead() != 0) {
                 relation_type.getSelectionModel().select("Lead");
-                txt_name.setText(lead.getFullNameProperty().toString());
-            }
-            case 4: {
-                product = ProductViewController.staticProduct;
+                txt_name.setText(task.getLeadName());
+            } else if (task.getProduct() != 0) {
                 relation_type.getSelectionModel().select("Product");
-                txt_name.setText(product.getName().toString());
+                txt_name.setText(task.getProductName());
             }
         }
 
