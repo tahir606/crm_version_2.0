@@ -43,24 +43,21 @@ public class SplashScreenThread implements Initializable {
             FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("SplashScreen.fxml"));
             root1 = (Parent) fxmlLoader.load();
 
-            Platform.runLater(new Runnable() {
-                @Override
-                public void run() {
-                    Stage stage2 = new Stage();
+            Platform.runLater(() -> {
+                Stage stage2 = new Stage();
 //                    stage2.setAlwaysOnTop(true);
-                    stage2.initModality(Modality.APPLICATION_MODAL);
-                    stage2.initStyle(StageStyle.TRANSPARENT);
-                    stage2.setTitle("Splash Screen");
-                    stage2.setScene(new Scene(root1));
-                    trayHelper tray = new trayHelper();
-                    tray.createIcon(stage2);
-                    Platform.setImplicitExit(true);
-                    stage2.show();
+                stage2.initModality(Modality.APPLICATION_MODAL);
+                stage2.initStyle(StageStyle.TRANSPARENT);
+                stage2.setTitle("Splash Screen");
+                stage2.setScene(new Scene(root1));
+                trayHelper tray = new trayHelper();
+                tray.createIcon(stage2);
+                Platform.setImplicitExit(true);
+                stage2.show();
 
-                }
             });
             try {
-                Thread.sleep(2000);
+                Thread.sleep(100);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }

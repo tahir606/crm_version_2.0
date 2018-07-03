@@ -3,6 +3,7 @@ package activity.task;
 import JCode.CommonTasks;
 import JCode.Toast;
 import JCode.mysql.mySqlConn;
+import activity.ActivityDashController;
 import activity.view.ActivityViewController;
 import client.dash.clientView.clientViewController;
 import client.dash.contactView.contactViewController;
@@ -11,6 +12,7 @@ import gui.ActivitiesConstructor;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
@@ -21,6 +23,7 @@ import lead.view.LeadViewController;
 import objects.*;
 import product.view.ProductViewController;
 
+import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
@@ -170,19 +173,27 @@ public class NewTaskController implements Initializable {
 
                     switch (stInstance) {
                         case 'N': {
-                            if (type.equals("Contact")) {
+                            try {
+                                if (type.equals("Contact")) {
 
-                            } else if (type.equals("Client")) {
-                                task.setClient(client.getCode());
-                            } else if (type.equals("Lead")) {
-                                task.setLead(lead.getCode());
-                            } else if (type.equals("Product")) {
-                                task.setProduct(product.getCode());
+                                } else if (type.equals("Client")) {
+                                    task.setClient(client.getCode());
+                                } else if (type.equals("Lead")) {
+                                    task.setLead(lead.getCode());
+                                } else if (type.equals("Product")) {
+                                    task.setProduct(product.getCode());
+                                }
+                            } catch (NullPointerException e) {
+                                System.out.println(e);
                             }
                             sql.addTask(task);
                             break;
                         }
                         case 'U': {
+                            sql.updateTask(task);
+                            break;
+                        }
+                        case 'D': {
                             sql.updateTask(task);
                             break;
                         }
@@ -204,8 +215,29 @@ public class NewTaskController implements Initializable {
     private void closeStage() {
         Stage stage = (Stage) btn_cancel.getScene().getWindow();
         stage.close();
+        if (stInstance != 'D')
+            try {
+                ActivitiesConstructor.generalConstructor(choice);
+            } catch (NullPointerException e) {
+                try {
+                    ActivityDashController.main_paneF.setCenter(
+                            FXMLLoader.load(
+                                    getClass().getClassLoader().getResource("activity/view/activity_view.fxml")));
 
-        ActivitiesConstructor.generalConstructor(choice);
+                } catch (IOException ex) {
+                    ex.printStackTrace();
+                }
+            }
+        else {
+            try {
+                ActivityDashController.main_paneF.setCenter(
+                        FXMLLoader.load(
+                                getClass().getClassLoader().getResource("activity/view/activity_view.fxml")));
+
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     private void populateFields(Task task) {

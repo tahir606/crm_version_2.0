@@ -82,14 +82,12 @@ public class dController implements Initializable {
         eSetting = sql.getEmailSettings();
         user = fHelper.ReadUserDetails();
         rightsList = user.getuRightsList();
-        
-//        SplashScreenThread.hideSplashScreen();
-        
+
         DrawerPane(); //Populate Drawer
         
-        changeSelection(homeBtn, "Home/home_split.fxml", 1);
-//        changeSelection(homeBtn, "Home/Home.fxml", 1);
-        
+//        changeSelection(homeBtn, "Home/home_split.fxml", 1);
+
+
         if (user.isEmail()) {
             emailCtrl();
             isServer = true;
@@ -100,6 +98,8 @@ public class dController implements Initializable {
         }
         
         Platform.setImplicitExit(false);
+
+        SplashScreenThread.hideSplashScreen();
     }
     
     private void DrawerPane() {

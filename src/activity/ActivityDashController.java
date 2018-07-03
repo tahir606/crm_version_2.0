@@ -1,7 +1,9 @@
 package activity;
 
+import JCode.CommonTasks;
 import activity.task.NewTaskController;
 import dashboard.dController;
+import gui.ActivitiesConstructor;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -42,7 +44,7 @@ public class ActivityDashController implements Initializable {
         MenuItem newProduct = new MenuItem("New Task");
         newProduct.setOnAction(event -> {
             NewTaskController.stInstance = 'N';
-            inflatePane("task/new_task.fxml");
+            CommonTasks.inflateDialog("New Task", ActivityDashController.class.getResource("task/new_task.fxml"));
         });
         menuNew.getItems().addAll(newProduct);
 

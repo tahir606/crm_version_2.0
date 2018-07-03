@@ -212,7 +212,6 @@ public class ActivitiesConstructor {
         });
 
         VBox box = new VBox();
-//            box.setStyle("-fx-border-color: #033300;");
         box.getChildren().addAll(subject, body, details);
         open_activities_list.getChildren().add(box);
     }
@@ -247,33 +246,9 @@ public class ActivitiesConstructor {
                 createdOn = new Label(task.getCreatedOn());
         createdOn.setMinWidth(150);
         createdBy.setMinWidth(280);
-//        JFXButton options = new JFXButton();
 
-//        Image image = new Image(ActivitiesConstructor.class.getResourceAsStream("/res/img/options.png"));
-//        options.setGraphic(new ImageView(image));
         details.getChildren().addAll(createdOn, createdBy);
         ContextMenu contextMenu = new ContextMenu();
-//        MenuItem closeItem = new MenuItem("Close"),
-//                editItem = new MenuItem("Edit"),
-//                delItem = new MenuItem("Delete");
-//        editItem.setOnAction(t -> {
-//
-//        });
-//        closeItem.setOnAction(t -> {
-//            sql.closeTask(task);
-//            generalConstructor(choice);
-//        });
-//        delItem.setOnAction(t -> {
-//
-//        });
-//        contextMenu.getItems().addAll(editItem, closeItem, delItem);
-//        options.addEventHandler(MouseEvent.MOUSE_CLICKED, (MouseEvent me) -> {
-//            if (me.getButton() == MouseButton.PRIMARY) {
-//                contextMenu.show(options, me.getScreenX(), me.getScreenY());
-//            } else {
-//                contextMenu.hide();
-//            }
-//        });
 
         VBox box = new VBox();
 //            box.setStyle("-fx-border-color: #033300;");
@@ -281,7 +256,7 @@ public class ActivitiesConstructor {
         closed_activities_list.getChildren().add(box);
     }
 
-    public static void generalConstructor(int choice) {
+    public static void generalConstructor(int choice) throws NullPointerException {
 
         open_activities_list.getChildren().clear();
         closed_activities_list.getChildren().clear();

@@ -45,7 +45,7 @@ public class ActivityViewController implements Initializable {
 //        table_contact.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
 
         col_subject.setCellValueFactory(new PropertyValueFactory<>("subject"));
-        col_due_date.setCellValueFactory(new PropertyValueFactory<>("dueDate"));
+        col_due_date.setCellValueFactory(new PropertyValueFactory<>("dueDateFormatted"));
         col_created_on.setCellValueFactory(new PropertyValueFactory<>("createdOn"));
         col_created_by.setCellValueFactory(new PropertyValueFactory<>("createdBy"));
 

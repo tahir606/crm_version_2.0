@@ -57,7 +57,7 @@ public class CommonTasks {
         try {
             date = inputFormat.parse(timeStamp);
         } catch (ParseException e) {
-            e.printStackTrace();
+            return "";
         } catch (NullPointerException e) {
             return "";
         }
