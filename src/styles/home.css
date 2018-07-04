@@ -17,3 +17,8 @@
 .moduleDetails:hover {
     -fx-background-color: #d7ffc6;
 }
+
+.scroll-view {
+    -fx-background-color: transparent;
+    -fx-background: #fcfcfc;
+}

@@ -30,7 +30,7 @@ public class LeadQueries {
         
         String query = "INSERT INTO LEAD_STORE(LS_ID, LS_FNAME ,LS_LNAME ,LS_CNAME ,LS_WEBSITE ,LS_CITY , " +
                 " LS_COUNTRY, LS_NOTE, CREATEDON, CREATEDBY) " +
-                " SELECT IFNULL(max(LS_ID),0)+1,?,?,?,?,?,?,?,? from LEAD_STORE";
+                " SELECT IFNULL(max(LS_ID),0)+1,?,?,?,?,?,?,?,?,? from LEAD_STORE";
         
         PreparedStatement statement = null;
         

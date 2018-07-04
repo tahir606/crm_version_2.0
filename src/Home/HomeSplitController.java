@@ -14,17 +14,20 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Insets;
 import javafx.scene.control.Label;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.control.SplitPane;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import objects.ProductModule;
+import objects.Task;
 import objects.Users;
 
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.ResourceBundle;
 
 public class HomeSplitController implements Initializable {
@@ -62,6 +65,8 @@ public class HomeSplitController implements Initializable {
         split_mainS = split_main;
         split_oneS = split_one;
         split_twoS = split_two;
+
+        split_main.getStyleClass().add("scroll-view");
         
         setAddButton(pane_one, 1);
         setAddButton(pane_two, 2);
@@ -115,9 +120,10 @@ public class HomeSplitController implements Initializable {
     }
     
     private void setAddButton(AnchorPane pane, int panel) {
+
         JFXComboBox<String> paneList = new JFXComboBox<>();
         paneList.setPromptText("Choose panel");
-        paneList.getItems().addAll(new String[]{"Profile", "Tickets", "Activities", "Modules", "Leads"});
+        paneList.getItems().addAll(new String[]{"Profile", "Tickets", "Activities", "Modules"});
         paneList.setOpacity(0.5);
         paneList.setPadding(new Insets(-3.5));
         paneList.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
@@ -141,6 +147,10 @@ public class HomeSplitController implements Initializable {
                 inflateTickets(pane, panel);
                 break;
             }
+            case "Activities": {
+                inflateActivities(pane, panel);
+                break;
+            }
             case "Modules": {
                 inflateModules(pane, panel);
                 break;
@@ -152,7 +162,59 @@ public class HomeSplitController implements Initializable {
     }
     
     private void inflateActivities(AnchorPane pane, int panel) {
-    
+        ScrollPane scrollPane = new ScrollPane();
+        scrollPane.getStyleClass().add("scroll-view");
+
+        VBox vBox = new VBox();
+
+        AnchorPane.setLeftAnchor(scrollPane, 20.0);
+        AnchorPane.setTopAnchor(scrollPane, 20.0);
+
+        List<Task> openTasks = sql.getAllTasks(" AND TS_STATUS = 0 ");
+
+        HBox hBox = new HBox();
+        hBox.getChildren().addAll(inflateTraditionalLabel("Subject", "headingText", 120),
+                inflateTraditionalLabel("Due Date", "headingText", 90),
+                inflateTraditionalLabel("Created By", "headingText", 90),
+                inflateTraditionalLabel("Created On", "headingText", 160));
+
+        vBox.getChildren().addAll(hBox);
+
+        for (Task task : openTasks) {
+            HBox hbox = new HBox();
+            hbox.setSpacing(5);
+
+            Label subjectLabel = new Label(task.getSubject()),
+                    dueDateLabel = new Label(task.getDueDateFormatted()),
+                    createdByLabel = new Label(task.getCreatedBy()),
+                    createdOnLabel = new Label(task.getCreatedOn());
+
+            subjectLabel.getStyleClass().add("dataText");
+            dueDateLabel.getStyleClass().add("dataText");
+            createdByLabel.getStyleClass().add("dataText");
+            createdOnLabel.getStyleClass().add("dataText");
+
+            subjectLabel.setMinWidth(90);
+            subjectLabel.setMaxWidth(90);
+            dueDateLabel.setMinWidth(90);
+            dueDateLabel.setMaxWidth(90);
+            createdByLabel.setMinWidth(90);
+            createdByLabel.setMaxWidth(90);
+            createdOnLabel.setMinWidth(160);
+            createdOnLabel.setMaxWidth(160);
+
+            hbox.getChildren().addAll(subjectLabel, dueDateLabel, createdByLabel, createdOnLabel);
+            hbox.getStyleClass().add("moduleDetails");
+
+            vBox.getChildren().add(hbox);
+        }
+
+        scrollPane.setContent(vBox);
+
+        pane.getChildren().clear();
+        pane.getChildren().addAll(scrollPane);
+
+        inflateClearButton(pane, panel);
     }
     
     private void inflateModules(AnchorPane pane, int panel) {
