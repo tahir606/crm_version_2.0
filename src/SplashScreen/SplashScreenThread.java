@@ -24,25 +24,24 @@ import java.net.URL;
 import java.util.ResourceBundle;
 
 public class SplashScreenThread implements Initializable {
-
+    
     @FXML
     AnchorPane rootAnchor;
-
+    
     private static final int shadowSize = 50;
-
+    
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-
     }
-
+    
     //---------------SplashScreen
     static Parent root1;
-
+    
     public void showSplashScreen() {
         try {
             FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("SplashScreen.fxml"));
             root1 = (Parent) fxmlLoader.load();
-
+            
             Platform.runLater(() -> {
                 Stage stage2 = new Stage();
 //                    stage2.setAlwaysOnTop(true);
@@ -54,8 +53,8 @@ public class SplashScreenThread implements Initializable {
                 tray.createIcon(stage2);
                 Platform.setImplicitExit(true);
                 stage2.show();
-
             });
+    
             try {
                 Thread.sleep(1000);
             } catch (InterruptedException e) {
@@ -65,9 +64,9 @@ public class SplashScreenThread implements Initializable {
             e.printStackTrace();
         }
     }
-
+    
     static public void hideSplashScreen() {
         root1.getScene().getWindow().hide();
     }
-
+    
 }

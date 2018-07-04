@@ -30,8 +30,6 @@ public class Main extends Application {
 
 //        fHelper.makeFolders();
 
-        System.out.println("Step 1");
-
         if (fHelper.getNetworkDetails() == null) {
             Parent root = FXMLLoader.load(getClass().getResource("settings/network/networkSet.fxml"));
             primaryStage.setTitle("Network Settings- BITS-CRM");
@@ -61,7 +59,6 @@ public class Main extends Application {
 
 
     public static void main(String[] args) {
-
         new SplashScreenThread().showSplashScreen();
         launch(args);
     }
