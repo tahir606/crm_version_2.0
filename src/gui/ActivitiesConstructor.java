@@ -2,12 +2,17 @@ package gui;
 
 import JCode.CommonTasks;
 import JCode.mysql.mySqlConn;
+import JCode.trayHelper;
 import activity.task.NewTaskController;
 import client.dash.clientView.clientViewController;
 import com.jfoenix.controls.JFXButton;
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
+import javafx.fxml.FXMLLoader;
 import javafx.geometry.Insets;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.Label;
 import javafx.scene.control.MenuItem;
@@ -19,6 +24,7 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
+import javafx.stage.Stage;
 import lead.view.LeadViewController;
 import objects.ClientProperty;
 import objects.Lead;
@@ -26,6 +32,7 @@ import objects.ProductProperty;
 import objects.Task;
 import product.view.ProductViewController;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.util.List;
@@ -69,8 +76,8 @@ public class ActivitiesConstructor {
         sql = new mySqlConn();
     }
 
-    private static void constructClientActivities(URL path) {
-        constructingButtons(path);
+    private static void constructClientActivities() {
+        constructingButtons();
 
         //Heading
         String labelCss = "-fx-font-weight: bold;";
@@ -85,14 +92,14 @@ public class ActivitiesConstructor {
         List<Task> tasks = sql.getTasks(clientViewController.staticClient);
         for (Task task : tasks) {
             if (!task.isStatus())
-                constructingOpenTask(task, path);
+                constructingOpenTask(task);
             else
                 constructingCloseTask(task);
         }
     }
 
-    private static void constructLeadActivities(URL path) {
-        constructingButtons(path);
+    private static void constructLeadActivities() {
+        constructingButtons();
 
         //Heading
         String labelCss = "-fx-font-weight: bold;";
@@ -107,14 +114,14 @@ public class ActivitiesConstructor {
         List<Task> tasks = sql.getTasks(LeadViewController.staticLead);
         for (Task task : tasks) {
             if (!task.isStatus())
-                constructingOpenTask(task, path);
+                constructingOpenTask(task);
             else
                 constructingCloseTask(task);
         }
     }
 
-    private static void constructProductActivities(URL path) {
-        constructingButtons(path);
+    private static void constructProductActivities() {
+        constructingButtons();
 
         //Heading
         String labelCss = "-fx-font-weight: bold;";
@@ -129,13 +136,13 @@ public class ActivitiesConstructor {
         List<Task> tasks = sql.getTasks(ProductViewController.staticProduct);
         for (Task task : tasks) {
             if (!task.isStatus())
-                constructingOpenTask(task, path);
+                constructingOpenTask(task);
             else
                 constructingCloseTask(task);
         }
     }
 
-    private static void constructingButtons(URL path) {
+    private static void constructingButtons() {
         HBox box = new HBox();
         JFXButton newTask = new JFXButton("+ New Task");
 
@@ -146,14 +153,15 @@ public class ActivitiesConstructor {
             NewTaskController.stInstance = 'N';
 //            CommonTasks.inflateDialog("New Task", ActivitiesConstructor.class.getResource("../activity/task/new_task" +
 //                    ".fxml"));
-            CommonTasks.inflateDialog("New Task", path);
+//            CommonTasks.inflateDialog("New Task", path);
+            inflateNewTask("New Task");
         });
         box.getChildren().addAll(newTask);
 
         open_activities_list.getChildren().addAll(box);
     }
 
-    private static void constructingOpenTask(Task task, URL path) {
+    private static void constructingOpenTask(Task task) {
         //The Subject
         HBox subject = new HBox();
         subject.setSpacing(5);
@@ -195,15 +203,16 @@ public class ActivitiesConstructor {
         editItem.setOnAction(t -> {
             NewTaskController.stInstance = 'U';
             updatingTask = task;
-            CommonTasks.inflateDialog("Update Task", ActivitiesConstructor.class.getResource("../activity/task/new_task.fxml"));
+//            CommonTasks.inflateDialog("Update Task", ActivitiesConstructor.class.getResource("../activity/task/new_task.fxml"));
+            inflateNewTask("Update Task");
         });
         closeItem.setOnAction(t -> {
             sql.closeTask(task);
-            generalConstructor(choice, path);
+            generalConstructor(choice);
         });
         delItem.setOnAction(t -> {
             sql.freezeTask(task);
-            generalConstructor(choice, path);
+            generalConstructor(choice);
         });
         contextMenu.getItems().addAll(editItem, closeItem, delItem);
         options.addEventHandler(MouseEvent.MOUSE_CLICKED, (MouseEvent me) -> {
@@ -259,7 +268,7 @@ public class ActivitiesConstructor {
         closed_activities_list.getChildren().add(box);
     }
 
-    public static void generalConstructor(int choice, URL path) throws NullPointerException {
+    public static void generalConstructor(int choice) throws NullPointerException {
 
         open_activities_list.getChildren().clear();
         closed_activities_list.getChildren().clear();
@@ -267,17 +276,37 @@ public class ActivitiesConstructor {
         ActivitiesConstructor.choice = choice;
         switch (choice) {
             case 2: {     //Clients
-                constructClientActivities(path);
+                constructClientActivities();
                 break;
             }
             case 3: {
-                constructLeadActivities(path);
+                constructLeadActivities();
                 break;
             }
             case 4: {
-                constructProductActivities(path);
+                constructProductActivities();
                 break;
             }
         }
+    }
+
+    public static void inflateWindow(String title, String path) {
+        try {
+            FXMLLoader fxmlLoader = new FXMLLoader(ActivitiesConstructor.class.getResource(path));
+            Parent root1 = fxmlLoader.load();
+            Stage stage2 = new Stage();
+            stage2.setTitle(title);
+            stage2.setScene(new Scene(root1));
+            trayHelper tray = new trayHelper();
+            tray.createIcon(stage2);
+            Platform.setImplicitExit(true);
+            stage2.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void inflateNewTask(String title) {
+        inflateWindow(title,"/activity/task/new_task.fxml");
     }
 }

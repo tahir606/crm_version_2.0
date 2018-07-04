@@ -108,8 +108,7 @@ public class clientDetailsController implements Initializable {
         }
 
         new NotesConstructor(notes_list, sql, client).generalConstructor(2);
-        new ActivitiesConstructor(open_activities_list, closed_activities_list, client).generalConstructor(2,
-                this.getClass().getResource("../../../../activity/task/new_task.fxml"));
+        new ActivitiesConstructor(open_activities_list, closed_activities_list, client).generalConstructor(2);
     }
 
     private void inflateEResponse(int i) {

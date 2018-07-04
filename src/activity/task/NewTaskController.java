@@ -114,11 +114,13 @@ public class NewTaskController implements Initializable {
                     lead = LeadViewController.staticLead;
                     relation_type.getSelectionModel().select("Lead");
                     txt_name.setText(lead.getFullNameProperty().toString());
+                    break;
                 }
                 case 4: {
                     product = ProductViewController.staticProduct;
                     relation_type.getSelectionModel().select("Product");
                     txt_name.setText(product.getName().toString());
+                    break;
                 }
             }
         } else {

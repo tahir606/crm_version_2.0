@@ -87,7 +87,6 @@ public class dController implements Initializable {
         
         changeSelection(homeBtn, "Home/home_split.fxml", 1);
 
-
         if (user.isEmail()) {
             emailCtrl();
             isServer = true;
