@@ -28,7 +28,7 @@ import java.net.URL;
 import java.util.ResourceBundle;
 
 public class NewTaskController implements Initializable {
-
+    
     @FXML
     private JFXTextField txt_subject;
     @FXML
@@ -47,55 +47,55 @@ public class NewTaskController implements Initializable {
     private JFXButton btn_save;
     @FXML
     private JFXButton btn_cancel;
-
+    
     //Which property is selected
     private int choice;
-
+    
     private mySqlConn sql;
-
+    
     public static char stInstance;
-
+    
     private ClientProperty client;
     private Lead lead;
     private ProductProperty product;
-
+    
     private Task task;
-
+    
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-
+        
         sql = new mySqlConn();
-
+        
         relation_type.getItems().addAll("Contact", "Client", "Lead", "Product");
-
+        
         choice = ActivitiesConstructor.choice;
-
+        
         relation_type.setDisable(true);
         txt_name.setDisable(true);
-
+        
         switch (stInstance) {
             case 'N': {
                 btn_save.setText("Add");
-
+                
                 task = new Task();
                 break;
             }
             case 'U': {
                 btn_save.setText("Update");
-
+                
                 task = ActivitiesConstructor.updatingTask;
                 populateFields(task);
                 break;
             }
             case 'D': { //D for from details
                 btn_save.setText("Update");
-
+                
                 task = ActivityViewController.staticTask;
                 populateFields(task);
                 break;
             }
         }
-
+        
         if (stInstance != 'D') {
             switch (choice) {
                 case 1: {       //Contacts
@@ -135,7 +135,7 @@ public class NewTaskController implements Initializable {
                 txt_name.setText(task.getProductName());
             }
         }
-
+        
         btn_save.setOnAction(event -> {
             String subject = txt_subject.getText().toString(),
                     desc = txt_desc.getText().toString(),
@@ -143,7 +143,7 @@ public class NewTaskController implements Initializable {
                     type = relation_type.getSelectionModel().getSelectedItem(),
                     name = txt_name.getText().toString();
             boolean repeat = check_repeat.isSelected();
-
+            
             if (subject.equals("") || desc.equals("") || dueDate.equals("")) {
                 Toast.makeText((Stage) btn_save.getScene().getWindow(), "Required Fields Are Empty");
                 return;
@@ -165,19 +165,19 @@ public class NewTaskController implements Initializable {
                 Alert alert2 = new Alert(Alert.AlertType.CONFIRMATION, msg,
                         ButtonType.YES, ButtonType.NO);
                 alert2.showAndWait();
-
+                
                 if (alert2.getResult() == ButtonType.YES) {
-
+                    
                     task.setSubject(subject);
                     task.setDueDate(dueDate);
                     task.setDesc(desc);
                     task.setRepeat(repeat);
-
+                    
                     switch (stInstance) {
                         case 'N': {
                             try {
                                 if (type.equals("Contact")) {
-
+                                
                                 } else if (type.equals("Client")) {
                                     task.setClient(client.getCode());
                                 } else if (type.equals("Lead")) {
@@ -203,17 +203,17 @@ public class NewTaskController implements Initializable {
                             break;
                         }
                     }
-
+                    
                 } else {
                     return;
                 }
                 closeStage();
             }
         });
-
+        
         btn_cancel.setOnAction(event -> closeStage());
     }
-
+    
     private void closeStage() {
         Stage stage = (Stage) btn_cancel.getScene().getWindow();
         stage.close();
@@ -225,7 +225,7 @@ public class NewTaskController implements Initializable {
                     ActivityDashController.main_paneF.setCenter(
                             FXMLLoader.load(
                                     getClass().getClassLoader().getResource("activity/view/activity_view.fxml")));
-
+                    
                 } catch (IOException ex) {
                     ex.printStackTrace();
                 }
@@ -235,13 +235,13 @@ public class NewTaskController implements Initializable {
                 ActivityDashController.main_paneF.setCenter(
                         FXMLLoader.load(
                                 getClass().getClassLoader().getResource("activity/view/activity_view.fxml")));
-
+                
             } catch (IOException e) {
                 e.printStackTrace();
             }
         }
     }
-
+    
     private void populateFields(Task task) {
         txt_subject.setText(task.getSubject());
         txt_desc.setText(task.getDesc());

@@ -101,8 +101,8 @@
                    AnchorPane.leftAnchor="14.0" AnchorPane.topAnchor="14.0"/>
         <HBox layoutX="639.0" layoutY="19.0" prefHeight="34.0" prefWidth="361.0" spacing="20.0">
             <children>
-                <!--<JFXButton fx:id="btn_email" prefHeight="42.0" prefWidth="84.0" styleClass="emailDetailsButton"-->
-                <!--text="Send Email"/>-->
+                <JFXButton fx:id="btn_edit" prefHeight="42.0" prefWidth="84.0" styleClass="emailDetailsButton"
+                text="Edit"/>
                 <JFXButton fx:id="btn_close" prefHeight="38.0" prefWidth="84.0" styleClass="emailDetailsButton"
                            text="Close"/>
             </children>

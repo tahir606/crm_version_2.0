@@ -203,7 +203,6 @@ public class ActivitiesConstructor {
         editItem.setOnAction(t -> {
             NewTaskController.stInstance = 'U';
             updatingTask = task;
-//            CommonTasks.inflateDialog("Update Task", ActivitiesConstructor.class.getResource("../activity/task/new_task.fxml"));
             inflateNewTask("Update Task");
         });
         closeItem.setOnAction(t -> {

@@ -22,6 +22,8 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
+import static gui.ActivitiesConstructor.inflateNewTask;
+
 public class ActivityDetailsController implements Initializable {
 
     @FXML
@@ -36,6 +38,8 @@ public class ActivityDetailsController implements Initializable {
     private TextArea txt_desc;
     @FXML
     private JFXButton btn_back;
+    @FXML
+    private JFXButton btn_edit;
     @FXML
     private JFXButton btn_close;
     @FXML
@@ -104,6 +108,11 @@ public class ActivityDetailsController implements Initializable {
         btn_close.setOnAction(event -> {
             sql.closeTask(task);
             btn_close.setDisable(true);
+        });
+        
+        btn_edit.setOnAction(event -> {
+            NewTaskController.stInstance = 'D';
+            inflateNewTask("Update Task");
         });
 
 //        new NotesConstructor(notes_list, sql, lead).generalConstructor(3);
