@@ -15,11 +15,11 @@
             fx:controller="client.dash.contactView.contactDetails.contactDetailsController">
     <children>
         <ScrollPane layoutX="24.0" layoutY="68.0" AnchorPane.bottomAnchor="5.0" AnchorPane.topAnchor="52.0"
-                    AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0">
+                    AnchorPane.leftAnchor="20.0">
             <styleClass>
                 <String fx:value="scroll-view"/>
             </styleClass>
-            <VBox prefHeight="297.0" prefWidth="613.0" spacing="10.0">
+            <VBox fx:id="vbox_main" prefHeight="297.0" prefWidth="613.0" spacing="10.0">
                 <children>
                     <Label fx:id="txt_fname" layoutX="28.0" layoutY="65.0" text="First Last Name">
                         <font>
@@ -121,5 +121,9 @@
                            text="Edit"/>
             </children>
         </HBox>
+        <AnchorPane fx:id="tab_anchor" AnchorPane.bottomAnchor="5.0" AnchorPane.topAnchor="52.0"
+                    AnchorPane.rightAnchor="0.0">
+
+        </AnchorPane>
     </children>
 </AnchorPane>

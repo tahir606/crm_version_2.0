@@ -16,6 +16,7 @@ import javafx.scene.control.TextArea;
 import javafx.scene.control.Tooltip;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.HBox;
 import objects.Task;
 
 import java.io.IOException;
@@ -46,6 +47,8 @@ public class ActivityDetailsController implements Initializable {
     private Label txt_type;
     @FXML
     private Label txt_name;
+    @FXML
+    private HBox hbox_tools;
 //    @FXML
 //    private VBox notes_list;
 
@@ -82,24 +85,24 @@ public class ActivityDetailsController implements Initializable {
         txt_createdOn.setText(task.getCreatedOn());
         txt_createdBy.setText(task.getCreatedBy());
         txt_desc.setText(task.getDesc());
-    
+
         txt_type.setVisible(true);
         txt_name.setVisible(true);
-        
-        if (task.getClient() != 0 ) {
+
+        if (task.getClient() != 0) {
             txt_type.setText("Client");
             txt_name.setText(task.getClientName());
-        } else if (task.getLead() != 0 ) {
+        } else if (task.getLead() != 0) {
             txt_type.setText("Lead");
             txt_name.setText(task.getLeadName());
-        } else if (task.getProduct() != 0 ) {
+        } else if (task.getProduct() != 0) {
             txt_type.setText("Product");
             txt_name.setText(task.getProductName());
         } else {
             txt_type.setVisible(false);
             txt_name.setVisible(false);
         }
-        
+
         if (!task.isStatus())
             btn_close.setDisable(false);
         else
@@ -109,11 +112,21 @@ public class ActivityDetailsController implements Initializable {
             sql.closeTask(task);
             btn_close.setDisable(true);
         });
-        
+
         btn_edit.setOnAction(event -> {
             NewTaskController.stInstance = 'D';
             inflateNewTask("Update Task");
         });
+
+        JFXButton buttonArchive = new JFXButton("Archive");
+        buttonArchive.getStyleClass().add("emailDetailsButton");
+        buttonArchive.setPrefWidth(84);
+        buttonArchive.setPrefHeight(34);
+        buttonArchive.setOnAction(event -> {
+            sql.archiveTask(task);
+            CommonTasks.loadInPane(ActivityDashController.main_paneF, "activity/view/activity_view.fxml");
+        });
+        hbox_tools.getChildren().add(buttonArchive);
 
 //        new NotesConstructor(notes_list, sql, lead).generalConstructor(3);
 //        new ActivitiesConstructor(open_activities_list, closed_activities_list, lead).generalConstructor(3);

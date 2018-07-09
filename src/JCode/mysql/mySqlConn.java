@@ -399,8 +399,8 @@ public class mySqlConn {
         taskQueries.closeTask(task);
     }
 
-    public void freezeTask(Task task) {
-        taskQueries.freezeTask(task);
+    public void archiveTask(Task task) {
+        taskQueries.archiveTask(task);
     }
 
     public List<Task> getAllTasks(String where) {

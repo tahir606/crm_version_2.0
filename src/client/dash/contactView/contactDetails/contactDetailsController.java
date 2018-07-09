@@ -19,7 +19,11 @@ import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
+import javafx.scene.shape.Circle;
 import javafx.stage.Stage;
 import objects.ContactProperty;
 
@@ -29,6 +33,8 @@ import java.util.ResourceBundle;
 
 public class contactDetailsController implements Initializable {
 
+    @FXML
+    private AnchorPane tab_anchor;
     @FXML
     private Label txt_fname;
     @FXML
@@ -49,8 +55,11 @@ public class contactDetailsController implements Initializable {
     private JFXButton btn_edit;
     @FXML
     private VBox notes_list;
+    @FXML
+    private VBox vbox_main;
 
     private mySqlConn sql;
+
     @Override
     public void initialize(URL location, ResourceBundle resources) {
 
@@ -73,6 +82,21 @@ public class contactDetailsController implements Initializable {
 
         ContactProperty contact = contactViewController.staticContact;
         populateDetails(contact);
+
+        TabPane tabPane = new TabPane();
+        for (int i = 0; i < 5; i++) {
+            Tab tab = new Tab();
+            tab.setGraphic(new Circle(0, 0, 10));
+            HBox hbox = new HBox();
+            hbox.getChildren().add(new Label("Tab" + i));
+            hbox.setAlignment(Pos.CENTER);
+            tab.setContent(hbox);
+            tabPane.getTabs().add(tab);
+        }
+
+        tabPane.setTabClosingPolicy(TabPane.TabClosingPolicy.UNAVAILABLE);
+
+        tab_anchor.getChildren().add(tabPane);
     }
 
     private void inflateEResponse(int i) {

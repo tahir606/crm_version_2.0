@@ -99,7 +99,7 @@
         </ScrollPane>
         <JFXButton fx:id="btn_back" layoutX="14.0" layoutY="14.0" pickOnBounds="true" ripplerFill="#99ff9f" text=" "
                    AnchorPane.leftAnchor="14.0" AnchorPane.topAnchor="14.0"/>
-        <HBox layoutX="639.0" layoutY="19.0" prefHeight="34.0" prefWidth="361.0" spacing="20.0">
+        <HBox fx:id="hbox_tools" layoutX="639.0" layoutY="19.0" prefHeight="34.0" prefWidth="361.0" spacing="20.0">
             <children>
                 <JFXButton fx:id="btn_edit" prefHeight="42.0" prefWidth="84.0" styleClass="emailDetailsButton"
                 text="Edit"/>

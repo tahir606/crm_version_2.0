@@ -298,7 +298,7 @@ public class TaskQueries {
         }
     }
 
-    public void freezeTask(Task task) {
+    public void archiveTask(Task task) {
         String query = "UPDATE TASK_STORE SET FREZE = 1 " +
                 " WHERE TS_ID = ? ";
 

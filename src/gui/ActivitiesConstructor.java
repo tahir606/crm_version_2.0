@@ -210,7 +210,7 @@ public class ActivitiesConstructor {
             generalConstructor(choice);
         });
         delItem.setOnAction(t -> {
-            sql.freezeTask(task);
+            sql.archiveTask(task);
             generalConstructor(choice);
         });
         contextMenu.getItems().addAll(editItem, closeItem, delItem);
