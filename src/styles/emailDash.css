@@ -146,3 +146,13 @@
     -fx-pref-width: 12;
     -fx-pref-height: 12;
 }
+
+.tab {
+    -fx-pref-width: 250
+}
+.tab-header-background {
+    -fx-background-color:transparent
+}
+.tab-pane{
+    -fx-padding: 0 -1 -1 -1
+}
