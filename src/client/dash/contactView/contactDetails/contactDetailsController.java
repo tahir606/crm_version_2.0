@@ -32,9 +32,11 @@ import java.net.URL;
 import java.util.ResourceBundle;
 
 public class contactDetailsController implements Initializable {
-
+    
     @FXML
     private AnchorPane tab_anchor;
+    @FXML
+    private AnchorPane notes_anchor;
     @FXML
     private Label txt_fname;
     @FXML
@@ -57,14 +59,14 @@ public class contactDetailsController implements Initializable {
     private VBox notes_list;
     @FXML
     private VBox vbox_main;
-
+    
     private mySqlConn sql;
-
+    
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-
+        
         sql = new mySqlConn();
-
+        
         Image image = new Image(this.getClass().getResourceAsStream("/res/img/left-arrow.png"));
         btn_back.setGraphic(new ImageView(image));
         btn_back.setAlignment(Pos.CENTER_LEFT);
@@ -74,34 +76,41 @@ public class contactDetailsController implements Initializable {
                 dashBaseController.main_paneF.setCenter(
                         FXMLLoader.load(
                                 getClass().getClassLoader().getResource("client/dash/contactView/contactView.fxml")));
-
+                
             } catch (IOException e) {
                 e.printStackTrace();
             }
         });
-
+        
         ContactProperty contact = contactViewController.staticContact;
         populateDetails(contact);
 
-        TabPane tabPane = new TabPane();
-
-        Tab tab = new Tab("Notes");
-        new NotesConstructor(tab, sql, contact).generalConstructor(1);
-        tabPane.getTabs().add(tab);
-
-        Tab tab2 = new Tab("Tasks");
-        HBox hbox2 = new HBox();
-        hbox2.setMinWidth(400);
-        hbox2.getChildren().add(new Label("Tasks"));
-        hbox2.setAlignment(Pos.CENTER);
-        tab2.setContent(hbox2);
-        tabPane.getTabs().add(tab2);
-
-        tabPane.setTabClosingPolicy(TabPane.TabClosingPolicy.UNAVAILABLE);
-
-        tab_anchor.getChildren().add(tabPane);
+//        TabPane tabPane = new TabPane();
+//
+//        Tab tab = new Tab("Notes");
+////        new NotesConstructor(tab, sql, contact).generalConstructor(1);
+//        tabPane.getTabs().add(tab);
+//
+//        Tab tab2 = new Tab("Tasks");
+//        HBox hbox2 = new HBox();
+//        hbox2.setMinWidth(400);
+//        hbox2.getChildren().add(new Label("Tasks"));
+//        hbox2.setAlignment(Pos.CENTER);
+//        tab2.setContent(hbox2);
+//        tabPane.getTabs().add(tab2);
+//
+//        tabPane.setTabClosingPolicy(TabPane.TabClosingPolicy.UNAVAILABLE);
+//
+//        tab_anchor.getChildren().add(tabPane);
+        
+        VBox newBox = new VBox();
+        for (int i = 0; i < 100; i++) {
+            newBox.getChildren().add(new Label(String.valueOf(i)));
+        }
+        newBox.setPrefHeight(600);
+        notes_anchor.getChildren().add(new ScrollPane(newBox));
     }
-
+    
     private void inflateEResponse(int i) {
         try {
             EResponseController.choice = i;
@@ -118,7 +127,7 @@ public class contactDetailsController implements Initializable {
             e.printStackTrace();
         }
     }
-
+    
     private void populateDetails(ContactProperty contact) {
         txt_fname.setText(contact.getFullName());
         txt_email.setText(contact.getEmail());
@@ -126,20 +135,20 @@ public class contactDetailsController implements Initializable {
         txt_client.setText(contact.getClientName());
         txt_dob.setText(CommonTasks.getDateFormatted(contact.getDob()));
         txt_age.setText(String.valueOf(contact.getAge()));
-
+        
         btn_email.setOnAction(event -> {
             EResponseController.stTo = contact.getEmail();
             EResponseController.stInstance = 'N';
             inflateEResponse(1);
         });
-
+        
         btn_edit.setOnAction(event -> {
             newContactController.stInstance = 'U';
             try {
                 dashBaseController.main_paneF.setCenter(
                         FXMLLoader.load(
                                 getClass().getClassLoader().getResource("client/newContact/newContact.fxml")));
-
+                
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -147,5 +156,5 @@ public class contactDetailsController implements Initializable {
 
 //        new NotesConstructor(, sql, contact).generalConstructor(1);
     }
-
+    
 }
