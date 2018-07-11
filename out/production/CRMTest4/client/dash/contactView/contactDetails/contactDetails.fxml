@@ -113,6 +113,6 @@
                 <JFXButton fx:id="btn_edit" prefHeight="38.0" prefWidth="84.0" styleClass="emailDetailsButton" text="Edit" />
             </children>
         </HBox>
-        <AnchorPane fx:id="tab_anchor" prefHeight="406.0" prefWidth="600.0" AnchorPane.leftAnchor="515.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="70.0" />
+        <AnchorPane fx:id="tab_anchor" prefHeight="406.0" prefWidth="600.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="600.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="70.0" />
     </children>
 </AnchorPane>

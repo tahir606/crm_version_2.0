@@ -91,15 +91,12 @@ public class contactDetailsController implements Initializable {
         new NotesConstructor(tab, sql, contact).generalConstructor(1);
         tabPane.getTabs().add(tab);
 
-        Tab tab2 = new Tab("Tasks");
-        HBox hbox2 = new HBox();
-        hbox2.setMinWidth(400);
-        hbox2.getChildren().add(new Label("Tasks"));
-        hbox2.setAlignment(Pos.CENTER);
-        tab2.setContent(hbox2);
-        tabPane.getTabs().add(tab2);
-
         tabPane.setTabClosingPolicy(TabPane.TabClosingPolicy.UNAVAILABLE);
+
+        AnchorPane.setBottomAnchor(tabPane, 0.0);
+        AnchorPane.setTopAnchor(tabPane, 0.0);
+        AnchorPane.setRightAnchor(tabPane, 0.0);
+        AnchorPane.setLeftAnchor(tabPane, 0.0);
 
         tab_anchor.getChildren().add(tabPane);
         

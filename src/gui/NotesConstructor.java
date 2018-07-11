@@ -270,6 +270,8 @@ public class NotesConstructor {
             }
         }
         notes_list.setPrefHeight(450);
-        tab.setContent(new ScrollPane(notes_list));
+        ScrollPane sp = new ScrollPane(notes_list);
+        sp.getStyleClass().add("scroll-view");
+        tab.setContent(sp);
     }
 }
