@@ -269,11 +269,7 @@ public class NotesConstructor {
                 break;
             }
         }
-
-        notes_list.getChildren().clear();
-        for (int i = 0; i < 100; i++) {
-            notes_list.getChildren().add(new Label(String.valueOf(i)));
-        }
+        notes_list.setPrefHeight(450);
         tab.setContent(new ScrollPane(notes_list));
     }
 }
