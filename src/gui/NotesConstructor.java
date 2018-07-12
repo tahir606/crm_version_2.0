@@ -27,8 +27,9 @@ public class NotesConstructor {
     TextArea noteTxt;
     JFXButton btnAdd;
 
+    TabPane tabPane;
     Tab tab;
-    VBox notes_list;
+    VBox notes_list, main_box;
     mySqlConn sql;
 
     ContactProperty contact;
@@ -41,27 +42,34 @@ public class NotesConstructor {
 //        this.sql = sql;
 //        this.contact = contact;
 //    }
-    public NotesConstructor(Tab tab, mySqlConn sql, ContactProperty contact) {
+    public NotesConstructor(TabPane tabPane, mySqlConn sql, ContactProperty contact) {
+        this.tabPane = tabPane;
         notes_list = new VBox();
-        this.tab = tab;
+        tab = new Tab("Notes");
         this.sql = sql;
         this.contact = contact;
     }
 
-    public NotesConstructor(VBox notes_list, mySqlConn sql, ClientProperty client) {
-        this.notes_list = notes_list;
+    public NotesConstructor(TabPane tabPane, mySqlConn sql, ClientProperty client) {
+        this.tabPane = tabPane;
+        notes_list = new VBox();
+        tab = new Tab("Notes");
         this.sql = sql;
         this.client = client;
     }
 
-    public NotesConstructor(VBox notes_list, mySqlConn sql, Lead lead) {
-        this.notes_list = notes_list;
+    public NotesConstructor(TabPane tabPane, mySqlConn sql, Lead lead) {
+        this.tabPane = tabPane;
+        notes_list = new VBox();
+        tab = new Tab("Notes");
         this.sql = sql;
         this.lead = lead;
     }
 
-    public NotesConstructor(VBox notes_list, mySqlConn sql, ProductProperty product) {
-        this.notes_list = notes_list;
+    public NotesConstructor(TabPane tabPane, mySqlConn sql, ProductProperty product) {
+        this.tabPane = tabPane;
+        notes_list = new VBox();
+        tab = new Tab("Notes");
         this.sql = sql;
         this.product = product;
     }
@@ -115,6 +123,7 @@ public class NotesConstructor {
         area.setWrapText(true);
         area.setEditable(false);
         area.setMinHeight(50);
+        area.setMaxHeight(50);
         area.setStyle("-fx-background-color: #fcfcfc;" +
                 "-fx-background: transparent;");
         body.getChildren().add(area);
@@ -209,14 +218,12 @@ public class NotesConstructor {
     }
 
     public void createNew(int choice) {
-        Label label = new Label("Notes");
-        label.setFont(new Font(14));
-        label.setStyle("-fx-font-weight: bold;");
-        notes_list.getChildren().add(0, label);
 
         HBox addNew = new HBox();
         addNew.setSpacing(5);
         noteTxt = new TextArea();
+        noteTxt.setMinHeight(50);
+        noteTxt.setMaxHeight(50);
         noteTxt.setPromptText("New Note");
         btnAdd = new JFXButton();
         btnAdd.setText("Add");
@@ -273,5 +280,6 @@ public class NotesConstructor {
         ScrollPane sp = new ScrollPane(notes_list);
         sp.getStyleClass().add("scroll-view");
         tab.setContent(sp);
+        tabPane.getTabs().add(tab);
     }
 }

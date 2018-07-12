@@ -76,7 +76,6 @@ public class contactDetailsController implements Initializable {
                 dashBaseController.main_paneF.setCenter(
                         FXMLLoader.load(
                                 getClass().getClassLoader().getResource("client/dash/contactView/contactView.fxml")));
-                
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -87,9 +86,7 @@ public class contactDetailsController implements Initializable {
 
         TabPane tabPane = new TabPane();
         tabPane.setMinWidth(600);
-        Tab tab = new Tab("Notes");
-        new NotesConstructor(tab, sql, contact).generalConstructor(1);
-        tabPane.getTabs().add(tab);
+        new NotesConstructor(tabPane , sql, contact).generalConstructor(1);
 
         tabPane.setTabClosingPolicy(TabPane.TabClosingPolicy.UNAVAILABLE);
 
@@ -98,14 +95,8 @@ public class contactDetailsController implements Initializable {
         AnchorPane.setRightAnchor(tabPane, 0.0);
         AnchorPane.setLeftAnchor(tabPane, 0.0);
 
-        tab_anchor.getChildren().add(tabPane);
+        vbox_main.getChildren().add(tabPane);
         
-//        VBox newBox = new VBox();
-//        for (int i = 0; i < 100; i++) {
-//            newBox.getChildren().add(new Label(String.valueOf(i)));
-//        }
-//        newBox.setPrefHeight(600);
-//        notes_anchor.getChildren().add(new ScrollPane(newBox));
     }
     
     private void inflateEResponse(int i) {

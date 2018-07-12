@@ -20,7 +20,7 @@
             <styleClass>
                 <String fx:value="scroll-view"/>
             </styleClass>
-            <VBox layoutX="28.0" layoutY="104.0" prefHeight="293.0" prefWidth="563.0" spacing="10.0">
+            <VBox fx:id="vbox_main" layoutX="28.0" layoutY="104.0" prefHeight="293.0" prefWidth="563.0" spacing="10.0">
                 <children>
                     <Label fx:id="txt_pname" layoutX="28.0" layoutY="65.0" text="Product Name">
                         <font>

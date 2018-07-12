@@ -11,10 +11,12 @@ import javafx.fxml.Initializable;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Label;
+import javafx.scene.control.TabPane;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.Tooltip;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import objects.ProductModule;
@@ -43,6 +45,8 @@ public class ProductDetailsController implements Initializable {
     private JFXButton btn_edit;
     @FXML
     private VBox notes_list;
+    @FXML
+    private VBox vbox_main;
     @FXML
     private VBox open_activities_list;
     @FXML
@@ -105,8 +109,20 @@ public class ProductDetailsController implements Initializable {
         txt_startedOn.setText(product.getFormattedDate());
 
         vbox_modules.setSpacing(10);
-
-        new NotesConstructor(notes_list, sql, product).generalConstructor(4);
+    
+        TabPane tabPane = new TabPane();
+        tabPane.setMinWidth(600);
+        new NotesConstructor(tabPane, sql, product).generalConstructor(4);
+    
+        tabPane.setTabClosingPolicy(TabPane.TabClosingPolicy.UNAVAILABLE);
+    
+        AnchorPane.setBottomAnchor(tabPane, 0.0);
+        AnchorPane.setTopAnchor(tabPane, 0.0);
+        AnchorPane.setRightAnchor(tabPane, 0.0);
+        AnchorPane.setLeftAnchor(tabPane, 0.0);
+    
+        vbox_main.getChildren().add(tabPane);
+        
         new ActivitiesConstructor(open_activities_list, closed_activities_list, product).generalConstructor(4);
     }
 
