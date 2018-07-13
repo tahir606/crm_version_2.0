@@ -7,10 +7,11 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
+<?import javafx.scene.control.ScrollPane?>
+<?import java.lang.String?>
 <AnchorPane prefHeight="472.0" prefWidth="1000.0" stylesheets="@../../../../styles/emailDash.css" xmlns="http://javafx.com/javafx/9" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.dash.contactView.contactDetails.contactDetailsController">
     <children>
-        <!--<ScrollPane layoutX="24.0" layoutY="68.0" AnchorPane.bottomAnchor="5.0" AnchorPane.topAnchor="52.0"-->
-        <!--AnchorPane.leftAnchor="20.0">-->
+        <!--<ScrollPane layoutX="24.0" layoutY="68.0" AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="20.0" AnchorPane.topAnchor="52.0">-->
         <!--<styleClass>-->
         <!--<String fx:value="scroll-view"/>-->
         <!--</styleClass>-->

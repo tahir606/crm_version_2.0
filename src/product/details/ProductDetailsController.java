@@ -113,7 +113,8 @@ public class ProductDetailsController implements Initializable {
         TabPane tabPane = new TabPane();
         tabPane.setMinWidth(600);
         new NotesConstructor(tabPane, sql, product).generalConstructor(4);
-    
+        new ActivitiesConstructor(tabPane, product).generalConstructor(4);
+
         tabPane.setTabClosingPolicy(TabPane.TabClosingPolicy.UNAVAILABLE);
     
         AnchorPane.setBottomAnchor(tabPane, 0.0);
@@ -122,8 +123,6 @@ public class ProductDetailsController implements Initializable {
         AnchorPane.setLeftAnchor(tabPane, 0.0);
     
         vbox_main.getChildren().add(tabPane);
-        
-        new ActivitiesConstructor(open_activities_list, closed_activities_list, product).generalConstructor(4);
     }
 
     private static void populateModules(ProductProperty product, URL path) {

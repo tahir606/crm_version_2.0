@@ -47,14 +47,14 @@ public class clientDetailsController implements Initializable {
     private JFXButton btn_email;
     @FXML
     private JFXButton btn_edit;
-    @FXML
-    private VBox notes_list;
+//    @FXML
+//    private VBox notes_list;
     @FXML
     private VBox vbox_main;
-    @FXML
-    private VBox open_activities_list;
-    @FXML
-    private VBox closed_activities_list;
+//    @FXML
+//    private VBox open_activities_list;
+//    @FXML
+//    private VBox closed_activities_list;
 
     private mySqlConn sql;
 
@@ -114,17 +114,17 @@ public class clientDetailsController implements Initializable {
         TabPane tabPane = new TabPane();
         tabPane.setMinWidth(600);
         new NotesConstructor(tabPane, sql, client).generalConstructor(2);
-    
+        new ActivitiesConstructor(tabPane, client).generalConstructor(2);
+
         tabPane.setTabClosingPolicy(TabPane.TabClosingPolicy.UNAVAILABLE);
-    
+
         AnchorPane.setBottomAnchor(tabPane, 0.0);
         AnchorPane.setTopAnchor(tabPane, 0.0);
         AnchorPane.setRightAnchor(tabPane, 0.0);
         AnchorPane.setLeftAnchor(tabPane, 0.0);
-    
+
         vbox_main.getChildren().add(tabPane);
-        
-        new ActivitiesConstructor(open_activities_list, closed_activities_list, client).generalConstructor(2);
+
     }
 
     private void inflateEResponse(int i) {

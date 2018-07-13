@@ -13,10 +13,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.geometry.Insets;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.ContextMenu;
-import javafx.scene.control.Label;
-import javafx.scene.control.MenuItem;
-import javafx.scene.control.TextArea;
+import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseButton;
@@ -39,6 +36,8 @@ import java.util.List;
 
 public class ActivitiesConstructor {
 
+    private static TabPane tabPane;
+    private static Tab tab;
     private static VBox open_activities_list, closed_activities_list;
 
     private ClientProperty client;
@@ -60,17 +59,31 @@ public class ActivitiesConstructor {
         sql = new mySqlConn();
     }
 
-    public ActivitiesConstructor(VBox open_activities_list, VBox closed_activities_list, Lead lead) {
-        this.open_activities_list = open_activities_list;
-        this.closed_activities_list = closed_activities_list;
+    public ActivitiesConstructor(TabPane tabPane, ClientProperty client) {
+        this.tabPane = tabPane;
+        this.tab = new Tab("Tasks");
+        this.open_activities_list = new VBox();
+        this.closed_activities_list = new VBox();
+        this.client = client;
+
+        sql = new mySqlConn();
+    }
+
+    public ActivitiesConstructor(TabPane tabPane, Lead lead) {
+        this.tabPane = tabPane;
+        this.tab = new Tab("Tasks");
+        this.open_activities_list = new VBox();
+        this.closed_activities_list = new VBox();
         this.lead = lead;
 
         sql = new mySqlConn();
     }
 
-    public ActivitiesConstructor(VBox open_activities_list, VBox closed_activities_list, ProductProperty product) {
-        this.open_activities_list = open_activities_list;
-        this.closed_activities_list = closed_activities_list;
+    public ActivitiesConstructor(TabPane tabPane, ProductProperty product) {
+        this.tabPane = tabPane;
+        this.tab = new Tab("Tasks");
+        this.open_activities_list = new VBox();
+        this.closed_activities_list = new VBox();
         this.product = product;
 
         sql = new mySqlConn();
@@ -83,11 +96,11 @@ public class ActivitiesConstructor {
         String labelCss = "-fx-font-weight: bold;";
         Label label = new Label("Open Activities");
         label.setStyle(labelCss);
-        open_activities_list.getChildren().addAll(label);
+        open_activities_list.getChildren().addAll(returnSpaceHbox(), label, returnSpaceHbox());
 
         Label label2 = new Label("Closed Activities");
         label2.setStyle(labelCss);
-        closed_activities_list.getChildren().addAll(label2);
+        closed_activities_list.getChildren().addAll(returnSpaceHbox(), label2, returnSpaceHbox());
 
         List<Task> tasks = sql.getTasks(clientViewController.staticClient);
         for (Task task : tasks) {
@@ -179,6 +192,7 @@ public class ActivitiesConstructor {
         area.setWrapText(true);
         area.setEditable(false);
         area.setMinHeight(50);
+        area.setMaxHeight(50);
         area.setStyle("-fx-background-color: #fcfcfc;" +
                 "-fx-background: transparent;");
         body.getChildren().add(area);
@@ -186,6 +200,7 @@ public class ActivitiesConstructor {
         HBox details = new HBox();
         details.setSpacing(10);
         details.setMinHeight(25);
+        details.setMaxHeight(25);
         details.setPadding(new Insets(3));
         Label createdBy = new Label(task.getCreatedBy()),
                 createdOn = new Label(task.getCreatedOn());
@@ -245,6 +260,7 @@ public class ActivitiesConstructor {
         area.setWrapText(true);
         area.setEditable(false);
         area.setMinHeight(50);
+        area.setMaxHeight(50);
         area.setStyle("-fx-background-color: #fcfcfc;" +
                 "-fx-background: transparent;");
         body.getChildren().add(area);
@@ -252,6 +268,7 @@ public class ActivitiesConstructor {
         HBox details = new HBox();
         details.setSpacing(10);
         details.setMinHeight(25);
+        details.setMaxHeight(25);
         details.setPadding(new Insets(3));
         Label createdBy = new Label(task.getCreatedBy()),
                 createdOn = new Label(task.getCreatedOn());
@@ -287,6 +304,19 @@ public class ActivitiesConstructor {
                 break;
             }
         }
+
+        VBox vBox = new VBox();
+        vBox.getChildren().addAll(returnSpaceHbox(), open_activities_list, returnSpaceHbox(), new Separator(), returnSpaceHbox(), closed_activities_list);
+        ScrollPane sp = new ScrollPane(vBox);
+        sp.getStyleClass().add("scroll-view");
+        tab.setContent(sp);
+        tabPane.getTabs().add(tab);
+    }
+
+    private static HBox returnSpaceHbox() {
+        HBox hBox = new HBox();
+        hBox.setMinHeight(10);
+        return hBox;
     }
 
     public static void inflateWindow(String title, String path) {
@@ -306,6 +336,6 @@ public class ActivitiesConstructor {
     }
 
     public static void inflateNewTask(String title) {
-        inflateWindow(title,"/activity/task/new_task.fxml");
+        inflateWindow(title, "/activity/task/new_task.fxml");
     }
 }

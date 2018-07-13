@@ -109,7 +109,8 @@ public class LeadDetailsController implements Initializable {
         TabPane tabPane = new TabPane();
         tabPane.setMinWidth(600);
         new NotesConstructor(tabPane, sql, lead).generalConstructor(3);
-    
+        new ActivitiesConstructor(tabPane, lead).generalConstructor(3);
+
         tabPane.setTabClosingPolicy(TabPane.TabClosingPolicy.UNAVAILABLE);
     
         AnchorPane.setBottomAnchor(tabPane, 0.0);
@@ -118,7 +119,7 @@ public class LeadDetailsController implements Initializable {
         AnchorPane.setLeftAnchor(tabPane, 0.0);
     
         vbox_main.getChildren().add(tabPane);
-        
-        new ActivitiesConstructor(open_activities_list, closed_activities_list, lead).generalConstructor(3);
+
+
     }
 }
