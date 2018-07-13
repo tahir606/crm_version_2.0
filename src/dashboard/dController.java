@@ -85,7 +85,7 @@ public class dController implements Initializable {
 
         DrawerPane(); //Populate Drawer
         
-//        changeSelection(homeBtn, "Home/home_split.fxml", 1);
+        changeSelection(homeBtn, "Home/home_split.fxml", 1);
 
         if (user.isEmail()) {
             emailCtrl();
