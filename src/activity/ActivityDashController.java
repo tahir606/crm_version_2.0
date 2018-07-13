@@ -3,7 +3,6 @@ package activity;
 import JCode.CommonTasks;
 import activity.task.NewTaskController;
 import dashboard.dController;
-import gui.ActivitiesConstructor;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;

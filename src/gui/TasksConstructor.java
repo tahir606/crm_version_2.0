@@ -1,14 +1,11 @@
 package gui;
 
-import JCode.CommonTasks;
 import JCode.mysql.mySqlConn;
 import JCode.trayHelper;
 import activity.task.NewTaskController;
 import client.dash.clientView.clientViewController;
 import com.jfoenix.controls.JFXButton;
 import javafx.application.Platform;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Insets;
 import javafx.scene.Parent;
@@ -20,7 +17,6 @@ import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
-import javafx.scene.text.Font;
 import javafx.stage.Stage;
 import lead.view.LeadViewController;
 import objects.ClientProperty;
@@ -30,11 +26,9 @@ import objects.Task;
 import product.view.ProductViewController;
 
 import java.io.IOException;
-import java.io.InputStream;
-import java.net.URL;
 import java.util.List;
 
-public class ActivitiesConstructor {
+public class TasksConstructor {
 
     private static TabPane tabPane;
     private static Tab tab;
@@ -50,7 +44,7 @@ public class ActivitiesConstructor {
     public static int choice;
     public static Task updatingTask;
 
-    public ActivitiesConstructor(VBox open_activities_list, VBox closed_activities_list, ClientProperty
+    public TasksConstructor(VBox open_activities_list, VBox closed_activities_list, ClientProperty
             client) {
         this.open_activities_list = open_activities_list;
         this.closed_activities_list = closed_activities_list;
@@ -59,7 +53,7 @@ public class ActivitiesConstructor {
         sql = new mySqlConn();
     }
 
-    public ActivitiesConstructor(TabPane tabPane, ClientProperty client) {
+    public TasksConstructor(TabPane tabPane, ClientProperty client) {
         this.tabPane = tabPane;
         this.tab = new Tab("Tasks");
         this.open_activities_list = new VBox();
@@ -69,7 +63,7 @@ public class ActivitiesConstructor {
         sql = new mySqlConn();
     }
 
-    public ActivitiesConstructor(TabPane tabPane, Lead lead) {
+    public TasksConstructor(TabPane tabPane, Lead lead) {
         this.tabPane = tabPane;
         this.tab = new Tab("Tasks");
         this.open_activities_list = new VBox();
@@ -79,7 +73,7 @@ public class ActivitiesConstructor {
         sql = new mySqlConn();
     }
 
-    public ActivitiesConstructor(TabPane tabPane, ProductProperty product) {
+    public TasksConstructor(TabPane tabPane, ProductProperty product) {
         this.tabPane = tabPane;
         this.tab = new Tab("Tasks");
         this.open_activities_list = new VBox();
@@ -164,7 +158,7 @@ public class ActivitiesConstructor {
         newTask.setStyle(css);
         newTask.setOnAction(event -> {
             NewTaskController.stInstance = 'N';
-//            CommonTasks.inflateDialog("New Task", ActivitiesConstructor.class.getResource("../activity/task/new_task" +
+//            CommonTasks.inflateDialog("New Task", TasksConstructor.class.getResource("../activity/task/new_task" +
 //                    ".fxml"));
 //            CommonTasks.inflateDialog("New Task", path);
             inflateNewTask("New Task");
@@ -208,7 +202,7 @@ public class ActivitiesConstructor {
         createdBy.setMinWidth(280);
         JFXButton options = new JFXButton();
 
-        Image image = new Image(ActivitiesConstructor.class.getResourceAsStream("/res/img/options.png"));
+        Image image = new Image(TasksConstructor.class.getResourceAsStream("/res/img/options.png"));
         options.setGraphic(new ImageView(image));
         details.getChildren().addAll(createdOn, createdBy, options);
         ContextMenu contextMenu = new ContextMenu();
@@ -289,7 +283,7 @@ public class ActivitiesConstructor {
         open_activities_list.getChildren().clear();
         closed_activities_list.getChildren().clear();
 
-        ActivitiesConstructor.choice = choice;
+        TasksConstructor.choice = choice;
         switch (choice) {
             case 2: {     //Clients
                 constructClientActivities();
@@ -321,7 +315,7 @@ public class ActivitiesConstructor {
 
     public static void inflateWindow(String title, String path) {
         try {
-            FXMLLoader fxmlLoader = new FXMLLoader(ActivitiesConstructor.class.getResource(path));
+            FXMLLoader fxmlLoader = new FXMLLoader(TasksConstructor.class.getResource(path));
             Parent root1 = fxmlLoader.load();
             Stage stage2 = new Stage();
             stage2.setTitle(title);

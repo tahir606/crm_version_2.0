@@ -8,9 +8,7 @@ import activity.view.ActivityViewController;
 import client.dash.clientView.clientViewController;
 import client.dash.contactView.contactViewController;
 import com.jfoenix.controls.*;
-import gui.ActivitiesConstructor;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
+import gui.TasksConstructor;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -68,7 +66,7 @@ public class NewTaskController implements Initializable {
         
         relation_type.getItems().addAll("Contact", "Client", "Lead", "Product");
         
-        choice = ActivitiesConstructor.choice;
+        choice = TasksConstructor.choice;
         
         relation_type.setDisable(true);
         txt_name.setDisable(true);
@@ -83,7 +81,7 @@ public class NewTaskController implements Initializable {
             case 'U': {
                 btn_save.setText("Update");
                 
-                task = ActivitiesConstructor.updatingTask;
+                task = TasksConstructor.updatingTask;
                 populateFields(task);
                 break;
             }
@@ -219,7 +217,7 @@ public class NewTaskController implements Initializable {
         stage.close();
         if (stInstance != 'D')
             try {
-                ActivitiesConstructor.generalConstructor(choice);
+                TasksConstructor.generalConstructor(choice);
             } catch (NullPointerException e) {
                 try {
                     ActivityDashController.main_paneF.setCenter(

@@ -1,6 +1,6 @@
 package lead.details;
 
-import gui.ActivitiesConstructor;
+import gui.TasksConstructor;
 import gui.NotesConstructor;
 import JCode.mysql.mySqlConn;
 import com.jfoenix.controls.JFXButton;
@@ -109,7 +109,7 @@ public class LeadDetailsController implements Initializable {
         TabPane tabPane = new TabPane();
         tabPane.setMinWidth(600);
         new NotesConstructor(tabPane, sql, lead).generalConstructor(3);
-        new ActivitiesConstructor(tabPane, lead).generalConstructor(3);
+        new TasksConstructor(tabPane, lead).generalConstructor(3);
 
         tabPane.setTabClosingPolicy(TabPane.TabClosingPolicy.UNAVAILABLE);
     

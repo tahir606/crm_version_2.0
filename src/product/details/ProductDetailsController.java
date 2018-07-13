@@ -1,7 +1,7 @@
 package product.details;
 
 import JCode.CommonTasks;
-import gui.ActivitiesConstructor;
+import gui.TasksConstructor;
 import gui.NotesConstructor;
 import JCode.mysql.mySqlConn;
 import com.jfoenix.controls.JFXButton;
@@ -113,7 +113,7 @@ public class ProductDetailsController implements Initializable {
         TabPane tabPane = new TabPane();
         tabPane.setMinWidth(600);
         new NotesConstructor(tabPane, sql, product).generalConstructor(4);
-        new ActivitiesConstructor(tabPane, product).generalConstructor(4);
+        new TasksConstructor(tabPane, product).generalConstructor(4);
 
         tabPane.setTabClosingPolicy(TabPane.TabClosingPolicy.UNAVAILABLE);
     

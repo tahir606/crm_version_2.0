@@ -6,7 +6,6 @@ import activity.ActivityDashController;
 import activity.task.NewTaskController;
 import activity.view.ActivityViewController;
 import com.jfoenix.controls.JFXButton;
-import gui.ActivitiesConstructor;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -23,7 +22,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
-import static gui.ActivitiesConstructor.inflateNewTask;
+import static gui.TasksConstructor.inflateNewTask;
 
 public class ActivityDetailsController implements Initializable {
 
@@ -129,7 +128,7 @@ public class ActivityDetailsController implements Initializable {
         hbox_tools.getChildren().add(buttonArchive);
 
 //        new NotesConstructor(notes_list, sql, lead).generalConstructor(3);
-//        new ActivitiesConstructor(open_activities_list, closed_activities_list, lead).generalConstructor(3);
+//        new TasksConstructor(open_activities_list, closed_activities_list, lead).generalConstructor(3);
     }
 }
 
