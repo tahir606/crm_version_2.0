@@ -37,21 +37,21 @@
                 <HBox prefHeight="26.0" prefWidth="316.0" spacing="25.0">
                     <children>
                         <Label prefHeight="35.0" prefWidth="80.0" text="From" />
-                        <JFXDatePicker fx:id="due_date" prefHeight="28.0" prefWidth="200.0" />
-                  <JFXTimePicker />
+                        <JFXDatePicker fx:id="from_date" prefHeight="28.0" prefWidth="200.0" />
+                  <JFXTimePicker fx:id="from_time" />
                     </children>
                 </HBox>
             <HBox prefHeight="26.0" prefWidth="316.0" spacing="25.0">
                <children>
                   <Label prefHeight="35.0" prefWidth="80.0" text="To" />
-                  <JFXDatePicker fx:id="due_date1" prefHeight="28.0" prefWidth="200.0" />
-                  <JFXTimePicker />
+                  <JFXDatePicker fx:id="to_date" prefHeight="28.0" prefWidth="200.0" />
+                  <JFXTimePicker fx:id="to_time" />
                </children>
             </HBox>
                 <HBox prefHeight="26.0" prefWidth="316.0" spacing="25.0">
                     <children>
                         <Label prefHeight="35.0" prefWidth="80.0" text="All Day" />
-                        <JFXCheckBox fx:id="check_repeat" prefHeight="30.0" prefWidth="300.0" />
+                        <JFXCheckBox fx:id="check_allDay" prefHeight="30.0" prefWidth="300.0" />
                     </children>
                 </HBox>
                 <HBox prefHeight="78.0" prefWidth="521.0">

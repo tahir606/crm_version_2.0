@@ -2,8 +2,8 @@ package objects;
 
 public class Event {
 
-    private int code, client, lead, createdBy;
-    private String name, location, desc, fromDate, toDate, relationName, createdOn;
+    private int code, client, lead;
+    private String title, location, desc, fromDate, toDate, fromTime, toTime, relationName, createdOn, createdBy;
     private boolean isAllDay;
 
     public Event() {
@@ -16,7 +16,7 @@ public class Event {
                 ", client=" + client +
                 ", lead=" + lead +
                 ", createdBy=" + createdBy +
-                ", name='" + name + '\'' +
+                ", title='" + title + '\'' +
                 ", location='" + location + '\'' +
                 ", desc='" + desc + '\'' +
                 ", fromDate='" + fromDate + '\'' +
@@ -51,20 +51,20 @@ public class Event {
         this.lead = lead;
     }
 
-    public int getCreatedBy() {
+    public String getCreatedBy() {
         return createdBy;
     }
 
-    public void setCreatedBy(int createdBy) {
+    public void setCreatedBy(String createdBy) {
         this.createdBy = createdBy;
     }
 
-    public String getName() {
-        return name;
+    public String getTitle() {
+        return title;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setTitle(String title) {
+        this.title = title;
     }
 
     public String getLocation() {
@@ -97,6 +97,22 @@ public class Event {
 
     public void setToDate(String toDate) {
         this.toDate = toDate;
+    }
+
+    public String getFromTime() {
+        return fromTime;
+    }
+
+    public void setFromTime(String fromTime) {
+        this.fromTime = fromTime;
+    }
+
+    public String getToTime() {
+        return toTime;
+    }
+
+    public void setToTime(String toTime) {
+        this.toTime = toTime;
     }
 
     public String getRelationName() {

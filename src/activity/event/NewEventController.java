@@ -1,14 +1,26 @@
 package activity.event;
 
+import JCode.CommonTasks;
+import JCode.Toast;
 import JCode.mysql.mySqlConn;
+import activity.ActivityDashController;
+import client.dash.clientView.clientViewController;
+import client.dash.contactView.contactViewController;
 import com.jfoenix.controls.*;
 import gui.EventsConstructor;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.TextArea;
 import javafx.scene.layout.HBox;
-import objects.Event;
+import javafx.stage.Stage;
+import lead.view.LeadViewController;
+import objects.*;
+import product.view.ProductViewController;
 
+import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
@@ -19,11 +31,15 @@ public class NewEventController implements Initializable {
     @FXML
     private JFXTextField txt_location;
     @FXML
-    private JFXDatePicker due_date;
+    private JFXDatePicker from_date;
     @FXML
-    private JFXDatePicker due_date1;
+    private JFXTimePicker from_time;
     @FXML
-    private JFXCheckBox check_repeat;
+    private JFXDatePicker to_date;
+    @FXML
+    private JFXTimePicker to_time;
+    @FXML
+    private JFXCheckBox check_allDay;
     @FXML
     private TextArea txt_desc;
     @FXML
@@ -42,7 +58,12 @@ public class NewEventController implements Initializable {
     private static int choice;
     private static char stInstance;
 
-    private Event event;
+    private Event currEvent;
+
+    private ClientProperty client;
+    private Lead lead;
+    private ProductProperty product;
+
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -59,14 +80,14 @@ public class NewEventController implements Initializable {
             case 'N': {
                 btn_save.setText("Add");
 
-                event = new Event();
+                currEvent = new Event();
                 break;
             }
             case 'U': {
                 btn_save.setText("Update");
 
 //                event = EventsConstructor.updatingTask;
-                populateFields(event);
+                populateFields(currEvent);
                 break;
             }
             case 'D': { //D for from details
@@ -81,10 +102,10 @@ public class NewEventController implements Initializable {
         if (stInstance != 'D') {
             switch (choice) {
                 case 1: {       //Contacts
-                    ContactProperty contact = contactViewController.staticContact;
-                    relation_type.getSelectionModel().select("Contact");
-                    txt_name.setText(contact.getFullName());
-                    break;
+//                    contact = contactViewController.staticContact;
+//                    relation_type.getSelectionModel().select("Contact");
+//                    txt_name.setText(contact.getFullName());
+//                    break;
                 }
                 case 2: {       //Clients
                     client = clientViewController.staticClient;
@@ -106,38 +127,38 @@ public class NewEventController implements Initializable {
                 }
             }
         } else {
-            if (task.getClient() != 0) {
+            if (currEvent.getClient() != 0) {
                 relation_type.getSelectionModel().select("Client");
-                txt_name.setText(task.getClientName());
-            } else if (task.getLead() != 0) {
+                txt_name.setText(currEvent.getRelationName());
+            } else if (currEvent.getLead() != 0) {
                 relation_type.getSelectionModel().select("Lead");
-                txt_name.setText(task.getLeadName());
-            } else if (task.getProduct() != 0) {
-                relation_type.getSelectionModel().select("Product");
-                txt_name.setText(task.getProductName());
+                txt_name.setText(currEvent.getRelationName());
             }
         }
 
         btn_save.setOnAction(event -> {
-            String subject = txt_subject.getText().toString(),
+            String title = txt_title.getText().toString(),
                     desc = txt_desc.getText().toString(),
-                    dueDate = due_date.getValue().toString(),
+                    fromDate = from_date.getValue().toString(),
+                    fromTime = from_time.getValue().toString(),
+                    toDate = from_date.getValue().toString(),
+                    toTime = from_time.getValue().toString(),
                     type = relation_type.getSelectionModel().getSelectedItem(),
                     name = txt_name.getText().toString();
-            boolean repeat = check_repeat.isSelected();
+            boolean allDay = check_allDay.isSelected();
 
-            if (subject.equals("") || desc.equals("") || dueDate.equals("")) {
+            if (title.equals("") || desc.equals("") || fromDate.equals("") || toDate.equals("")) {
                 Toast.makeText((Stage) btn_save.getScene().getWindow(), "Required Fields Are Empty");
                 return;
             } else {
                 String msg = "";
                 switch (stInstance) {
                     case 'N': {
-                        msg = "Are you sure you want to add Task?";
+                        msg = "Are you sure you want to add Event?";
                         break;
                     }
                     case 'U': {
-                        msg = "Are you sure you want to update Task?";
+                        msg = "Are you sure you want to update Event?";
                         break;
                     }
                     default: {
@@ -150,10 +171,13 @@ public class NewEventController implements Initializable {
 
                 if (alert2.getResult() == ButtonType.YES) {
 
-                    task.setSubject(subject);
-                    task.setDueDate(dueDate);
-                    task.setDesc(desc);
-                    task.setRepeat(repeat);
+                    currEvent.setTitle(title);
+                    currEvent.setFromDate(fromDate);
+                    currEvent.setToDate(toDate);
+                    currEvent.setFromTime(fromTime);
+                    currEvent.setToTime(toTime);
+                    currEvent.setDesc(desc);
+                    currEvent.isAllDay();
 
                     switch (stInstance) {
                         case 'N': {
@@ -161,24 +185,22 @@ public class NewEventController implements Initializable {
                                 if (type.equals("Contact")) {
 
                                 } else if (type.equals("Client")) {
-                                    task.setClient(client.getCode());
+                                    currEvent.setClient(client.getCode());
                                 } else if (type.equals("Lead")) {
-                                    task.setLead(lead.getCode());
-                                } else if (type.equals("Product")) {
-                                    task.setProduct(product.getCode());
+                                    currEvent.setLead(lead.getCode());
                                 }
                             } catch (NullPointerException e) {
                                 System.out.println(e);
                             }
-                            sql.addTask(task);
+                            sql.addEvent(currEvent);
                             break;
                         }
                         case 'U': {
-                            sql.updateTask(task);
+//                            sql.updateEvent(currEvent);
                             break;
                         }
                         case 'D': {
-                            sql.updateTask(task);
+//                            sql.updateEvent(currEvent);
                             break;
                         }
                         default: {
@@ -201,7 +223,7 @@ public class NewEventController implements Initializable {
         stage.close();
         if (stInstance != 'D')
             try {
-                TasksConstructor.generalConstructor(choice);
+                EventsConstructor.generalConstructor(choice);
             } catch (NullPointerException e) {
                 try {
                     ActivityDashController.main_paneF.setCenter(
@@ -225,11 +247,13 @@ public class NewEventController implements Initializable {
     }
 
     private void populateFields(Event event) {
-        txt_subject.setText(task.getSubject());
-        txt_desc.setText(task.getDesc());
-        if (task.getDueDate() != null)
-            due_date.setValue(CommonTasks.createLocalDate(task.getDueDate()));
+        txt_title.setText(event.getTitle());
+        txt_location.setText(event.getLocation());
+        if (event.getFromDate() != null)
+            from_date.setValue(CommonTasks.createLocalDate(event.getFromDate()));
         else
-            due_date.setValue(null);
-        check_repeat.setSelected(task.isRepeat());
+            from_date.setValue(null);
+        check_allDay.setSelected(event.isAllDay());
     }
+
+}

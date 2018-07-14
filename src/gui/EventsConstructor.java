@@ -1,27 +1,38 @@
 package gui;
 
+import JCode.mysql.mySqlConn;
+import client.dash.clientView.clientViewController;
+import javafx.scene.control.Label;
+import javafx.scene.control.Tab;
+import javafx.scene.control.TabPane;
+import javafx.scene.layout.VBox;
+import objects.ClientProperty;
+import objects.Event;
+import objects.Lead;
+
+import java.util.List;
+
 public class EventsConstructor {
 
     private static TabPane tabPane;
     private static Tab tab;
-    private static VBox open_activities_list, closed_activities_list;
+    private static VBox open_events_list, closed_events_list;
 
     private ClientProperty client;
     private Lead lead;
-    private ProductProperty product;
 
     private static mySqlConn sql;
 
     //Which property is selected
     public static int choice;
-    public static Task updatingTask;
+    public static Event updatingEvent;
 
 
     public EventsConstructor(TabPane tabPane, ClientProperty client) {
         this.tabPane = tabPane;
-        this.tab = new Tab("Tasks");
-        this.open_activities_list = new VBox();
-        this.closed_activities_list = new VBox();
+        this.tab = new Tab("Events");
+        this.open_events_list = new VBox();
+        this.closed_events_list = new VBox();
         this.client = client;
 
         sql = new mySqlConn();
@@ -29,20 +40,10 @@ public class EventsConstructor {
 
     public EventsConstructor(TabPane tabPane, Lead lead) {
         this.tabPane = tabPane;
-        this.tab = new Tab("Tasks");
-        this.open_activities_list = new VBox();
-        this.closed_activities_list = new VBox();
+        this.tab = new Tab("Events");
+        this.open_events_list = new VBox();
+        this.closed_events_list = new VBox();
         this.lead = lead;
-
-        sql = new mySqlConn();
-    }
-
-    public EventsConstructor(TabPane tabPane, ProductProperty product) {
-        this.tabPane = tabPane;
-        this.tab = new Tab("Tasks");
-        this.open_activities_list = new VBox();
-        this.closed_activities_list = new VBox();
-        this.product = product;
 
         sql = new mySqlConn();
     }
@@ -52,20 +53,20 @@ public class EventsConstructor {
 
         //Heading
         String labelCss = "-fx-font-weight: bold;";
-        Label label = new Label("Open Activities");
+        Label label = new Label("Open Events");
         label.setStyle(labelCss);
-        open_activities_list.getChildren().addAll(returnSpaceHbox(), label, returnSpaceHbox());
+        open_events_list.getChildren().addAll(returnSpaceHbox(), label, returnSpaceHbox());
 
-        Label label2 = new Label("Closed Activities");
+        Label label2 = new Label("Closed Events");
         label2.setStyle(labelCss);
-        closed_activities_list.getChildren().addAll(returnSpaceHbox(), label2, returnSpaceHbox());
+        closed_events_list.getChildren().addAll(returnSpaceHbox(), label2, returnSpaceHbox());
 
-        List<Task> tasks = sql.getTasks(clientViewController.staticClient);
-        for (Task task : tasks) {
-            if (!task.isStatus())
-                constructingOpenTask(task);
-            else
-                constructingCloseTask(task);
+        List<Event> events = sql.getEvents(clientViewController.staticClient);
+        for (Event task : events) {
+//            if (!task.isStatus())
+//                constructingOpenTask(task);
+//            else
+//                constructingCloseTask(task);
         }
     }
 
@@ -83,28 +84,6 @@ public class EventsConstructor {
         closed_activities_list.getChildren().addAll(label2);
 
         List<Task> tasks = sql.getTasks(LeadViewController.staticLead);
-        for (Task task : tasks) {
-            if (!task.isStatus())
-                constructingOpenTask(task);
-            else
-                constructingCloseTask(task);
-        }
-    }
-
-    private static void constructProductActivities() {
-        constructingButtons();
-
-        //Heading
-        String labelCss = "-fx-font-weight: bold;";
-        Label label = new Label("Open Activities");
-        label.setStyle(labelCss);
-        open_activities_list.getChildren().addAll(label);
-
-        Label label2 = new Label("Closed Activities");
-        label2.setStyle(labelCss);
-        closed_activities_list.getChildren().addAll(label2);
-
-        List<Task> tasks = sql.getTasks(ProductViewController.staticProduct);
         for (Task task : tasks) {
             if (!task.isStatus())
                 constructingOpenTask(task);

@@ -37,6 +37,7 @@ public class mySqlConn {
     private DomainQueries domainQueries;
     private NoteQueries noteQueries;
     private TaskQueries taskQueries;
+    private EventQueries eventQueries;
 
     public mySqlConn() {
         fHelper = new fileHelper();
@@ -61,6 +62,7 @@ public class mySqlConn {
         productQueries = new ProductQueries(static_con, fHelper, noteQueries);
         domainQueries = new DomainQueries(static_con);
         taskQueries = new TaskQueries(static_con, fHelper);
+        eventQueries = new EventQueries(static_con, fHelper);
     }
 
     private Connection getConnection() {
@@ -421,6 +423,14 @@ public class mySqlConn {
 
     public List<Task> getTasks(ProductProperty obj) {
         return taskQueries.getTasks(obj);
+    }
+
+    public void addEvent(Event event) {
+        eventQueries.addEvent(event);
+    }
+
+    public List<Event> getEvents(ClientProperty client) {
+        return eventQueries.getTasks(client);
     }
 
     public String[] getAllEmailIDs(String where) {
