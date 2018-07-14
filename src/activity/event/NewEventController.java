@@ -56,7 +56,7 @@ public class NewEventController implements Initializable {
     private mySqlConn sql;
 
     private static int choice;
-    private static char stInstance;
+    public static char stInstance;
 
     private Event currEvent;
 

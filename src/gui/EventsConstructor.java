@@ -1,16 +1,29 @@
 package gui;
 
 import JCode.mysql.mySqlConn;
+import JCode.trayHelper;
+import activity.event.NewEventController;
 import client.dash.clientView.clientViewController;
-import javafx.scene.control.Label;
-import javafx.scene.control.Tab;
-import javafx.scene.control.TabPane;
+import com.jfoenix.controls.JFXButton;
+import javafx.application.Platform;
+import javafx.fxml.FXMLLoader;
+import javafx.geometry.Insets;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.scene.control.*;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.scene.input.MouseButton;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import javafx.stage.Stage;
+import lead.view.LeadViewController;
 import objects.ClientProperty;
 import objects.Event;
 import objects.Lead;
 
+import java.io.IOException;
 import java.util.List;
 
 public class EventsConstructor {
@@ -63,9 +76,9 @@ public class EventsConstructor {
         closed_events_list.getChildren().addAll(returnSpaceHbox(), label2, returnSpaceHbox());
 
         List<Event> events = sql.getEvents(clientViewController.staticClient);
-        for (Event task : events) {
+        for (Event event : events) {
 //            if (!task.isStatus())
-//                constructingOpenTask(task);
+                constructingOpenEvent(event);
 //            else
 //                constructingCloseTask(task);
         }
@@ -84,13 +97,13 @@ public class EventsConstructor {
         label2.setStyle(labelCss);
         closed_events_list.getChildren().addAll(label2);
 
-        List<Event> events = sql.getTasks(LeadViewController.staticLead);
-        for (Task task : tasks) {
-            if (!task.isStatus())
-                constructingOpenTask(task);
-            else
-                constructingCloseTask(task);
-        }
+//        List<Event> events = sql.getTasks(LeadViewController.staticLead);
+//        for (Task task : tasks) {
+//            if (!task.isStatus())
+//                constructingOpenTask(task);
+//            else
+//                constructingCloseTask(task);
+//        }
     }
 
     private static void constructingButtons() {
@@ -101,7 +114,7 @@ public class EventsConstructor {
 
         newTask.setStyle(css);
         newTask.setOnAction(event -> {
-            NewTaskController.stInstance = 'N';
+            NewEventController.stInstance = 'N';
 //            CommonTasks.inflateDialog("New Task", TasksConstructor.class.getResource("../activity/task/new_task" +
 //                    ".fxml"));
 //            CommonTasks.inflateDialog("New Task", path);
@@ -109,24 +122,24 @@ public class EventsConstructor {
         });
         box.getChildren().addAll(newTask);
 
-        open_activities_list.getChildren().addAll(box);
+        open_events_list.getChildren().addAll(box);
     }
 
-    private static void constructingOpenTask(Task task) {
+    private static void constructingOpenEvent(Event event) {
         //The Subject
         HBox subject = new HBox();
         subject.setSpacing(5);
         //Note Text
-        Label title = new Label("Subject: ");
+        Label title = new Label("Title: ");
         title.setStyle("-fx-font-weight: bold;");
-        Label sbjct = new Label(task.getSubject());
-        sbjct.setWrapText(true);
-        subject.getChildren().addAll(title, sbjct);
+        Label titleText = new Label(event.getTitle());
+        titleText.setWrapText(true);
+        subject.getChildren().addAll(title, titleText);
         //The First Part
         HBox body = new HBox();
         body.setSpacing(5);
         //Note Text
-        TextArea area = new TextArea(task.getDesc());
+        TextArea area = new TextArea(event.getDesc());
         area.setWrapText(true);
         area.setEditable(false);
         area.setMinHeight(50);
@@ -140,8 +153,8 @@ public class EventsConstructor {
         details.setMinHeight(25);
         details.setMaxHeight(25);
         details.setPadding(new Insets(3));
-        Label createdBy = new Label(task.getCreatedBy()),
-                createdOn = new Label(task.getCreatedOn());
+        Label createdBy = new Label(event.getCreatedBy()),
+                createdOn = new Label(event.getCreatedOn());
         createdOn.setMinWidth(150);
         createdBy.setMinWidth(280);
         JFXButton options = new JFXButton();
@@ -154,16 +167,16 @@ public class EventsConstructor {
                 editItem = new MenuItem("Edit"),
                 delItem = new MenuItem("Delete");
         editItem.setOnAction(t -> {
-            NewTaskController.stInstance = 'U';
-            updatingTask = task;
+            NewEventController.stInstance = 'U';
+            updatingEvent = event;
             inflateNewTask("Update Task");
         });
         closeItem.setOnAction(t -> {
-            sql.closeTask(task);
+//            sql.closeTask(task);
             generalConstructor(choice);
         });
         delItem.setOnAction(t -> {
-            sql.archiveTask(task);
+//            sql.archiveTask(task);
             generalConstructor(choice);
         });
         contextMenu.getItems().addAll(editItem, closeItem, delItem);
@@ -177,24 +190,24 @@ public class EventsConstructor {
 
         VBox box = new VBox();
         box.getChildren().addAll(subject, body, details);
-        open_activities_list.getChildren().add(box);
+        open_events_list.getChildren().add(box);
     }
 
-    private static void constructingCloseTask(Task task) {
+    private static void constructingCloseEvent(Event event) {
         //The Subject
         HBox subject = new HBox();
         subject.setSpacing(5);
         //Note Text
-        Label title = new Label("Subject: ");
+        Label title = new Label("Title: ");
         title.setStyle("-fx-font-weight: bold;");
-        Label sbjct = new Label(task.getSubject());
+        Label sbjct = new Label(event.getTitle());
         sbjct.setWrapText(true);
         subject.getChildren().addAll(title, sbjct);
         //The First Part
         HBox body = new HBox();
         body.setSpacing(5);
         //Note Text
-        TextArea area = new TextArea(task.getDesc());
+        TextArea area = new TextArea(event.getDesc());
         area.setWrapText(true);
         area.setEditable(false);
         area.setMinHeight(50);
@@ -208,8 +221,8 @@ public class EventsConstructor {
         details.setMinHeight(25);
         details.setMaxHeight(25);
         details.setPadding(new Insets(3));
-        Label createdBy = new Label(task.getCreatedBy()),
-                createdOn = new Label(task.getCreatedOn());
+        Label createdBy = new Label(event.getCreatedBy()),
+                createdOn = new Label(event.getCreatedOn());
         createdOn.setMinWidth(150);
         createdBy.setMinWidth(280);
 
@@ -219,13 +232,13 @@ public class EventsConstructor {
         VBox box = new VBox();
 //            box.setStyle("-fx-border-color: #033300;");
         box.getChildren().addAll(subject, body, details);
-        closed_activities_list.getChildren().add(box);
+        closed_events_list.getChildren().add(box);
     }
 
     public static void generalConstructor(int choice) throws NullPointerException {
 
-        open_activities_list.getChildren().clear();
-        closed_activities_list.getChildren().clear();
+        open_events_list.getChildren().clear();
+        closed_events_list.getChildren().clear();
 
         TasksConstructor.choice = choice;
         switch (choice) {
@@ -237,14 +250,10 @@ public class EventsConstructor {
                 constructLeadActivities();
                 break;
             }
-            case 4: {
-                constructProductActivities();
-                break;
-            }
         }
 
         VBox vBox = new VBox();
-        vBox.getChildren().addAll(returnSpaceHbox(), open_activities_list, returnSpaceHbox(), new Separator(), returnSpaceHbox(), closed_activities_list);
+        vBox.getChildren().addAll(returnSpaceHbox(), open_events_list, returnSpaceHbox(), new Separator(), returnSpaceHbox(), closed_events_list);
         ScrollPane sp = new ScrollPane(vBox);
         sp.getStyleClass().add("scroll-view");
         tab.setContent(sp);

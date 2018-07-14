@@ -1,6 +1,7 @@
 package client.dash.clientView.clientDetails;
 
 import Email.EResponse.EResponseController;
+import gui.EventsConstructor;
 import gui.TasksConstructor;
 import gui.NotesConstructor;
 import JCode.mysql.mySqlConn;
@@ -115,6 +116,7 @@ public class clientDetailsController implements Initializable {
         tabPane.setMinWidth(600);
         new NotesConstructor(tabPane, sql, client).generalConstructor(2);
         new TasksConstructor(tabPane, client).generalConstructor(2);
+        new EventsConstructor(tabPane, client).generalConstructor(2);
 
         tabPane.setTabClosingPolicy(TabPane.TabClosingPolicy.UNAVAILABLE);
 
