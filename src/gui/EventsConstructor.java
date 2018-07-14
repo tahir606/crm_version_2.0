@@ -77,13 +77,13 @@ public class EventsConstructor {
         String labelCss = "-fx-font-weight: bold;";
         Label label = new Label("Open Activities");
         label.setStyle(labelCss);
-        open_activities_list.getChildren().addAll(label);
+        open_events_list.getChildren().addAll(label);
 
         Label label2 = new Label("Closed Activities");
         label2.setStyle(labelCss);
-        closed_activities_list.getChildren().addAll(label2);
+        closed_events_list.getChildren().addAll(label2);
 
-        List<Task> tasks = sql.getTasks(LeadViewController.staticLead);
+        List<Event> events = sql.getTasks(LeadViewController.staticLead);
         for (Task task : tasks) {
             if (!task.isStatus())
                 constructingOpenTask(task);
