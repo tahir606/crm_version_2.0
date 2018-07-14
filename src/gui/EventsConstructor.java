@@ -5,6 +5,7 @@ import client.dash.clientView.clientViewController;
 import javafx.scene.control.Label;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import objects.ClientProperty;
 import objects.Event;
