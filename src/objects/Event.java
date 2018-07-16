@@ -1,10 +1,12 @@
 package objects;
 
+import JCode.CommonTasks;
+
 public class Event {
 
     private int code, client, lead;
     private String title, location, desc, fromDate, toDate, fromTime, toTime, relationName, createdOn, createdBy;
-    private boolean isAllDay;
+    private boolean isAllDay, status;
 
     public Event() {
     }
@@ -128,7 +130,7 @@ public class Event {
     }
 
     public void setCreatedOn(String createdOn) {
-        this.createdOn = createdOn;
+        this.createdOn = CommonTasks.getTimeFormatted(createdOn);
     }
 
     public boolean isAllDay() {
@@ -137,5 +139,13 @@ public class Event {
 
     public void setAllDay(boolean allDay) {
         isAllDay = allDay;
+    }
+
+    public boolean isStatus() {
+        return status;
+    }
+
+    public void setStatus(boolean status) {
+        this.status = status;
     }
 }

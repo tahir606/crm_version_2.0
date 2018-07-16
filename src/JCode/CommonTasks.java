@@ -15,6 +15,7 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.time.Period;
 import java.time.Year;
 import java.util.Calendar;
@@ -134,9 +135,51 @@ public class CommonTasks {
         return localDate;
     }
 
+    public static LocalTime createLocalTime(String timeStamp) {
+
+//        DateFormat inputFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.S");
+//        DateFormat inputFormat = new SimpleDateFormat("HH:mm");
+//        Date date = null;
+//        try {
+//            date = inputFormat.parse(timeStamp);
+//        } catch (ParseException e) {
+//            e.printStackTrace();
+//        }
+//
+//        Calendar calendar = new GregorianCalendar();
+//        if (date == null)
+//            return null;
+//        calendar.setTime(date);
+//        int year = calendar.get(Calendar.YEAR);
+//        //Add one to month {0 - 11}
+//        int month = calendar.get(Calendar.MONTH) + 1;
+//        int day = calendar.get(Calendar.DAY_OF_MONTH);
+
+        LocalTime localTime = LocalTime.of(Integer.parseInt(timeStamp.split(":")[0]),Integer.parseInt(timeStamp.split(":")[1]));
+
+        return localTime;
+    }
+
     public static void inflateDialog(String title, URL path) {
         try {
             FXMLLoader fxmlLoader = new FXMLLoader(path);
+            Parent root1 = fxmlLoader.load();
+            Stage stage = new Stage();
+            stage.setTitle(title);
+            stage.setScene(new Scene(root1));
+            stage.setResizable(false);
+            trayHelper tray = new trayHelper();
+            tray.createIcon(stage);
+            Platform.setImplicitExit(true);
+            stage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void inflateDialog(String title, String path) {
+        try {
+            FXMLLoader fxmlLoader = new FXMLLoader(CommonTasks.class.getResource(path));
             Parent root1 = fxmlLoader.load();
             Stage stage = new Stage();
             stage.setTitle(title);

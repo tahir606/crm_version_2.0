@@ -86,7 +86,7 @@ public class NewEventController implements Initializable {
             case 'U': {
                 btn_save.setText("Update");
 
-//                event = EventsConstructor.updatingTask;
+                currEvent = EventsConstructor.updatingEvent;
                 populateFields(currEvent);
                 break;
             }
@@ -105,7 +105,7 @@ public class NewEventController implements Initializable {
 //                    contact = contactViewController.staticContact;
 //                    relation_type.getSelectionModel().select("Contact");
 //                    txt_name.setText(contact.getFullName());
-//                    break;
+                    break;
                 }
                 case 2: {       //Clients
                     client = clientViewController.staticClient;
@@ -120,9 +120,9 @@ public class NewEventController implements Initializable {
                     break;
                 }
                 case 4: {
-                    product = ProductViewController.staticProduct;
-                    relation_type.getSelectionModel().select("Product");
-                    txt_name.setText(product.getName().toString());
+//                    product = ProductViewController.staticProduct;
+//                    relation_type.getSelectionModel().select("Product");
+//                    txt_name.setText(product.getName().toString());
                     break;
                 }
             }
@@ -139,15 +139,28 @@ public class NewEventController implements Initializable {
         btn_save.setOnAction(event -> {
             String title = txt_title.getText().toString(),
                     desc = txt_desc.getText().toString(),
-                    fromDate = from_date.getValue().toString(),
-                    fromTime = from_time.getValue().toString(),
-                    toDate = from_date.getValue().toString(),
-                    toTime = from_time.getValue().toString(),
+                    loc = txt_location.getText().toString(),
                     type = relation_type.getSelectionModel().getSelectedItem(),
                     name = txt_name.getText().toString();
+
+
+            String fromDate = null, fromTime = null, toDate = null, toTime = null;
+            if (from_date.getValue() != null)
+                fromDate = from_date.getValue().toString();
+            if (from_time.getValue() != null)
+                fromTime = from_time.getValue().toString();
+            if (to_date.getValue() != null)
+                toDate = to_date.getValue().toString();
+            if (to_time.getValue() != null)
+                toTime = to_time.getValue().toString();
             boolean allDay = check_allDay.isSelected();
 
-            if (title.equals("") || desc.equals("") || fromDate.equals("") || toDate.equals("")) {
+//            System.out.println("FDATE: " + fromDate + "\n" +
+//                    "FTIME: " + fromTime + "\n" +
+//                    "TDATE: " + toDate + "\n" +
+//                    "TTIME: " + toTime);
+
+            if (title.equals("") || loc.equals("") || desc.equals("") || fromDate == null || toDate == null) {
                 Toast.makeText((Stage) btn_save.getScene().getWindow(), "Required Fields Are Empty");
                 return;
             } else {
@@ -170,8 +183,12 @@ public class NewEventController implements Initializable {
                 alert2.showAndWait();
 
                 if (alert2.getResult() == ButtonType.YES) {
-
+                    if (toTime == null)
+                        toTime = "00:00";
+                    if (fromTime == null)
+                        fromTime = "00:00";
                     currEvent.setTitle(title);
+                    currEvent.setLocation(loc);
                     currEvent.setFromDate(fromDate);
                     currEvent.setToDate(toDate);
                     currEvent.setFromTime(fromTime);
@@ -196,7 +213,7 @@ public class NewEventController implements Initializable {
                             break;
                         }
                         case 'U': {
-//                            sql.updateEvent(currEvent);
+                            sql.updateEvent(currEvent);
                             break;
                         }
                         case 'D': {
@@ -249,10 +266,22 @@ public class NewEventController implements Initializable {
     private void populateFields(Event event) {
         txt_title.setText(event.getTitle());
         txt_location.setText(event.getLocation());
+        txt_desc.setText(event.getDesc());
+        //Dates
         if (event.getFromDate() != null)
             from_date.setValue(CommonTasks.createLocalDate(event.getFromDate()));
-        else
-            from_date.setValue(null);
+
+        if (event.getToDate() != null)
+            to_date.setValue(CommonTasks.createLocalDate(event.getToDate()));
+
+        //Times
+        if (event.getFromTime() != null)
+            from_time.setValue(CommonTasks.createLocalTime(event.getFromTime()));
+
+        if (event.getToTime() != null)
+            to_time.setValue(CommonTasks.createLocalTime(event.getToTime()));
+        check_allDay.setSelected(event.isAllDay());
+
         check_allDay.setSelected(event.isAllDay());
     }
 

@@ -1,5 +1,6 @@
 package gui;
 
+import JCode.CommonTasks;
 import JCode.mysql.mySqlConn;
 import JCode.trayHelper;
 import activity.event.NewEventController;
@@ -77,10 +78,10 @@ public class EventsConstructor {
 
         List<Event> events = sql.getEvents(clientViewController.staticClient);
         for (Event event : events) {
-//            if (!task.isStatus())
+            if (!event.isStatus())
                 constructingOpenEvent(event);
-//            else
-//                constructingCloseTask(task);
+            else
+                constructingCloseEvent(event);
         }
     }
 
@@ -97,30 +98,27 @@ public class EventsConstructor {
         label2.setStyle(labelCss);
         closed_events_list.getChildren().addAll(label2);
 
-//        List<Event> events = sql.getTasks(LeadViewController.staticLead);
-//        for (Task task : tasks) {
-//            if (!task.isStatus())
-//                constructingOpenTask(task);
-//            else
-//                constructingCloseTask(task);
-//        }
+        List<Event> events = sql.getEvents(LeadViewController.staticLead);
+        for (Event event : events) {
+            if (!event.isStatus())
+                constructingOpenEvent(event);
+            else
+                constructingCloseEvent(event);
+        }
     }
 
     private static void constructingButtons() {
         HBox box = new HBox();
-        JFXButton newTask = new JFXButton("+ New Task");
+        JFXButton newEvent = new JFXButton("+ New Event");
 
         String css = "-fx-text-fill: #005ff7;";
 
-        newTask.setStyle(css);
-        newTask.setOnAction(event -> {
+        newEvent.setStyle(css);
+        newEvent.setOnAction(event -> {
             NewEventController.stInstance = 'N';
-//            CommonTasks.inflateDialog("New Task", TasksConstructor.class.getResource("../activity/task/new_task" +
-//                    ".fxml"));
-//            CommonTasks.inflateDialog("New Task", path);
-            inflateNewTask("New Task");
+            CommonTasks.inflateDialog("New Event", "/activity/event/new_event.fxml");
         });
-        box.getChildren().addAll(newTask);
+        box.getChildren().addAll(newEvent);
 
         open_events_list.getChildren().addAll(box);
     }
@@ -154,14 +152,14 @@ public class EventsConstructor {
         details.setMaxHeight(25);
         details.setPadding(new Insets(3));
         Label createdBy = new Label(event.getCreatedBy()),
-                createdOn = new Label(event.getCreatedOn());
-        createdOn.setMinWidth(150);
+                timeSchedule = new Label(CommonTasks.getTimeFormatted(event.getFromDate() + " " + event.getFromTime()) + " -> " + CommonTasks.getTimeFormatted(event.getToDate() + " " + event.getToTime()));
+        timeSchedule.setMinWidth(150);
         createdBy.setMinWidth(280);
         JFXButton options = new JFXButton();
 
-        Image image = new Image(TasksConstructor.class.getResourceAsStream("/res/img/options.png"));
+        Image image = new Image(EventsConstructor.class.getResourceAsStream("/res/img/options.png"));
         options.setGraphic(new ImageView(image));
-        details.getChildren().addAll(createdOn, createdBy, options);
+        details.getChildren().addAll(timeSchedule, createdBy, options);
         ContextMenu contextMenu = new ContextMenu();
         MenuItem closeItem = new MenuItem("Close"),
                 editItem = new MenuItem("Edit"),
@@ -169,14 +167,14 @@ public class EventsConstructor {
         editItem.setOnAction(t -> {
             NewEventController.stInstance = 'U';
             updatingEvent = event;
-            inflateNewTask("Update Task");
+            CommonTasks.inflateDialog("Update Task", "/activity/event/new_event.fxml");
         });
         closeItem.setOnAction(t -> {
-//            sql.closeTask(task);
+            sql.closeEvent(event);
             generalConstructor(choice);
         });
         delItem.setOnAction(t -> {
-//            sql.archiveTask(task);
+            sql.archiveEvent(event);
             generalConstructor(choice);
         });
         contextMenu.getItems().addAll(editItem, closeItem, delItem);
@@ -222,7 +220,7 @@ public class EventsConstructor {
         details.setMaxHeight(25);
         details.setPadding(new Insets(3));
         Label createdBy = new Label(event.getCreatedBy()),
-                createdOn = new Label(event.getCreatedOn());
+                createdOn = new Label(CommonTasks.getTimeFormatted(event.getFromDate() + " " + event.getFromTime()) + " -> " + CommonTasks.getTimeFormatted(event.getToDate() + " " + event.getToTime()));
         createdOn.setMinWidth(150);
         createdBy.setMinWidth(280);
 
@@ -240,7 +238,7 @@ public class EventsConstructor {
         open_events_list.getChildren().clear();
         closed_events_list.getChildren().clear();
 
-        TasksConstructor.choice = choice;
+        EventsConstructor.choice = choice;
         switch (choice) {
             case 2: {     //Clients
                 constructClientActivities();
@@ -264,25 +262,5 @@ public class EventsConstructor {
         HBox hBox = new HBox();
         hBox.setMinHeight(10);
         return hBox;
-    }
-
-    public static void inflateWindow(String title, String path) {
-        try {
-            FXMLLoader fxmlLoader = new FXMLLoader(TasksConstructor.class.getResource(path));
-            Parent root1 = fxmlLoader.load();
-            Stage stage2 = new Stage();
-            stage2.setTitle(title);
-            stage2.setScene(new Scene(root1));
-            trayHelper tray = new trayHelper();
-            tray.createIcon(stage2);
-            Platform.setImplicitExit(true);
-            stage2.show();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    public static void inflateNewTask(String title) {
-        inflateWindow(title, "/activity/task/new_task.fxml");
     }
 }

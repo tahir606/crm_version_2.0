@@ -8,6 +8,7 @@ import activity.view.ActivityViewController;
 import client.dash.clientView.clientViewController;
 import client.dash.contactView.contactViewController;
 import com.jfoenix.controls.*;
+import gui.EventsConstructor;
 import gui.TasksConstructor;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -66,7 +67,7 @@ public class NewTaskController implements Initializable {
         
         relation_type.getItems().addAll("Contact", "Client", "Lead", "Product");
         
-        choice = TasksConstructor.choice;
+        choice = EventsConstructor.choice;
         
         relation_type.setDisable(true);
         txt_name.setDisable(true);

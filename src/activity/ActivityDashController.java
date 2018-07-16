@@ -43,7 +43,8 @@ public class ActivityDashController implements Initializable {
         MenuItem newProduct = new MenuItem("New Task");
         newProduct.setOnAction(event -> {
             NewTaskController.stInstance = 'N';
-            CommonTasks.inflateDialog("New Task", this.getClass().getResource("task/new_task.fxml"));
+//            CommonTasks.inflateDialog("New Task", this.getClass().getResource("task/new_task.fxml"));
+            CommonTasks.inflateDialog("New Task", "task/new_task.fxml");
         });
         menuNew.getItems().addAll(newProduct);
 
@@ -66,5 +67,5 @@ public class ActivityDashController implements Initializable {
             }
         }).start();
     }
-    
+
 }

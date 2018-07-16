@@ -429,8 +429,24 @@ public class mySqlConn {
         eventQueries.addEvent(event);
     }
 
-    public List<Event> getEvents(ClientProperty client) {
-        return eventQueries.getTasks(client);
+    public List<Event> getEvents(ClientProperty obj) {
+        return eventQueries.getEvents(obj);
+    }
+
+    public List<Event> getEvents(Lead obj) {
+        return eventQueries.getEvents(obj);
+    }
+
+    public void updateEvent(Event event) {
+        eventQueries.updateEvent(event);
+    }
+
+    public void closeEvent(Event event) {
+        eventQueries.closeEvent(event);
+    }
+
+    public void archiveEvent(Event event) {
+        eventQueries.archiveEvent(event);
     }
 
     public String[] getAllEmailIDs(String where) {

@@ -22,9 +22,9 @@ public class EventQueries {
     }
 
     public void addEvent(Event event) {
-        String query = "INSERT INTO EVENT_STORE(ES_ID, ES_TITLE, ES_DESC, ES_LOCATION, ES_ALLDAY, CL_ID, " +
+        String query = "INSERT INTO EVENT_STORE(ES_ID, ES_TITLE, ES_DESC, ES_LOCATION, ES_FROM, ES_TO, ES_ALLDAY, CL_ID, " +
                 "LS_ID, CREATEDON, CREATEDBY) " +
-                " SELECT IFNULL(max(ES_ID),0)+1,?,?,?,?,?,?,?,? from EVENT_STORE";
+                " SELECT IFNULL(max(ES_ID),0)+1,?,?,?,?,?,?,?,?,?,? from EVENT_STORE";
 
         PreparedStatement statement = null;
 
@@ -33,11 +33,13 @@ public class EventQueries {
             statement.setString(1, event.getTitle());
             statement.setString(2, event.getDesc());
             statement.setString(3, event.getLocation());
-            statement.setBoolean(4, event.isAllDay());
-            statement.setInt(5, event.getClient());
-            statement.setInt(6, event.getLead());
-            statement.setString(7, CommonTasks.getCurrentTimeStamp());
-            statement.setInt(8, fHelper.ReadUserDetails().getUCODE());
+            statement.setString(4, event.getFromDate() + " " + event.getFromTime());
+            statement.setString(5, event.getToDate() + " " + event.getToTime());
+            statement.setBoolean(6, event.isAllDay());
+            statement.setInt(7, event.getClient());
+            statement.setInt(8, event.getLead());
+            statement.setString(9, CommonTasks.getCurrentTimeStamp());
+            statement.setInt(10, fHelper.ReadUserDetails().getUCODE());
 
             statement.executeUpdate();
 
@@ -121,8 +123,8 @@ public class EventQueries {
 //        return events;
 //    }
 
-    public List<Event> getTasks(ClientProperty client) {
-        String query = "SELECT ES_ID, ES_TITLE, ES_DESC, ES_LOCATION, ES_ALLDAY, FNAME, CL_NAME " +
+    public List<Event> getEvents(ClientProperty client) {
+        String query = "SELECT ES_ID, ES_TITLE, ES_DESC, ES_LOCATION, ES_ALLDAY, ES_STATUS, ES_FROM, ES_TO, FNAME, CL_NAME, NS.CREATEDON " +
                 " FROM EVENT_STORE AS NS, CLIENT_STORE AS CS, USERS AS US " +
                 " WHERE NS.CL_ID = ? " +
                 " AND NS.CL_ID = CS.CL_ID " +
@@ -142,7 +144,13 @@ public class EventQueries {
                 event.setTitle(set.getString("ES_TITLE"));
                 event.setDesc(set.getString("ES_DESC"));
                 event.setAllDay(set.getBoolean("ES_ALLDAY"));
+                event.setLocation(set.getString("ES_LOCATION"));
+                event.setFromDate(set.getString("ES_FROM").split("\\s+")[0]);
+                event.setFromTime(set.getString("ES_FROM").split("\\s+")[1]);
+                event.setToDate(set.getString("ES_TO").split("\\s+")[0]);
+                event.setToTime(set.getString("ES_TO").split("\\s+")[1]);
                 event.setRelationName(set.getString("CL_NAME"));
+                event.setStatus(set.getBoolean("ES_STATUS"));
                 event.setCreatedBy(set.getString("FNAME"));
                 event.setCreatedOn(set.getString("CREATEDON"));
                 events.add(event);
@@ -153,90 +161,97 @@ public class EventQueries {
 
         return events;
     }
-//
-//    public List<Task> getTasks(Lead lead) {
-//        String query = "SELECT TS_ID, TS_SUBJECT, TS_DESC, TS_DDATE, TS_REPEAT, TS_STATUS, NS.CREATEDON AS CREATEDON, FNAME, LS_CNAME " +
-//                " FROM TASK_STORE AS NS, LEAD_STORE AS CS, USERS AS US " +
-//                " WHERE NS.LS_ID = ? " +
-//                " AND NS.LS_ID = CS.LS_ID " +
-//                " AND NS.CREATEDBY = US.UCODE " +
-//                " AND NS.FREZE = 0 ";
-//
-//        List<Task> tasks = new ArrayList<>();
-//
-//        try {
-//            PreparedStatement statement = static_con.prepareStatement(query);
-//            statement.setInt(1, lead.getCode());
-//            ResultSet set = statement.executeQuery();
-//            //-------------Creating Task-------------
-//            while (set.next()) {
-//                Task task = new Task();
-//                task.setCode(set.getInt("TS_ID"));
-//                task.setSubject(set.getString("TS_SUBJECT"));
-//                task.setDesc(set.getString("TS_DESC"));
-//                task.setDueDate(set.getString("TS_DDATE"));
-//                task.setRepeat(set.getBoolean("TS_REPEAT"));
-//                task.setStatus(set.getBoolean("TS_STATUS"));
-//                task.setClientName(set.getString("LS_CNAME"));
-//                task.setCreatedBy(set.getString("FNAME"));
-//                task.setCreatedOn(set.getString("CREATEDON"));
-//                tasks.add(task);
-//            }
-//        } catch (SQLException ex) {
-//            ex.printStackTrace();
-//        }
-//
-//        return tasks;
-//    }
 
-//    public void updateEvent(Event event) {
-//        String query = " UPDATE TASK_STORE SET " +
-//                " TS_SUBJECT = ?, TS_DESC = ?, TS_DDATE = ?, TS_REPEAT = ? " +
-//                " WHERE TS_ID = ? ";
+    public List<Event> getEvents(Lead lead) {
+        String query = "SELECT ES_ID, ES_TITLE, ES_DESC, ES_LOCATION, ES_ALLDAY, ES_STATUS, ES_FROM, ES_TO, FNAME, LS_CNAME, NS.CREATEDON " +
+                " FROM EVENT_STORE AS NS, LEAD_STORE AS CS, USERS AS US " +
+                " WHERE NS.LS_ID = ? " +
+                " AND NS.LS_ID = CS.LS_ID " +
+                " AND NS.CREATEDBY = US.UCODE " +
+                " AND NS.FREZE = 0 ";
+
+        List<Event> events = new ArrayList<>();
+
+        try {
+            PreparedStatement statement = static_con.prepareStatement(query);
+            statement.setInt(1, lead.getCode());
+            ResultSet set = statement.executeQuery();
+            //-------------Creating Task-------------
+            while (set.next()) {
+                Event event = new Event();
+                event.setCode(set.getInt("ES_ID"));
+                event.setTitle(set.getString("ES_TITLE"));
+                event.setDesc(set.getString("ES_DESC"));
+                event.setAllDay(set.getBoolean("ES_ALLDAY"));
+                event.setLocation(set.getString("ES_LOCATION"));
+                event.setFromDate(set.getString("ES_FROM").split("\\s+")[0]);
+                event.setFromTime(set.getString("ES_FROM").split("\\s+")[1]);
+                event.setToDate(set.getString("ES_TO").split("\\s+")[0]);
+                event.setToTime(set.getString("ES_TO").split("\\s+")[1]);
+                event.setRelationName(set.getString("LS_CNAME"));
+                event.setStatus(set.getBoolean("ES_STATUS"));
+                event.setCreatedBy(set.getString("FNAME"));
+                event.setCreatedOn(set.getString("CREATEDON"));
+                events.add(event);
+            }
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+
+        return events;
+    }
+
+
+    public void updateEvent(Event event) {
+        String query = " UPDATE EVENT_STORE SET " +
+                " ES_TITLE =?, ES_DESC =?, ES_LOCATION =?, ES_FROM =?, ES_TO =?, ES_ALLDAY=?" +
+                " WHERE ES_ID = ? ";
+
+        PreparedStatement statement = null;
+        try {
+            statement = static_con.prepareStatement(query);
+            statement.setString(1, event.getTitle());
+            statement.setString(2, event.getDesc());
+            statement.setString(3, event.getLocation());
+            statement.setString(4, event.getFromDate() + " " + event.getFromTime());
+            statement.setString(5, event.getToDate() + " " + event.getToTime());
+            statement.setBoolean(6, event.isAllDay());
+            statement.setInt(7, event.getCode());
+            statement.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
 //
-//        PreparedStatement statement = null;
-//        try {
-//            statement = static_con.prepareStatement(query);
-//            statement.setString(1, task.getSubject());
-//            statement.setString(2, task.getDesc());
-//            statement.setString(3, task.getDueDate());
-//            statement.setBoolean(4, task.isRepeat());
-//            statement.setInt(5, task.getCode());
-//            statement.executeUpdate();
-//        } catch (SQLException e) {
-//            e.printStackTrace();
-//        }
-//    }
-//
-//    public void closeTask(Task task) {
-//        String query = "UPDATE TASK_STORE SET TS_STATUS = ?, TS_CLOSEDON = ? " +
-//                " WHERE TS_ID = ? ";
-//
-//        PreparedStatement statement = null;
-//        try {
-//            statement = static_con.prepareStatement(query);
-//            statement.setBoolean(1, true);
-//            statement.setString(2, CommonTasks.getCurrentTimeStamp());
-//            statement.setInt(3, task.getCode());
-//            statement.executeUpdate();
-//        } catch (SQLException e) {
-//            e.printStackTrace();
-//        }
-//    }
-//
-//    public void archiveTask(Task task) {
-//        String query = "UPDATE TASK_STORE SET FREZE = 1 " +
-//                " WHERE TS_ID = ? ";
-//
-//        PreparedStatement statement = null;
-//        try {
-//            statement = static_con.prepareStatement(query);
-//            statement.setInt(1, task.getCode());
-//            statement.executeUpdate();
-//        } catch (SQLException e) {
-//            e.printStackTrace();
-//        }
-//    }
+    public void closeEvent(Event event) {
+        String query = "UPDATE EVENT_STORE SET ES_STATUS = ?, ES_CLOSEDON = ? " +
+                " WHERE ES_ID = ? ";
+
+        PreparedStatement statement = null;
+        try {
+            statement = static_con.prepareStatement(query);
+            statement.setBoolean(1, true);
+            statement.setString(2, CommonTasks.getCurrentTimeStamp());
+            statement.setInt(3, event.getCode());
+            statement.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void archiveEvent(Event event) {
+        String query = "UPDATE EVENT_STORE SET FREZE = 1 " +
+                " WHERE ES_ID = ? ";
+
+        PreparedStatement statement = null;
+        try {
+            statement = static_con.prepareStatement(query);
+            statement.setInt(1, event.getCode());
+            statement.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
 
 
 }

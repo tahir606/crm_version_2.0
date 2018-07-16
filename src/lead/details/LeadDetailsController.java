@@ -1,5 +1,6 @@
 package lead.details;
 
+import gui.EventsConstructor;
 import gui.TasksConstructor;
 import gui.NotesConstructor;
 import JCode.mysql.mySqlConn;
@@ -108,8 +109,10 @@ public class LeadDetailsController implements Initializable {
         
         TabPane tabPane = new TabPane();
         tabPane.setMinWidth(600);
-        new NotesConstructor(tabPane, sql, lead).generalConstructor(3);
-        new TasksConstructor(tabPane, lead).generalConstructor(3);
+        int CHOICE = 3;
+        new NotesConstructor(tabPane, sql, lead).generalConstructor(CHOICE);
+        new TasksConstructor(tabPane, lead).generalConstructor(CHOICE);
+        new EventsConstructor(tabPane, lead).generalConstructor(CHOICE);
 
         tabPane.setTabClosingPolicy(TabPane.TabClosingPolicy.UNAVAILABLE);
     
