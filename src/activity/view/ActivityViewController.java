@@ -32,8 +32,6 @@ public class ActivityViewController implements Initializable {
     @FXML
     private TableColumn<Task, String> col_status;
     @FXML
-    private AnchorPane toolbar_activity;
-    @FXML
     private Label txt_no;
 
     private mySqlConn sql = new mySqlConn();
@@ -42,7 +40,6 @@ public class ActivityViewController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        toolbar_activity.setVisible(false);
 
 //        table_contact.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
 

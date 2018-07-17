@@ -1,32 +1,33 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import java.lang.*?>
-<?import java.util.*?>
-<?import javafx.scene.*?>
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.layout.AnchorPane?>
 
-<AnchorPane xmlns="http://javafx.com/javafx"
-            xmlns:fx="http://javafx.com/fxml"
-            fx:controller="activity.view.ActivityViewController"
-            prefHeight="400.0" prefWidth="600.0">
+<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/9" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="activity.view.ActivityViewController">
     <children>
-        <TableView fx:id="table_activity" layoutY="34.0" prefHeight="438.0" prefWidth="1000.0"
-                   AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="2.0" AnchorPane.rightAnchor="2.0" AnchorPane.topAnchor="34.0">
+        <TableView fx:id="table_activity" layoutY="34.0" prefHeight="217.0" prefWidth="596.0"
+                   AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0"
+                   AnchorPane.topAnchor="20.0">
             <columns>
-                <TableColumn fx:id="col_subject" prefWidth="200.0" text="Subject" />
-                <TableColumn fx:id="col_due_date" prefWidth="100.0" text="Due Date" />
-                <TableColumn fx:id="col_created_on" prefWidth="140.0" text="Created On" />
-                <TableColumn fx:id="col_created_by" prefWidth="80.0" text="Created By" />
-                <TableColumn fx:id="col_status" prefWidth="80.0" text="Status" />
+                <TableColumn fx:id="col_subject" prefWidth="200.0" text="Subject"/>
+                <TableColumn fx:id="col_due_date" prefWidth="100.0" text="Due Date"/>
+                <TableColumn fx:id="col_created_on" prefWidth="140.0" text="Created On"/>
+                <TableColumn fx:id="col_created_by" prefWidth="80.0" text="Created By"/>
+                <TableColumn fx:id="col_status" prefWidth="80.0" text="Status"/>
             </columns>
         </TableView>
-        <AnchorPane fx:id="toolbar_activity" prefHeight="35.0" prefWidth="1000.0" AnchorPane.leftAnchor="0.0"
-                    AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-            <children>
-                <Label fx:id="txt_no" layoutX="20.0" layoutY="8.0" text="0" />
-                <Label layoutX="43.0" layoutY="8.0" text="Activities Selected" />
-            </children>
-        </AnchorPane>
+        <TableView fx:id="table_events" layoutX="10.0" layoutY="44.0" prefHeight="217.0" prefWidth="596.0"
+                   AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
+            <columns>
+                <TableColumn fx:id="col_title" prefWidth="200.0" text="Title"/>
+                <TableColumn fx:id="col_location" prefWidth="100.0" text="Location"/>
+                <TableColumn fx:id="col_from" prefWidth="140.0" text="From"/>
+                <TableColumn fx:id="col_to" prefWidth="80.0" text="To"/>
+                <TableColumn fx:id="col_created_by_event" prefWidth="80.0" text="Created By"/>
+                <TableColumn fx:id="col_status_event" prefWidth="80.0" text="Status"/>
+            </columns>
+        </TableView>
     </children>
 </AnchorPane>
