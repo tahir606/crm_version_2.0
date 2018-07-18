@@ -5,7 +5,7 @@ import JCode.CommonTasks;
 public class Event {
 
     private int code, client, lead;
-    private String title, location, desc, fromDate, toDate, fromTime, toTime, relationName, createdOn, createdBy;
+    private String title, location, desc, fromDate, toDate, fromTime, toTime, relationName, createdOn, createdBy, fromDateTime, toDateTime;
     private boolean isAllDay, status;
 
     public Event() {

@@ -11,6 +11,7 @@ import javafx.scene.control.TableRow;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.AnchorPane;
+import objects.Event;
 import objects.Task;
 
 import java.io.IOException;
@@ -32,7 +33,19 @@ public class ActivityViewController implements Initializable {
     @FXML
     private TableColumn<Task, String> col_status;
     @FXML
-    private Label txt_no;
+    private TableView<Event> table_events;
+    @FXML
+    private TableColumn<Event, String> col_title;
+    @FXML
+    private TableColumn<Event, String> col_location;
+    @FXML
+    private TableColumn<Event, String> col_from;
+    @FXML
+    private TableColumn<Event, String> col_to;
+    @FXML
+    private TableColumn<Event, String> col_created_by_event;
+    @FXML
+    private TableColumn<Event, String> col_status_event;
 
     private mySqlConn sql = new mySqlConn();
 
@@ -41,8 +54,6 @@ public class ActivityViewController implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
 
-//        table_contact.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
-
         col_subject.setCellValueFactory(new PropertyValueFactory<>("subject"));
         col_due_date.setCellValueFactory(new PropertyValueFactory<>("dueDateFormatted"));
         col_created_on.setCellValueFactory(new PropertyValueFactory<>("createdOn"));
@@ -50,19 +61,6 @@ public class ActivityViewController implements Initializable {
         col_status.setCellValueFactory(new PropertyValueFactory<>("statusString"));
 
         table_activity.getItems().setAll(sql.getAllTasks(null));
-
-//        table_contact.addEventHandler(javafx.scene.input.MouseEvent.MOUSE_CLICKED, event -> {
-//            selectedContacts = table_contact.getSelectionModel().getSelectedItems();
-//
-//            if (selectedContacts == null || selectedContacts.size() == 0) {
-//                toolbar_contacts.setVisible(false);
-//                return;
-//            } else {
-//                toolbar_contacts.setVisible(true);
-//                txt_no.setText(String.valueOf(selectedContacts.size()));
-//            }
-//
-//        });
 
         table_activity.setRowFactory(tv -> {
             TableRow<Task> row = new TableRow<>();
@@ -82,5 +80,10 @@ public class ActivityViewController implements Initializable {
             return row;
         });
 
+        col_title.setCellValueFactory(new PropertyValueFactory<>("title"));
+        col_from.setCellValueFactory(new PropertyValueFactory<>("fromDate"));
+        col_to.setCellValueFactory(new PropertyValueFactory<>("createdOn"));
+        col_created_by.setCellValueFactory(new PropertyValueFactory<>("createdBy"));
+        col_status.setCellValueFactory(new PropertyValueFactory<>("statusString"));
     }
 }
