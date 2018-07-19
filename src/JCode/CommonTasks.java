@@ -136,27 +136,7 @@ public class CommonTasks {
     }
 
     public static LocalTime createLocalTime(String timeStamp) {
-
-//        DateFormat inputFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.S");
-//        DateFormat inputFormat = new SimpleDateFormat("HH:mm");
-//        Date date = null;
-//        try {
-//            date = inputFormat.parse(timeStamp);
-//        } catch (ParseException e) {
-//            e.printStackTrace();
-//        }
-//
-//        Calendar calendar = new GregorianCalendar();
-//        if (date == null)
-//            return null;
-//        calendar.setTime(date);
-//        int year = calendar.get(Calendar.YEAR);
-//        //Add one to month {0 - 11}
-//        int month = calendar.get(Calendar.MONTH) + 1;
-//        int day = calendar.get(Calendar.DAY_OF_MONTH);
-
         LocalTime localTime = LocalTime.of(Integer.parseInt(timeStamp.split(":")[0]),Integer.parseInt(timeStamp.split(":")[1]));
-
         return localTime;
     }
 

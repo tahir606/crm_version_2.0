@@ -65,7 +65,7 @@
         </Label>
         <ImageView fx:id="img_loader" fitHeight="22.0" fitWidth="24.0" layoutX="22.0" layoutY="20.0" pickOnBounds="true" preserveRatio="true">
             <image>
-                <Image url="@../res/loader.gif" />
+                <!--<Image url="@../res/loader.gif" />-->
             </image>
         </ImageView>
     </children>

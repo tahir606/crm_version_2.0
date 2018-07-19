@@ -147,7 +147,11 @@ public class emailControl {
 
         //-------------------------------------Creating Email--------------------------------
         email.setMsgNo(message.getMessageNumber());
-        email.setTimestamp(dt.format(message.getSentDate()).substring(1));
+        try {
+            email.setTimestamp(dt.format(message.getSentDate()).substring(1));
+        } catch (NullPointerException e) {
+            System.out.println(e);
+        }
         email.setFromAddress(fromAddress);
         email.setToAddress(toAddress);
         email.setCcAddress(ccAddress);
