@@ -75,53 +75,54 @@ public class EventQueries {
 //        return null;
 //    }
 
-//    public List<Event> getAlLEvents(String where) {
-//        String query = "SELECT TS_ID, TS_SUBJECT, TS_DESC, TS_DDATE, TS_REPEAT, NS.CREATEDON AS CREATEDON, FNAME, " +
-//                " TS_STATUS,  " +
-//                " NS.CS_ID, (SELECT CONCAT(CS_FNAME,' ',CS_LNAME) FROM contact_store as CS WHERE CS.CS_ID = NS.CS_ID) AS CSNAME , " +
-//                " NS.CL_ID, (SELECT CL.CL_NAME FROM client_store as CL WHERE CL.CL_ID = NS.CL_ID) AS CLNAME , " +
-//                " NS.LS_ID, (SELECT CONCAT(LS.LS_FNAME,' ',LS.LS_LNAME) FROM lead_store as LS WHERE LS.LS_ID = NS.LS_ID) AS LSNAME , " +
-//                " NS.PS_ID, (SELECT PS.PS_NAME FROM product_store as PS WHERE PS.PS_ID = NS.PS_ID) AS PSNAME  " +
-//                " FROM TASK_STORE AS NS, USERS AS US " +
-//                " WHERE NS.CREATEDBY = US.UCODE                " +
-//                " AND NS.FREZE = 0";
-//
-//        if (where == null || where.equals(""))
-//            query = query + "";
-//        else
-//            query = query + where;
-//
-//        List<Event> events = new ArrayList<>();
-//
-//        try {
-//            PreparedStatement statement = static_con.prepareStatement(query);
-//            ResultSet set = statement.executeQuery();
-//            //-------------Creating Task-------------
-//            while (set.next()) {
-//                Event event = new Event();
-//                task.setCode(set.getInt("TS_ID"));
-//                task.setSubject(set.getString("TS_SUBJECT"));
-//                task.setDesc(set.getString("TS_DESC"));
-//                task.setDueDate(set.getString("TS_DDATE"));
-//                task.setCreatedBy(set.getString("FNAME"));
-//                task.setRepeat(set.getBoolean("TS_REPEAT"));
-//                task.setCreatedOn(set.getString("CREATEDON"));
-//                task.setStatus(set.getBoolean("TS_STATUS"));
-//
-//                task.setClient(set.getInt("CL_ID"));
-//                task.setClientName(set.getString("CLNAME"));
-//                task.setLead(set.getInt("LS_ID"));
-//                task.setLeadName(set.getString("LSNAME"));
-//                task.setProduct(set.getInt("PS_ID"));
-//                task.setProductName(set.getString("PSNAME"));
-//                events.add(event);
-//            }
-//        } catch (SQLException ex) {
-//            ex.printStackTrace();
-//        }
-//
-//        return events;
-//    }
+    public List<Event> getAlLEvents(String where) {
+        String query = "SELECT ES_ID, ES_TITLE, ES_LOCATION, ES_DESC, ES_FROM, ES_TO, ES_ALLDAY, ES_STATUS, NS.CREATEDON AS CREATEDON, FNAME,  " +
+                "                 NS.CL_ID, (SELECT CL.CL_NAME FROM client_store as CL WHERE CL.CL_ID = NS.CL_ID) AS CLNAME ," +
+                "                 NS.LS_ID, (SELECT CONCAT(LS.LS_FNAME,' ',LS.LS_LNAME) FROM lead_store as LS WHERE LS.LS_ID = NS.LS_ID) AS LSNAME " +
+                "                 FROM EVENT_STORE AS NS, USERS AS US " +
+                "                 WHERE NS.CREATEDBY = US.UCODE " +
+                "                 AND NS.FREZE = 0";
+
+        if (where == null || where.equals(""))
+            query = query + "";
+        else
+            query = query + where;
+
+        List<Event> events = new ArrayList<>();
+
+        try {
+            PreparedStatement statement = static_con.prepareStatement(query);
+            ResultSet set = statement.executeQuery();
+            //-------------Creating Task-------------
+            while (set.next()) {
+                Event event = new Event();
+                event.setCode(set.getInt("ES_ID"));
+                event.setTitle(set.getString("ES_TITLE"));
+                event.setDesc(set.getString("ES_DESC"));
+                event.setAllDay(set.getBoolean("ES_ALLDAY"));
+                event.setLocation(set.getString("ES_LOCATION"));
+                event.setFromDate(set.getString("ES_FROM").split("\\s+")[0]);
+                event.setFromTime(set.getString("ES_FROM").split("\\s+")[1]);
+                event.setToDate(set.getString("ES_TO").split("\\s+")[0]);
+                event.setToTime(set.getString("ES_TO").split("\\s+")[1]);
+                event.setStatus(set.getBoolean("ES_STATUS"));
+                event.setCreatedBy(set.getString("FNAME"));
+                event.setCreatedOn(set.getString("CREATEDON"));
+
+                event.setClient(set.getInt("CL_ID"));
+                event.setLead(set.getInt("LS_ID"));
+                if (event.getClient() != 0)
+                    event.setRelationName(set.getString("CLNAME"));
+                else
+                    event.setRelationName(set.getString("LSNAME"));
+                events.add(event);
+            }
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+
+        return events;
+    }
 
     public List<Event> getEvents(ClientProperty client) {
         String query = "SELECT ES_ID, ES_TITLE, ES_DESC, ES_LOCATION, ES_ALLDAY, ES_STATUS, ES_FROM, ES_TO, FNAME, CL_NAME, NS.CREATEDON " +
@@ -222,7 +223,8 @@ public class EventQueries {
             e.printStackTrace();
         }
     }
-//
+
+    //
     public void closeEvent(Event event) {
         String query = "UPDATE EVENT_STORE SET ES_STATUS = ?, ES_CLOSEDON = ? " +
                 " WHERE ES_ID = ? ";

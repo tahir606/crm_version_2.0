@@ -50,6 +50,7 @@ public class ActivityViewController implements Initializable {
     private mySqlConn sql = new mySqlConn();
 
     public static Task staticTask;
+    public static Event staticEvent;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -83,7 +84,28 @@ public class ActivityViewController implements Initializable {
         col_title.setCellValueFactory(new PropertyValueFactory<>("title"));
         col_from.setCellValueFactory(new PropertyValueFactory<>("fromDate"));
         col_to.setCellValueFactory(new PropertyValueFactory<>("createdOn"));
-        col_created_by.setCellValueFactory(new PropertyValueFactory<>("createdBy"));
-        col_status.setCellValueFactory(new PropertyValueFactory<>("statusString"));
+        col_location.setCellValueFactory(new PropertyValueFactory<>("location"));
+        col_created_by_event.setCellValueFactory(new PropertyValueFactory<>("createdBy"));
+        col_status_event.setCellValueFactory(new PropertyValueFactory<>("statusString"));
+
+        table_events.getItems().setAll(sql.getAllEvents(null));
+
+        table_events.setRowFactory(tv -> {
+            TableRow<Event> row = new TableRow<>();
+            row.setOnMouseClicked(event -> {
+                if (event.getClickCount() == 2 && (!row.isEmpty())) {
+                    staticEvent = row.getItem();
+                    try {
+                        ActivityDashController.main_paneF.setCenter(
+                                FXMLLoader.load(
+                                        getClass().getClassLoader().getResource
+                                                ("activity/details_event/activity_event.fxml")));
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+            });
+            return row;
+        });
     }
 }

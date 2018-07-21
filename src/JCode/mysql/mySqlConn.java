@@ -437,6 +437,10 @@ public class mySqlConn {
         return eventQueries.getEvents(obj);
     }
 
+    public List<Event> getAllEvents(String where) {
+        return eventQueries.getAlLEvents(where);
+    }
+
     public void updateEvent(Event event) {
         eventQueries.updateEvent(event);
     }

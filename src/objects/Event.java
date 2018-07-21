@@ -5,7 +5,7 @@ import JCode.CommonTasks;
 public class Event {
 
     private int code, client, lead;
-    private String title, location, desc, fromDate, toDate, fromTime, toTime, relationName, createdOn, createdBy, fromDateTime, toDateTime;
+    private String title, location, desc, fromDate, toDate, fromTime, toTime, relationName, createdOn, createdBy, fromDateTime, toDateTime, statusString;
     private boolean isAllDay, status;
 
     public Event() {
@@ -147,5 +147,13 @@ public class Event {
 
     public void setStatus(boolean status) {
         this.status = status;
+        if (status)
+            statusString = "Closed";
+        else
+            statusString = "Open";
+    }
+
+    public String getStatusString() {
+        return statusString;
     }
 }
