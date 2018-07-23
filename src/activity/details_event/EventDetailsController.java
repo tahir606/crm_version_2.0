@@ -3,6 +3,7 @@ package activity.details_event;
 import JCode.CommonTasks;
 import JCode.mysql.mySqlConn;
 import activity.ActivityDashController;
+import activity.event.NewEventController;
 import activity.task.NewTaskController;
 import activity.view.ActivityViewController;
 import com.jfoenix.controls.JFXButton;
@@ -16,6 +17,7 @@ import javafx.scene.control.Tooltip;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
+import objects.Event;
 import objects.Task;
 
 import java.io.IOException;
@@ -27,25 +29,11 @@ import static gui.TasksConstructor.inflateNewTask;
 public class EventDetailsController implements Initializable {
 
     @FXML
-    private Label txt_subject;
-    @FXML
-    private Label txt_dueDate;
-    @FXML
-    private Label txt_createdOn;
-    @FXML
-    private Label txt_createdBy;
+    private Label txt_title, txt_location, txt_fromDate, txt_toDate, txt_createdOn, txt_createdBy, txt_type, txt_name;
     @FXML
     private TextArea txt_desc;
     @FXML
-    private JFXButton btn_back;
-    @FXML
-    private JFXButton btn_edit;
-    @FXML
-    private JFXButton btn_close;
-    @FXML
-    private Label txt_type;
-    @FXML
-    private Label txt_name;
+    private JFXButton btn_back, btn_edit, btn_close;
     @FXML
     private HBox hbox_tools;
 //    @FXML
@@ -53,7 +41,7 @@ public class EventDetailsController implements Initializable {
 
     private mySqlConn sql;
 
-    private Task task;
+    private Event event;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -74,47 +62,46 @@ public class EventDetailsController implements Initializable {
             }
         });
 
-        task = ActivityViewController.staticTask;
+        event = ActivityViewController.staticEvent;
         populateDetails();
     }
 
     private void populateDetails() {
-        txt_subject.setText(task.getSubject());
-        txt_dueDate.setText(CommonTasks.getDateFormatted(task.getDueDate()));
-        txt_createdOn.setText(task.getCreatedOn());
-        txt_createdBy.setText(task.getCreatedBy());
-        txt_desc.setText(task.getDesc());
+        txt_title.setText(event.getTitle());
+        txt_location.setText(event.getLocation());
+        txt_fromDate.setText(event.getFromDate() + " " + event.getFromTime());
+        txt_toDate.setText(event.getToDate() + " " + event.getToTime());
+        txt_createdOn.setText(event.getCreatedOn());
+        txt_createdBy.setText(event.getCreatedBy());
+        txt_desc.setText(event.getDesc());
 
         txt_type.setVisible(true);
         txt_name.setVisible(true);
 
-        if (task.getClient() != 0) {
+        if (event.getClient() != 0) {
             txt_type.setText("Client");
-            txt_name.setText(task.getClientName());
-        } else if (task.getLead() != 0) {
+            txt_name.setText(event.getRelationName());
+        } else if (event.getLead() != 0) {
             txt_type.setText("Lead");
-            txt_name.setText(task.getLeadName());
-        } else if (task.getProduct() != 0) {
-            txt_type.setText("Product");
-            txt_name.setText(task.getProductName());
+            txt_name.setText(event.getRelationName());
         } else {
             txt_type.setVisible(false);
             txt_name.setVisible(false);
         }
 
-        if (!task.isStatus())
+        if (!event.isStatus())
             btn_close.setDisable(false);
         else
             btn_close.setDisable(true);
 
         btn_close.setOnAction(event -> {
-            sql.closeTask(task);
+            sql.closeEvent(this.event);
             btn_close.setDisable(true);
         });
 
         btn_edit.setOnAction(event -> {
-            NewTaskController.stInstance = 'D';
-            inflateNewTask("Update Task");
+            NewEventController.stInstance = 'D';
+            CommonTasks.inflateDialog("Update Event", "/activity/event/new_event.fxml");
         });
 
         JFXButton buttonArchive = new JFXButton("Archive");
@@ -122,7 +109,7 @@ public class EventDetailsController implements Initializable {
         buttonArchive.setPrefWidth(84);
         buttonArchive.setPrefHeight(34);
         buttonArchive.setOnAction(event -> {
-            sql.archiveTask(task);
+            sql.archiveEvent(this.event);
             CommonTasks.loadInPane(ActivityDashController.main_paneF, "activity/view/activity_view.fxml");
         });
         hbox_tools.getChildren().add(buttonArchive);

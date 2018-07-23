@@ -4,6 +4,7 @@ import JCode.CommonTasks;
 import JCode.Toast;
 import JCode.mysql.mySqlConn;
 import activity.ActivityDashController;
+import activity.view.ActivityViewController;
 import client.dash.clientView.clientViewController;
 import client.dash.contactView.contactViewController;
 import com.jfoenix.controls.*;
@@ -91,22 +92,17 @@ public class NewEventController implements Initializable {
                 break;
             }
             case 'D': { //D for from details
-//                btn_save.setText("Update");
-//
-//                event = ActivityViewController.staticTask;
-//                populateFields(event);
+                btn_save.setText("Update");
+
+                currEvent = ActivityViewController.staticEvent;
+                System.out.println(currEvent);
+                populateFields(currEvent);
                 break;
             }
         }
 
         if (stInstance != 'D') {
             switch (choice) {
-                case 1: {       //Contacts
-//                    contact = contactViewController.staticContact;
-//                    relation_type.getSelectionModel().select("Contact");
-//                    txt_name.setText(contact.getFullName());
-                    break;
-                }
                 case 2: {       //Clients
                     client = clientViewController.staticClient;
                     relation_type.getSelectionModel().select("Client");
@@ -117,12 +113,6 @@ public class NewEventController implements Initializable {
                     lead = LeadViewController.staticLead;
                     relation_type.getSelectionModel().select("Lead");
                     txt_name.setText(lead.getFullNameProperty().toString());
-                    break;
-                }
-                case 4: {
-//                    product = ProductViewController.staticProduct;
-//                    relation_type.getSelectionModel().select("Product");
-//                    txt_name.setText(product.getName().toString());
                     break;
                 }
             }
@@ -199,9 +189,7 @@ public class NewEventController implements Initializable {
                     switch (stInstance) {
                         case 'N': {
                             try {
-                                if (type.equals("Contact")) {
-
-                                } else if (type.equals("Client")) {
+                                if (type.equals("Client")) {
                                     currEvent.setClient(client.getCode());
                                 } else if (type.equals("Lead")) {
                                     currEvent.setLead(lead.getCode());
@@ -217,7 +205,7 @@ public class NewEventController implements Initializable {
                             break;
                         }
                         case 'D': {
-//                            sql.updateEvent(currEvent);
+                            sql.updateEvent(currEvent);
                             break;
                         }
                         default: {

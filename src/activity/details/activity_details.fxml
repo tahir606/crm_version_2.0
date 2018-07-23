@@ -70,19 +70,19 @@
                         </children>
                     </HBox>
                     <HBox prefHeight="26.0" prefWidth="316.0" spacing="25.0">
-                        <children>
-                            <Label fx:id="txt_type" prefHeight="20.0" prefWidth="80.0" text="Type">
-                                <font>
-                                    <Font size="14.0"/>
-                                </font>
-                            </Label>
-                            <Label fx:id="txt_name" text="Name">
-                                <font>
-                                    <Font size="14.0"/>
-                                </font>
-                            </Label>
-                        </children>
-                    </HBox>
+                    <children>
+                        <Label fx:id="txt_type" prefHeight="20.0" prefWidth="80.0" text="Type">
+                            <font>
+                                <Font size="14.0"/>
+                            </font>
+                        </Label>
+                        <Label fx:id="txt_name" text="Name">
+                            <font>
+                                <Font size="14.0"/>
+                            </font>
+                        </Label>
+                    </children>
+                </HBox>
                     <HBox prefHeight="67.0" prefWidth="427.0" spacing="25.0">
                         <children>
                             <Label prefHeight="20.0" prefWidth="80.0" text="Description">

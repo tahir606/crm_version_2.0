@@ -167,7 +167,7 @@ public class EventsConstructor {
         editItem.setOnAction(t -> {
             NewEventController.stInstance = 'U';
             updatingEvent = event;
-            CommonTasks.inflateDialog("Update Task", "/activity/event/new_event.fxml");
+            CommonTasks.inflateDialog("Update Event", "/activity/event/new_event.fxml");
         });
         closeItem.setOnAction(t -> {
             sql.closeEvent(event);

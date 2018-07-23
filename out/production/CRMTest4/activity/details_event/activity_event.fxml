@@ -7,7 +7,7 @@
 <?import java.lang.String?>
 <AnchorPane xmlns="http://javafx.com/javafx"
             xmlns:fx="http://javafx.com/fxml"
-            fx:controller="activity.details.ActivityDetailsController"
+            fx:controller="activity.details_event.EventDetailsController"
             stylesheets="@../../styles/emailDash.css"
             prefHeight="400.0" prefWidth="600.0">
     <children>
@@ -30,7 +30,7 @@
                                     <Font size="14.0"/>
                                 </font>
                             </Label>
-                            <Label fx:id="txt_location" text="Created By">
+                            <Label fx:id="txt_location" text="Location">
                                 <font>
                                     <Font size="14.0"/>
                                 </font>
@@ -88,6 +88,20 @@
                                 </font>
                             </Label>
                             <Label fx:id="txt_createdBy" text="Created By">
+                                <font>
+                                    <Font size="14.0"/>
+                                </font>
+                            </Label>
+                        </children>
+                    </HBox>
+                    <HBox prefHeight="26.0" prefWidth="316.0" spacing="25.0">
+                        <children>
+                            <Label fx:id="txt_type" prefHeight="20.0" prefWidth="80.0" text="Type">
+                                <font>
+                                    <Font size="14.0"/>
+                                </font>
+                            </Label>
+                            <Label fx:id="txt_name" text="Name">
                                 <font>
                                     <Font size="14.0"/>
                                 </font>

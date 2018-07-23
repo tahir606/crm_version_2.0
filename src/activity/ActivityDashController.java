@@ -1,6 +1,7 @@
 package activity;
 
 import JCode.CommonTasks;
+import activity.event.NewEventController;
 import activity.task.NewTaskController;
 import dashboard.dController;
 import javafx.application.Platform;
@@ -31,22 +32,28 @@ public class ActivityDashController implements Initializable {
     public void initialize(URL location, ResourceBundle resources) {
         main_paneF = main_pane;
 
-        populateContactsMenuBar();
+        populateMenuBar();
 
         inflatePane("view/activity_view.fxml");
     }
 
-    private void populateContactsMenuBar() {
+    private void populateMenuBar() {
 
         Menu menuNew = new Menu("New");
 
-        MenuItem newProduct = new MenuItem("New Task");
-        newProduct.setOnAction(event -> {
+        MenuItem newTask = new MenuItem("New Task");
+        newTask.setOnAction(event -> {
             NewTaskController.stInstance = 'N';
-//            CommonTasks.inflateDialog("New Task", this.getClass().getResource("task/new_task.fxml"));
-            CommonTasks.inflateDialog("New Task", "task/new_task.fxml");
+            CommonTasks.inflateDialog("New Task", "/activity/task/new_task.fxml");
         });
-        menuNew.getItems().addAll(newProduct);
+        menuNew.getItems().addAll(newTask);
+
+        MenuItem newEvent = new MenuItem("New Event");
+        newEvent.setOnAction(event -> {
+            NewEventController.stInstance = 'N';
+            CommonTasks.inflateDialog("New Event", "/activity/event/new_event.fxml");
+        });
+        menuNew.getItems().addAll(newEvent);
 
         menu_activity.getMenus().add(menuNew);
     }
