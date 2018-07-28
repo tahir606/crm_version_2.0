@@ -40,17 +40,13 @@ public class Main extends Application {
         } else if (fHelper.ReadUserDetails() == null) {
             Parent root = FXMLLoader.load(getClass().getResource("login/login.fxml"));
             primaryStage.setTitle("Login- BITS-CRM");
-            primaryStage.setScene(new Scene(root, 1400, 600));
-//            primaryStage.setResizable(false);
-//            tray.createTrayIcon(primaryStage);
+            primaryStage.setScene(new Scene(root, 1400, 500));
             tray.createIcon(primaryStage);
             primaryStage.show();
         } else {
             Parent root = FXMLLoader.load(getClass().getResource("dashboard/dashboard.fxml"));
             primaryStage.setTitle("Dashboard- BITS-CRM");
             primaryStage.setScene(new Scene(root, 1400, 600));
-//            primaryStage.setMaximized(true);
-//            primaryStage.setResizable(false);
             tray.createTrayIcon(primaryStage);
             tray.createIcon(primaryStage);
             primaryStage.show();

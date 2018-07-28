@@ -27,6 +27,7 @@ public class mySqlConn {
     private static Connection static_con;
 
     private UserQueries userQueries;
+    private StartupQueries startupQueries;
     private EmailQueries emailQueries;
     private EmailSettingsQueries emailSettingsQueries;
     private EmailPhoneQueries emailPhoneQueries;
@@ -50,7 +51,9 @@ public class mySqlConn {
         user = fHelper.ReadUserDetails();
         if (static_con == null)
             static_con = getConnection();
+
         userQueries = new UserQueries(static_con, fHelper);
+        startupQueries = new StartupQueries(static_con, userQueries);
         emailSettingsQueries = new EmailSettingsQueries(static_con, fHelper);
         eSetting = getEmailSettings();
         emailPhoneQueries = new EmailPhoneQueries(static_con);
@@ -100,39 +103,38 @@ public class mySqlConn {
     public void setLogin(int ucode, boolean log) {
         userQueries.setLogin(ucode, log);
     }
-
     public boolean getRights(Users user) {
         return userQueries.getRights(user);
     }
-
     public String getUserName(int ucode) {
         return userQueries.getUserName(ucode);
     }
-
     public Users getUserDetails(Users user) {
         return userQueries.getUserDetails(user);
     }
-
     public List<Users> getAllUsers() {
         return userQueries.getAllUsers();
     }
-
     public List<Users.uRights> getAllUserRights() {
         return userQueries.getAllUserRights();
     }
-
     public void insertUpdateUser(Users user, int choice) {
         userQueries.insertUpdateUser(user, choice);
     }
-
     public void deleteUser(Users u) {
         userQueries.deleteUser(u);
+    }
+
+    public boolean checkAndCreateUser() {
+        return startupQueries.checkAndCreateUser();
+    }
+    public boolean checkAndPopulateRights() {
+        return startupQueries.checkAndPopulateRights();
     }
 
     public Users getNoOfSolvedEmails(Users user) {
         return emailQueries.getNoOfSolvedEmails(user);
     }
-
     public void createEmailRelations(Email email) {
         emailQueries.createEmailRelations(email);
     }

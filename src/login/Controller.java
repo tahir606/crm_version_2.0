@@ -2,6 +2,7 @@ package login;
 
 import JCode.mysql.mySqlConn;
 import JCode.trayHelper;
+import SplashScreen.SplashScreenThread;
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXPasswordField;
 import com.jfoenix.controls.JFXTextField;
@@ -37,9 +38,19 @@ public class Controller implements Initializable {
     private ImageView img_loader;
 
     trayHelper tHelper = new trayHelper();
+    mySqlConn sql;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        sql = new mySqlConn();
+
+        //First time opening the CRM creates automatic admin user.
+        sql.checkAndCreateUser();
+        //And populate the rights list
+        sql.checkAndPopulateRights();
+
+        SplashScreenThread.hideSplashScreen();
+
         error_message.setMaxWidth(Double.MAX_VALUE);
         AnchorPane.setLeftAnchor(error_message, 0.0);
         AnchorPane.setRightAnchor(error_message, 0.0);
@@ -84,7 +95,6 @@ public class Controller implements Initializable {
 
     private void authenticateLogin(String username, String password) {
 
-        mySqlConn sql = new mySqlConn();
         boolean succ = sql.authenticateLogin(username, password);
 
         Platform.runLater(
@@ -108,7 +118,7 @@ public class Controller implements Initializable {
                         }
                         Stage stage = new Stage();
                         stage.setTitle("Burhani It Solutions - Customer Relationship Management");
-                        stage.setScene(new Scene(root1));
+                        stage.setScene(new Scene(root1, 1400, 600));
                         tHelper.createTrayIcon(stage);
                         tHelper.createIcon(stage);
                         stage.show();
