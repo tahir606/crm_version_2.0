@@ -256,7 +256,7 @@ public class ProductQueries {
                 " AND PS_ID = ? " +
                 " AND UNLOCKEDTIME is NULL ";
         
-        for (ProductModule module : product.getProductModules()) {
+         for (ProductModule module : product.getProductModules()) {
             try {
                 PreparedStatement statement = static_con.prepareStatement(query);
                 statement.setInt(1, module.getCode());
