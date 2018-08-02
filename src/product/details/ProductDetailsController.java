@@ -180,6 +180,7 @@ public class ProductDetailsController implements Initializable {
                         break;
                     }
                     case 1: {
+                        UnlockDialogController.fromPane = 'P';
                         CommonTasks.inflateDialog("Confirmation?", path);
                         break;
                     }
