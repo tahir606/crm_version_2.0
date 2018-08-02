@@ -28,7 +28,6 @@ public class fileHelper {
     }
     
     public void makeFolders() {
-        
         new Thread(() -> {
             if (!new File(FADD + "text.txt").exists()) {
                 File file = new File(FADD);
@@ -48,7 +47,36 @@ public class fileHelper {
                 }
             }
         }).start();
-        
+    }
+
+    public void checkFolders() {
+        String text = "";
+        InputStreamReader isReader = null;
+        try {
+            isReader = new InputStreamReader(
+                    new FileInputStream(
+                            new File(FADD + "text.txt")));
+            BufferedReader br = new BufferedReader(isReader);
+
+            text = br.readLine();
+            return;
+        } catch (FileNotFoundException e) {
+            System.out.println(e);
+            makeFolders();
+//            askForNetwork();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (NullPointerException e) {
+            e.printStackTrace();
+            return;
+        } finally {
+            try {
+                isReader.close();
+            } catch (Exception ex) {
+                System.out.println(ex);
+            }
+        }
+        return;
     }
     
     public Network getNetworkDetails() {
@@ -65,7 +93,7 @@ public class fileHelper {
             return new Network(t[0], Integer.parseInt(t[1]));
         } catch (FileNotFoundException e) {
             System.out.println(e);
-//            askForNetwork();
+            return null;
         } catch (IOException e) {
             e.printStackTrace();
         } catch (NullPointerException e) {

@@ -12,6 +12,7 @@ import javafx.stage.Stage;
 
 import JCode.*;
 import javafx.stage.StageStyle;
+import settings.network.networkSetController;
 
 import java.io.IOException;
 
@@ -28,9 +29,10 @@ public class Main extends Application {
         fHelper = new fileHelper();
         tray = new trayHelper();
 
-//        fHelper.makeFolders();
+        fHelper.checkFolders();
 
         if (fHelper.getNetworkDetails() == null) {
+            networkSetController.fromMain = true;
             Parent root = FXMLLoader.load(getClass().getResource("settings/network/networkSet.fxml"));
             primaryStage.setTitle("Network Settings- BITS-CRM");
             primaryStage.setScene(new Scene(root, 600, 400));

@@ -14,10 +14,10 @@ import java.util.*;
 
 public class mySqlConn {
 
-    private static String USER;
-    private static String PASSWORD;
-
-    private static String URL;
+    private final static String USER = "crm",
+            PASSWORD = "crm123!@#",
+            DBNAME = "bits_crm";
+    private String URL;
 
     private fileHelper fHelper;
     private ESetting eSetting;
@@ -45,9 +45,7 @@ public class mySqlConn {
         Network network = fHelper.getNetworkDetails();
         if (network == null)
             return;
-        URL = "jdbc:mysql://" + network.getHost() + ":" + network.getPort() + "/" + network.getDbname() + "?allowMultiQueries=true";
-        USER = network.getRoot();
-        PASSWORD = network.getPass();
+        URL = "jdbc:mysql://" + network.getHost() + ":" + network.getPort() + "/" + DBNAME + "?allowMultiQueries=true";
         user = fHelper.ReadUserDetails();
         if (static_con == null)
             static_con = getConnection();
@@ -103,24 +101,31 @@ public class mySqlConn {
     public void setLogin(int ucode, boolean log) {
         userQueries.setLogin(ucode, log);
     }
+
     public boolean getRights(Users user) {
         return userQueries.getRights(user);
     }
+
     public String getUserName(int ucode) {
         return userQueries.getUserName(ucode);
     }
+
     public Users getUserDetails(Users user) {
         return userQueries.getUserDetails(user);
     }
+
     public List<Users> getAllUsers() {
         return userQueries.getAllUsers();
     }
+
     public List<Users.uRights> getAllUserRights() {
         return userQueries.getAllUserRights();
     }
+
     public void insertUpdateUser(Users user, int choice) {
         userQueries.insertUpdateUser(user, choice);
     }
+
     public void deleteUser(Users u) {
         userQueries.deleteUser(u);
     }
@@ -128,6 +133,7 @@ public class mySqlConn {
     public boolean checkAndCreateUser() {
         return startupQueries.checkAndCreateUser();
     }
+
     public boolean checkAndPopulateRights() {
         return startupQueries.checkAndPopulateRights();
     }
@@ -135,6 +141,7 @@ public class mySqlConn {
     public Users getNoOfSolvedEmails(Users user) {
         return emailQueries.getNoOfSolvedEmails(user);
     }
+
     public void createEmailRelations(Email email) {
         emailQueries.createEmailRelations(email);
     }

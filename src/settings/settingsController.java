@@ -22,6 +22,7 @@ import javafx.scene.layout.Pane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
+import settings.network.networkSetController;
 
 import java.io.IOException;
 import java.net.URL;
@@ -63,7 +64,7 @@ public class settingsController implements Initializable {
         adminSetting.getStyleClass().add("btnMenu");
 
         //---------------------------------------------------Split-----------
-
+        networkSetController.fromMain = false;
         EventHandler myNetworkEvent = event -> inflating("settings/network/networkSet.fxml", 3);
         JFXButton networkSetting = new JFXButton("Network");
         Image imageN = new Image(getClass().getResourceAsStream("/res/img/network.png"));

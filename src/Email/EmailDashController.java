@@ -161,11 +161,6 @@ public class EmailDashController implements Initializable {
             if (Desktop.isDesktopSupported()) {
                 try {
                     Desktop.getDesktop().open(newValue);
-//                    try {
-//                        combo_attach.valueProperty().set(null);
-//                    } catch (IndexOutOfBoundsException e) {
-//                        System.out.println(e);
-//                    }
                 } catch (IOException ex) {
                     ex.printStackTrace();
                 }

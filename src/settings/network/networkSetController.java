@@ -43,9 +43,10 @@ public class networkSetController implements Initializable {
         tHelper = new trayHelper();
 
         Network network = fHelper.getNetworkDetails();
-
-        txt_ip.setText(network.getHost());
-        txt_port.setText(String.valueOf(network.getPort()));
+        if (network != null) {
+            txt_ip.setText(network.getHost());
+            txt_port.setText(String.valueOf(network.getPort()));
+        }
     }
 
     public void saveChanges(ActionEvent actionEvent) {
@@ -78,9 +79,7 @@ public class networkSetController implements Initializable {
                         e.printStackTrace();
                     }
                     primaryStage.setTitle("Login- BITS-CRM");
-                    primaryStage.setScene(new Scene(root, 900, 400));
-//            primaryStage.setResizable(false);
-//                tHelper.createTrayIcon(primaryStage);
+                    primaryStage.setScene(new Scene(root, 900, 400));;
                     tHelper.createIcon(primaryStage);
                     primaryStage.show();
                 } else {
@@ -92,7 +91,6 @@ public class networkSetController implements Initializable {
                     }
                     primaryStage.setTitle("Dashboard- BITS-CRM");
                     primaryStage.setScene(new Scene(root, 1200, 500));
-//            primaryStage.setResizable(false);
                     tHelper.createTrayIcon(primaryStage);
                     tHelper.createIcon(primaryStage);
                     primaryStage.show();
