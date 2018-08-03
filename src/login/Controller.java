@@ -48,6 +48,8 @@ public class Controller implements Initializable {
         sql.checkAndCreateUser();
         //And populate the rights list
         sql.checkAndPopulateRights();
+        //And populate sources
+        sql.checkAndPopulateSourcesonCreation();
 
         SplashScreenThread.hideSplashScreen();
 

@@ -10,8 +10,8 @@ import java.util.List;
 
 public class Lead {
     
-    private int code;
-    private String firstName, lastName, company, title, website, city, country, addr, note, email, phone;
+    private int code, source;
+    private String firstName, lastName, company, title, website, city, country, addr, note, email, phone, sourceString, otherText;
     private SimpleIntegerProperty codeProperty;
     private SimpleStringProperty fullNameProperty, companyProperty, titleProperty, websiteProperty,
             cityProperty, countryProperty, addrProperty, noteProperty, emailProperty, phoneProperty;
@@ -136,5 +136,29 @@ public class Lead {
     
     public void setNotes(List<Note> notes) {
         this.notes = notes;
+    }
+
+    public int getSource() {
+        return source;
+    }
+
+    public void setSource(int source) {
+        this.source = source;
+    }
+
+    public String getSourceString() {
+        return sourceString;
+    }
+
+    public void setSourceString(String sourceString) {
+        this.sourceString = sourceString;
+    }
+
+    public String getOtherText() {
+        return otherText;
+    }
+
+    public void setOtherText(String otherText) {
+        this.otherText = otherText;
     }
 }

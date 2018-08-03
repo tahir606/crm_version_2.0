@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import com.jfoenix.controls.JFXButton?>
+<?import com.jfoenix.controls.JFXComboBox?>
 <?import com.jfoenix.controls.JFXTextField?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.TextArea?>
@@ -57,6 +58,13 @@
                     </children>
                 </HBox>
                 <HBox prefHeight="5.0" prefWidth="200.0" spacing="10.0" />
+            <HBox prefHeight="30.0" prefWidth="200.0" spacing="10.0">
+               <children>
+                  <Label prefHeight="35.0" prefWidth="80.0" text="Source" />
+                  <JFXComboBox fx:id="combo_source" prefHeight="25.0" prefWidth="302.0" promptText="Choose source" />
+               </children>
+            </HBox>
+            <HBox fx:id="hbox_other" prefHeight="5.0" prefWidth="200.0" spacing="10.0" />
                 <HBox prefHeight="5.0" prefWidth="200.0" spacing="10.0" />
                 <HBox prefHeight="78.0" prefWidth="521.0">
                     <children>

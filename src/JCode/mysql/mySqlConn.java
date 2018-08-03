@@ -346,6 +346,14 @@ public class mySqlConn {
         return leadQueries.getParticularLead(lead);
     }
 
+    public void checkAndPopulateSourcesonCreation() {
+        leadQueries.checkAndPopulateSourcesOnCreation();
+    }
+
+    public List<String> getAllSources() {
+        return leadQueries.getAllSources(null);
+    }
+
     public void addNote(String text, ContactProperty contact) {
         noteQueries.addNewNote(text, contact);
     }
