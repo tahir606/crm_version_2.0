@@ -86,6 +86,20 @@
                         </Label>
                     </children>
                 </HBox>
+                <HBox prefHeight="26.0" prefWidth="316.0" spacing="25.0">
+                    <children>
+                        <Label fx:id="txt_source" prefHeight="20.0" prefWidth="80.0" text="Source">
+                            <font>
+                                <Font size="14.0"/>
+                            </font>
+                        </Label>
+                        <Label fx:id="txt_sourceText" text="Source Text">
+                            <font>
+                                <Font size="14.0"/>
+                            </font>
+                        </Label>
+                    </children>
+                </HBox>
                 <HBox prefHeight="67.0" prefWidth="427.0" spacing="25.0">
                     <children>
                         <Label prefHeight="20.0" prefWidth="80.0" text="Description">

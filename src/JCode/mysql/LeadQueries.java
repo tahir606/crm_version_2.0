@@ -103,7 +103,7 @@ public class LeadQueries {
     public List<Lead> getAllLeads(String where) {
 
         String query = " SELECT LS.LS_ID AS LS_ID,LS_FNAME,LS_LNAME,LS_CNAME,LS_CITY,LS_COUNTRY,LS_NOTE,LS_WEBSITE,EM_NAME,PH_NUM,S_ID,S_OTHER " +
-                " FROM LEAD_STORE AS LS, EMAIL_LIST AS EL,  PHONE_LIST AS PL  " +
+                " FROM LEAD_STORE AS LS, EMAIL_LIST AS EL,  PHONE_LIST AS PL " +
                 " WHERE EL.LS_ID = LS.LS_ID   " +
                 " AND PL.LS_ID = LS.LS_ID " +
                 " UNION ALL " +

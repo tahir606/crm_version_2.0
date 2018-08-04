@@ -70,19 +70,19 @@
                         </children>
                     </HBox>
                     <HBox prefHeight="26.0" prefWidth="316.0" spacing="25.0">
-                    <children>
-                        <Label fx:id="txt_type" prefHeight="20.0" prefWidth="80.0" text="Type">
-                            <font>
-                                <Font size="14.0"/>
-                            </font>
-                        </Label>
-                        <Label fx:id="txt_name" text="Name">
-                            <font>
-                                <Font size="14.0"/>
-                            </font>
-                        </Label>
-                    </children>
-                </HBox>
+                        <children>
+                            <Label fx:id="txt_type" prefHeight="20.0" prefWidth="80.0" text="Type">
+                                <font>
+                                    <Font size="14.0"/>
+                                </font>
+                            </Label>
+                            <Label fx:id="txt_name" text="Name">
+                                <font>
+                                    <Font size="14.0"/>
+                                </font>
+                            </Label>
+                        </children>
+                    </HBox>
                     <HBox prefHeight="67.0" prefWidth="427.0" spacing="25.0">
                         <children>
                             <Label prefHeight="20.0" prefWidth="80.0" text="Description">
@@ -102,7 +102,7 @@
         <HBox fx:id="hbox_tools" layoutX="639.0" layoutY="19.0" prefHeight="34.0" prefWidth="361.0" spacing="20.0">
             <children>
                 <JFXButton fx:id="btn_edit" prefHeight="42.0" prefWidth="84.0" styleClass="emailDetailsButton"
-                text="Edit"/>
+                           text="Edit"/>
                 <JFXButton fx:id="btn_close" prefHeight="38.0" prefWidth="84.0" styleClass="emailDetailsButton"
                            text="Close"/>
             </children>

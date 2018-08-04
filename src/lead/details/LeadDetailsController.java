@@ -24,43 +24,28 @@ import objects.Lead;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.List;
 import java.util.ResourceBundle;
 
 public class LeadDetailsController implements Initializable {
     @FXML
-    private Label txt_fname;
-    @FXML
-    private Label txt_company;
-    @FXML
-    private Label txt_website;
-    @FXML
-    private Label txt_email;
-    @FXML
-    private Label txt_mobile;
+    private Label txt_fname, txt_company, txt_website, txt_email, txt_mobile, txt_sourceText;
     @FXML
     private TextArea txt_desc;
     @FXML
-    private JFXButton btn_back;
+    private JFXButton btn_back, btn_edit;
     @FXML
-    private JFXButton btn_edit;
-    @FXML
-    private VBox notes_list;
-    @FXML
-    private VBox vbox_main;
-    @FXML
-    private VBox open_activities_list;
-    @FXML
-    private VBox closed_activities_list;
+    private VBox notes_list, vbox_main, open_activities_list, closed_activities_list;
 
     private mySqlConn sql;
-    
+
     private Lead lead;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        
+
         sql = new mySqlConn();
-        
+
         Image image = new Image(this.getClass().getResourceAsStream("/res/img/left-arrow.png"));
         btn_back.setGraphic(new ImageView(image));
         btn_back.setAlignment(Pos.CENTER_LEFT);
@@ -87,6 +72,9 @@ public class LeadDetailsController implements Initializable {
         txt_website.setText(lead.getWebsite());
         txt_email.setText(lead.getEmail());
         txt_mobile.setText(lead.getPhone());
+
+        populateSource();
+
         txt_desc.setText(lead.getNote());
 
 //        btn_email.setOnAction(event -> {
@@ -106,7 +94,7 @@ public class LeadDetailsController implements Initializable {
                 e.printStackTrace();
             }
         });
-        
+
         TabPane tabPane = new TabPane();
         tabPane.setMinWidth(600);
         int CHOICE = 3;
@@ -115,14 +103,24 @@ public class LeadDetailsController implements Initializable {
         new EventsConstructor(tabPane, lead).generalConstructor(CHOICE);
 
         tabPane.setTabClosingPolicy(TabPane.TabClosingPolicy.UNAVAILABLE);
-    
+
         AnchorPane.setBottomAnchor(tabPane, 0.0);
         AnchorPane.setTopAnchor(tabPane, 0.0);
         AnchorPane.setRightAnchor(tabPane, 0.0);
         AnchorPane.setLeftAnchor(tabPane, 0.0);
-    
+
         vbox_main.getChildren().add(tabPane);
 
+    }
 
+    private void populateSource() {
+//        new Thread(() -> {
+            List<String> sources = sql.getAllSources();
+            if (lead.getSource() == 0)
+                txt_sourceText.setText(lead.getOtherText());
+            else {
+                txt_sourceText.setText(sources.get(lead.getSource() - 1));
+            }
+//        }).start();
     }
 }
