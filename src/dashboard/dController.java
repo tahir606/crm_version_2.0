@@ -1,6 +1,7 @@
 package dashboard;
 
 import Home.HomeSplitController;
+import JCode.NotifyActivities;
 import JCode.emailControl;
 import JCode.fileHelper;
 import JCode.mysql.mySqlConn;
@@ -99,6 +100,8 @@ public class dController implements Initializable {
         Platform.setImplicitExit(false);
 
         SplashScreenThread.hideSplashScreen();
+
+        startNotifications();
     }
     
     private void DrawerPane() {
@@ -340,6 +343,11 @@ public class dController implements Initializable {
             }
         }).start();
         
+    }
+
+    private void startNotifications() {
+        NotifyActivities notify = new NotifyActivities();
+        notify.startNotifying();
     }
     
     

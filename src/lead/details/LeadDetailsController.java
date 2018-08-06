@@ -35,7 +35,7 @@ public class LeadDetailsController implements Initializable {
     @FXML
     private JFXButton btn_back, btn_edit;
     @FXML
-    private VBox notes_list, vbox_main, open_activities_list, closed_activities_list;
+    private VBox vbox_main;
 
     private mySqlConn sql;
 
