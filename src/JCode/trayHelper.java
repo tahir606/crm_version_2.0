@@ -81,15 +81,12 @@ public class trayHelper {
     }
 
     private void hide(final Stage stage) {
-        Platform.runLater(new Runnable() {
-            @Override
-            public void run() {
-                if (SystemTray.isSupported()) {
-                    stage.hide();
+        Platform.runLater(() -> {
+            if (SystemTray.isSupported()) {
+                stage.hide();
 
-                } else {
-                    System.exit(0);
-                }
+            } else {
+                System.exit(0);
             }
         });
     }
@@ -109,7 +106,7 @@ public class trayHelper {
             trayIcon.displayMessage(caption, msg, TrayIcon.MessageType.INFO);
             times = 0;
         } catch (NullPointerException e) {
-            System.out.println(e);
+            System.out.println("Tray Helper: " + e);
             times++;
             new Thread(() -> {
                 try {

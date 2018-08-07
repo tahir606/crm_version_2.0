@@ -50,6 +50,8 @@ public class Controller implements Initializable {
         sql.checkAndPopulateRights();
         //And populate sources
         sql.checkAndPopulateSourcesonCreation();
+        //And populate Notification Settings
+        sql.checkOnNotificationSettings();
 
         SplashScreenThread.hideSplashScreen();
 

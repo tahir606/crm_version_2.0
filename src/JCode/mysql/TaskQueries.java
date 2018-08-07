@@ -76,7 +76,7 @@ public class TaskQueries {
     }
 
     public List<Task> getAlLTasks(String where) {
-        String query = "SELECT TS_ID, TS_SUBJECT, TS_DESC, TS_DDATE, TS_REPEAT, NS.CREATEDON AS CREATEDON, FNAME, " +
+        String query = "SELECT TS_ID, TS_SUBJECT, TS_DESC, TS_DDATE, TS_REPEAT, NS.CREATEDON AS CREATEDON, NS.CREATEDBY AS CREATEDBY, FNAME, " +
                 " TS_STATUS,  " +
                 " NS.CS_ID, (SELECT CONCAT(CS_FNAME,' ',CS_LNAME) FROM contact_store as CS WHERE CS.CS_ID = NS.CS_ID) AS CSNAME , " +
                 " NS.CL_ID, (SELECT CL.CL_NAME FROM client_store as CL WHERE CL.CL_ID = NS.CL_ID) AS CLNAME , " +
@@ -103,6 +103,7 @@ public class TaskQueries {
                 task.setSubject(set.getString("TS_SUBJECT"));
                 task.setDesc(set.getString("TS_DESC"));
                 task.setDueDate(set.getString("TS_DDATE"));
+                task.setCreatedByCode(set.getInt("CREATEDBY"));
                 task.setCreatedBy(set.getString("FNAME"));
                 task.setRepeat(set.getBoolean("TS_REPEAT"));
                 task.setCreatedOn(set.getString("CREATEDON"));
@@ -300,6 +301,20 @@ public class TaskQueries {
 
     public void archiveTask(Task task) {
         String query = "UPDATE TASK_STORE SET FREZE = 1 " +
+                " WHERE TS_ID = ? ";
+
+        PreparedStatement statement = null;
+        try {
+            statement = static_con.prepareStatement(query);
+            statement.setInt(1, task.getCode());
+            statement.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void markNotified(Task task) {
+        String query = " UPDATE TASK_STORE SET NOTIFIED = 1 " +
                 " WHERE TS_ID = ? ";
 
         PreparedStatement statement = null;

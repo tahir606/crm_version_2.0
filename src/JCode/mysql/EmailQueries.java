@@ -214,16 +214,13 @@ public class EmailQueries {
 
     public void insertEmail(Email email, Message message) {
 
-        if (checkForRelatedEmails(email))
-            return;
+//        if (checkForRelatedEmails(email))
+//            return;
 
         String query = "INSERT INTO email_store(EMNO,SBJCT,TOADD,FRADD,TSTMP,EBODY,ATTCH,CCADD,ESOLV,MSGNO,LOCKD," +
                 "FREZE) SELECT IFNULL(max(EMNO),0)+1,?,?,?,?,?,?,?,?,?,?,? from EMAIL_STORE";
 
-        // Connection con = getConnection();
         PreparedStatement statement = null;
-
-        System.out.println(email.getTimestamp());
 
         try {
             statement = static_con.prepareStatement(query);

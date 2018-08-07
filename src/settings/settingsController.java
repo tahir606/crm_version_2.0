@@ -9,6 +9,7 @@ import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.geometry.Pos;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
@@ -45,35 +46,18 @@ public class settingsController implements Initializable {
 
     private void populateMenu() {
 
-        EventHandler myEmailEvent = event -> inflating("settings/email/email.fxml", 1);
-        JFXButton emailSetting = new JFXButton("Email");
-        Image image = new Image(getClass().getResourceAsStream("/res/img/at.png"));
-        emailSetting.setPrefSize(100, menu_hbox.getHeight());
-        emailSetting.setOnAction(myEmailEvent);
-        emailSetting.setGraphic(new ImageView(image));
-        emailSetting.getStyleClass().add("btnMenu");
 
-        //---------------------------------------------------Split-----------
+        buttonSettings("Email", "settings/email/email.fxml", 1);
 
-        EventHandler myAdminEvent = event -> inflating("settings/admin/admin.fxml", 2);
-        JFXButton adminSetting = new JFXButton("User");
-        Image imageA = new Image(getClass().getResourceAsStream("/res/img/users.png"));
-        adminSetting.setPrefSize(100, menu_hbox.getHeight());
-        adminSetting.setOnAction(myAdminEvent);
-        adminSetting.setGraphic(new ImageView(imageA));
-        adminSetting.getStyleClass().add("btnMenu");
 
-        //---------------------------------------------------Split-----------
+        buttonSettings("User", "settings/admin/admin.fxml", 2);
+
         networkSetController.fromMain = false;
-        EventHandler myNetworkEvent = event -> inflating("settings/network/networkSet.fxml", 3);
-        JFXButton networkSetting = new JFXButton("Network");
-        Image imageN = new Image(getClass().getResourceAsStream("/res/img/network.png"));
-        networkSetting.setPrefSize(100, menu_hbox.getHeight());
-        networkSetting.setOnAction(myNetworkEvent);
-        networkSetting.setGraphic(new ImageView(imageN));
-        networkSetting.getStyleClass().add("btnMenu");
+        buttonSettings("Network", "settings/network/networkSet.fxml", 3);
 
-        menu_hbox.getChildren().addAll(emailSetting, adminSetting, networkSetting);
+        buttonSettings("Notifications", "settings/notify/notifySet.fxml", 4);
+
+//        menu_hbox.getChildren().addAll(emailSetting, adminSetting, networkSetting);
 
         main_pane.setCenter(new Label("Select Setting Type"));
 
@@ -86,22 +70,34 @@ public class settingsController implements Initializable {
         new Thread(new Runnable() {
             @Override
             public void run() {
-                    if (currentPane == p) {
-                        img_loader.setVisible(false);
-                        return;
-                    }
+                if (currentPane == p) {
+                    img_loader.setVisible(false);
+                    return;
+                }
 
-                    Platform.runLater(() -> {
-                        try {
-                            main_pane.setCenter(FXMLLoader.load(getClass().getClassLoader().getResource
-                                    (pane)));
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
-                        currentPane = p;
-                        img_loader.setVisible(false);
-                    });
+                Platform.runLater(() -> {
+                    try {
+                        main_pane.setCenter(FXMLLoader.load(getClass().getClassLoader().getResource(pane)));
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                    currentPane = p;
+                    img_loader.setVisible(false);
+                });
             }
         }).start();
+    }
+
+    //---------------------------BUTTONS-------------------------
+
+    private void buttonSettings(String buttonName, String path, int paneNo) {
+        EventHandler myEmailEvent = event -> inflating(path, paneNo);
+        JFXButton button = new JFXButton(buttonName);
+//        Image image = new Image(getClass().getResourceAsStream("/res/img/at.png"));
+//        button.setGraphic(new ImageView(image));
+        button.setPrefSize(100, menu_hbox.getHeight());
+        button.setOnAction(myEmailEvent);
+        button.getStyleClass().add("btnMenu");
+        menu_hbox.getChildren().add(button);
     }
 }

@@ -4,7 +4,7 @@ import JCode.CommonTasks;
 
 public class Event {
 
-    private int code, client, lead;
+    private int code, client, lead, createdByCode;
     private String title, location, desc, fromDate, toDate, fromTime, toTime, relationName, createdOn, createdBy, fromDateTime, toDateTime, statusString;
     private boolean isAllDay, status;
 
@@ -51,6 +51,14 @@ public class Event {
 
     public void setLead(int lead) {
         this.lead = lead;
+    }
+
+    public int getCreatedByCode() {
+        return createdByCode;
+    }
+
+    public void setCreatedByCode(int createdByCode) {
+        this.createdByCode = createdByCode;
     }
 
     public String getCreatedBy() {

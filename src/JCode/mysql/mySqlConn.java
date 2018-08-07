@@ -29,7 +29,7 @@ public class mySqlConn {
     private UserQueries userQueries;
     private StartupQueries startupQueries;
     private EmailQueries emailQueries;
-    private EmailSettingsQueries emailSettingsQueries;
+    private SettingsQueries settingsQueries;
     private EmailPhoneQueries emailPhoneQueries;
     private ContactQueries contactQueries;
     private ClientQueries clientQueries;
@@ -52,7 +52,7 @@ public class mySqlConn {
 
         userQueries = new UserQueries(static_con, fHelper);
         startupQueries = new StartupQueries(static_con, userQueries);
-        emailSettingsQueries = new EmailSettingsQueries(static_con, fHelper);
+        settingsQueries = new SettingsQueries(static_con, fHelper);
         eSetting = getEmailSettings();
         emailPhoneQueries = new EmailPhoneQueries(static_con);
         noteQueries = new NoteQueries(static_con, fHelper);
@@ -111,6 +111,12 @@ public class mySqlConn {
     }
 
     public Users getUserDetails(Users user) {
+        return userQueries.getUserDetails(user);
+    }
+
+    public Users getUserDetails(int ucode) {
+        Users user = new Users();
+        user.setUCODE(ucode);
         return userQueries.getUserDetails(user);
     }
 
@@ -203,11 +209,23 @@ public class mySqlConn {
     }
 
     public ESetting getEmailSettings() {
-        return emailSettingsQueries.getEmailSettings();
+        return settingsQueries.getEmailSettings();
     }
 
     public void saveEmailSettings(ESetting eSetting) {
-        emailSettingsQueries.saveEmailSettings(eSetting);
+        settingsQueries.saveEmailSettings(eSetting);
+    }
+
+    public void checkOnNotificationSettings() {
+        settingsQueries.checkOnNotificationSettings();
+    }
+
+    public void insertNotificationSettings(NotificationSettings nSettings) {
+        settingsQueries.insertNotificationSettings(nSettings);
+    }
+
+    public NotificationSettings getNotificationSettings() {
+        return settingsQueries.getNotificationSettings();
     }
 
     public void insertClient(ClientProperty client) {
@@ -442,6 +460,10 @@ public class mySqlConn {
         return taskQueries.getTasks(obj);
     }
 
+    public void markNotified(Task obj) {
+        taskQueries.markNotified(obj);
+    }
+
     public void addEvent(Event event) {
         eventQueries.addEvent(event);
     }
@@ -468,6 +490,10 @@ public class mySqlConn {
 
     public void archiveEvent(Event event) {
         eventQueries.archiveEvent(event);
+    }
+
+    public void markNotified(Event obj) {
+        eventQueries.markNotified(obj);
     }
 
     public String[] getAllEmailIDs(String where) {

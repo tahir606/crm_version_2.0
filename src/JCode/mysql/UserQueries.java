@@ -179,6 +179,7 @@ public class UserQueries {
             set = statement.executeQuery();
 
             while (set.next()) {
+                user.setFNAME(set.getString("FNAME"));
                 user.setEmail(set.getString("EMAIL"));
                 user.setLocked(set.getInt("LOCKD"));
                 user.setSolved(set.getInt("SOLV"));

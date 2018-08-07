@@ -76,7 +76,7 @@ public class EventQueries {
 //    }
 
     public List<Event> getAlLEvents(String where) {
-        String query = "SELECT ES_ID, ES_TITLE, ES_LOCATION, ES_DESC, ES_FROM, ES_TO, ES_ALLDAY, ES_STATUS, NS.CREATEDON AS CREATEDON, FNAME,  " +
+        String query = "SELECT ES_ID, ES_TITLE, ES_LOCATION, ES_DESC, ES_FROM, ES_TO, ES_ALLDAY, ES_STATUS, NS.CREATEDON AS CREATEDON, NS.CREATEDBY AS CREATEDBY, FNAME,  " +
                 "                 NS.CL_ID, (SELECT CL.CL_NAME FROM client_store as CL WHERE CL.CL_ID = NS.CL_ID) AS CLNAME ," +
                 "                 NS.LS_ID, (SELECT CONCAT(LS.LS_FNAME,' ',LS.LS_LNAME) FROM lead_store as LS WHERE LS.LS_ID = NS.LS_ID) AS LSNAME " +
                 "                 FROM EVENT_STORE AS NS, USERS AS US " +
@@ -108,6 +108,7 @@ public class EventQueries {
                 event.setStatus(set.getBoolean("ES_STATUS"));
                 event.setCreatedBy(set.getString("FNAME"));
                 event.setCreatedOn(set.getString("CREATEDON"));
+                event.setCreatedByCode(set.getInt("CREATEDBY"));
 
                 event.setClient(set.getInt("CL_ID"));
                 event.setLead(set.getInt("LS_ID"));
@@ -256,4 +257,17 @@ public class EventQueries {
     }
 
 
+    public void markNotified(Event event) {
+        String query = " UPDATE EVENT_STORE SET NOTIFIED = 1 " +
+                " WHERE ES_ID = ? ";
+
+        PreparedStatement statement = null;
+        try {
+            statement = static_con.prepareStatement(query);
+            statement.setInt(1, event.getCode());
+            statement.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
 }

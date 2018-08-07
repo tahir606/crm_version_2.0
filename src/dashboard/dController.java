@@ -238,7 +238,8 @@ public class dController implements Initializable {
                 stage.setTitle("Login- BITS");
                 stage.setScene(new Scene(root1));
                 stage.setResizable(false);
-                tHelper.createTrayIcon(stage);
+
+                tHelper.removeTray();
                 tHelper.createIcon(stage);
                 stage.show();
             }
@@ -248,7 +249,10 @@ public class dController implements Initializable {
     private void powerButton() {
         JFXButton powerBtn = new JFXButton("Power");
         buttonSubSettings(powerBtn, "Power");
-        powerBtn.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> System.exit(0));
+        powerBtn.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
+            tHelper.removeTray();
+            System.exit(0);
+        });
     }
     
     //---------------------------EVENT HANDLERS---------------------------
@@ -346,8 +350,10 @@ public class dController implements Initializable {
     }
 
     private void startNotifications() {
-        NotifyActivities notify = new NotifyActivities();
-        notify.startNotifying();
+        new Thread(() -> {
+            NotifyActivities notify = new NotifyActivities();
+            notify.startNotifying();
+        }).start();
     }
     
     
