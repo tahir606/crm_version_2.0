@@ -49,8 +49,7 @@ public class settingsController implements Initializable {
 
         buttonSettings("Email", "settings/email/email.fxml", 1);
 
-
-        buttonSettings("User", "settings/admin/admin.fxml", 2);
+        buttonSettings("Users", "settings/admin/admin.fxml", 2);
 
         networkSetController.fromMain = false;
         buttonSettings("Network", "settings/network/networkSet.fxml", 3);
@@ -93,9 +92,9 @@ public class settingsController implements Initializable {
     private void buttonSettings(String buttonName, String path, int paneNo) {
         EventHandler myEmailEvent = event -> inflating(path, paneNo);
         JFXButton button = new JFXButton(buttonName);
-//        Image image = new Image(getClass().getResourceAsStream("/res/img/at.png"));
-//        button.setGraphic(new ImageView(image));
-        button.setPrefSize(100, menu_hbox.getHeight());
+        Image image = new Image(getClass().getResourceAsStream("/res/img/" + buttonName.toLowerCase() +".png"));
+        button.setGraphic(new ImageView(image));
+        button.setPrefSize(120, menu_hbox.getHeight());
         button.setOnAction(myEmailEvent);
         button.getStyleClass().add("btnMenu");
         menu_hbox.getChildren().add(button);

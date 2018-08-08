@@ -134,6 +134,10 @@ public class dController implements Initializable {
                         break;
                     }
                     case 6: {
+                        reportsButton();
+                        break;
+                    }
+                    case 7: {
                         settingsButton();
                         break;
                     }
@@ -192,7 +196,11 @@ public class dController implements Initializable {
     private void activityButton() {
         buttonSettings("activity", "activity/activity_dash.fxml", 6);
     }
-    
+
+    private void reportsButton() {
+        buttonSettings("reports", "reports/reports_dash.fxml", 7);
+    }
+
     private void settingsButton() {
         buttonSettings("settings", "settings/settings.fxml", 7);
     }

@@ -649,11 +649,14 @@ public class EmailQueries {
                 Date date = null;
                 try {
                     date = inputFormat.parse(email.getTimestamp());
+                    String outputText = outputFormat.format(date);
+                    email.setTimeFormatted(outputText);
                 } catch (ParseException e) {
                     e.printStackTrace();
+                } catch (NullPointerException e) {
+                    System.out.println(e);
+                    email.setTimeFormatted("");
                 }
-                String outputText = outputFormat.format(date);
-                email.setTimeFormatted(outputText);
 
                 email.setBody(set.getString("EBODY"));
                 email.setAttch(set.getString("ATTCH"));
