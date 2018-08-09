@@ -1,5 +1,6 @@
 package reports;
 
+import com.jfoenix.controls.JFXButton;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Label;
@@ -15,16 +16,29 @@ public class ReportsDashController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        populateReports();
+
 
     }
 
     private void populateReports() {
-        vbox_reports.getChildren().addAll(createLabel(""));
+        JFXButton rep = new JFXButton();
+        createButton("Tickets Solved by User");
+        rep.setOnAction(event -> {
+
+        });
+
+        vbox_reports.getChildren().addAll(rep);
     }
 
-    private Label createLabel(String text) {
-        Label label = new Label(text);
-        return label;
+    private void createButton(String text) {
+        JFXButton button = new JFXButton(text);
+        button.setStyle("-fx-font-size: 9pt;" +
+                "-fx-text-fill: #000000;" +
+                "-fx-underline: true;");
+        return;
     }
+
+
 
 }
