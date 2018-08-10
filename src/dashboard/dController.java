@@ -155,11 +155,11 @@ public class dController implements Initializable {
     private void buttonSubSettings(JFXButton button, String btnName) {
         button.setText(btnName.toUpperCase());
         Image image = new Image(getClass().getResourceAsStream("/res/img/" + btnName.toLowerCase() + ".png"));
+        button.setGraphic(new ImageView(image));
         button.setMinSize(menu_pane.getPrefWidth(), 35);
         button.setMaxSize(menu_pane.getPrefWidth(), 35);
         button.getStyleClass().add("btn");
-        
-        button.setGraphic(new ImageView(image));
+
         button.setAlignment(Pos.CENTER_LEFT);
         Platform.runLater(() -> menu_pane.getChildren().add(button));
     }

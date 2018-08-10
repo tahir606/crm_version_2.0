@@ -1,18 +1,27 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.control.Label?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
 
-<BorderPane prefHeight="400.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/9" xmlns:fx="http://javafx.com/fxml/1" fx:controller="reports.ReportsDashController">
+<BorderPane prefHeight="400.0" prefWidth="800.0" stylesheets="@../styles/reports.css" xmlns="http://javafx.com/javafx/9" xmlns:fx="http://javafx.com/fxml/1" fx:controller="reports.ReportsDashController">
    <center>
-      <AnchorPane prefHeight="450.0" prefWidth="677.0" BorderPane.alignment="CENTER" />
+      <AnchorPane fx:id="anchor_center" prefHeight="450.0" prefWidth="677.0" BorderPane.alignment="CENTER">
+         <children>
+            <Label fx:id="txt_reportName" layoutX="14.0" layoutY="6.0" text="Report Name">
+               <font>
+                  <Font name="Arial Narrow Bold" size="20.0" />
+               </font>
+            </Label>
+         </children></AnchorPane>
    </center>
    <left>
-      <VBox fx:id="vbox_reports" prefHeight="400.0" prefWidth="140.0" BorderPane.alignment="CENTER">
+      <VBox fx:id="vbox_reports" style="-fx-background-color: #b3efb7;" BorderPane.alignment="CENTER">
          <children>
-            <HBox prefHeight="55.0" prefWidth="105.0" />
+            <HBox prefHeight="100.0" prefWidth="105.0" />
          </children>
       </VBox>
    </left>

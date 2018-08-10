@@ -39,6 +39,7 @@ public class mySqlConn {
     private NoteQueries noteQueries;
     private TaskQueries taskQueries;
     private EventQueries eventQueries;
+    private ReportQueries reportQueries;
 
     public mySqlConn() {
         fHelper = new fileHelper();
@@ -64,6 +65,7 @@ public class mySqlConn {
         domainQueries = new DomainQueries(static_con);
         taskQueries = new TaskQueries(static_con, fHelper);
         eventQueries = new EventQueries(static_con, fHelper);
+        reportQueries = new ReportQueries(static_con);
     }
 
     private Connection getConnection() {
@@ -494,6 +496,10 @@ public class mySqlConn {
 
     public void markNotified(Event obj) {
         eventQueries.markNotified(obj);
+    }
+
+    public List<Users> ticketsSolvedByUser() {
+        return reportQueries.ticketsSolvedByUser();
     }
 
     public String[] getAllEmailIDs(String where) {

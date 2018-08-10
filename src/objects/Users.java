@@ -16,19 +16,7 @@ public class Users {
 
     @Override
     public String toString() {
-
         return FNAME;
-
-//        String s = "UCODE: " + UCODE + "\n" +
-//                "UNAME: " + UNAME + "\n" +
-//                "FNAME: " + FNAME + "\n" +
-//                "Rights: \n";
-//
-//        for (uRights right : uRightsList) {
-//            s = s + "   " + right.getRCODE() + " - " + right.getRNAME() + "\n";
-//        }
-
-//        return s;
     }
 
     public int getUCODE() {
