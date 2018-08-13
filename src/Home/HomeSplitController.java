@@ -135,12 +135,10 @@ public class HomeSplitController implements Initializable {
 
         JFXComboBox<String> paneList = new JFXComboBox<>();
         paneList.setPromptText("Choose panel");
-        paneList.getItems().addAll(new String[]{"Profile", "Tickets", "Activities", "Modules"});
+        paneList.getItems().addAll(new String[]{"Profile", "Tickets", "Tickets Per User", "Activities", "Modules"});
         paneList.setOpacity(0.5);
         paneList.setPadding(new Insets(-3.5));
-        paneList.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
-            setUpPane(newValue, pane, panel);
-        });
+        paneList.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> setUpPane(newValue, pane, panel));
         pane.getChildren().add(paneList);
         AnchorPane.setRightAnchor(paneList, 4.0);
         AnchorPane.setTopAnchor(paneList, 2.0);
@@ -157,6 +155,9 @@ public class HomeSplitController implements Initializable {
             }
             case "Tickets": {
                 inflateTickets(pane, panel);
+                break;
+            }
+            case "Tickets Per User": {
                 break;
             }
             case "Activities": {
