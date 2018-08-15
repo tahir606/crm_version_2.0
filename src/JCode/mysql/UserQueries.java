@@ -196,7 +196,7 @@ public class UserQueries {
 
         List<Users> userList = new ArrayList<>();
 
-        String query = "SELECT UCODE, UNAME, FNAME, EMAIL, UPASS, URIGHT, FREZE, ISEMAIL FROM USERS";
+        String query = "SELECT UCODE, UNAME, FNAME, EMAIL, UPASS, URIGHT, FREZE, ISEMAIL FROM USERS WHERE FREZE = 'N'";
 
         String query2 = "SELECT RCODE FROM RIGHTS_CHART WHERE UCODE = ?";
 
@@ -349,6 +349,28 @@ public class UserQueries {
     public void deleteUser(Users u) {
 
         String query = "DELETE FROM USERS WHERE UCODE = ?";
+
+        // Connection con = getConnection();
+        PreparedStatement statement = null;
+
+        try {
+            statement = static_con.prepareStatement(query);
+            statement.setInt(1, u.getUCODE());
+            statement.executeUpdate();
+
+            statement.close();
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            // // doRelease(con);
+        }
+
+    }
+
+    public void archiveUser(Users u) {
+
+        String query = "UPDATE USERS SET FREZE = 'Y' WHERE UCODE = ?";
 
         // Connection con = getConnection();
         PreparedStatement statement = null;

@@ -22,3 +22,17 @@
     -fx-background-color: transparent;
     -fx-background: #fcfcfc;
 }
+
+.chart {
+    -fx-clockwise: true;
+    -fx-pie-label-visible: true;
+    -fx-label-line-length: 8;
+    -fx-start-angle: 30;
+}
+
+.chart-pie {
+    -fx-border-color: white;
+    -fx-background-insets: 1;
+    -fx-border-style: solid inside;
+    -fx-border-width: 2;
+}

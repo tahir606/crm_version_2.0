@@ -27,33 +27,19 @@ import java.util.ResourceBundle;
 public class adminController implements Initializable {
 
     @FXML
-    private JFXTextField txt_uname;
-
-    @FXML
-    private JFXTextField txt_fname;
-
-    @FXML
-    private JFXTextField txt_email;
-
-    @FXML
-    private JFXTextField txt_password;
-
+    private JFXTextField txt_uname, txt_fname, txt_email, txt_password;
     @FXML
     private VBox vbox_rights;
-
     @FXML
     private JFXCheckBox check_freeze;
-
     @FXML
     private JFXCheckBox check_email;
-
     @FXML
     private JFXComboBox<Users> combo_users;
-
     @FXML
-    private JFXButton btn_save;
+    private JFXButton btn_save, btn_archive;
 
-    private mySqlConn sql = new mySqlConn();
+    private mySqlConn sql;
     private ImageView imm_load = dController.img_load;
 
     private List<Users> usersList = null;
@@ -67,10 +53,19 @@ public class adminController implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
 
+        sql = new mySqlConn();
+
         init();
 
         vbox_rights.setSpacing(10);
         vbox_rights.setPadding(new Insets(5, 10, 5, 2));
+
+        btn_archive.setOnAction(event -> {
+            if (userSel != null) {
+                sql.archiveUser(userSel);
+                init();
+            }
+        });
     }
 
     private void init() {

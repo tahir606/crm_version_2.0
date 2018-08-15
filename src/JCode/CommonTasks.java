@@ -45,6 +45,9 @@ public class CommonTasks {
             date = inputFormat.parse(timeStamp);
         } catch (ParseException e) {
             e.printStackTrace();
+        } catch (NullPointerException e) {
+            System.out.println(e);
+            return null;
         }
         String outputText = outputFormat.format(date);
         return outputText;

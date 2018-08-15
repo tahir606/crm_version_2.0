@@ -7,19 +7,24 @@ import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXComboBox;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
+import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Insets;
+import javafx.scene.chart.PieChart;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.SplitPane;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
 import objects.ProductModule;
 import objects.Task;
 import objects.Users;
@@ -158,6 +163,7 @@ public class HomeSplitController implements Initializable {
                 break;
             }
             case "Tickets Per User": {
+                inflateTicketsPerUser(pane, panel);
                 break;
             }
             case "Activities": {
@@ -321,6 +327,42 @@ public class HomeSplitController implements Initializable {
 
         pane.getChildren().clear();
         pane.getChildren().addAll(vBox);
+
+        inflateClearButton(pane, panel);
+    }
+
+    private static void inflateTicketsPerUser(AnchorPane pane, int panel) {
+//        VBox vBox = new VBox();
+
+//        AnchorPane.setLeftAnchor(vBox, 20.0);
+//        AnchorPane.setTopAnchor(vBox, 20.0);
+
+        Pane root = new Pane();
+
+        List<Users> users = sql.ticketsSolvedByUser();
+
+        List<PieChart.Data> list = new ArrayList<>();
+
+        double total = 0;
+        for (Users u : users) {
+            total = total + u.getSolved();
+        }
+
+        for (Users user : users) {
+//            if (user.getSolved() == 0)
+//                continue;
+            list.add(new PieChart.Data(user.getFNAME() + " " + String.format("%.1f%%", 100 * user.getSolved() / total), user.getSolved()));
+        }
+
+        ObservableList<PieChart.Data> pieChartData =
+                FXCollections.observableArrayList(list);
+        final PieChart chart = new PieChart(pieChartData);
+        chart.setTitle("Tickets Per User");
+
+        root.getChildren().addAll(chart);
+
+        pane.getChildren().clear();
+        pane.getChildren().addAll(root);
 
         inflateClearButton(pane, panel);
     }

@@ -138,6 +138,10 @@ public class mySqlConn {
         userQueries.deleteUser(u);
     }
 
+    public void archiveUser(Users u) {
+        userQueries.archiveUser(u);
+    }
+
     public boolean checkAndCreateUser() {
         return startupQueries.checkAndCreateUser();
     }
