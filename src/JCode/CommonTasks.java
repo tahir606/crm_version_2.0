@@ -35,6 +35,15 @@ public class CommonTasks {
         return dateFormat.format(date);
     }
 
+    public static String getCurrentDate() {
+        SimpleDateFormat dateFormat = new SimpleDateFormat(
+                "yyyy-MM-dd", Locale.getDefault());
+        Date date = new Date();
+        return dateFormat.format(date);
+    }
+
+
+
     public static String getTimeFormatted(String timeStamp) {
         // Note, MM is months, not mm
         DateFormat inputFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.S");

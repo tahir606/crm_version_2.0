@@ -502,8 +502,8 @@ public class mySqlConn {
         eventQueries.markNotified(obj);
     }
 
-    public List<Users> ticketsSolvedByUser() {
-        return reportQueries.ticketsSolvedByUser();
+    public List<Users> ticketsSolvedByUser(String filter) {
+        return reportQueries.ticketsSolvedByUser(filter);
     }
 
     public String[] getAllEmailIDs(String where) {

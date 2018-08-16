@@ -17,8 +17,10 @@ public class ReportQueries {
         this.static_con = static_con;
     }
 
-    public List<Users> ticketsSolvedByUser() {
-        String query = "SELECT US.UCODE, UNAME, FNAME, (SELECT COUNT(EMNO) FROM email_store AS ES WHERE ES.SOLVBY = US.UCODE) AS MAXEMNO FROM USERS AS US WHERE FREZE = 'N'";
+    public List<Users> ticketsSolvedByUser(String filter) {
+        String query = "SELECT US.UCODE, UNAME, FNAME, (SELECT COUNT(EMNO) FROM EMAIL_STORE AS ES WHERE ES.SOLVBY = US.UCODE " + filter + ") AS MAXEMNO " +
+                " FROM USERS AS US " +
+                " WHERE FREZE = 'N' ";
         List<Users> users = new ArrayList<>();
         try {
             PreparedStatement statement = static_con.prepareStatement(query);

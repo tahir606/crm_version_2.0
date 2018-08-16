@@ -5,13 +5,8 @@ import JCode.fileHelper;
 import JCode.mysql.mySqlConn;
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXComboBox;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
-import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Insets;
@@ -19,20 +14,17 @@ import javafx.scene.chart.PieChart;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.SplitPane;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
-import javafx.scene.paint.Color;
 import objects.ProductModule;
 import objects.Task;
 import objects.Users;
+import org.joda.time.LocalDate;
 import product.details.UnlockDialogController;
 
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.ResourceBundle;
 
@@ -71,6 +63,7 @@ public class HomeSplitController implements Initializable {
     private static String[] dashBoardDets, splitPanes;
     private int noOfPanels = 4;
 
+    private static String ticketsFilter = "";
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -332,39 +325,79 @@ public class HomeSplitController implements Initializable {
     }
 
     private static void inflateTicketsPerUser(AnchorPane pane, int panel) {
-//        VBox vBox = new VBox();
+        JFXComboBox<String> filters = new JFXComboBox<>();
+        filters.setPromptText("Select Filter");
+        filters.getItems().addAll("Today", "Last 7 Days", "Last 30 Days", "All Time"); //"Custom"  //"Last 365 Days",
+        AnchorPane.setLeftAnchor(filters, 5.0);
+        AnchorPane.setTopAnchor(filters, 2.0);
+        filters.valueProperty().addListener((observable, oldValue, newValue) -> {
+            switch (newValue) {
+                case "Today": {
+                    ticketsFilter = " AND SOLVTIME BETWEEN '" + CommonTasks.getCurrentDate() + "' AND '" + CommonTasks.getCurrentDate() + " 23:59:59'";
+                    break;
+                }
+                case "Last 7 Days": {
+                    LocalDate now = new LocalDate();
+                    LocalDate beforeDate = now.minusDays(7);
+                    ticketsFilter = " AND SOLVTIME BETWEEN '" + beforeDate + "' AND '" + now + "'";
+                    break;
+                }
+                case "Last 30 Days": {
+                    LocalDate now = new LocalDate();
+                    LocalDate beforeDate = now.minusDays(30);
+                    ticketsFilter = " AND SOLVTIME BETWEEN '" + beforeDate + "' AND '" + now + "'";
+                    break;
+                }
+//                case "Last 365 Days": {
+//                    LocalDate now = new LocalDate();
+//                    LocalDate beforeDate = now.minusDays(365);
+//                    System.out.println(beforeDate);
+//                    reportFilter = " AND SOLVTIME BETWEEN '" + beforeDate + "' AND '" + now + "'";
+//                    ticketsSolvedByUser();
+//                    break;
+//                }
+                case "All Time": {
+                    ticketsFilter = "";
+                    break;
+                }
+                default:
+                    break;
+            }
+            pane.getChildren().clear();
+            pane.getChildren().addAll(inflatePieChart());
+            filters.getSelectionModel().clearSelection();
+            //change focus to another node
+            pane.getChildren().add(1, filters);
 
-//        AnchorPane.setLeftAnchor(vBox, 20.0);
-//        AnchorPane.setTopAnchor(vBox, 20.0);
+            inflateClearButton(pane, panel);
+        });
 
-        Pane root = new Pane();
+        pane.getChildren().clear();
+        pane.getChildren().addAll(inflatePieChart(), filters);
 
-        List<Users> users = sql.ticketsSolvedByUser();
+        inflateClearButton(pane, panel);
+    }
+
+    private static PieChart inflatePieChart() {
+        List<Users> users = sql.ticketsSolvedByUser(ticketsFilter);
 
         List<PieChart.Data> list = new ArrayList<>();
-
         double total = 0;
         for (Users u : users) {
             total = total + u.getSolved();
         }
-
         for (Users user : users) {
-//            if (user.getSolved() == 0)
-//                continue;
             list.add(new PieChart.Data(user.getFNAME() + " " + String.format("%.1f%%", 100 * user.getSolved() / total), user.getSolved()));
         }
 
         ObservableList<PieChart.Data> pieChartData =
                 FXCollections.observableArrayList(list);
-        final PieChart chart = new PieChart(pieChartData);
-        chart.setTitle("Tickets Per User");
+        PieChart chart = new PieChart(pieChartData);
+        chart.setTitle("Tickets Per User - All Time");
+        chart.setLegendVisible(false);
+        AnchorPane.setTopAnchor(chart, 40.0);
 
-        root.getChildren().addAll(chart);
-
-        pane.getChildren().clear();
-        pane.getChildren().addAll(root);
-
-        inflateClearButton(pane, panel);
+        return chart;
     }
 
 
