@@ -325,35 +325,33 @@ public class HomeSplitController implements Initializable {
     }
 
     private static void inflateTicketsPerUser(AnchorPane pane, int panel) {
+
+
         JFXComboBox<String> filters = new JFXComboBox<>();
         filters.setPromptText("Select Filter");
         filters.getItems().addAll("Today", "Last 7 Days", "Last 30 Days", "All Time"); //"Custom"  //"Last 365 Days",
         AnchorPane.setLeftAnchor(filters, 5.0);
         AnchorPane.setTopAnchor(filters, 2.0);
         filters.valueProperty().addListener((observable, oldValue, newValue) -> {
+            LocalDate now = new LocalDate();
             switch (newValue) {
                 case "Today": {
                     ticketsFilter = " AND SOLVTIME BETWEEN '" + CommonTasks.getCurrentDate() + "' AND '" + CommonTasks.getCurrentDate() + " 23:59:59'";
                     break;
                 }
                 case "Last 7 Days": {
-                    LocalDate now = new LocalDate();
                     LocalDate beforeDate = now.minusDays(7);
                     ticketsFilter = " AND SOLVTIME BETWEEN '" + beforeDate + "' AND '" + now + "'";
                     break;
                 }
                 case "Last 30 Days": {
-                    LocalDate now = new LocalDate();
                     LocalDate beforeDate = now.minusDays(30);
                     ticketsFilter = " AND SOLVTIME BETWEEN '" + beforeDate + "' AND '" + now + "'";
                     break;
                 }
 //                case "Last 365 Days": {
-//                    LocalDate now = new LocalDate();
 //                    LocalDate beforeDate = now.minusDays(365);
-//                    System.out.println(beforeDate);
 //                    reportFilter = " AND SOLVTIME BETWEEN '" + beforeDate + "' AND '" + now + "'";
-//                    ticketsSolvedByUser();
 //                    break;
 //                }
                 case "All Time": {
@@ -364,21 +362,27 @@ public class HomeSplitController implements Initializable {
                     break;
             }
             pane.getChildren().clear();
-            pane.getChildren().addAll(inflatePieChart());
-            filters.getSelectionModel().clearSelection();
-            //change focus to another node
-            pane.getChildren().add(1, filters);
+            pane.getChildren().addAll(inflatePieChart(newValue), filters);
 
             inflateClearButton(pane, panel);
+
+            fHelper.writeDashFilters(newValue);
+            //Change focus so that combo box can be used again
+            split_mainS.requestFocus();
         });
+        String filter = fHelper.readDashFilters();
+        if (filter == null)
+            filters.getSelectionModel().select("All Time");
+        else
+            filters.getSelectionModel().select(filter);
 
-        pane.getChildren().clear();
-        pane.getChildren().addAll(inflatePieChart(), filters);
-
-        inflateClearButton(pane, panel);
+//        pane.getChildren().clear();
+//        pane.getChildren().addAll(inflatePieChart("All Time"), filters);
+//
+//        inflateClearButton(pane, panel);
     }
 
-    private static PieChart inflatePieChart() {
+    private static PieChart inflatePieChart(String title) {
         List<Users> users = sql.ticketsSolvedByUser(ticketsFilter);
 
         List<PieChart.Data> list = new ArrayList<>();
@@ -386,14 +390,16 @@ public class HomeSplitController implements Initializable {
         for (Users u : users) {
             total = total + u.getSolved();
         }
-        for (Users user : users) {
-            list.add(new PieChart.Data(user.getFNAME() + " " + String.format("%.1f%%", 100 * user.getSolved() / total), user.getSolved()));
+        for (Users u : users) {
+            if (u.getSolved() == 0)
+                continue;
+            list.add(new PieChart.Data(u.getFNAME() + " " + String.format("%.1f%%", 100 * u.getSolved() / total), u.getSolved()));
         }
 
         ObservableList<PieChart.Data> pieChartData =
                 FXCollections.observableArrayList(list);
         PieChart chart = new PieChart(pieChartData);
-        chart.setTitle("Tickets Per User - All Time");
+        chart.setTitle("Tickets Per User - " + title);
         chart.setLegendVisible(false);
         AnchorPane.setTopAnchor(chart, 40.0);
 
