@@ -42,16 +42,12 @@ public class fileHelper {
         File directoryAdmin = new File(FADD);
         if (!directoryAdmin.exists()){
             directoryAdmin.mkdir();
-            // If you require it to make the entire directory path including parents,
-            // use directory.mkdirs(); here instead.
         }
 
         //If settings folder does not exist create
         File directory = new File(FADD_ROOT);
         if (!directory.exists()){
             directory.mkdir();
-            // If you require it to make the entire directory path including parents,
-            // use directory.mkdirs(); here instead.
         }
     }
 
