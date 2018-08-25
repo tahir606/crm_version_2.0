@@ -27,25 +27,11 @@ import static gui.TasksConstructor.inflateNewTask;
 public class ActivityDetailsController implements Initializable {
 
     @FXML
-    private Label txt_subject;
-    @FXML
-    private Label txt_dueDate;
-    @FXML
-    private Label txt_createdOn;
-    @FXML
-    private Label txt_createdBy;
+    private Label txt_subject, txt_dueDate, txt_entryDate, txt_createdOn, txt_createdBy, txt_type, txt_name;
     @FXML
     private TextArea txt_desc;
     @FXML
-    private JFXButton btn_back;
-    @FXML
-    private JFXButton btn_edit;
-    @FXML
-    private JFXButton btn_close;
-    @FXML
-    private Label txt_type;
-    @FXML
-    private Label txt_name;
+    private JFXButton btn_back, btn_edit, btn_close;
     @FXML
     private HBox hbox_tools;
 //    @FXML
@@ -80,6 +66,7 @@ public class ActivityDetailsController implements Initializable {
 
     private void populateDetails() {
         txt_subject.setText(task.getSubject());
+        txt_entryDate.setText(task.getEntryDate() == null ? " - " : CommonTasks.getDateFormatted(task.getEntryDate()));
         txt_dueDate.setText(CommonTasks.getDateFormatted(task.getDueDate()));
         txt_createdOn.setText(task.getCreatedOn());
         txt_createdBy.setText(task.getCreatedBy());

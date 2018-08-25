@@ -9,7 +9,7 @@ import java.util.List;
 
 public class ClientProperty {
 
-    private SimpleIntegerProperty Code, Type;
+    private SimpleIntegerProperty Code, Type, totalEmails;
     private SimpleStringProperty Name, owner, Addr, City, Country, Website, JoinDate, note;
     private String[] emails = new String[newClientController.noOfFields],
             phones = new String[newClientController.noOfFields];
@@ -20,6 +20,7 @@ public class ClientProperty {
 
         Code = new SimpleIntegerProperty();
         Type = new SimpleIntegerProperty();
+        totalEmails = new SimpleIntegerProperty();
 
         Name = new SimpleStringProperty();
         owner = new SimpleStringProperty();
@@ -197,5 +198,17 @@ public class ClientProperty {
 
     public void setTasks(List<Task> tasks) {
         this.tasks = tasks;
+    }
+
+    public int getTotalEmails() {
+        return totalEmails.get();
+    }
+
+    public SimpleIntegerProperty totalEmailsProperty() {
+        return totalEmails;
+    }
+
+    public void setTotalEmails(int totalEmails) {
+        this.totalEmails.set(totalEmails);
     }
 }

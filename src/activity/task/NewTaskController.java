@@ -29,9 +29,9 @@ import java.util.ResourceBundle;
 public class NewTaskController implements Initializable {
     
     @FXML
-    private JFXTextField txt_subject;
+    private JFXTextField txt_subject, txt_name;
     @FXML
-    private JFXDatePicker due_date;
+    private JFXDatePicker due_date, entry_date;
     @FXML
     private JFXCheckBox check_repeat;
     @FXML
@@ -41,11 +41,7 @@ public class NewTaskController implements Initializable {
     @FXML
     private JFXComboBox<String> relation_type;
     @FXML
-    private JFXTextField txt_name;
-    @FXML
-    private JFXButton btn_save;
-    @FXML
-    private JFXButton btn_cancel;
+    private JFXButton btn_save, btn_cancel;
     
     //Which property is selected
     private int choice;
@@ -138,6 +134,7 @@ public class NewTaskController implements Initializable {
         btn_save.setOnAction(event -> {
             String subject = txt_subject.getText().toString(),
                     desc = txt_desc.getText().toString(),
+                    entryDate = entry_date.getValue().toString(),
                     dueDate = due_date.getValue().toString(),
                     type = relation_type.getSelectionModel().getSelectedItem(),
                     name = txt_name.getText().toString();
@@ -168,6 +165,7 @@ public class NewTaskController implements Initializable {
                 if (alert2.getResult() == ButtonType.YES) {
                     
                     task.setSubject(subject);
+                    task.setEntryDate(entryDate);
                     task.setDueDate(dueDate);
                     task.setDesc(desc);
                     task.setRepeat(repeat);
@@ -244,6 +242,11 @@ public class NewTaskController implements Initializable {
     private void populateFields(Task task) {
         txt_subject.setText(task.getSubject());
         txt_desc.setText(task.getDesc());
+        if (task.getEntryDate() != null)
+            entry_date.setValue(CommonTasks.createLocalDate(task.getEntryDate()));
+        else
+            entry_date.setValue(null);
+        
         if (task.getDueDate() != null)
             due_date.setValue(CommonTasks.createLocalDate(task.getDueDate()));
         else

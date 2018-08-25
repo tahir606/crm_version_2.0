@@ -5,7 +5,7 @@ import JCode.CommonTasks;
 public class Task {
     
     private int code, createdByCode, contact, client, lead, product;
-    private String subject, dueDate, dueDateFormatted, desc, createdOn, createdBy, contactName, clientName, leadName,
+    private String subject, dueDate, entryDate, dueDateFormatted, desc, createdOn, createdBy, contactName, clientName, leadName,
             productName, statusString;
     private boolean isRepeat, status;   //Status: 0 is open ? 1 is closed
     
@@ -17,6 +17,7 @@ public class Task {
         return "Task{" +
                 "code=" + code +
                 ", subject='" + subject + '\'' +
+                ", entryDate='" + entryDate + '\'' +
                 ", dueDate='" + dueDate + '\'' +
                 ", desc='" + desc + '\'' +
                 ", createdOn='" + createdOn + '\'' +
@@ -48,7 +49,15 @@ public class Task {
     public void setSubject(String subject) {
         this.subject = subject;
     }
-    
+
+    public String getEntryDate() {
+        return entryDate;
+    }
+
+    public void setEntryDate(String entryDate) {
+        this.entryDate = entryDate;
+    }
+
     public String getDueDate() {
         return dueDate;
     }

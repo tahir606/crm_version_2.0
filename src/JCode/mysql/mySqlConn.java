@@ -506,6 +506,10 @@ public class mySqlConn {
         return reportQueries.ticketsSolvedByUser(filter);
     }
 
+    public List<ClientProperty> emailsPerClient(String filter) {
+        return reportQueries.emailsPerClient(filter);
+    }
+
     public String[] getAllEmailIDs(String where) {
         String query = "SELECT DISTINCT EM_NAME FROM EMAIL_LIST ";
 

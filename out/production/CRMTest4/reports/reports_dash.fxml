@@ -20,7 +20,7 @@
          </children></AnchorPane>
    </center>
    <left>
-      <VBox fx:id="vbox_reports" style="-fx-background-color: #b3efb7;" BorderPane.alignment="CENTER">
+      <VBox spacing="10" fx:id="vbox_reports" style="-fx-background-color: #b3efb7;" BorderPane.alignment="CENTER">
          <children>
             <HBox prefHeight="100.0" prefWidth="105.0" />
          </children>

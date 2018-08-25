@@ -1,5 +1,6 @@
 package JCode.mysql;
 
+import objects.ClientProperty;
 import objects.Users;
 
 import java.sql.Connection;
@@ -20,7 +21,11 @@ public class ReportQueries {
     public List<Users> ticketsSolvedByUser(String filter) {
         String query = "SELECT US.UCODE, UNAME, FNAME, (SELECT COUNT(EMNO) FROM EMAIL_STORE AS ES WHERE ES.SOLVBY = US.UCODE " + filter + ") AS MAXEMNO " +
                 " FROM USERS AS US " +
-                " WHERE FREZE = 'N' ";
+                " WHERE FREZE = 'N' " +
+                " ORDER BY MAXEMNO DESC";
+
+        System.out.println(query);
+
         List<Users> users = new ArrayList<>();
         try {
             PreparedStatement statement = static_con.prepareStatement(query);
@@ -37,5 +42,32 @@ public class ReportQueries {
             e.printStackTrace();
         }
         return users;
+    }
+
+    public List<ClientProperty> emailsPerClient(String filter) {
+        String query = "SELECT CL_ID, CL_NAME, CL_OWNER,  " +
+                "     (SELECT COUNT(ER.EMNO) FROM email_relation ER, email_store ES  " +
+                "     WHERE ER.CL_ID = CS.CL_ID " +
+                "     AND ER.EMNO = ES.EMNO " +
+                "     " + filter + ") AS EMNO " +
+                "FROM client_store CS  " +
+                "WHERE CL_ID != 0  " +
+                "ORDER BY EMNO DESC ";
+        List<ClientProperty> clients = new ArrayList<>();
+        try {
+            PreparedStatement statement = static_con.prepareStatement(query);
+            ResultSet set = statement.executeQuery();
+            while (set.next()) {
+                ClientProperty client = new ClientProperty();
+                client.setCode(set.getInt("CL_ID"));
+                client.setName(set.getString("CL_NAME"));
+                client.setOwner(set.getString("CL_OWNER"));
+                client.setTotalEmails(set.getInt("EMNO"));
+                clients.add(client);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return clients;
     }
 }

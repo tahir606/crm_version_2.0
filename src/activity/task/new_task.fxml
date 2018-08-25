@@ -27,6 +27,12 @@
                         <JFXTextField fx:id="txt_subject" focusColor="#006e0e" prefHeight="30.0" prefWidth="300.0" />
                     </children>
                 </HBox>
+            <HBox prefHeight="26.0" prefWidth="316.0" spacing="25.0">
+               <children>
+                  <Label prefHeight="35.0" prefWidth="80.0" text="Entry Date" />
+                  <JFXDatePicker fx:id="entry_date" prefHeight="30.0" prefWidth="300.0" />
+               </children>
+            </HBox>
                 <HBox prefHeight="26.0" prefWidth="316.0" spacing="25.0">
                     <children>
                         <Label prefHeight="35.0" prefWidth="80.0" text="Due Date" />
