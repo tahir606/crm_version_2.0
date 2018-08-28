@@ -246,7 +246,7 @@ public class NewTaskController implements Initializable {
             entry_date.setValue(CommonTasks.createLocalDate(task.getEntryDate()));
         else
             entry_date.setValue(null);
-        
+
         if (task.getDueDate() != null)
             due_date.setValue(CommonTasks.createLocalDate(task.getDueDate()));
         else
