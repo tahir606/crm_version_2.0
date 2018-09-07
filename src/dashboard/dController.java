@@ -202,7 +202,7 @@ public class dController implements Initializable {
     }
 
     private void settingsButton() {
-        buttonSettings("settings", "settings/settings.fxml", 7);
+        buttonSettings("settings", "settings/settings.fxml", 8);
     }
     
     private void logoutButton() {
