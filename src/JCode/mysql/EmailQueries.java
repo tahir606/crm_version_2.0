@@ -751,13 +751,15 @@ public class EmailQueries {
     public List<Email> readAllEmailsSent(String where) {
 
         String query = "SELECT EMNO,SBJCT,FRADD,TOADD,CCADD,BCCADD,TSTMP,EBODY,ATTCH,U.FNAME FROM EMAIL_SENT E, users" +
-                " U WHERE E.UCODE = U.UCODE";
+                " U WHERE E.UCODE = U.UCODE ";
 
         if (where == null) {
             query = query + " ORDER BY EMNO DESC";
         } else {
-            query = query + where;
+            query = query + where + " ORDER BY EMNO DESC ";
         }
+
+        System.out.println(query);
 
         List<Email> allEmails = new ArrayList<>();
 

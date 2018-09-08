@@ -51,53 +51,21 @@ import java.util.ResourceBundle;
 public class EmailDashController implements Initializable {
 
     @FXML
-    private AnchorPane anchor_body;
+    private AnchorPane anchor_body, anchor_details;
     @FXML
-    private AnchorPane anchor_details;
-    @FXML
-    private Label label_ticket;
-    @FXML
-    private Label label_time;
-    @FXML
-    private Label label_locked;
-    @FXML
-    private Label label_from;
-    @FXML
-    private Label title_locked;
-    @FXML
-    private Label label_related_emails;
+    private Label label_ticket, label_time, label_locked, label_from, title_locked, label_related_emails;
     @FXML
     private TextArea txt_subject;
     @FXML
-    private JFXButton btn_lock;
-    @FXML
-    private JFXButton btn_solv;
-    @FXML
-    private JFXButton btn_unlock;
+    private JFXButton btn_lock, btn_solv, btn_unlock;
     @FXML
     private JFXComboBox<String> combo_respond;
     @FXML
     private BorderPane border_email;
     @FXML
-    private VBox category_box;
+    private VBox category_box, vbox_from, vbox_cc, vbox_contacts, vbox_clients, vbox_details, vbox_filter;
     @FXML
-    private VBox vbox_from;
-    @FXML
-    private VBox vbox_cc;
-    @FXML
-    private VBox vbox_contacts;
-    @FXML
-    private VBox vbox_clients;
-    @FXML
-    private VBox vbox_details;
-    @FXML
-    private HBox hbox_from;
-    @FXML
-    private HBox hbox_cc;
-    @FXML
-    private HBox hbox_clients;
-    @FXML
-    private HBox hbox_contacts;
+    private HBox hbox_from, hbox_cc, hbox_clients, hbox_contacts;
     @FXML
     private JFXComboBox<FileDev> combo_attach;
     @FXML
@@ -105,11 +73,7 @@ public class EmailDashController implements Initializable {
     @FXML
     private JFXTextField search_txt;
     @FXML
-    private ListView<Email> list_emails;
-    @FXML
-    ListView<Email> relatedEmails;
-    @FXML
-    private VBox vbox_filter;
+    private ListView<Email> list_emails, relatedEmails;
 
     private mySqlConn sql;
     private fileHelper fHelper;
@@ -205,6 +169,7 @@ public class EmailDashController implements Initializable {
 
         tickets.getStyleClass().remove("btnMenuBoxPressed");
         allMail.getStyleClass().remove("btnMenuBoxPressed");
+        outbox.getStyleClass().remove("btnMenuBoxPressed");
         sentMail.getStyleClass().remove("btnMenuBoxPressed");
 
         btn.getStyleClass().add("btnMenuBoxPressed");
@@ -299,7 +264,10 @@ public class EmailDashController implements Initializable {
             case 2:     //General
                 emails = sql.readAllEmailsGeneral(" WHERE FREZE = 0");
                 break;
-            case 3:     //Sent
+            case 3:     //Outbox
+                emails = sql.readAllEmailsSent(" AND SENT = 0 ");
+                break;
+            case 4:     //Sent
                 emails = sql.readAllEmailsSent(null);
                 break;
         }
@@ -420,6 +388,7 @@ public class EmailDashController implements Initializable {
 
     static JFXButton allMail = new JFXButton("General"),
             tickets = new JFXButton("Tickets"),
+            outbox = new JFXButton("Outbox"),
             sentMail = new JFXButton("Sent");
 
     private void populateCategoryBoxes() {
@@ -430,10 +399,13 @@ public class EmailDashController implements Initializable {
         prepBtn(allMail);
         allMail.setOnAction(event -> changeEmailType(2, allMail));
 
-        prepBtn(sentMail);
-        sentMail.setOnAction(event -> changeEmailType(3, sentMail));
+        prepBtn(outbox);
+        outbox.setOnAction(event -> changeEmailType(3, outbox));
 
-        category_box.getChildren().addAll(tickets, allMail, sentMail);
+        prepBtn(sentMail);
+        sentMail.setOnAction(event -> changeEmailType(4, sentMail));
+
+        category_box.getChildren().addAll(tickets, allMail, outbox, sentMail);
 
         switch (Email_Type) {
             case 1:
@@ -444,6 +416,9 @@ public class EmailDashController implements Initializable {
                 break;
             case 3:
                 sentMail.fire();
+                break;
+            case 4:
+                outbox.fire();
                 break;
         }
     }

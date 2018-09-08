@@ -31,13 +31,7 @@ import java.util.ResourceBundle;
 public class emailSetController implements Initializable {
 
     @FXML
-    private JFXTextField txt_host;
-    @FXML
-    private JFXTextField txt_email;
-    @FXML
-    private JFXTextField txt_pass;
-    @FXML
-    private JFXTextField txt_fspath;
+    private JFXTextField txt_host, txt_email, txt_pass, txt_fspath, txt_genReply;
     @FXML
     private JFXCheckBox check_auto;
     @FXML
@@ -45,11 +39,9 @@ public class emailSetController implements Initializable {
     @FXML
     private JFXCheckBox check_disclaimer;
     @FXML
-    private JFXButton btn_disclaimer;
+    private JFXButton btn_disclaimer, bnt_save, btn_choose;
     @FXML
-    private JFXButton bnt_save;
-    @FXML
-    private JFXButton btn_choose;
+    private JFXButton btn_genHelp;
     @FXML
     private JFXCheckBox check_solvResp;
     @FXML
@@ -96,14 +88,20 @@ public class emailSetController implements Initializable {
 
             btnGmail();
 
-            System.out.println("tr: " + eSetting.getHost());
             txt_host.setText(eSetting.getHost());
             txt_email.setText(eSetting.getEmail());
             txt_pass.setText(eSetting.getPass());
             txt_fspath.setText(eSetting.getFspath());
+            if (eSetting.getGenerated_reply_email() != null) {
+                if (!eSetting.getGenerated_reply_email().equals(eSetting.getHost()))
+                    txt_genReply.setText(eSetting.getGenerated_reply_email());
+            }
             check_auto.setSelected(eSetting.isAuto());
             check_disclaimer.setSelected(eSetting.isDisc());
             check_solvResp.setSelected(eSetting.isSolv());
+
+            btn_genHelp.setTooltip(new Tooltip("This email will be used to send all emails. " +
+                    "\nIf these field is left empty main email will be used to send emails."));
 
             EmailSet_type = 0;
         } else if (EmailSet_type == 2) {
@@ -225,7 +223,7 @@ public class emailSetController implements Initializable {
 
     public void saveChanges(ActionEvent actionEvent) {
 
-        String host, email, pass, fspath;
+        String host, email, pass, fspath, genReplyEmail;
 
         boolean auto, disc, solv;
 
@@ -233,6 +231,7 @@ public class emailSetController implements Initializable {
         email = txt_email.getText();
         pass = txt_pass.getText();
         fspath = txt_fspath.getText();
+        genReplyEmail = txt_genReply.getText();
         auto = check_auto.isSelected();
         disc = check_disclaimer.isSelected();
         solv = check_solvResp.isSelected();
@@ -262,6 +261,11 @@ public class emailSetController implements Initializable {
             es.setAutotext(autoText);
             es.setDisctext(discText);
             es.setSolvRespText(solvRespText);
+
+            if (genReplyEmail.equals(""))
+                es.setGenerated_reply_email(email);
+            else
+                es.setGenerated_reply_email(genReplyEmail);
 
             sql.saveEmailSettings(es);
 

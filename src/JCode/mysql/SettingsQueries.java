@@ -21,7 +21,7 @@ public class SettingsQueries {
 
     public ESetting getEmailSettings() {
 
-        String query = "SELECT HOST, EMAIL, PASS, FSPATH, AUTOCHK, DISCCHK, SOLVCHK, AUTOTXT, DISCTXT, SOLVTXT FROM " +
+        String query = "SELECT HOST, EMAIL, PASS, FSPATH, ES_GEN_EMAIL, AUTOCHK, DISCCHK, SOLVCHK, AUTOTXT, DISCTXT, SOLVTXT FROM " +
                 "EMAIL_SETTINGS " +
                 "WHERE 1";
         try {
@@ -36,6 +36,7 @@ public class SettingsQueries {
                 eSetting.setAutotext(set.getString("AUTOTXT"));
                 eSetting.setDisctext(set.getString("DISCTXT"));
                 eSetting.setSolvRespText(set.getString("SOLVTXT"));
+                eSetting.setGenerated_reply_email(set.getString("ES_GEN_EMAIL"));
                 return eSetting;
             }
 
@@ -52,7 +53,7 @@ public class SettingsQueries {
     public void saveEmailSettings(ESetting eSetting) {
 
         String query = "UPDATE EMAIL_SETTINGS SET HOST = ?,EMAIL = ?, PASS = ?, FSPATH = ?," +
-                " AUTOCHK = ?, DISCCHK = ?, AUTOTXT = ?, DISCTXT = ?, SOLVTXT = ?, SOLVCHK = ? WHERE ECODE = 1";
+                " AUTOCHK = ?, DISCCHK = ?, AUTOTXT = ?, DISCTXT = ?, SOLVTXT = ?, SOLVCHK = ?, ES_GEN_EMAIL = ? WHERE ECODE = 1";
 
         // Connection con = getConnection();
         PreparedStatement statement = null;
@@ -69,6 +70,7 @@ public class SettingsQueries {
             statement.setString(8, eSetting.getDisctext());
             statement.setString(9, eSetting.getSolvRespText());
             statement.setBoolean(10, eSetting.isSolv());
+            statement.setString(11, eSetting.getGenerated_reply_email());
             statement.executeUpdate();
 
             statement.close();

@@ -2,7 +2,7 @@ package objects;
 
 public class ESetting {
 
-    private String host, email, pass, fspath, autotext, disctext, solvRespText;
+    private String host, email, pass, fspath, autotext, disctext, solvRespText, generated_reply_email;
     private boolean auto, disc, solv;
 
     public ESetting() {
@@ -107,5 +107,13 @@ public class ESetting {
 
     public void setSolvRespText(String solvRespText) {
         this.solvRespText = solvRespText;
+    }
+
+    public String getGenerated_reply_email() {
+        return generated_reply_email;
+    }
+
+    public void setGenerated_reply_email(String generated_reply_email) {
+        this.generated_reply_email = generated_reply_email;
     }
 }

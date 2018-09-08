@@ -40,6 +40,8 @@ public class emailControl {
 
     private static List<String> white_list;
 
+    public static boolean EmailsNotSent = false;
+
     public emailControl() {
         fHelper = new fileHelper();
         sqlConn = new mySqlConn();
@@ -263,7 +265,9 @@ public class emailControl {
 
         InternetAddress ia = null;
         try {
-            ia = new InternetAddress(ESETTING.getEmail());
+//            ia = new InternetAddress(ESETTING.getEmail());
+            System.out.println(ESETTING.getGenerated_reply_email());
+            ia = new InternetAddress(ESETTING.getGenerated_reply_email());
         } catch (AddressException e) {
             e.printStackTrace();
         }
@@ -290,7 +294,7 @@ public class emailControl {
             Message message = new MimeMessage(session);
 
             // Set From: header field of the header.
-            message.setFrom(new InternetAddress(ESETTING.getEmail()));
+            message.setFrom(new InternetAddress(ESETTING.getGenerated_reply_email()));
 
 
             // Set Subject: header field
@@ -375,12 +379,17 @@ public class emailControl {
                 try {
                     Transport.send(message);
                     System.out.println("Sent E-Mail to: " + email.getToAddress()[0].toString());
-                    if (!message.getSubject().contains(EmailQueries.autoReplySubject))
+                    if (!message.getSubject().contains(EmailQueries.autoReplySubject)) {
+                        email.setSent(true);
                         sqlConn.insertEmailSent(email);
+                    }
                 } catch (MessagingException ex) {
                     ex.printStackTrace();
                     trayHelper tray = new trayHelper();
                     tray.displayNotification("Error", "Messaging Exception: Email Not Sent");
+
+                    email.setSent(false);
+                    sqlConn.insertEmailSent(email);
                 }
             }).start();
 

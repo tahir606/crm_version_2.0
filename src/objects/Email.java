@@ -16,7 +16,7 @@ public class Email {
     private List<ClientProperty> relatedClients;
     private List<Email> relatedEmails = new ArrayList<>();
     private char solvFlag, isAttch;
-    private boolean isManual, freze;
+    private boolean isManual, isSent, freze;
 
     public Email() {
     }
@@ -312,6 +312,14 @@ public class Email {
 
     public void setRelatedEmails(List<Email> relatedEmails) {
         this.relatedEmails = relatedEmails;
+    }
+
+    public boolean isSent() {
+        return isSent;
+    }
+
+    public void setSent(boolean sent) {
+        isSent = sent;
     }
 
     public boolean isFreze() {
