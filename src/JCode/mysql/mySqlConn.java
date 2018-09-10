@@ -214,6 +214,10 @@ public class mySqlConn {
         emailQueries.ArchiveEmail(type, where);
     }
 
+    public void markAsSent(Email email) {
+        emailQueries.markAsSent(email);
+    }
+
     public ESetting getEmailSettings() {
         return settingsQueries.getEmailSettings();
     }

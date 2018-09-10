@@ -379,9 +379,11 @@ public class emailControl {
                 try {
                     Transport.send(message);
                     System.out.println("Sent E-Mail to: " + email.getToAddress()[0].toString());
-                    if (!message.getSubject().contains(EmailQueries.autoReplySubject)) {
-                        email.setSent(true);
-                        sqlConn.insertEmailSent(email);
+                    if (!email.isSent()) {
+                        if (!message.getSubject().contains(EmailQueries.autoReplySubject)) {
+                            email.setSent(true);
+                            sqlConn.insertEmailSent(email);
+                        }
                     }
                 } catch (MessagingException ex) {
                     ex.printStackTrace();

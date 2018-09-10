@@ -158,7 +158,7 @@
                                 </children>
                             </HBox>
                             <HBox prefHeight="8" />
-                            <Label fx:id="label_related_emails" text="Related Emails:" styleClass="blackText"/>
+                            <Label fx:id="label_related_emails" styleClass="blackText" text="Related Emails:" />
                             <HBox fx:id="hbox_related" prefHeight="80.0" prefWidth="327.0">
                                 <children>
                                     <ListView fx:id="relatedEmails" minHeight="60.0" prefHeight="60.0" prefWidth="381.0" />

@@ -964,6 +964,23 @@ public class EmailQueries {
 
     }
 
+    public void markAsSent(Email email) {
+        String query = "UPDATE EMAIL_SENT SET SENT = 1 WHERE EMNO = " + email.getEmailNo();
+
+        // Connection con = getConnection();
+        PreparedStatement statement = null;
+
+        try {
+            statement = static_con.prepareStatement(query);
+            statement.executeUpdate();
+
+            statement.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+    }
+
     private void EmailsListInsertion(String[] emails) {
 
         String emailList = "INSERT INTO EMAIL_LIST(EM_ID,EM_NAME,CL_ID,UCODE,CS_ID) " +

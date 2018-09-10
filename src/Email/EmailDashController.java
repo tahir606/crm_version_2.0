@@ -250,6 +250,15 @@ public class EmailDashController implements Initializable {
             });
             contextMenu.getItems().add(createTicket);
         }
+        if (Email_Type == 3) {
+            MenuItem sendAgain = new MenuItem("Send Again");
+            sendAgain.setOnAction(t -> {
+                Email selectedItem = list_emails.getSelectionModel().getSelectedItem();
+                emailControl.sendEmail(selectedItem, null);
+                loadEmails();
+            });
+            contextMenu.getItems().add(sendAgain);
+        }
         list_emails.setContextMenu(contextMenu);
         list_emails.setOnContextMenuRequested(event -> event.consume());
     }
