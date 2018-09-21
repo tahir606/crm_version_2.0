@@ -17,6 +17,17 @@
     -fx-font-weight: bold;
 }
 
+.unreadEmail {
+    -fx-background-color: #f7e0c0;
+}
+
+/*, .list-cell:filled:selected*/
+.unreadEmail:filled:selected:focused {
+    -fx-background-color: linear-gradient(#328BDB 0%, #207BCF 25%, #1973C9 75%, #0A65BF 100%);
+    -fx-text-fill: white;
+    -fx-background-insets: 1;
+}
+
 .unlockedEmail {
     -fx-background-color: #d9e5f9;
 }

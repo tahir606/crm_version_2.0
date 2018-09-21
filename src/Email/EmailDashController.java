@@ -49,7 +49,7 @@ import java.util.List;
 import java.util.ResourceBundle;
 
 public class EmailDashController implements Initializable {
-
+    
     @FXML
     private AnchorPane anchor_body, anchor_details;
     @FXML
@@ -74,54 +74,72 @@ public class EmailDashController implements Initializable {
     private JFXTextField search_txt;
     @FXML
     private ListView<Email> list_emails, relatedEmails;
-
+    
     private mySqlConn sql;
     private fileHelper fHelper;
     private Users user;
-
+    
     private static ImageView imgLoader = dController.img_load;
     public static String subject, body;
-
+    
     public static Email selectedEmail = null;
-
+    
     public static ListView<Email> list_emailsF;
-
-    public static int Email_Type = 1;
-
+    
+    public static int Email_Type = 1,
+            ticketNumber = 0,
+            generalNumber = 0;
+    
     public EmailDashController() {
     }
-
+    
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         imgLoader.setVisible(true);
-
+        
         list_emailsF = list_emails;
-
+        
         anchor_details.setVisible(false);
-
+        
         sql = new mySqlConn();
         fHelper = new fileHelper();
-
+        
         user = fHelper.ReadUserDetails();
-
+        
+        //Setting icons notifier for unread emails
+        int ticketLastNumber = sql.getLatestEmailNo(1),
+                generalLastNumber = sql.getLatestEmailNo(2);
+        
+        if (ticketLastNumber > ticketNumber) {
+            tickets.setText("Tickets*");
+        } else {
+            tickets.setText("Tickets");
+        }
+        
+        if (generalLastNumber > generalNumber) {
+            allMail.setText("General*");
+        } else {
+            allMail.setText("General");
+        }
+        
         populateCategoryBoxes();
-
+        
         populateMenuBar();
-
+        
         populateFilters();
-
+        
         //Populating List
         //Creates the changes in the Details Section
         list_emails.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
             selectedEmail = newValue;
             populateDetails(selectedEmail);
         });
-
+        
         //Attaching listener to attaching combo box
         combo_attach.valueProperty().addListener((observable, oldValue, newValue) -> {
             if (newValue == null)
                 return;
-
+            
             if (Desktop.isDesktopSupported()) {
                 try {
                     Desktop.getDesktop().open(newValue);
@@ -130,7 +148,7 @@ public class EmailDashController implements Initializable {
                 }
             }
         });
-
+        
         //Attaching and Adding to the Respond Combo Boxes
         combo_respond.getItems().addAll("Respond", "Reply", "Forward");
         combo_respond.getSelectionModel().select(0);
@@ -139,10 +157,10 @@ public class EmailDashController implements Initializable {
                 return;
             }
             Email sEmail = selectedEmail;
-
+            
             EResponseController.stTo = sEmail.getFromAddressCommaString();
             EResponseController.stCc = sEmail.getCcAddressCommaString();
-
+            
             if (newValue.equals("Reply")) {
                 EResponseController.stInstance = 'R';
                 EResponseController.stSubject = "RE: " + sEmail.getSubject();
@@ -156,40 +174,40 @@ public class EmailDashController implements Initializable {
             inflateEResponse(1);
             combo_respond.getSelectionModel().select(0);
         });
-
+        
         relatedEmails.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
             populateDetails(newValue);
             selectedEmail = null;
             list_emails.getSelectionModel().select(null);
             enableDisable(4);
         });
+        
     }
-
+    
     private void changeEmailType(int type, JFXButton btn) {
-
+        
         tickets.getStyleClass().remove("btnMenuBoxPressed");
         allMail.getStyleClass().remove("btnMenuBoxPressed");
         outbox.getStyleClass().remove("btnMenuBoxPressed");
         sentMail.getStyleClass().remove("btnMenuBoxPressed");
-
+        
         btn.getStyleClass().add("btnMenuBoxPressed");
-
+        
         if (type != Email_Type) {
             Email_Type = type;
             selectedEmail = null;
         }
-
+        
         if (type != 1) {
             combo_respond.setDisable(false);
         }
-
+        
         if (type == 1)
             vbox_filter.setVisible(true);
         else
             vbox_filter.setVisible(false);
-
-        loadEmails();
-
+    
+        System.out.println("Setting cell factory");
         //To set styling to individual cell
         list_emails.setCellFactory(new Callback<ListView<Email>, ListCell<Email>>() {
             @Override
@@ -200,16 +218,24 @@ public class EmailDashController implements Initializable {
                         super.updateItem(item, empty);
                         if (item != null) {
                             setText(item.toString());
-                            if (Email_Type == 1) {
-                                if (item.getLockd() == 0) {
-                                    if (!getStyleClass().contains("unlockedEmail")) {
-                                        getStyleClass().add("unlockedEmail");
+                            //if email is new
+                            System.out.println(item.getEmailNo() + " > " + ticketNumber);
+                            if (item.getEmailNo() > ticketNumber) {
+                                if (!getStyleClass().contains("unreadEmail")) {
+                                    getStyleClass().add("unreadEmail");
+                                }
+                            } else {
+                                if (Email_Type == 1) {
+                                    if (item.getLockd() == 0) {
+                                        if (!getStyleClass().contains("unlockedEmail")) {
+                                            getStyleClass().add("unlockedEmail");
+                                        }
+                                    } else {
+                                        getStyleClass().remove("unlockedEmail");
                                     }
-                                } else {
+                                } else {    //If email type other than tickets is selected no styling should be shown
                                     getStyleClass().remove("unlockedEmail");
                                 }
-                            } else {    //If email type other than tickets is selected no styling should be shown
-                                getStyleClass().remove("unlockedEmail");
                             }
                         } else {
                             setText("");
@@ -220,7 +246,9 @@ public class EmailDashController implements Initializable {
                 return cell;
             }
         });
-
+        
+        loadEmails();
+        
         //Right click menu
         ContextMenu contextMenu = new ContextMenu();
         MenuItem archiveItem = new MenuItem("Move to Archive");
@@ -262,14 +290,15 @@ public class EmailDashController implements Initializable {
         list_emails.setContextMenu(contextMenu);
         list_emails.setOnContextMenuRequested(event -> event.consume());
     }
-
+    
     private List<Email> checkIfEmailsExist() {
-
+        
         List<Email> emails = null;
         switch (Email_Type) {
-            case 1:     //Tickets
+            case 1: {     //Tickets
                 emails = sql.readAllEmails(Filters.readFromFile());
                 break;
+            }
             case 2:     //General
                 emails = sql.readAllEmailsGeneral(" WHERE FREZE = 0");
                 break;
@@ -280,7 +309,7 @@ public class EmailDashController implements Initializable {
                 emails = sql.readAllEmailsSent(null);
                 break;
         }
-
+        
         if (emails == null) {
             emails = new ArrayList<>();
             Email nEm = new Email();
@@ -289,29 +318,29 @@ public class EmailDashController implements Initializable {
             nEm.setFromAddress(new Address[]{new InternetAddress()});
             nEm.setAttch("");
             emails.add(nEm);
-
+            
             list_emails.setDisable(true);
             enableDisable(1);
-
+            
         } else {
             list_emails.setDisable(false);
         }
-
+        
         return emails;
     }
-
+    
     //OPENING THE Archive
     private void inflateArchive() {
         inflateWindow("Archive", "Archive/archive.fxml");
     }
-
+    
     private void instantiateEmail() {
         EResponseController.stTo = "";
         EResponseController.stSubject = "";
         EResponseController.stBody = "";
         EResponseController.stInstance = 'N'; //N for New.
     }
-
+    
     //OPENING RESPONSE STAGE
     private void inflateEResponse(int i) {
         EResponseController.choice = i;
@@ -326,12 +355,12 @@ public class EmailDashController implements Initializable {
         }
         inflateWindow(title, "EResponse/EResponse.fxml");
     }
-
+    
     //OPENING THE FILTER
     private void inflateFilters() {
         inflateWindow("Filters", "Search/filter.fxml");
     }
-
+    
     private void inflateWindow(String title, String path) {
         try {
             FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource(path));
@@ -347,28 +376,28 @@ public class EmailDashController implements Initializable {
             e.printStackTrace();
         }
     }
-
+    
     public void loadEmails() {
         Email temp = selectedEmail;
         list_emails.setItems(null);
         selectedEmail = temp;   //Because when list_emails is emptied selected email becomes null
-
+        
         //making list filterable
         ObservableList<Email> dataObj = FXCollections.observableArrayList(checkIfEmailsExist());
         FilteredList<Email> filteredList = new FilteredList<>(dataObj, s -> true);
-
+        
         search_txt.textProperty().addListener((observable, oldValue, newValue) -> setSearch(filteredList));
-
+        
         setSearch(filteredList);
-
+        System.out.println("Setting items");
         list_emails.setItems(filteredList);
-
+        
         if (selectedEmail == null) {
             enableDisable(1);
             imgLoader.setVisible(false);
             return;
         }
-
+        
         int index = -1;
         boolean isFound = false;
         for (Email email : list_emails.getItems()) {
@@ -384,38 +413,44 @@ public class EmailDashController implements Initializable {
             enableDisable(1);
         }
     }
-
+    
     public static void loadEmailsStatic() {      //Load Emails from other controller
         imgLoader.setVisible(true);
-
+        
         if (Email_Type == 1) {
             Platform.runLater(() -> tickets.fire());
         } else if (Email_Type == 2) {
             Platform.runLater(() -> allMail.fire());
         }
     }
-
+    
     static JFXButton allMail = new JFXButton("General"),
             tickets = new JFXButton("Tickets"),
             outbox = new JFXButton("Outbox"),
             sentMail = new JFXButton("Sent");
-
+    
     private void populateCategoryBoxes() {
-
+        
         prepBtn(tickets);
-        tickets.setOnAction(event -> changeEmailType(1, tickets));
-
+        tickets.setOnAction(event -> {
+            changeEmailType(1, tickets);
+//            ticketNumber = list_emails.getItems().get(0).getEmailNo();
+        });
+        
         prepBtn(allMail);
-        allMail.setOnAction(event -> changeEmailType(2, allMail));
-
+        allMail.setOnAction(event -> {
+            changeEmailType(2, allMail);
+//            generalNumber = list_emails.getItems().get(0).getEmailNo();
+        });
+        
         prepBtn(outbox);
         outbox.setOnAction(event -> changeEmailType(3, outbox));
-
+        
         prepBtn(sentMail);
         sentMail.setOnAction(event -> changeEmailType(4, sentMail));
-
+        
         category_box.getChildren().addAll(tickets, allMail, outbox, sentMail);
-
+        
         switch (Email_Type) {
             case 1:
                 tickets.fire();
@@ -431,11 +466,11 @@ public class EmailDashController implements Initializable {
                 break;
         }
     }
-
+    
     Address[] from, cc;
     List<ContactProperty> relatedContacts = new ArrayList<>();
     List<ClientProperty> relatedClients = new ArrayList<>();
-
+    
     private void populateDetails(Email email) {
         imgLoader.setVisible(true);
         new Thread(() -> Platform.runLater(() -> {
@@ -444,9 +479,9 @@ public class EmailDashController implements Initializable {
             } catch (NullPointerException e) {
                 return;
             }
-
+            
             label_time.setText(email.getTimeFormatted());
-
+            
             vbox_from.getChildren().clear();  //Clearing
             vbox_from.setSpacing(2.0);
             vbox_cc.getChildren().clear();    //Both VBoxes
@@ -455,7 +490,7 @@ public class EmailDashController implements Initializable {
             vbox_contacts.setSpacing(2.0);
             vbox_clients.getChildren().clear();
             vbox_clients.setSpacing(2.0);
-
+            
             if (Email_Type == 1) {
                 label_from.setText("From:");
                 from = email.getFromAddress();
@@ -470,7 +505,7 @@ public class EmailDashController implements Initializable {
                 title_locked.setText("Sent By User: ");
                 label_locked.setText(email.getUser());
             }
-
+            
             cc = email.getCcAddress();
             for (Address f : from) {
                 try {
@@ -494,9 +529,9 @@ public class EmailDashController implements Initializable {
                     }
                 }
             }
-
+            
             txt_subject.setText(email.getSubject());
-
+            
             if (Email_Type == 1) {                              //Check for email relations only if ticket is selected
                 relatedContacts = email.getRelatedContacts();
                 if (relatedContacts == null) {
@@ -516,7 +551,7 @@ public class EmailDashController implements Initializable {
                     } else
                         hbox_contacts.setVisible(false);
                 }
-
+                
                 relatedClients = email.getRelatedClients();
                 if (relatedContacts == null) {
                 } else {
@@ -539,12 +574,12 @@ public class EmailDashController implements Initializable {
                 hbox_contacts.setVisible(false);
                 hbox_clients.setVisible(false);
             }
-
+            
             anchor_details.setVisible(true);
-
+            
             //----Attachments
             combo_attach.getItems().clear();
-
+            
             if (email.getAttch() == null || email.getAttch().equals("")) {
                 combo_attach.setPromptText("No Attachments");
                 combo_attach.setDisable(true);
@@ -557,9 +592,9 @@ public class EmailDashController implements Initializable {
                     attFiles.add(file);
                 }
                 combo_attach.getItems().addAll(attFiles);
-
+                
             }
-
+            
             //----Ebody
             anchor_body.getChildren().clear();
             TextArea eBody = new TextArea(email.getBody());
@@ -574,12 +609,12 @@ public class EmailDashController implements Initializable {
             if (!anchor_body.isVisible()) {
                 anchor_body.setVisible(true);
             }
-
+            
             if (Email_Type != 1) {  //If Email Type is General or Sent
                 btn_lock.setVisible(false);
                 btn_unlock.setVisible(false);
                 btn_solv.setVisible(false);
-
+                
                 imgLoader.setVisible(false);
                 return;
             } else {
@@ -587,7 +622,7 @@ public class EmailDashController implements Initializable {
                 btn_unlock.setVisible(true);
                 btn_solv.setVisible(true);
             }
-
+            
             //Locked/Solved Label
             //Buttons
             if (email.getSolvFlag() == 'S') {    //If Email is solved disable all buttons
@@ -604,74 +639,74 @@ public class EmailDashController implements Initializable {
                     enableDisable(5);
                 }
             }
-
+            
             //Related Emails
             relatedEmails.getItems().clear();
-
+            
             if (email.getRelatedEmails().size() > 0) {
                 ObservableList<Email> dataObj = FXCollections.observableArrayList(email.getRelatedEmails());
                 relatedEmails.setItems(dataObj);
-
+                
                 relatedEmails.setVisible(true);
                 label_related_emails.setVisible(true);
             } else {
                 label_related_emails.setVisible(false);
                 relatedEmails.setVisible(false);
             }
-
+            
             imgLoader.setVisible(false);
         })).start();
     }
-
+    
     JFXComboBox sortBy, ascDesc;
     JFXCheckBox solved, unSolved, locked, unLocked, archived;
-
+    
     private void populateFilters() {
         vbox_filter.setSpacing(10);
-
+        
         Filters filter = Filters.readFromFile();
-
+        
         //Sort By (ComboBox)
         HBox sort = new HBox();
         sortBy = new JFXComboBox();
         setUpCombo(sortBy, "Sorted By", new String[]{"Tickets", "From", "Subject"});
         sortBy.setOnAction(event -> saveFilters());
         sortBy.getSelectionModel().select(filter.getSortBy());
-
+        
         ascDesc = new JFXComboBox();
         setUpCombo(ascDesc, "Asc/Desc", new String[]{"Asc", "Desc"});
         ascDesc.setOnAction(event -> saveFilters());
         ascDesc.getSelectionModel().select(filter.getAscDesc());
         sort.getChildren().addAll(sortBy, ascDesc);
         vbox_filter.getChildren().add(sort);
-
+        
         //Checkboxes
         solved = new JFXCheckBox("Solved");
         solved.selectedProperty().addListener((observable, oldValue, newValue) -> saveFilters());
         setUpCheck(solved);
         solved.setSelected(filter.isSolved());
-
+        
         unSolved = new JFXCheckBox("Unsolved");
         unSolved.selectedProperty().addListener((observable, oldValue, newValue) -> saveFilters());
         setUpCheck(unSolved);
         unSolved.setSelected(filter.isUnsolved());
-
+        
         locked = new JFXCheckBox("Locked");
         locked.selectedProperty().addListener((observable, oldValue, newValue) -> saveFilters());
         setUpCheck(locked);
         locked.setSelected(filter.isLocked());
-
+        
         unLocked = new JFXCheckBox("Unlocked");
         setUpCheck(unLocked);
         unLocked.selectedProperty().addListener((observable, oldValue, newValue) -> saveFilters());
         unLocked.setSelected(filter.isUnlocked());
-
+        
         archived = new JFXCheckBox("Archived");
         setUpCheck(archived);
         archived.selectedProperty().addListener((observable, oldValue, newValue) -> saveFilters());
         archived.setSelected(filter.isArchived());
     }
-
+    
     private void populateMenuBar() {
         Menu newMenu = new Menu("New");
         MenuItem newEmail = new MenuItem("New Email");
@@ -687,30 +722,30 @@ public class EmailDashController implements Initializable {
         });
         newMenu.getItems().add(newTicket);
         menu_bar.getMenus().add(newMenu);
-
+        
         Menu edit = new Menu("Edit");
         MenuItem reload = new MenuItem("Refresh");
         reload.setOnAction(event -> loadEmails());
         edit.getItems().add(reload);
-
+        
         MenuItem filter = new MenuItem("Filters");
         filter.setOnAction(event -> inflateFilters());
         edit.getItems().add(filter);
-
+        
         MenuItem archive = new MenuItem("Move to Archive");
         archive.setOnAction(event -> inflateArchive());
         edit.getItems().add(archive);
-
+        
         menu_bar.getMenus().add(edit);
     }
-
+    
     private void prepBtn(JFXButton btn) {
         btn.setMinHeight(50);
         btn.setMinWidth(60);
         btn.getStyleClass().add("btnMenuBox");
         btn.setAlignment(Pos.CENTER_LEFT);
     }
-
+    
     public static void reloadInstances() {
         // comment this line
         new Thread(() -> {
@@ -720,7 +755,7 @@ public class EmailDashController implements Initializable {
                 JClient.sendMessage("R");   //Function was made so that if ever this feature is not needed i can just
         }).start();
     }
-
+    
     private void saveFilters() {
         imgLoader.setVisible(true);
         try {
@@ -733,13 +768,13 @@ public class EmailDashController implements Initializable {
             filter.setUnlocked(unLocked.isSelected());
             filter.setArchived(archived.isSelected());
             filter.writeToFile();
-
+            
             loadEmailsStatic();
         } catch (NullPointerException e) {
             System.out.println("x--x");
         }
     }
-
+    
     private void setSearch(FilteredList<Email> filteredList) {
         enableDisable(1);
         String filter = search_txt.getText();
@@ -749,13 +784,13 @@ public class EmailDashController implements Initializable {
             filteredList.setPredicate(s -> s.toString().toUpperCase().contains(filter.toUpperCase()));
         }
     }
-
+    
     private void setUpCheck(JFXCheckBox combo) {
         combo.getStyleClass().add("check_box_style");
         VBox.setMargin(combo, new Insets(5, 5, 0, 10));
         vbox_filter.getChildren().add(combo);
     }
-
+    
     private void setUpCombo(JFXComboBox combo, String prompt, String[] options) {
         combo.setPromptText(prompt);
         combo.setMinWidth((vbox_filter.getPrefWidth() * 0.4) - 5);
@@ -763,16 +798,20 @@ public class EmailDashController implements Initializable {
         combo.getStyleClass().add("check_box_style");
         HBox.setMargin(combo, new Insets(0, 5, 0, 5));
     }
-
+    
+    private void showUnreadSign() {
+    
+    }
+    
     public void onLock(ActionEvent actionEvent) {
         imgLoader.setVisible(true);
         sql.lockEmail(selectedEmail, 1);
         loadEmailsStatic();
         reloadInstances();
     }
-
+    
     ESetting eSetting;
-
+    
     public void onSolv(ActionEvent actionEvent) {
         eSetting = sql.getEmailSettings();
         if (!eSetting.isSolv()) {
@@ -780,7 +819,7 @@ public class EmailDashController implements Initializable {
                     "This action cannot be taken back. No response will be issued.",
                     ButtonType.YES, ButtonType.NO);
             alert.showAndWait();
-
+            
             if (alert.getResult() == ButtonType.YES) {
                 sql.solvEmail(selectedEmail, "S", user, false, ""); // S for solved
                 loadEmailsStatic();
@@ -792,7 +831,7 @@ public class EmailDashController implements Initializable {
             inflateWindow("Confirmation", "SolvedDialog/SolvedDialog.fxml");
         }
     }
-
+    
     public void unLock(ActionEvent actionEvent) {
         imgLoader.setVisible(true);
         Email email = selectedEmail;
@@ -800,44 +839,44 @@ public class EmailDashController implements Initializable {
         loadEmailsStatic();
         reloadInstances();
     }
-
+    
     private void enableDisable(int i) {
-
+        
         if (i == 1) {   //Disable Everything
             anchor_body.setVisible(false);
             anchor_details.setVisible(false);
-
+            
             imgLoader.setVisible(false);
         } else if (i == 2) {    //If email is solved
             title_locked.setText("Solved By: ");
-
+            
             btn_lock.setDisable(true);
             btn_lock.setVisible(true);
             btn_unlock.setDisable(true);
             btn_unlock.setVisible(false);
             btn_solv.setDisable(true);
-
+            
             combo_respond.setDisable(true);
         } else if (i == 3) {    //If email is locked by you
             btn_lock.setVisible(false);
             btn_unlock.setVisible(true);
             btn_unlock.setDisable(false);
             btn_solv.setDisable(false);     //Only someone who has locked the email can solve it.
-
+            
             combo_respond.setDisable(false);
         } else if (i == 4) {    //If email is locked but not by you
             btn_unlock.setVisible(false);
             btn_lock.setVisible(true);
             btn_lock.setDisable(true);
             btn_solv.setDisable(true);
-
+            
             combo_respond.setDisable(true);
         } else if (i == 5) {    //If email is not locked
             btn_lock.setDisable(false);
             btn_lock.setVisible(true);
             btn_unlock.setVisible(false);
             btn_solv.setDisable(true);
-
+            
             combo_respond.setDisable(true);
         }
     }

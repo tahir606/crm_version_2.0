@@ -451,6 +451,46 @@ public class EmailQueries {
         emailControl.sendEmail(e, message);
 
     }
+    
+    public int getLatestEmailNo(int email_type) {
+        
+        String tablename = null;
+        switch (email_type) {
+            case 1:
+                tablename = "EMAIL_STORE";
+                break;
+            case 2:
+                tablename = "EMAIL_GENERAL";
+                break;
+        }
+        
+        String query = "SELECT MAX(EMNO) FROM " + tablename +
+                " WHERE FREZE = 0";
+    
+        try {
+        
+            PreparedStatement statementEMNO = static_con.prepareStatement(query);
+            ResultSet set = statementEMNO.executeQuery();
+        
+            int emno = 0;
+            while (set.next()) {
+                emno = set.getInt(1);
+            }
+        
+            statementEMNO.close();
+            set.close();
+        
+            return emno;
+        
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            // doRelease(con);
+        }
+    
+        return 0;
+        
+    }
 
     private int getEmailNo(Email email) {
         String queryEMNO = "SELECT emno FROM email_store" +
