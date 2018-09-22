@@ -23,7 +23,9 @@ public class fileHelper {
     //File Names
     private static final String DASHBOARD_PANELS = "dashPanels",
             SPLITPANE_DIVIDERS = "splitDividers",
-            DASH_FILTERS = "dashFilters.txt";
+            DASH_FILTERS = "dashFilters.txt",
+            TICKET_NUMBER = "ticketNumber.txt",
+            GENERAL_NUMBER = "generalNumber.txt";
 
     public fileHelper() {
 
@@ -40,13 +42,13 @@ public class fileHelper {
 
     public void checkFolders() {
         File directoryAdmin = new File(FADD);
-        if (!directoryAdmin.exists()){
+        if (!directoryAdmin.exists()) {
             directoryAdmin.mkdir();
         }
 
         //If settings folder does not exist create
         File directory = new File(FADD_ROOT);
-        if (!directory.exists()){
+        if (!directory.exists()) {
             directory.mkdir();
         }
     }
@@ -185,6 +187,78 @@ public class fileHelper {
             ex.printStackTrace();
         } finally {
             writer.close();
+        }
+    }
+
+    public boolean WriteLastEmailNumber(int email_type, int emno) {
+
+        PrintWriter writer = null;
+        try {
+            switch (email_type) {
+                case 1: {
+                    writer = new PrintWriter(
+                            new File(FADD_ROOT + TICKET_NUMBER));
+                    break;
+                }
+                case 2: {
+                    writer = new PrintWriter(
+                            new File(FADD_ROOT + GENERAL_NUMBER));
+                    break;
+                }
+            }
+
+            writer.write(String.valueOf(emno));
+
+            return true;
+
+        } catch (IOException ex) {
+            ex.printStackTrace();
+            return false;
+        } finally {
+            writer.close();
+        }
+
+    }
+
+    public int ReadLastEmailNumber(int email_type) {
+        String text = "";
+        InputStreamReader isReader = null;
+        try {
+            switch (email_type) {
+                case 1: {
+                    isReader =
+                            new InputStreamReader(
+                                    new FileInputStream(
+                                            new File(FADD_ROOT + TICKET_NUMBER)));
+                    break;
+                }
+                case 2: {
+                    isReader =
+                            new InputStreamReader(
+                                    new FileInputStream(
+                                            new File(FADD_ROOT + GENERAL_NUMBER)));
+                    break;
+                }
+            }
+
+            BufferedReader br = new BufferedReader(isReader);
+
+            text = br.readLine();
+
+            if (text == null) {
+                return 0;
+            }
+
+            return Integer.parseInt(text);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return 0;
+        } finally {
+//            try {
+//                isReader.close();
+//            } catch (IOException ex) {
+//                ex.printStackTrace();
+//            }
         }
     }
 
