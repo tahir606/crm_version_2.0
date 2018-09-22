@@ -206,7 +206,7 @@ public class EmailDashController implements Initializable {
             vbox_filter.setVisible(true);
         else
             vbox_filter.setVisible(false);
-    
+        
         System.out.println("Setting cell factory");
         //To set styling to individual cell
         list_emails.setCellFactory(new Callback<ListView<Email>, ListCell<Email>>() {
@@ -389,8 +389,16 @@ public class EmailDashController implements Initializable {
         search_txt.textProperty().addListener((observable, oldValue, newValue) -> setSearch(filteredList));
         
         setSearch(filteredList);
-        System.out.println("Setting items");
+        
         list_emails.setItems(filteredList);
+        
+        switch (Email_Type) {
+            case 1:
+                ticketNumber = list_emails.getItems().get(0).getEmailNo();
+                break;
+            case 2:
+                generalNumber = list_emails.getItems().get(0).getEmailNo();
+        }
         
         if (selectedEmail == null) {
             enableDisable(1);
@@ -416,7 +424,6 @@ public class EmailDashController implements Initializable {
     
     public static void loadEmailsStatic() {      //Load Emails from other controller
         imgLoader.setVisible(true);
-        
         if (Email_Type == 1) {
             Platform.runLater(() -> tickets.fire());
         } else if (Email_Type == 2) {
