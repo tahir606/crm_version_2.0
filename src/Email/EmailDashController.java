@@ -90,6 +90,7 @@ public class EmailDashController implements Initializable {
 
     public int ticketNumberLatest,
             generalNumberLatest;
+    private int ticketLastNumberSQL, generalLastNumberSQL;
 
     public EmailDashController() {
     }
@@ -111,23 +112,23 @@ public class EmailDashController implements Initializable {
         ticketNumberLatest = fHelper.ReadLastEmailNumber(1);
         generalNumberLatest = fHelper.ReadLastEmailNumber(2);
 
-        int ticketLastNumber = sql.getLatestEmailNo(1),
-                generalLastNumber = sql.getLatestEmailNo(2);
+        ticketLastNumberSQL = sql.getLatestEmailNo(1);
+        generalLastNumberSQL = sql.getLatestEmailNo(2);
 
-        if (ticketLastNumber > ticketNumberLatest) {
+        if (ticketLastNumberSQL > ticketNumberLatest) {
             tickets.setText("Tickets*");
         } else {
             tickets.setText("Tickets");
         }
 
-        if (generalLastNumber > generalNumberLatest) {
+        if (generalLastNumberSQL > generalNumberLatest) {
             allMail.setText("General*");
         } else {
             allMail.setText("General");
         }
 
-        fHelper.WriteLastEmailNumber(1, ticketLastNumber);
-        fHelper.WriteLastEmailNumber(2, generalLastNumber);
+        fHelper.WriteLastEmailNumber(1, ticketLastNumberSQL);
+        fHelper.WriteLastEmailNumber(2, generalLastNumberSQL);
 
         populateCategoryBoxes();
 
@@ -224,26 +225,30 @@ public class EmailDashController implements Initializable {
                         super.updateItem(item, empty);
                         if (item != null) {
                             setText(item.toString());
-
 //                          This is so that the new emails would be displayed. Otherwise the formatting doesnt apply
                             if (item.getEmailNo() == list_emails.getItems().get(list_emails.getItems().size() - 1).getEmailNo()) {
                                 switch (Email_Type) {
                                     case 1:
-                                        ticketNumberLatest = list_emails.getItems().get(0).getEmailNo();
+                                        ticketNumberLatest = ticketLastNumberSQL;
                                         break;
                                     case 2:
-                                        generalNumberLatest = list_emails.getItems().get(0).getEmailNo();
+                                        generalNumberLatest = generalLastNumberSQL;
                                         break;
                                 }
                             }
 
+                            boolean newEmail = false;
+
                             switch (Email_Type) {
                                 case 1: {
+                                    System.out.println(item.getEmailNo() + ">" + ticketNumberLatest);
                                     if (item.getEmailNo() > ticketNumberLatest) {
+                                        System.out.println("Marking email as unread");
                                         if (!getStyleClass().contains("unreadEmail")) {
                                             getStyleClass().add("unreadEmail");
+                                            newEmail = true;
+                                            break;
                                         }
-                                        return;
                                     } else {
                                         getStyleClass().remove("unreadEmail");
                                         break;
@@ -253,8 +258,9 @@ public class EmailDashController implements Initializable {
                                     if (item.getEmailNo() > generalNumberLatest) {
                                         if (!getStyleClass().contains("unreadEmail")) {
                                             getStyleClass().add("unreadEmail");
+                                            newEmail = true;
+                                            break;
                                         }
-                                        return;
                                     } else {
                                         getStyleClass().remove("unreadEmail");
                                         break;
@@ -262,7 +268,8 @@ public class EmailDashController implements Initializable {
                                 }
                             }
 
-                            if (Email_Type == 1) {
+
+                            if (newEmail != false && Email_Type == 1) {
                                 if (item.getLockd() == 0) {
                                     if (!getStyleClass().contains("unlockedEmail")) {
                                         getStyleClass().add("unlockedEmail");
