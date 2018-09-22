@@ -269,7 +269,7 @@ public class EmailDashController implements Initializable {
                             }
 
 
-                            if (newEmail != false && Email_Type == 1) {
+                            if (newEmail == false && Email_Type == 1) {
                                 if (item.getLockd() == 0) {
                                     if (!getStyleClass().contains("unlockedEmail")) {
                                         getStyleClass().add("unlockedEmail");
