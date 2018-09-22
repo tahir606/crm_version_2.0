@@ -569,14 +569,16 @@ public class EmailDashController implements Initializable {
             }
 
             cc = email.getCcAddress();
-            for (Address f : from) {
-                try {
-                    Label label = new Label(f.toString());
-                    label.setPadding(new Insets(2, 2, 2, 5));
-                    label.getStyleClass().add("moduleDetails");
-                    vbox_from.getChildren().add(label);
-                } catch (NullPointerException ex) {
-                    //Because null is saved
+            if (from != null) {
+                for (Address f : from) {
+                    try {
+                        Label label = new Label(f.toString());
+                        label.setPadding(new Insets(2, 2, 2, 5));
+                        label.getStyleClass().add("moduleDetails");
+                        vbox_from.getChildren().add(label);
+                    } catch (NullPointerException ex) {
+                        //Because null is saved
+                    }
                 }
             }
             if (cc != null) {
