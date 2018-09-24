@@ -678,6 +678,13 @@ public class fileHelper {
         }
     }
 
+    public static void createDirectoryIfDoesNotExist(String path) {
+        File directory = new File(path);
+        if (!directory.exists()){
+            directory.mkdir();
+        }
+    }
+
 //    public boolean deleteSplitPaneDividers() {
 //
 //        PrintWriter writer = null;
@@ -697,6 +704,5 @@ public class fileHelper {
 //            writer.close();
 //        }
 //    }
-
 
 }

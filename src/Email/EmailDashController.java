@@ -241,7 +241,6 @@ public class EmailDashController implements Initializable {
 
                             switch (Email_Type) {
                                 case 1: {
-                                    System.out.println(item.getEmailNo() + ">" + ticketNumberLatest);
                                     if (item.getEmailNo() > ticketNumberLatest) {
                                         System.out.println("Marking email as unread");
                                         if (!getStyleClass().contains("unreadEmail")) {

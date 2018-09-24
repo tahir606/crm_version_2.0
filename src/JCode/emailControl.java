@@ -129,7 +129,9 @@ public class emailControl {
             for (int partcounts = 0; partcounts < numberofparts; partcounts++) {
                 MimeBodyPart part = (MimeBodyPart) mimeMultipart.getBodyPart(partcounts);
                 if (Part.ATTACHMENT.equalsIgnoreCase(part.getDisposition())) {
-                    String filename = ESETTING.getFspath() + "\\" + part.getFileName();
+                    //Add Files in a folder created specifically for that email
+                    fileHelper.createDirectoryIfDoesNotExist(ESETTING.getFspath() + "\\" + fromAddress[0].toString().trim().split("<")[1].replace(">","") + "\\");
+                    String filename = ESETTING.getFspath() + "\\" + fromAddress[0].toString().trim().split("<")[1].replace(">","") + "\\" + part.getFileName();
                     System.out.println(part.getFileName());
                     ATTACH += filename + "^";  //AttachFiles string is to be inserted into Database
                     part.saveFile(filename);
