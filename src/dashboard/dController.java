@@ -138,6 +138,10 @@ public class dController implements Initializable {
                         break;
                     }
                     case 7: {
+                        documentsButton();
+                        break;
+                    }
+                    case 8: {
                         settingsButton();
                         break;
                     }
@@ -201,8 +205,12 @@ public class dController implements Initializable {
         buttonSettings("reports", "reports/reports_dash.fxml", 7);
     }
 
+    private void documentsButton() {
+        buttonSettings("documents", "documents/documents_dash.fxml", 8);
+    }
+
     private void settingsButton() {
-        buttonSettings("settings", "settings/settings.fxml", 8);
+        buttonSettings("settings", "settings/settings.fxml", 9);
     }
     
     private void logoutButton() {

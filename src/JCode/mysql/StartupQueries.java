@@ -88,7 +88,7 @@ public class StartupQueries {
     }
 
     private void populateUserRights() {
-        String[] rights = new String[]{"Email Viewer", "Clients", "Products", "Leads", "Activity", "General Setting"};
+        String[] rights = new String[]{"Email Viewer", "Clients", "Products", "Leads", "Activity", "Reports", "Documents", "General Setting"};
 
         String query = "INSERT INTO RIGHTS_LIST (RCODE, RNAME) VALUES (?, ?)";
 

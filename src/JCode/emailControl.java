@@ -124,14 +124,18 @@ public class emailControl {
             MimeMultipart mimeMultipart = (MimeMultipart) message.getContent();
             int numberofparts = mimeMultipart.getCount();
 
-            String attachFiles = "";    //Names of the attached Files Concatenated
-
             for (int partcounts = 0; partcounts < numberofparts; partcounts++) {
                 MimeBodyPart part = (MimeBodyPart) mimeMultipart.getBodyPart(partcounts);
                 if (Part.ATTACHMENT.equalsIgnoreCase(part.getDisposition())) {
                     //Add Files in a folder created specifically for that email
-                    fileHelper.createDirectoryIfDoesNotExist(ESETTING.getFspath() + "\\" + fromAddress[0].toString().trim().split("<")[1].replace(">","") + "\\");
-                    String filename = ESETTING.getFspath() + "\\" + fromAddress[0].toString().trim().split("<")[1].replace(">","") + "\\" + part.getFileName();
+                    String folderName = "";
+                    try {
+                        folderName = fromAddress[0].toString().trim().split("<")[1].replace(">", "");
+                    } catch (Exception e) {
+                        folderName = "Others";
+                    }
+                    fileHelper.createDirectoryIfDoesNotExist(ESETTING.getFspath() + "\\" + folderName + "\\");
+                    String filename = ESETTING.getFspath() + "\\" + folderName + "\\" + part.getFileName();
                     System.out.println(part.getFileName());
                     ATTACH += filename + "^";  //AttachFiles string is to be inserted into Database
                     part.saveFile(filename);

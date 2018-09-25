@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import com.jfoenix.controls.JFXButton?>
+<?import javafx.scene.control.ListView?>
+<?import javafx.scene.layout.AnchorPane?>
+
+
+<AnchorPane prefHeight="426.0" prefWidth="712.0" xmlns="http://javafx.com/javafx/9" xmlns:fx="http://javafx.com/fxml/1" fx:controller="documents.DocumentsDashController">
+   <children>
+      <ListView fx:id="list_documents" layoutX="14.0" layoutY="14.0" prefHeight="399.0" prefWidth="279.0" AnchorPane.bottomAnchor="15.0" AnchorPane.leftAnchor="15.0" AnchorPane.topAnchor="15.0" />
+      <JFXButton fx:id="add_document_btn" buttonType="RAISED" layoutX="304.0" layoutY="14.0" styleClass="hbox_menu" text="+ Add Document" />
+   </children>
+</AnchorPane>
