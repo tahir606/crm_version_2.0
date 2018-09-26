@@ -40,6 +40,7 @@ public class mySqlConn {
     private TaskQueries taskQueries;
     private EventQueries eventQueries;
     private ReportQueries reportQueries;
+    private DocumentQueries documentQueries;
     
     public mySqlConn() {
         fHelper = new fileHelper();
@@ -66,6 +67,7 @@ public class mySqlConn {
         taskQueries = new TaskQueries(static_con, fHelper);
         eventQueries = new EventQueries(static_con, fHelper);
         reportQueries = new ReportQueries(static_con);
+        documentQueries = new DocumentQueries(static_con);
     }
     
     private Connection getConnection() {
@@ -516,6 +518,18 @@ public class mySqlConn {
     
     public List<ClientProperty> emailsPerClient(String filter) {
         return reportQueries.emailsPerClient(filter);
+    }
+
+    public void insertDocument(Document document) {
+        documentQueries.insertDocument(document);
+    }
+
+    public List<Document> getAllDocuments() {
+        return documentQueries.getAllDocuments();
+    }
+
+    public boolean deleteDocument(Document document) {
+        return documentQueries.deleteDocument(document);
     }
     
     public String[] getAllEmailIDs(String where) {

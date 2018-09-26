@@ -27,23 +27,11 @@ import java.util.*;
 public class EResponseController implements Initializable {
 
     @FXML
-    private TextField txt_to;
-    @FXML
-    private TextField txt_cc;
-    @FXML
-    private TextField txt_bcc;
-    @FXML
-    private TextField txt_attach;
-    @FXML
-    private TextField txt_subject;
-    @FXML
-    private TextArea txt_body;
+    private TextField txt_to, txt_cc, txt_bcc, txt_attach, txt_subject, txt_body;
     @FXML
     private Text lbl_attach;
     @FXML
-    private Button btn_Send;
-    @FXML
-    private Button btn_attach;
+    private Button btn_Send, btn_attach;
     @FXML
     private HBox hbox_to, hbox_cc, hbox_bcc;
 

@@ -20,6 +20,8 @@ public class fileHelper {
 
     private static final String FADD = "C:/Users/" + System.getProperty("user.name") + "/Bits/CRM/";
     private static final String FADD_ROOT = "settings/";
+    public static final String FADD_DOCS = "docs/";
+
     //File Names
     private static final String DASHBOARD_PANELS = "dashPanels",
             SPLITPANE_DIVIDERS = "splitDividers",
@@ -684,6 +686,19 @@ public class fileHelper {
             directory.mkdir();
         }
     }
+
+//    public static void saveToDocuments(String path) {
+//
+//        createDirectoryIfDoesNotExist(FADD_DOCS);
+//
+//        File source = new File(path);
+//        File dest = new File(FADD_DOCS);
+//        try {
+//            FileUtils.copyDirectory(source, dest);
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
+//    }
 
 //    public boolean deleteSplitPaneDividers() {
 //
