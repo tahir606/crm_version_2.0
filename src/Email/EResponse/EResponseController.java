@@ -4,6 +4,11 @@ import Email.EmailDashController;
 import JCode.emailControl;
 import JCode.mysql.mySqlConn;
 import com.jfoenix.controls.JFXButton;
+import com.jfoenix.controls.JFXComboBox;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -13,6 +18,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.text.Text;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
+import objects.Document;
 import objects.Email;
 import org.controlsfx.control.textfield.TextFields;
 
@@ -27,7 +33,11 @@ import java.util.*;
 public class EResponseController implements Initializable {
 
     @FXML
-    private TextField txt_to, txt_cc, txt_bcc, txt_attach, txt_subject, txt_body;
+    private TextField txt_to, txt_cc, txt_bcc, txt_attach, txt_subject;
+    @FXML
+    private TextArea txt_body;
+    @FXML
+    private JFXComboBox<Document> combo_uploaded;
     @FXML
     private Text lbl_attach;
     @FXML
@@ -62,9 +72,15 @@ public class EResponseController implements Initializable {
 
         pullingEmails();
 
+        pullingUploadedDocuments();
+
         populatHbox(txt_to, hbox_to);
         populatHbox(txt_cc, hbox_cc);
         populatHbox(txt_bcc, hbox_bcc);
+
+        combo_uploaded.valueProperty().addListener((observable, oldValue, newValue) -> {
+
+        });
 
         txt_subject.setText(stSubject);
 
@@ -310,7 +326,18 @@ public class EResponseController implements Initializable {
             TextFields.bindAutoCompletion(txt_cc, EMAILS_LIST);
             TextFields.bindAutoCompletion(txt_bcc, EMAILS_LIST);
         }).start();
+    }
 
+    //Placing a list of uploaded documents in the combo box
+    public void pullingUploadedDocuments() {
+        new Thread(() -> {
+            mySqlConn sql = new mySqlConn();
+            List<Document> documents = sql.getAllDocuments();
+            if (documents != null) {
+                ObservableList<Document> list = FXCollections.observableArrayList(documents);
+                combo_uploaded.setItems(list);
+            }
+        }).start();
     }
 
 }

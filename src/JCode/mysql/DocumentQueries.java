@@ -13,6 +13,9 @@ import java.util.List;
 
 public class DocumentQueries {
 
+    //my-sql: set global max_allowed_packet=1024*1024*15;
+    //my-sql: change my.ini file innodb_log_file_size = 256M
+
     private Connection static_con;
 
     public DocumentQueries(Connection static_con) {
