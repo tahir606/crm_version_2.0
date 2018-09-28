@@ -4,6 +4,7 @@ package JCode;
 import JCode.mysql.EmailQueries;
 import JCode.mysql.mySqlConn;
 import JSockets.JServer;
+import objects.Document;
 import objects.ESetting;
 import objects.Email;
 import Email.EmailDashController;
@@ -325,13 +326,12 @@ public class emailControl {
             if (email.getAttachments() == null) {
             } else if (!(email.getAttachments().size() < 0)) {
                 // Part two is attachment
-                messageBodyPart = new MimeBodyPart();
                 for (File f : email.getAttachments()) {
                     BodyPart attachment = new MimeBodyPart();
                     if (f.exists()) {
                         DataSource source = new FileDataSource(f.getAbsolutePath());
                         attachment.setDataHandler(new DataHandler(source));
-                        attachment.setFileName(f.getAbsolutePath());
+                        attachment.setFileName(f.getName());
                         attach = attach + f.getAbsolutePath() + "^";    //Concatenating String for Database
                     } else {
                         trayHelper.trayIcon.displayMessage("IOException", "File Not Found", TrayIcon.MessageType.ERROR);
@@ -339,8 +339,27 @@ public class emailControl {
                     multipart.addBodyPart(attachment);
                 }
             }
-
             email.setAttch(attach);
+
+            String upDocSt = ""; //String to save in the database
+            if (email.getDocuments() == null) {
+            } else if (!(email.getDocuments().size() < 0)) {
+                // Part two is attachment
+                for (Document d : email.getDocuments()) {
+                    BodyPart attachment = new MimeBodyPart();
+                    File f = d.getFile();
+                    if (f.exists()) {
+                        DataSource source = new FileDataSource(f.getAbsolutePath());
+                        attachment.setDataHandler(new DataHandler(source));
+                        attachment.setFileName(f.getName());
+                        upDocSt = upDocSt + d.getName() + "^";    //Concatenating String for Database
+                    } else {
+                        trayHelper.trayIcon.displayMessage("IOException", "File Not Found", TrayIcon.MessageType.ERROR);
+                    }
+                    multipart.addBodyPart(attachment);
+                }
+            }
+            email.setUploadedDocumentsString(upDocSt);
 
             // Send the complete message parts
             message.setContent(multipart);

@@ -244,8 +244,8 @@ public class mySqlConn {
         return settingsQueries.getNotificationSettings();
     }
     
-    public void insertClient(ClientProperty client) {
-        clientQueries.insertClient(client);
+    public boolean insertClient(ClientProperty client) {
+        return clientQueries.insertClient(client);
     }
     
     public void updateClient(ClientProperty client) {
@@ -387,6 +387,10 @@ public class mySqlConn {
     public List<String> getAllSources() {
         return leadQueries.getAllSources(null);
     }
+
+    public void archiveLead(Lead lead) {
+        leadQueries.archiveLead(lead);
+    }
     
     public void addNote(String text, ContactProperty contact) {
         noteQueries.addNewNote(text, contact);
@@ -520,7 +524,7 @@ public class mySqlConn {
         return reportQueries.emailsPerClient(filter);
     }
 
-    public void insertDocument(Document document) {
+    public void insertDocument(Document document) throws Exception {
         documentQueries.insertDocument(document);
     }
 

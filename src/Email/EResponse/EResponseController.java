@@ -47,7 +47,8 @@ public class EResponseController implements Initializable {
 
     public static volatile int choice = 1;      //1- Send Email 2-Create Ticket
 
-    List<File> file;
+    private List<File> file;
+    private List<Document> attachedDocuments;
 
     emailControl helper = new emailControl();
 
@@ -79,7 +80,12 @@ public class EResponseController implements Initializable {
         populatHbox(txt_bcc, hbox_bcc);
 
         combo_uploaded.valueProperty().addListener((observable, oldValue, newValue) -> {
-
+            if (attachedDocuments == null) {
+                attachedDocuments = new ArrayList<>();
+            } else {
+                attachedDocuments.clear();
+            }
+            attachedDocuments.add(newValue);
         });
 
         txt_subject.setText(stSubject);
@@ -299,6 +305,10 @@ public class EResponseController implements Initializable {
             em.setAttachments(file);
         else
             em.setAttch("");
+
+        if (attachedDocuments != null) {
+            em.setDocuments(attachedDocuments);
+        }
 
         if (choice == 1)
             helper.sendEmail(em, null);

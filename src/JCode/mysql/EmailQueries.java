@@ -753,8 +753,8 @@ public class EmailQueries {
     }
 
     public void insertEmailSent(Email email) {
-        String query = "INSERT INTO EMAIL_SENT(EMNO,SBJCT,FRADD,TOADD,CCADD,BCCADD,TSTMP,EBODY,ATTCH,UCODE,FREZE,ESNO" +
-                ") SELECT IFNULL(max(EMNO),0)+1,?,?,?,?,?,?,?,?,?,?,? from EMAIL_SENT";
+        String query = "INSERT INTO EMAIL_SENT(EMNO,SBJCT,FRADD,TOADD,CCADD,BCCADD,TSTMP,EBODY,ATTCH,UCODE,FREZE,ESNO,UPLD_ATTCH" +
+                ") SELECT IFNULL(max(EMNO),0)+1,?,?,?,?,?,?,?,?,?,?,?,? from EMAIL_SENT";
 
         PreparedStatement statement = null;
 
@@ -773,6 +773,7 @@ public class EmailQueries {
             statement.setInt(9, user.getUCODE());
             statement.setBoolean(10, false);
             statement.setInt(11, email.getEmailStoreNo());
+            statement.setString(12, email.getUploadedDocumentsString());
             statement.executeUpdate();
 
             statement.close();

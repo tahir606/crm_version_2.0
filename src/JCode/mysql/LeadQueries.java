@@ -106,11 +106,13 @@ public class LeadQueries {
                 " FROM LEAD_STORE AS LS, EMAIL_LIST AS EL,  PHONE_LIST AS PL " +
                 " WHERE EL.LS_ID = LS.LS_ID   " +
                 " AND PL.LS_ID = LS.LS_ID " +
+                " AND LS.FREZE = 0" +
                 " UNION ALL " +
                 " SELECT LS.LS_ID AS LS_ID,LS_FNAME,LS_LNAME,LS_CNAME, LS_CITY,LS_COUNTRY,LS_NOTE,LS_WEBSITE,null EM_NAME,null PH_NUM,S_ID,S_OTHER " +
                 " FROM LEAD_STORE AS LS  " +
                 " WHERE LS.LS_ID NOT IN (SELECT IFNULL(LS_ID,0) FROM EMAIL_LIST) " +
-                " AND LS.LS_ID NOT IN (SELECT IFNULL(LS_ID,0) FROM phone_list) ";
+                " AND LS.LS_ID NOT IN (SELECT IFNULL(LS_ID,0) FROM phone_list) " +
+                " AND LS.FREZE = 0 ";
 
         if (where == null) {
             query = query + " ";
@@ -281,6 +283,26 @@ public class LeadQueries {
         if (!checkIfSources()) {
             insertSourceCreation("Referall", "");
             insertSourceCreation("Website", "");
+        }
+    }
+
+    public void archiveLead(Lead lead) {
+        String query = "UPDATE LEAD_STORE SET FREZE = 1 WHERE LS_ID = ?";
+
+        // Connection con = getConnection();
+        PreparedStatement statement = null;
+
+        try {
+            statement = static_con.prepareStatement(query);
+            statement.setInt(1, lead.getCode());
+            statement.executeUpdate();
+
+            statement.close();
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            // // doRelease(con);
         }
     }
 }

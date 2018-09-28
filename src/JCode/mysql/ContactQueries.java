@@ -107,7 +107,9 @@ public class ContactQueries {
         } else {
             query = query + " AND " + where;
         }
-        
+
+        System.out.println(query);
+
         List<ContactProperty> allContacts = new ArrayList<>();
         
         try {
@@ -115,6 +117,7 @@ public class ContactQueries {
             ResultSet set = statement.executeQuery();
             //-------------Creating Email-------------
             while (set.next()) {
+                System.out.println("In Result Set");
                 ContactProperty contact = new ContactProperty();
                 contact.setCode(set.getInt("CS_ID"));
                 contact.setFirstName(set.getString("CS_FNAME"));
@@ -130,6 +133,7 @@ public class ContactQueries {
                 contact.setAge(CommonTasks.getAge(contact.getDob()));
                 contact.setNote(set.getString("CS_NOTE"));
                 contact.setIsFreeze(set.getBoolean("FREZE"));
+                System.out.println(contact);
                 contact.setContactNotes(noteQueries.getNotes(contact));
                 allContacts.add(contact);
             }

@@ -26,7 +26,7 @@ public class ClientQueries {
         this.noteQueries = noteQueries;
     }
 
-    public void insertClient(ClientProperty client) {
+    public boolean insertClient(ClientProperty client) {
 
         String query = "INSERT INTO CLIENT_STORE(CL_ID,CL_NAME,CL_OWNER,CL_ADDR,CL_CITY" +
                 ",CL_COUNTRY,CL_WEBSITE,CL_TYPE,CL_JOINDATE,CREATEDBY,CREATEDON) " +
@@ -44,10 +44,14 @@ public class ClientQueries {
             statement.setString(5, client.getCountry());
             statement.setString(6, client.getWebsite());
             statement.setInt(7, client.getType());
-            if (!client.getJoinDate().equals("null"))
-                statement.setString(8, client.getJoinDate());
-            else
+            if (client.getJoinDate() == null) {
                 statement.setString(8, null);
+            } else {
+                if (client.getJoinDate() != null || !client.getJoinDate().equals("null"))
+                    statement.setString(8, client.getJoinDate());
+                else
+                    statement.setString(8, null);
+            }
             statement.setInt(9, fHelper.ReadUserDetails().getUCODE());
             statement.setString(10, CommonTasks.getCurrentTimeStamp());
 
@@ -55,8 +59,11 @@ public class ClientQueries {
 
             emailPhoneQueries.emailsPhoneInsertion(statement, client);
 
+            return true;
+
         } catch (SQLException e) {
             e.printStackTrace();
+            return false;
         }
 
     }

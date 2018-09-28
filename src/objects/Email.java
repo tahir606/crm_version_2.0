@@ -10,8 +10,9 @@ public class Email {
 
     private int EmailNo, msgNo, lockd, solvBy, type, emailStoreNo;
     private Address[] toAddress, fromAddress, ccAddress, bccAddress;
-    private String subject, timestamp, timeFormatted, body, attch, lockedByName, disclaimer, user, solvByName;
+    private String subject, timestamp, timeFormatted, body, attch, uploadedDocumentsString, lockedByName, disclaimer, user, solvByName;
     private List<File> attachments;
+    private List<Document> documents;
     private List<ContactProperty> relatedContacts;
     private List<ClientProperty> relatedClients;
     private List<Email> relatedEmails = new ArrayList<>();
@@ -29,17 +30,6 @@ public class Email {
                 ((subject.length() > 20) ? subject.substring(0, 20) + "..." : subject) +
                 ((relatedEmails.size() > 0) ? "\nAttached @: " + relatedEmails.size() : "");
 
-//        return "Email{\n" +
-//                "EmailNo=" + EmailNo +
-//                "\n toAddress=" + Arrays.toString(toAddress) +
-//                "\n fromAddress=" + Arrays.toString(fromAddress) +
-//                "\n ccAddress=" + Arrays.toString(ccAddress) +
-//                "\n subject='" + subject + '\'' +
-//                "\n timestamp='" + timestamp + '\'' +
-//                "\n body='" + body + '\'' +
-//                "\n attch='" + attch + '\'' +
-//                "\n solvFlag=" + solvFlag +
-//                '}';
     }
 
     public int getEmailNo() {
@@ -210,12 +200,28 @@ public class Email {
         this.disclaimer = disclaimer;
     }
 
+    public List<Document> getDocuments() {
+        return documents;
+    }
+
+    public void setDocuments(List<Document> documents) {
+        this.documents = documents;
+    }
+
     public String getAttch() {
         return attch;
     }
 
     public void setAttch(String attch) {
         this.attch = attch;
+    }
+
+    public String getUploadedDocumentsString() {
+        return uploadedDocumentsString;
+    }
+
+    public void setUploadedDocumentsString(String uploadedDocumentsString) {
+        this.uploadedDocumentsString = uploadedDocumentsString;
     }
 
     public List<File> getAttachments() {

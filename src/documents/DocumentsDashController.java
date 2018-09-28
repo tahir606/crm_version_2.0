@@ -1,5 +1,6 @@
 package documents;
 
+import JCode.Toast;
 import JCode.mysql.mySqlConn;
 import com.jfoenix.controls.JFXButton;
 import javafx.beans.value.ChangeListener;
@@ -37,9 +38,7 @@ public class DocumentsDashController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-
         sql = new mySqlConn();
-
         init();
     }
 
@@ -50,10 +49,6 @@ public class DocumentsDashController implements Initializable {
         ObservableList<Document> dataObj = FXCollections.observableArrayList(allDocs);
         list_documents.setItems(dataObj);
 
-        list_documents.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
-
-        });
-
         list_documents.setOnMouseClicked(event -> {
             if (event.getClickCount() == 2) {
                 if (Desktop.isDesktopSupported()) {
@@ -61,6 +56,7 @@ public class DocumentsDashController implements Initializable {
                         Desktop.getDesktop().open(list_documents.getSelectionModel().getSelectedItem().getFile());
                     } catch (IOException ex) {
                         ex.printStackTrace();
+                        Toast.makeText((Stage) add_document_btn.getScene().getWindow(), ex.getLocalizedMessage());
                     } catch (NullPointerException e) {
                         return;
                     }
@@ -86,8 +82,12 @@ public class DocumentsDashController implements Initializable {
             File file = chooser.showOpenDialog(new Stage());
             if (file == null)
                 return;
-
-            sql.insertDocument(new Document(file));
+            try {
+                sql.insertDocument(new Document(file));
+            } catch (Exception e) {
+                e.printStackTrace();
+                Toast.makeText((Stage) add_document_btn.getScene().getWindow(),e.getLocalizedMessage());
+            }
 
             init();
         });

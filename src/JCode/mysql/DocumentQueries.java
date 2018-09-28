@@ -22,22 +22,22 @@ public class DocumentQueries {
         this.static_con = static_con;
     }
 
-    public void insertDocument(Document document) {
+    public void insertDocument(Document document) throws Exception {
 
         String query = "INSERT INTO DOCUMENT_STORE(DCODE, DNAME, DFILE)" +
                 " SELECT IFNULL(MAX(DCODE),0)+1,?,? FROM DOCUMENT_STORE";
 
         //saving the image
-        try {
+//        try {
             PreparedStatement statement = static_con.prepareStatement(query);
             statement.setString(1, document.getName());
             statement.setBlob(2, new FileInputStream(document.getFile()));
             statement.executeUpdate();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        }
+//        } catch (SQLException e) {
+//            e.printStackTrace();
+//        } catch (FileNotFoundException e) {
+//            e.printStackTrace();
+//        }
     }
 
     public List<Document> getAllDocuments() {
