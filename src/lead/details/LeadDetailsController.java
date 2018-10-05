@@ -71,9 +71,10 @@ public class LeadDetailsController implements Initializable {
                 client.setPhones(new String[]{lead.getPhone()});
                 client.setCity(lead.getCity());
                 client.setCountry(lead.getCountry());
+                client.setFromLead(lead.getCode());
 
-                if (sql.insertClient(client))
-                    sql.archiveLead(lead);
+                if (sql.insertFromLead(client))
+                    sql.markLeadAsClient(lead);
 
                 returnToHomePage();
             } else {

@@ -4,6 +4,7 @@ import JCode.CommonTasks;
 import JCode.fileHelper;
 import client.newClient.newClientController;
 import objects.ClientProperty;
+import objects.Lead;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -393,5 +394,47 @@ public class ClientQueries {
         }
 
         return null;
+    }
+
+    public boolean insertFromLead(ClientProperty client) {
+
+        String query = "INSERT INTO CLIENT_STORE(CL_ID,CL_NAME,CL_OWNER,CL_ADDR,CL_CITY" +
+                ",CL_COUNTRY,CL_WEBSITE,CL_TYPE,CL_JOINDATE,CREATEDBY,CREATEDON,FROM_LEAD) " +
+                " SELECT IFNULL(max(CL_ID),0)+1,?,?,?,?,?,?,?,?,?,?,? from CLIENT_STORE";
+
+        PreparedStatement statement = null;
+
+        try {
+            statement = static_con.prepareStatement(query);
+            statement.setString(1, client.getName());
+            statement.setString(2, client.getOwner());
+            statement.setString(3, client.getAddr());
+            statement.setString(4, client.getCity());
+            statement.setString(5, client.getCountry());
+            statement.setString(6, client.getWebsite());
+            statement.setInt(7, client.getType());
+            if (client.getJoinDate() == null) {
+                statement.setString(8, null);
+            } else {
+                if (client.getJoinDate() != null || !client.getJoinDate().equals("null"))
+                    statement.setString(8, client.getJoinDate());
+                else
+                    statement.setString(8, null);
+            }
+            statement.setInt(9, fHelper.ReadUserDetails().getUCODE());
+            statement.setString(10, CommonTasks.getCurrentTimeStamp());
+
+            statement.setInt(11, client.getFromLead());
+
+            statement.executeUpdate();
+
+            emailPhoneQueries.emailsPhoneInsertion(statement, client);
+
+            return true;
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
     }
 }

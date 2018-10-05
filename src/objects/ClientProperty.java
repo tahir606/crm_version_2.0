@@ -9,6 +9,7 @@ import java.util.List;
 
 public class ClientProperty {
 
+    private int fromLead;
     private SimpleIntegerProperty Code, Type, totalEmails;
     private SimpleStringProperty Name, owner, Addr, City, Country, Website, JoinDate, note;
     private String[] emails = new String[newClientController.noOfFields],
@@ -210,5 +211,13 @@ public class ClientProperty {
 
     public void setTotalEmails(int totalEmails) {
         this.totalEmails.set(totalEmails);
+    }
+
+    public int getFromLead() {
+        return fromLead;
+    }
+
+    public void setFromLead(int fromLead) {
+        this.fromLead = fromLead;
     }
 }

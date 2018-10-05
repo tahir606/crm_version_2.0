@@ -1,6 +1,7 @@
 package client.dash.clientView.clientDetails;
 
 import Email.EResponse.EResponseController;
+import com.jfoenix.controls.JFXTextArea;
 import gui.EventsConstructor;
 import gui.TasksConstructor;
 import gui.NotesConstructor;
@@ -35,27 +36,15 @@ import java.util.ResourceBundle;
 public class clientDetailsController implements Initializable {
 
     @FXML
-    private Label txt_fname;
+    private Label txt_fname, txt_website, txt_owner, txt_joinDate, txt_city, txt_country;
     @FXML
-    private Label txt_website;
+    private JFXTextArea txt_address;
     @FXML
-    private ListView<String> email_list;
+    private ListView<String> email_list, phone_list;
     @FXML
-    private ListView<String> phone_list;
-    @FXML
-    private JFXButton btn_back;
-    @FXML
-    private JFXButton btn_email;
-    @FXML
-    private JFXButton btn_edit;
-//    @FXML
-//    private VBox notes_list;
+    private JFXButton btn_back, btn_email, btn_edit;
     @FXML
     private VBox vbox_main;
-//    @FXML
-//    private VBox open_activities_list;
-//    @FXML
-//    private VBox closed_activities_list;
 
     private mySqlConn sql;
 
@@ -101,6 +90,12 @@ public class clientDetailsController implements Initializable {
 
         txt_fname.setText(client.getName());
         txt_website.setText(client.getWebsite());
+        txt_owner.setText(client.getOwner());
+        txt_joinDate.setText(client.getJoinDate());
+        txt_city.setText(client.getCity());
+        txt_country.setText(client.getCountry());
+
+        txt_address.setText(client.getAddr());
 
         for (String email : client.getEmails()) {
             if (email != null)

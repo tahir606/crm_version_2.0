@@ -112,7 +112,8 @@ public class LeadQueries {
                 " FROM LEAD_STORE AS LS  " +
                 " WHERE LS.LS_ID NOT IN (SELECT IFNULL(LS_ID,0) FROM EMAIL_LIST) " +
                 " AND LS.LS_ID NOT IN (SELECT IFNULL(LS_ID,0) FROM phone_list) " +
-                " AND LS.FREZE = 0 ";
+                " AND LS.FREZE = 0 " +
+                " AND LS.CONVERTED = 0";
 
         if (where == null) {
             query = query + " ";
@@ -283,6 +284,26 @@ public class LeadQueries {
         if (!checkIfSources()) {
             insertSourceCreation("Referall", "");
             insertSourceCreation("Website", "");
+        }
+    }
+
+    public void markLeadAsClient(Lead lead) {
+        String query = "UPDATE LEAD_STORE SET CONVERTED = 1 WHERE LS_ID = ?";
+
+        // Connection con = getConnection();
+        PreparedStatement statement = null;
+
+        try {
+            statement = static_con.prepareStatement(query);
+            statement.setInt(1, lead.getCode());
+            statement.executeUpdate();
+
+            statement.close();
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            // // doRelease(con);
         }
     }
 

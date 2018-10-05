@@ -95,12 +95,13 @@ public class ContactQueries {
     }
     
     public List<ContactProperty> getAllContactsProperty(String where) {
-        String query = "SELECT CS.CS_ID AS CS_ID,CS_FNAME,CS_LNAME,CS_DOB,CS_ADDR," +
-                " CS_CITY,CS_COUNTRY,CS_NOTE,CS.CREATEDON,FREZE,EM_NAME,PH_NUM,CL_NAME,CS.CL_ID AS CL_ID" +
-                " FROM CONTACT_STORE AS CS, EMAIL_LIST AS EL, PHONE_LIST AS PL, CLIENT_STORE AS CL " +
-                " WHERE EL.CS_ID = CS.CS_ID " +
-                " AND PL.CS_ID = CS.CS_ID " +
-                " AND CL.CL_ID = CS.CL_ID";
+        String query = "SELECT CS.CS_ID AS CS_ID,CS_FNAME,CS_LNAME,CS_DOB,CS_ADDR, " +
+                " CS_CITY,CS_COUNTRY,CS_NOTE,CS.CREATEDON,FREZE,CS.CL_ID AS CL_ID,  " +
+                " (SELECT PH.PH_NUM FROM PHONE_LIST AS PH WHERE PH.CS_ID = CS.CS_ID) PH_NUM,  " +
+                " (SELECT EL.EM_NAME FROM EMAIL_LIST AS EL WHERE EL.CS_ID = CS.CS_ID) EM_NAME,  " +
+                " (SELECT CL.CL_NAME FROM client_store AS CL WHERE CS.CL_ID = CL.CL_ID) CL_NAME " +
+                " FROM CONTACT_STORE AS CS " +
+                " WHERE 1 ";
         
         if (where == null) {
             query = query + " AND FREZE = 0 ORDER BY CS.CS_ID";
@@ -117,7 +118,6 @@ public class ContactQueries {
             ResultSet set = statement.executeQuery();
             //-------------Creating Email-------------
             while (set.next()) {
-                System.out.println("In Result Set");
                 ContactProperty contact = new ContactProperty();
                 contact.setCode(set.getInt("CS_ID"));
                 contact.setFirstName(set.getString("CS_FNAME"));
@@ -168,13 +168,13 @@ public class ContactQueries {
     }
     
     public ContactProperty getParticularContact(ContactProperty where) {
-        String query = "SELECT CS.CS_ID AS CS_ID,CS_FNAME,CS_LNAME,CS_DOB,CS_ADDR," +
-                " CS_CITY,CS_COUNTRY,CS_NOTE,CS.CREATEDON,FREZE,EM_NAME,PH_NUM,CL_NAME,CS.CL_ID AS CL_ID" +
-                " FROM CONTACT_STORE AS CS, EMAIL_LIST AS EL, PHONE_LIST AS PL, CLIENT_STORE AS CL " +
-                " WHERE EL.CS_ID = CS.CS_ID " +
-                " AND PL.CS_ID = CS.CS_ID " +
-                " AND CL.CL_ID = CS.CL_ID " +
-                " AND CS.CS_ID = ? ";
+        String query = "SELECT CS.CS_ID AS CS_ID,CS_FNAME,CS_LNAME,CS_DOB,CS_ADDR, " +
+                " CS_CITY,CS_COUNTRY,CS_NOTE,CS.CREATEDON,FREZE,CS.CL_ID AS CL_ID,  " +
+                " (SELECT PH.PH_NUM FROM PHONE_LIST AS PH WHERE PH.CS_ID = CS.CS_ID) PH_NUM,  " +
+                " (SELECT EL.EM_NAME FROM EMAIL_LIST AS EL WHERE EL.CS_ID = CS.CS_ID) EM_NAME,  " +
+                " (SELECT CL.CL_NAME FROM client_store AS CL WHERE CS.CL_ID = CL.CL_ID) CL_NAME " +
+                " FROM CONTACT_STORE AS CS " +
+                " WHERE CS.CS_ID = ? ";
         
         query = query + " AND FREZE = 0 ORDER BY CS.CS_ID";
         
