@@ -82,7 +82,6 @@ public class clientDetailsController implements Initializable {
                 dashBaseController.main_paneF.setCenter(
                         FXMLLoader.load(
                                 getClass().getClassLoader().getResource("client/newClient/newClient.fxml")));
-
             } catch (IOException e) {
                 e.printStackTrace();
             }
