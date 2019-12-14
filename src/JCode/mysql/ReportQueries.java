@@ -62,7 +62,7 @@ public class ReportQueries {
                 client.setCode(set.getInt("CL_ID"));
                 client.setName(set.getString("CL_NAME"));
                 client.setOwner(set.getString("CL_OWNER"));
-                client.setTotalEmails(set.getInt("EMNO"));
+//                client.setTotalEmails(set.getInt("EMNO"));
                 clients.add(client);
             }
         } catch (SQLException e) {

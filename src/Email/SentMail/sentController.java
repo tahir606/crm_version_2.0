@@ -25,7 +25,7 @@ public class sentController implements Initializable {
     @FXML
     private AnchorPane anchor_details;
     @FXML
-    private VBox vbox_from;
+    private VBox vbox_to;
     @FXML
     private VBox vbox_cc;
     @FXML
@@ -66,7 +66,7 @@ public class sentController implements Initializable {
 
     }
 
-    Address[] from, cc, bcc;
+    Address[] to, cc, bcc;
 
     private void populateDetails(Email email) {
 
@@ -75,21 +75,21 @@ public class sentController implements Initializable {
             label_time.setText(email.getTimeFormatted());
 
             //----Emails
-            vbox_from.getChildren().clear();  //Clearing
-            vbox_from.setSpacing(2.0);
+            vbox_to.getChildren().clear();  //Clearing
+            vbox_to.setSpacing(2.0);
             vbox_cc.getChildren().clear();    //Both VBoxes
             vbox_cc.setSpacing(2.0);
             vbox_bcc.getChildren().clear();    //Both VBoxes
             vbox_bcc.setSpacing(2.0);
 
-            from = email.getToAddress();
+            to = email.getToAddress();
             cc = email.getCcAddress();
             bcc = email.getBccAddress();
-            for (Address f : from) {
+            for (Address f : to) {
                 try {
                     Label label = new Label(f.toString());
                     label.setPadding(new Insets(2, 2, 2, 5));
-                    vbox_from.getChildren().add(label);
+                    vbox_to.getChildren().add(label);
                 } catch (NullPointerException ex) {
                     //Because null is saved
                 }

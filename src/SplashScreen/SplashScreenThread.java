@@ -7,6 +7,8 @@ import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
@@ -27,11 +29,14 @@ public class SplashScreenThread implements Initializable {
     
     @FXML
     AnchorPane rootAnchor;
+    @FXML
+    ImageView img_logo;
     
     private static final int shadowSize = 50;
     
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        img_logo.setImage(new Image("res/img/bLogo.jpeg"));
     }
     
     //---------------SplashScreen
@@ -44,7 +49,6 @@ public class SplashScreenThread implements Initializable {
             
             Platform.runLater(() -> {
                 Stage stage2 = new Stage();
-//                    stage2.setAlwaysOnTop(true);
                 stage2.initModality(Modality.APPLICATION_MODAL);
                 stage2.initStyle(StageStyle.TRANSPARENT);
                 stage2.setTitle("Splash Screen");

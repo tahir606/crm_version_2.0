@@ -98,6 +98,7 @@ public class EmailDashController implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         imgLoader.setVisible(true);
+        dController.img_load.setVisible(true);
 
         list_emailsF = list_emails;
 
@@ -131,9 +132,7 @@ public class EmailDashController implements Initializable {
         fHelper.WriteLastEmailNumber(2, generalLastNumberSQL);
 
         populateCategoryBoxes();
-
         populateMenuBar();
-
         populateFilters();
 
         //Populating List
@@ -224,7 +223,8 @@ public class EmailDashController implements Initializable {
                     protected void updateItem(Email item, boolean empty) {
                         super.updateItem(item, empty);
                         if (item != null) {
-                            setText(item.toString());
+                            Platform.runLater(() -> setText(item.toString()));
+
 //                          This is so that the new emails would be displayed. Otherwise the formatting doesnt apply
                             if (item.getEmailNo() == list_emails.getItems().get(list_emails.getItems().size() - 1).getEmailNo()) {
                                 switch (Email_Type) {
@@ -242,7 +242,6 @@ public class EmailDashController implements Initializable {
                             switch (Email_Type) {
                                 case 1: {
                                     if (item.getEmailNo() > ticketNumberLatest) {
-                                        System.out.println("Marking email as unread");
                                         if (!getStyleClass().contains("unreadEmail")) {
                                             getStyleClass().add("unreadEmail");
                                             newEmail = true;
@@ -267,7 +266,6 @@ public class EmailDashController implements Initializable {
                                 }
                             }
 
-
                             if (newEmail == false && Email_Type == 1) {
                                 if (item.getLockd() == 0) {
                                     if (!getStyleClass().contains("unlockedEmail")) {
@@ -279,27 +277,22 @@ public class EmailDashController implements Initializable {
                             } else {    //If email type other than tickets is selected no styling should be shown
                                 getStyleClass().remove("unlockedEmail");
                             }
-
                         } else {
-                            setText("");
+                            Platform.runLater(() -> setText(""));
                             getStyleClass().remove("unlockedEmail");
                         }
-
                     }
                 };
                 return cell;
             }
         });
 
-
         loadEmails();
 
         //Right click menu
         ContextMenu contextMenu = new ContextMenu();
         MenuItem archiveItem = new MenuItem("Move to Archive");
-        archiveItem.setOnAction(t ->
-
-        {
+        archiveItem.setOnAction(t -> {
             Email email = list_emails.getSelectionModel().getSelectedItem();
             if (email.getLockd() != '\0') {     //If Email is locked
                 if (email.getLockd() == user.getUCODE()) {      //If Email is locked by YOU
@@ -313,12 +306,8 @@ public class EmailDashController implements Initializable {
                 loadEmails();
             }
         });
-        contextMenu.getItems().
-
-                add(archiveItem);
-        if (Email_Type == 2)
-
-        {
+        contextMenu.getItems().add(archiveItem);
+        if (Email_Type == 2) {
             MenuItem createTicket = new MenuItem("Create Ticket");
             createTicket.setOnAction(t -> {
                 Email selectedItem = list_emails.getSelectionModel().getSelectedItem();
@@ -329,9 +318,7 @@ public class EmailDashController implements Initializable {
             });
             contextMenu.getItems().add(createTicket);
         }
-        if (Email_Type == 3)
-
-        {
+        if (Email_Type == 3) {
             MenuItem sendAgain = new MenuItem("Send Again");
             sendAgain.setOnAction(t -> {
                 Email selectedItem = list_emails.getSelectionModel().getSelectedItem();
@@ -348,10 +335,9 @@ public class EmailDashController implements Initializable {
 
         List<Email> emails = null;
         switch (Email_Type) {
-            case 1: {     //Tickets
+            case 1:     //Tickets
                 emails = sql.readAllEmails(Filters.readFromFile());
                 break;
-            }
             case 2:     //General
                 emails = sql.readAllEmailsGeneral(" WHERE FREZE = 0");
                 break;
@@ -374,15 +360,12 @@ public class EmailDashController implements Initializable {
 
             list_emails.setDisable(true);
             enableDisable(1);
-
         } else {
             list_emails.setDisable(false);
         }
 
         return emails;
     }
-
-    //OPENING THE Archive
 
     private void inflateArchive() {
         inflateWindow("Archive", "Archive/archive.fxml");
@@ -431,49 +414,44 @@ public class EmailDashController implements Initializable {
         }
     }
 
+    //Track Down which load Email is Running
     public void loadEmails() {
-        Email temp = selectedEmail;
-        list_emails.setItems(null);
-        selectedEmail = temp;   //Because when list_emails is emptied selected email becomes null
+        new Thread(() -> {
+            Email temp = selectedEmail;
+            list_emails.setItems(null);
+            selectedEmail = temp;   //Because when list_emails is emptied selected email becomes null
 
-        //making list filterable
-        ObservableList<Email> dataObj = FXCollections.observableArrayList(checkIfEmailsExist());
-        FilteredList<Email> filteredList = new FilteredList<>(dataObj, s -> true);
+            //making list filterable
+            ObservableList<Email> dataObj = FXCollections.observableArrayList(checkIfEmailsExist());
+            FilteredList<Email> filteredList = new FilteredList<>(dataObj, s -> true);
 
-        search_txt.textProperty().addListener((observable, oldValue, newValue) -> setSearch(filteredList));
+            search_txt.textProperty().addListener((observable, oldValue, newValue) -> setSearch(filteredList));
 
-        setSearch(filteredList);
+            setSearch(filteredList);
 
-        list_emails.setItems(filteredList);
+            list_emails.setItems(filteredList);
 
-//        switch (Email_Type) {
-//            case 1:
-//                ticketNumber = list_emails.getItems().get(0).getEmailNo();
-//                break;
-//            case 2:
-//                generalNumber = list_emails.getItems().get(0).getEmailNo();
-//        }
-
-        if (selectedEmail == null) {
-            enableDisable(1);
-            imgLoader.setVisible(false);
-            return;
-        }
-
-        int index = -1;
-        boolean isFound = false;
-        for (Email email : list_emails.getItems()) {
-            index++;
-            if (email.getEmailNo() == selectedEmail.getEmailNo()) {
-                isFound = true;
-                break;
+            if (selectedEmail == null) {
+                enableDisable(1);
+                imgLoader.setVisible(false);
+                return;
             }
-        }
-        if (isFound)
-            list_emails.getSelectionModel().select(index);
-        else {
-            enableDisable(1);
-        }
+
+            int index = -1;
+            boolean isFound = false;
+            for (Email email : list_emails.getItems()) {
+                index++;
+                if (email.getEmailNo() == selectedEmail.getEmailNo()) {
+                    isFound = true;
+                    break;
+                }
+            }
+            if (isFound)
+                list_emails.getSelectionModel().select(index);
+            else {
+                enableDisable(1);
+            }
+        }).start();
     }
 
     public static void loadEmailsStatic() {      //Load Emails from other controller
@@ -495,13 +473,11 @@ public class EmailDashController implements Initializable {
         prepBtn(tickets);
         tickets.setOnAction(event -> {
             changeEmailType(1, tickets);
-//            ticketNumber = list_emails.getItems().get(0).getEmailNo();
         });
 
         prepBtn(allMail);
         allMail.setOnAction(event -> {
             changeEmailType(2, allMail);
-//            generalNumber = list_emails.getItems().get(0).getEmailNo();
         });
 
         prepBtn(outbox);
@@ -552,15 +528,14 @@ public class EmailDashController implements Initializable {
             vbox_clients.getChildren().clear();
             vbox_clients.setSpacing(2.0);
 
+            label_from.setText("From:");
             if (Email_Type == 1) {
-                label_from.setText("From:");
                 from = email.getFromAddress();
                 title_locked.setText("Locked By: ");
                 label_locked.setText(email.getLockedByName());
             } else if (Email_Type == 2) {
-                label_from.setText("From:");
                 from = email.getFromAddress();
-            } else if (Email_Type == 3) {
+            } else if (Email_Type == 4) {
                 label_from.setText("To:");
                 from = email.getToAddress();
                 title_locked.setText("Sent By User: ");
@@ -860,10 +835,6 @@ public class EmailDashController implements Initializable {
         combo.getItems().addAll(options);
         combo.getStyleClass().add("check_box_style");
         HBox.setMargin(combo, new Insets(0, 5, 0, 5));
-    }
-
-    private void showUnreadSign() {
-
     }
 
     public void onLock(ActionEvent actionEvent) {

@@ -197,22 +197,6 @@ public class ClientProperty {
         return tasks;
     }
 
-    public void setTasks(List<Task> tasks) {
-        this.tasks = tasks;
-    }
-
-    public int getTotalEmails() {
-        return totalEmails.get();
-    }
-
-    public SimpleIntegerProperty totalEmailsProperty() {
-        return totalEmails;
-    }
-
-    public void setTotalEmails(int totalEmails) {
-        this.totalEmails.set(totalEmails);
-    }
-
     public int getFromLead() {
         return fromLead;
     }

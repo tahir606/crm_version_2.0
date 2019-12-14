@@ -3,6 +3,7 @@ package Home;
 import JCode.CommonTasks;
 import JCode.fileHelper;
 import JCode.mysql.mySqlConn;
+import dashboard.dController;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Label;
@@ -17,7 +18,6 @@ import java.util.ArrayList;
 import java.util.ResourceBundle;
 
 public class HomeController implements Initializable {
-    
     
     @FXML
     private AnchorPane main_anchor;
@@ -62,6 +62,9 @@ public class HomeController implements Initializable {
         txt_unsolved.setText(String.valueOf(sql.getNoOfUnsolved()));
         
         populatLockedModules();
+
+        System.out.println("Setting Visibility False");
+        dController.img_load.setVisible(false);
     }
     
     private void populatLockedModules() {

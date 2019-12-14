@@ -5,6 +5,7 @@ import JCode.fileHelper;
 import JCode.mysql.mySqlConn;
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXComboBox;
+import dashboard.dController;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -93,6 +94,8 @@ public class HomeSplitController implements Initializable {
         dashBoardDets = new String[noOfPanels];
 
         setUpPreviousPanels();
+
+        dController.img_load.setVisible(false);
     }
 
     public static void saveDividerPositions() {
@@ -383,7 +386,7 @@ public class HomeSplitController implements Initializable {
     }
 
     private static PieChart inflatePieChart(String title) {
-        List<Users> users = sql.ticketsSolvedByUser(ticketsFilter);
+        List<Users> users  = sql.ticketsSolvedByUser(ticketsFilter);
 
         List<PieChart.Data> list = new ArrayList<>();
         double total = 0;

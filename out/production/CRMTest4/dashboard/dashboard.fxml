@@ -20,6 +20,6 @@
         </Pane>
     </left>
     <center>
-        <!--<Pane fx:id="main_pane" layoutX="57.0" prefHeight="458.0" prefWidth="944.0" />-->
+
     </center>
 </BorderPane>

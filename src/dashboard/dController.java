@@ -36,7 +36,7 @@ import java.util.ArrayList;
 import java.util.ResourceBundle;
 
 
-public class dController implements Initializable {
+public class  dController implements Initializable {
     
     @FXML
     private BorderPane border_pane;
@@ -150,7 +150,7 @@ public class dController implements Initializable {
             
             logoutButton();
             powerButton();
-            
+
             img_loader.setVisible(false);
         }).start();
     }
@@ -324,22 +324,17 @@ public class dController implements Initializable {
             }
             
         });
-        
         emailThread.start();
-        
     }
     
     private void changeSelection(JFXButton btn, String path, int pane) {
-        
+
         img_loader.setVisible(true);
-    
         //homesplit
         HomeSplitController.saveDividerPositions();
-        
         for (Node node : menu_pane.getChildren()) {
             node.getStyleClass().remove("btnMenuBoxPressed");
         }
-        
         btn.getStyleClass().add("btnMenuBoxPressed");
         
         new Thread(new Runnable() {
@@ -358,7 +353,7 @@ public class dController implements Initializable {
                         e.printStackTrace();
                     }
                     currentPane = pane;
-                    img_loader.setVisible(false);
+//                    img_loader.setVisible(false);
                 });
             }
         }).start();

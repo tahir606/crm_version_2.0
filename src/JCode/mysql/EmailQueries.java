@@ -885,6 +885,8 @@ public class EmailQueries {
                 email.setBccAddress(bccAddress);
                 email.setUser(set.getString("FNAME"));
 
+                email.setEmailTypeSent(true);
+
                 allEmails.add(email);
             }
 

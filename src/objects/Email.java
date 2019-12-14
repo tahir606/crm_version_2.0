@@ -17,7 +17,7 @@ public class Email {
     private List<ClientProperty> relatedClients;
     private List<Email> relatedEmails = new ArrayList<>();
     private char solvFlag, isAttch;
-    private boolean isManual, isSent, freze;
+    private boolean isManual, isSent, freze, isEmailTypeSent = false;
 
     public Email() {
     }
@@ -25,11 +25,19 @@ public class Email {
     @Override
     public String toString() {
 
-        return EmailNo + " - " + fromAddress[0].toString() + "\n" +
+        String e = EmailNo + " - ";
+
+        if (!isEmailTypeSent) {
+            e = e + fromAddress[0].toString();
+        } else {
+            e = e + toAddress[0].toString();
+        }
+
+        e = e + "\n" +
                 getTimeFormatted() + "\n" +
                 ((subject.length() > 20) ? subject.substring(0, 20) + "..." : subject) +
                 ((relatedEmails.size() > 0) ? "\nAttached @: " + relatedEmails.size() : "");
-
+        return e;
     }
 
     public int getEmailNo() {
@@ -326,6 +334,14 @@ public class Email {
 
     public void setSent(boolean sent) {
         isSent = sent;
+    }
+
+    public boolean isEmailTypeSent() {
+        return isEmailTypeSent;
+    }
+
+    public void setEmailTypeSent(boolean emailTypeSent) {
+        isEmailTypeSent = emailTypeSent;
     }
 
     public boolean isFreze() {
