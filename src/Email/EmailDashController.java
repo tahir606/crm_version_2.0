@@ -416,7 +416,7 @@ public class EmailDashController implements Initializable {
 
     //Track Down which load Email is Running
     public void loadEmails() {
-        new Thread(() -> {
+//        new Thread(() -> {
             Email temp = selectedEmail;
             list_emails.setItems(null);
             selectedEmail = temp;   //Because when list_emails is emptied selected email becomes null
@@ -451,7 +451,7 @@ public class EmailDashController implements Initializable {
             else {
                 enableDisable(1);
             }
-        }).start();
+//        }).start();
     }
 
     public static void loadEmailsStatic() {      //Load Emails from other controller

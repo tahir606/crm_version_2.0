@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import com.jfoenix.controls.JFXButton?>
+<?import java.lang.String?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<?import javafx.scene.control.Separator?>
+<AnchorPane prefHeight="400.0" prefWidth="600.0" stylesheets="@../../styles/emailDash.css"
+            xmlns="http://javafx.com/javafx/9" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="product.details.ProductDetailsController">
+    <children>
+        <!--<ScrollPane layoutX="28.0" layoutY="104.0" prefHeight="303.0" prefWidth="570.0" AnchorPane.bottomAnchor="37.0"-->
+        <!--AnchorPane.leftAnchor="28.0" AnchorPane.rightAnchor="402.0" AnchorPane.topAnchor="60.0">-->
+        <!--<styleClass>-->
+        <!--<String fx:value="scroll-view"/>-->
+        <!--</styleClass>-->
+        <VBox fx:id="vbox_main" layoutX="28.0" layoutY="104.0" prefHeight="303.0" prefWidth="570.0"
+              AnchorPane.bottomAnchor="37.0"
+              AnchorPane.leftAnchor="28.0" AnchorPane.rightAnchor="402.0" AnchorPane.topAnchor="60.0" spacing="10.0">
+            <children>
+                <Label fx:id="txt_pname" layoutX="28.0" layoutY="65.0" text="Product Name">
+                    <font>
+                        <Font name="Arial Narrow" size="20.0"/>
+                    </font>
+                </Label>
+                <HBox prefHeight="8.0" prefWidth="316.0"/>
+                <HBox prefHeight="26.0" prefWidth="316.0" spacing="25.0">
+                    <children>
+                        <Label prefHeight="20.0" prefWidth="80.0" text="Price">
+                            <font>
+                                <Font size="14.0"/>
+                            </font>
+                        </Label>
+                        <Label fx:id="txt_price" prefHeight="20.0" prefWidth="201.0" text="\$$$$$">
+                            <font>
+                                <Font size="14.0"/>
+                            </font>
+                        </Label>
+                    </children>
+                </HBox>
+                <HBox prefHeight="26.0" prefWidth="316.0" spacing="25.0">
+                    <children>
+                        <Label prefHeight="20.0" prefWidth="80.0" text="Started">
+                            <font>
+                                <Font size="14.0"/>
+                            </font>
+                        </Label>
+                        <Label fx:id="txt_startedOn" prefHeight="20.0" prefWidth="201.0" text="dd-mm-yyyy">
+                            <font>
+                                <Font size="14.0"/>
+                            </font>
+                        </Label>
+                    </children>
+                </HBox>
+                <HBox prefHeight="67.0" prefWidth="427.0" spacing="25.0">
+                    <children>
+                        <Label prefHeight="20.0" prefWidth="80.0" text="Description">
+                            <font>
+                                <Font size="14.0"/>
+                            </font>
+                        </Label>
+                        <TextArea fx:id="txt_desc" editable="false" prefHeight="67.0" prefWidth="323.0"
+                                  styleClass="scroll-view"/>
+                    </children>
+                </HBox>
+            </children>
+        </VBox>
+        <!--</ScrollPane>-->
+        <JFXButton fx:id="btn_back" layoutX="14.0" layoutY="14.0" pickOnBounds="true" ripplerFill="#99ff9f" text=" "
+                   AnchorPane.leftAnchor="14.0" AnchorPane.topAnchor="14.0"/>
+        <HBox layoutX="639.0" layoutY="19.0" prefHeight="34.0" prefWidth="361.0" spacing="20.0">
+            <children>
+                <JFXButton fx:id="btn_edit" prefHeight="38.0" prefWidth="84.0" styleClass="emailDetailsButton"
+                           text="Edit"/>
+            </children>
+        </HBox>
+        <ScrollPane layoutX="610.0" layoutY="116.0" prefHeight="259.0" prefWidth="361.0" AnchorPane.bottomAnchor="25.0"
+                    AnchorPane.rightAnchor="29.0" AnchorPane.topAnchor="116.0">
+            <VBox fx:id="vbox_modules" prefHeight="252.0" prefWidth="356.0">
+
+            </VBox>
+            <styleClass>
+                <String fx:value="hbox_border"/>
+                <String fx:value="scroll-view"/>
+            </styleClass>
+        </ScrollPane>
+        <Label layoutX="702.0" layoutY="63.0" text="Modules" AnchorPane.rightAnchor="190.0" AnchorPane.topAnchor="63.0">
+            <font>
+                <Font name="Arial Unicode MS" size="18.0"/>
+            </font>
+        </Label>
+        <Label layoutX="634.0" layoutY="94.0" text="Name" AnchorPane.rightAnchor="314.0" AnchorPane.topAnchor="95.0">
+            <font>
+                <Font name="System Bold" size="11.0"/>
+            </font>
+        </Label>
+        <Label layoutX="721.0" layoutY="94.0" text="Description" AnchorPane.rightAnchor="219.0"
+               AnchorPane.topAnchor="95.0">
+            <font>
+                <Font name="System Bold" size="11.0"/>
+            </font>
+        </Label>
+    </children>
+
+</AnchorPane>

@@ -1,0 +1,15 @@
+crimson sky: #CF6766
+INDIGO:	#30415D
+ULTRAMARINE: #031424
+LIGHT BLUE: #8EAE8D
+MAROON:  #76323f
+PEACH:  #fff9f4
+#fff6e9 � #ffefd7 � #fffef9 � #e3f0ff � #d2e7ff
+
+medium dark
+
+shades of black and white?
+
+background color:  #e8fcde;
+Darker background:  #9bc685;
+Font: #183c04;

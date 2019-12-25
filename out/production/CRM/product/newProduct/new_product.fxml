@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import com.jfoenix.controls.JFXButton?>
+<?import com.jfoenix.controls.JFXComboBox?>
+<?import com.jfoenix.controls.JFXDatePicker?>
+<?import com.jfoenix.controls.JFXTextField?>
+<?import java.lang.String?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane prefHeight="483.0" prefWidth="1100.0" stylesheets="@../../styles/emailDash.css" xmlns="http://javafx.com/javafx/9" xmlns:fx="http://javafx.com/fxml/1" fx:controller="product.newProduct.NewProductController">
+    <children>
+        <VBox layoutX="52.0" layoutY="69.0" prefHeight="380.0" prefWidth="522.0" spacing="5.0" AnchorPane.leftAnchor="85.0" AnchorPane.topAnchor="69.0">
+            <children>
+                <HBox prefHeight="30.0" prefWidth="200.0" spacing="10.0">
+                    <children>
+                        <Label prefHeight="35.0" prefWidth="80.0" text="Name*" />
+                        <JFXTextField fx:id="txt_name" focusColor="#006e0e" prefHeight="35.0" prefWidth="340.0" />
+                    </children>
+                </HBox>
+                <HBox prefHeight="15.0" prefWidth="200.0" spacing="10.0" />
+                <HBox prefHeight="30.0" prefWidth="200.0" spacing="10.0">
+                    <children>
+                        <Label prefHeight="35.0" prefWidth="80.0" text="Price" />
+                        <JFXTextField fx:id="txt_price" focusColor="#006e0e" prefHeight="30.0" prefWidth="181.0" promptText="PKR" />
+                    </children>
+                </HBox>
+                <HBox prefHeight="30.0" prefWidth="200.0" spacing="10.0" visible="false">
+                    <children>
+                        <Label prefHeight="35.0" prefWidth="80.0" text="Status" />
+                        <JFXComboBox fx:id="combo_status" focusColor="#006e0e" prefHeight="35.0" prefWidth="85.0" />
+                        <Label prefHeight="35.0" prefWidth="80.0" text="Type" />
+                        <JFXComboBox fx:id="combo_type" focusColor="#006e0e" prefHeight="35.0" prefWidth="85.0" />
+                    </children>
+                </HBox>
+                <HBox prefHeight="15.0" prefWidth="200.0" spacing="10.0" />
+                <HBox prefHeight="30.0" prefWidth="200.0" spacing="10.0">
+                    <children>
+                        <Label prefHeight="35.0" prefWidth="80.0" text="Started On" />
+                        <JFXDatePicker fx:id="started_date" prefHeight="28.0" prefWidth="200.0" promptText="mm/dd/yyyy" />
+                    </children>
+                </HBox>
+                <HBox prefHeight="15.0" prefWidth="200.0" spacing="10.0" />
+                <HBox prefHeight="61.0" prefWidth="578.0" spacing="10.0">
+                    <children>
+                        <Label prefHeight="35.0" prefWidth="80.0" text="Description" />
+                        <TextArea fx:id="txt_desc" prefHeight="60.0" prefWidth="391.0" />
+                    </children>
+                </HBox>
+                <HBox prefHeight="15.0" prefWidth="200.0" spacing="10.0" />
+            </children>
+        </VBox>
+        <JFXButton fx:id="btn_back" layoutX="14.0" layoutY="14.0" pickOnBounds="true" ripplerFill="#99ff9f" text=" " AnchorPane.leftAnchor="14.0" AnchorPane.topAnchor="14.0" />
+        <JFXButton fx:id="btn_save" buttonType="RAISED" layoutX="932.0" layoutY="427.0" onAction="#saveChanges" prefHeight="45.0" prefWidth="80.0" styleClass="hbox_menu" text="Save" AnchorPane.bottomAnchor="28.0" AnchorPane.rightAnchor="88.0" />
+        <Label fx:id="txt_heading" layoutX="52.0" layoutY="14.0" prefHeight="38.0" prefWidth="404.0" text="New Product" textFill="#0a2811" AnchorPane.leftAnchor="85.0" AnchorPane.topAnchor="14.0">
+            <font>
+                <Font name="Arial Unicode MS" size="28.0" />
+            </font>
+        </Label>
+        <ScrollPane layoutX="627.0" layoutY="69.0" AnchorPane.rightAnchor="129.0" AnchorPane.topAnchor="69.0">
+            <VBox fx:id="vbox_modules" prefHeight="292.0" prefWidth="340.0" AnchorPane.bottomAnchor="139.0" AnchorPane.rightAnchor="133.0" AnchorPane.topAnchor="69.0" />
+            <styleClass>
+                <String fx:value="hbox_border" />
+                <String fx:value="scroll-view" />
+            </styleClass>
+        </ScrollPane>
+      <JFXButton fx:id="btn_add_module" layoutX="930.0" layoutY="42.0" prefHeight="25.0" prefWidth="27.0" text=" " AnchorPane.rightAnchor="128.0" AnchorPane.topAnchor="42.0" />
+      <Label layoutX="765.0" layoutY="41.0" text="Modules" AnchorPane.topAnchor="41.0">
+         <font>
+            <Font name="Arial Unicode MS" size="18.0" />
+         </font>
+      </Label>
+    </children>
+</AnchorPane>

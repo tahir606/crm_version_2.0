@@ -1,0 +1,92 @@
+.hbox_menu {
+    -fx-background-color: #396042;
+    -fx-text-fill: #ffffff;
+    -fx-font-size: 8pt;
+    -fx-font-weight: 900;
+}
+
+.blackText {
+    -fx-text-fill: #000000;
+    -fx-font-size: 11;
+}
+
+/*
+.menu .label {
+    -fx-text-fill: white;
+    -fx-focus-color: transparent;
+}
+
+.menu-item {
+    -fx-background-color: #396042;
+}
+
+.menu-item: hover {
+    -fx-scale-y: 1.1;
+    -fx-scale-x: 1.1;
+}
+
+.menu: hover {
+    -fx-scale-y: 1.1;
+    -fx-scale-x: 1.1;
+}
+
+.menu-bar {
+    -fx-background-color: #396042;
+}
+*/
+.boldText {
+    -fx-font-size: 11pt;
+    -fx-text-fill: #002b05;
+    -fx-font-weight: bold;
+}
+
+.dashboardButton {
+    -fx-background-size: 25px 25px;
+    -fx-background-repeat: no-repeat;
+    -fx-background-position: center;
+}
+
+.btn {
+    -fx-padding: 5;
+    -fx-font-size: 11.5;
+}
+
+.btn:hover {
+    -fx-background-color: #ace2ac;
+    -fx-scale-y: 1.1;
+    -fx-scale-x: 1.1;
+}
+
+.btnMenu {
+    -fx-text-fill: #ffffff;
+    -fx-font-size: 9pt;
+    -fx-font-weight: bold;
+}
+
+.btnMenu:hover {
+    -fx-background-color: #699673;
+    -fx-scale-y: 1.12;
+    -fx-scale-x: 1.12;
+}
+
+.btnMenuBox {
+    -fx-font-size: 8pt;
+    -fx-font-weight: bold;
+}
+
+.btnMenuBox:hover {
+    -fx-scale-y: 1.12;
+    -fx-scale-x: 1.12;
+}
+
+.btnMenuBoxPressed {
+    -fx-background-color: #c2edcb;
+    -fx-scale-y: 1.1;
+    -fx-scale-x: 1.1;
+}
+
+
+.background {
+/* e8fcde */
+    -fx-background-color: #fcfcfc;
+}

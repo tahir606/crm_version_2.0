@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import com.jfoenix.controls.JFXButton?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane prefHeight="300.0" prefWidth="400.0" xmlns="http://javafx.com/javafx/9" xmlns:fx="http://javafx.com/fxml/1" fx:controller="product.details.UnlockDialogController">
+    <children>
+        <TextArea fx:id="txt_desc" layoutX="14.0" layoutY="14.0" prefHeight="200.0" prefWidth="372.0" promptText="Description" AnchorPane.leftAnchor="14.0" AnchorPane.rightAnchor="14.0" AnchorPane.topAnchor="14.0" />
+        <JFXButton fx:id="btn_unlock" layoutX="250.0" layoutY="260.0" text="MARK UNLOCKED" textFill="#08401f">
+            <font>
+                <Font name="Arial Rounded MT Bold" size="13.0" />
+            </font>
+        </JFXButton>
+    </children>
+</AnchorPane>

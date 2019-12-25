@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import com.jfoenix.controls.JFXButton?>
+<?import com.jfoenix.controls.JFXCheckBox?>
+<?import com.jfoenix.controls.JFXTextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane prefHeight="442.0" prefWidth="902.0" xmlns="http://javafx.com/javafx/9" xmlns:fx="http://javafx.com/fxml/1" fx:controller="settings.email.emailSetController">
+    <children>
+        <JFXTextField fx:id="txt_host" focusColor="#006e0e" layoutX="81.0" layoutY="45.0" prefHeight="25.0" prefWidth="211.0" promptText="Domain" unFocusColor="BLACK" />
+        <JFXTextField fx:id="txt_email" focusColor="#006e0e" layoutX="81.0" layoutY="85.0" prefHeight="25.0" prefWidth="211.0" promptText="Email" unFocusColor="BLACK" />
+        <JFXTextField fx:id="txt_pass" focusColor="#006e0e" layoutX="81.0" layoutY="125.0" prefHeight="25.0" prefWidth="211.0" promptText="Password" unFocusColor="BLACK" />
+        <JFXTextField fx:id="txt_fspath" focusColor="#006e0e" layoutX="81.0" layoutY="165.0" prefHeight="25.0" prefWidth="211.0" promptText="File System Path" unFocusColor="BLACK" />
+        <JFXButton fx:id="bnt_save" buttonType="RAISED" layoutX="822.0" layoutY="286.0" onAction="#saveChanges" prefHeight="45.0" prefWidth="80.0" styleClass="hbox_menu" text="Save" AnchorPane.bottomAnchor="28.0" />
+        <JFXButton fx:id="btn_choose" buttonType="RAISED" layoutX="320.0" layoutY="165.0" onAction="#onChoose" prefHeight="25.0" prefWidth="56.0" styleClass="hbox_menu" text="Choose">
+            <font>
+                <Font size="11.0" />
+            </font>
+        </JFXButton>
+        <JFXCheckBox fx:id="check_auto" checkedColor="#006e0e" layoutX="94.0" layoutY="286.0" text="Auto Reply" />
+        <JFXButton fx:id="btn_auto" buttonType="RAISED" layoutX="263.0" layoutY="282.0" onAction="#setAuto" prefHeight="25.0" prefWidth="140.0" styleClass="hbox_menu" text="Set Auto Reply">
+            <font>
+                <Font size="11.0" />
+            </font>
+        </JFXButton>
+        <JFXCheckBox fx:id="check_disclaimer" checkedColor="#006e0e" layoutX="94.0" layoutY="328.0" text="Disclaimer" />
+        <JFXButton fx:id="btn_disclaimer" buttonType="RAISED" layoutX="263.0" layoutY="326.0" onAction="#setDisclaimer" prefHeight="25.0" prefWidth="140.0" styleClass="hbox_menu" text="Set Disclaimer">
+            <font>
+                <Font size="11.0" />
+            </font>
+        </JFXButton>
+        <JFXButton fx:id="btnGmail" buttonType="RAISED" layoutX="322.0" layoutY="40.0" onAction="#onGmail" prefHeight="25.0" prefWidth="140.0" styleClass="hbox_menu" text="Gmail Settings" />
+        <JFXCheckBox fx:id="check_solvResp" checkedColor="#006e0e" layoutX="94.0" layoutY="369.0" text="Solved Responder" />
+        <JFXButton fx:id="btn_solvResp" buttonType="RAISED" layoutX="263.0" layoutY="367.0" onAction="#setSolvResp" prefHeight="25.0" prefWidth="140.0" styleClass="hbox_menu" text="Set Solved Responder">
+            <font>
+                <Font size="11.0" />
+            </font>
+        </JFXButton>
+      <JFXTextField fx:id="txt_genReply" layoutX="81.0" layoutY="209.0" prefHeight="25.0" prefWidth="211.0" promptText="Email for Generated Replies" />
+      <JFXButton fx:id="btn_genHelp" layoutX="307.0" layoutY="208.0" prefHeight="26.0" prefWidth="17.0" style="-fx-background-color: #d8e7ff;" text="?">
+         <font>
+            <Font name="Berlin Sans FB Demi Bold" size="14.0" />
+         </font>
+      </JFXButton>
+    </children>
+</AnchorPane>

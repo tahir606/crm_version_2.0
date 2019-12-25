@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import com.jfoenix.controls.JFXButton?>
+<?import com.jfoenix.controls.JFXListView?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.AnchorPane?>
+
+<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/9" xmlns:fx="http://javafx.com/fxml/1" fx:controller="settings.email.emailSetController">
+    <children>
+
+        <!--<ScrollPane layoutX="27.0" layoutY="19.0" prefHeight="276.0" prefWidth="205.0" AnchorPane.bottomAnchor="105.0"-->
+        <!--AnchorPane.leftAnchor="27.0" AnchorPane.topAnchor="19.0">-->
+        <!--<content>-->
+        <JFXListView fx:id="white_list" layoutX="27.0" layoutY="45.0" prefHeight="276.0" prefWidth="205.0" AnchorPane.bottomAnchor="79.0" AnchorPane.leftAnchor="27.0" AnchorPane.topAnchor="45.0" />
+        <!--AnchorPane.leftAnchor="27.0" AnchorPane.topAnchor="19.0"/>
+        <!-</content>-->
+        <!--</ScrollPane>-->
+        <JFXButton fx:id="btn_add" buttonType="RAISED" layoutX="27.0" layoutY="314.0" onAction="#addtoWhite" prefHeight="25.0" prefWidth="103.0" styleClass="hbox_menu" text="Add Domain" AnchorPane.bottomAnchor="41.0" AnchorPane.leftAnchor="27.0" />
+      <Label layoutX="105.0" layoutY="16.0" styleClass="boldText" text="WhiteList" AnchorPane.leftAnchor="105.0" AnchorPane.topAnchor="16.0" />
+      <JFXListView fx:id="black_list" layoutX="367.0" layoutY="45.0" prefHeight="276.0" prefWidth="205.0"
+                   AnchorPane.bottomAnchor="79.0" AnchorPane.topAnchor="45.0" />
+      <Label layoutX="445.0" layoutY="16.0" styleClass="boldText" text="BlackList" AnchorPane.topAnchor="16.0" />
+    </children>
+</AnchorPane>

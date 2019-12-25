@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane prefHeight="500.0" prefWidth="800.0" stylesheets="@../../styles/emailDash.css" xmlns="http://javafx.com/javafx/9" xmlns:fx="http://javafx.com/fxml/1" fx:controller="activity.view.ActivityViewController">
+    <children>
+        <VBox spacing="10.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+         <Label text="Tasks" textAlignment="CENTER">
+            <VBox.margin>
+               <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+            </VBox.margin>
+            <font>
+               <Font name="Arial Narrow" size="20.0" />
+            </font></Label>
+            <TableView fx:id="table_activity" layoutY="34.0" prefHeight="400.0" prefWidth="596.0" AnchorPane.bottomAnchor="200.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="20.0">
+                <columns>
+                    <TableColumn fx:id="col_subject" prefWidth="200.0" text="Subject" />
+                    <TableColumn fx:id="col_due_date" prefWidth="100.0" text="Due Date" />
+                    <TableColumn fx:id="col_created_on" prefWidth="140.0" text="Created On" />
+                    <TableColumn fx:id="col_created_by" prefWidth="80.0" text="Created By" />
+                    <TableColumn fx:id="col_status" prefWidth="80.0" text="Status" />
+                </columns>
+            </TableView>
+         <HBox prefHeight="10.0" prefWidth="200.0" />
+         <Label text="Events">
+            <VBox.margin>
+               <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+            </VBox.margin>
+            <font>
+               <Font name="Arial Narrow" size="20.0" />
+            </font></Label>
+            <TableView fx:id="table_events" layoutX="10.0" layoutY="44.0" prefHeight="400.0" prefWidth="596.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="200.0">
+                <columns>
+                    <TableColumn fx:id="col_title" prefWidth="200.0" text="Title" />
+                    <TableColumn fx:id="col_location" prefWidth="100.0" text="Location" />
+                    <TableColumn fx:id="col_from" prefWidth="140.0" text="From" />
+                    <TableColumn fx:id="col_to" prefWidth="80.0" text="To" />
+                    <TableColumn fx:id="col_created_by_event" prefWidth="80.0" text="Created By" />
+                    <TableColumn fx:id="col_status_event" prefWidth="80.0" text="Status" />
+                </columns>
+            </TableView>
+        </VBox>
+    </children>
+</AnchorPane>

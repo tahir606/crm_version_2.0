@@ -1,0 +1,169 @@
+.normalText {
+    -fx-text-fill: #005600;
+}
+
+.blackText {
+    -fx-text-fill: #000000;
+    -fx-font-size: 11;
+}
+
+.lockedText {
+    -fx-text-fill: #005600;
+    -fx-font-weight: bold;
+}
+
+.solvedText {
+    -fx-text-fill: #005456;
+    -fx-font-weight: bold;
+}
+
+.unreadEmail {
+    -fx-background-color: #f7e0c0;
+}
+
+/*, .list-cell:filled:selected*/
+.unreadEmail:filled:selected:focused {
+    -fx-background-color: linear-gradient(#328BDB 0%, #207BCF 25%, #1973C9 75%, #0A65BF 100%);
+    -fx-text-fill: white;
+    -fx-background-insets: 1;
+}
+
+.unlockedEmail {
+    -fx-background-color: #d9e5f9;
+}
+
+/*, .list-cell:filled:selected*/
+.unlockedEmail:filled:selected:focused {
+    -fx-background-color: linear-gradient(#328BDB 0%, #207BCF 25%, #1973C9 75%, #0A65BF 100%);
+    -fx-text-fill: white;
+    -fx-background-insets: 1;
+}
+
+.hbox_border {
+    -fx-border-color: #033300;
+}
+
+.check_box_style {
+    -fx-font-size: 10;
+}
+
+.scroll-view {
+    -fx-background-color: transparent;
+    -fx-background: #fcfcfc;
+}
+
+.moduleDetails {
+    -fx-text-fill: #000000;
+    -fx-font-size: 9pt;
+}
+
+.moduleDetails:hover {
+    -fx-background-color: #d7ffc6;
+}
+
+.emailListview {
+    -fx-focus-color: transparent;
+    -fx-faint-focus-color: transparent;
+}
+
+.emailDetailsButton {
+    -fx-background-color: #e2d5bc;
+    -fx-min-width: 60px;
+    -fx-min-height: 25px;
+}
+
+.emailDetailsButton:hover {
+    -fx-background-color: #d3ffd6;
+    -fx-scale-y: 1.1;
+    -fx-scale-x: 1.1;
+}
+
+.emailUnlockButton {
+    -fx-background-color: #ed8282;
+    -fx-min-width: 60px;
+    -fx-min-height: 25px;
+}
+
+.emailUnlockButton:hover {
+    -fx-background-color: #ffbcbc;
+    -fx-scale-y: 1.1;
+    -fx-scale-x: 1.1;
+}
+
+.emailAnchorDetails {
+    -fx-focus-color: transparent;
+    -fx-faint-focus-color: transparent;
+}
+
+.emailAnchorBody {
+    -fx-focus-color: transparent;
+    -fx-faint-focus-color: transparent;
+}
+
+.reloadMenuButton {
+    -fx-background-image: url(../../../../misc/refresh.png);
+    -fx-background-size: 24px 24px;
+    -fx-background-repeat: no-repeat;
+    -fx-background-position: center;
+}
+
+.newMenuButton {
+    -fx-background-image: url(../../../../misc/newmail.png);
+    -fx-background-size: 24px 24px;
+    -fx-background-repeat: no-repeat;
+    -fx-background-position: center;
+}
+
+.filterMenuButton {
+    -fx-background-image: url(../../../../misc/filter.png);
+    -fx-background-size: 24px 24px;
+    -fx-background-repeat: no-repeat;
+    -fx-background-position: center;
+}
+
+.pretty-list-view > .virtual-flow > .scroll-bar,
+.pretty-list-view > .virtual-flow > .scroll-bar .decrement-arrow,
+.pretty-list-view > .virtual-flow > .scroll-bar .increment-arrow,
+.pretty-list-view > .virtual-flow > .scroll-bar .decrement-button,
+.pretty-list-view > .virtual-flow > .scroll-bar .increment-button {
+    -fx-pref-width: 0;
+    -fx-pref-height: 0;
+}
+
+.pretty-list-view .pretty-scroll-bar:vertical .thumb {
+    -fx-background-insets: 0 2 0 0;
+}
+
+.pretty-list-view .pretty-scroll-bar:horizontal .thumb {
+    -fx-background-insets: 0 0 2 0;
+}
+
+.pretty-list-view .pretty-scroll-bar .decrement-arrow,
+.pretty-list-view .pretty-scroll-bar .increment-arrow {
+    -fx-pref-width: 0;
+    -fx-pref-height: 0;
+}
+
+.pretty-list-view .pretty-scroll-bar {
+    -fx-background-color: transparent;
+    -fx-pref-width: 12;
+    -fx-pref-height: 12;
+    -fx-padding: 2;
+}
+
+.pretty-list-view .pretty-scroll-bar .thumb {
+    -fx-background-color: rgba(0, 0, 0, .2);
+    -fx-background-radius: 1000;
+    -fx-pref-width: 12;
+    -fx-pref-height: 12;
+}
+
+.tab {
+    -fx-pref-width: 150
+}
+.tab-header-background {
+    -fx-background-color:transparent
+}
+.tab-pane{
+    -fx-padding: 0 -1 -1 -1
+}

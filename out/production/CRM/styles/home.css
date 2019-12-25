@@ -1,0 +1,38 @@
+.headingText {
+    -fx-font-size: 11pt;
+    -fx-text-fill: #002b05;
+    -fx-font-weight: bold;
+}
+
+.dataText {
+    -fx-font-size: 10pt;
+    -fx-text-fill: #002b05;
+}
+
+.moduleDetails {
+    -fx-text-fill: #ffffff;
+    -fx-font-size: 9pt;
+}
+
+.moduleDetails:hover {
+    -fx-background-color: #d7ffc6;
+}
+
+.scroll-view {
+    -fx-background-color: transparent;
+    -fx-background: #fcfcfc;
+}
+
+.chart {
+    -fx-clockwise: true;
+    -fx-pie-label-visible: true;
+    -fx-label-line-length: 8;
+    -fx-start-angle: 30;
+}
+
+.chart-pie {
+    -fx-border-color: white;
+    -fx-background-insets: 1;
+    -fx-border-style: solid inside;
+    -fx-border-width: 2;
+}
