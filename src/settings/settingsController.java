@@ -42,6 +42,7 @@ public class settingsController implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         populateMenu();
+        img_loader.setVisible(false);
     }
 
     private void populateMenu() {

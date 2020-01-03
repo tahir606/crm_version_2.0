@@ -18,8 +18,8 @@ import java.util.Scanner;
 
 public class fileHelper {
 
-//    private static final String FADD = "C:/Users/" + System.getProperty("user.name") + "/Bits/CRM/";
-    private static final String FADD = "../Bits/CRM/";
+    private static final String FADD = "C:/Users/" + System.getProperty("user.name") + "/Bits/CRM/";
+//    private static final String FADD = "../Bits/CRM/";
     private static final String FADD_ROOT = "settings/";
     public static final String FADD_DOCS = "docs/";
 
