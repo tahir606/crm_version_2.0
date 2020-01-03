@@ -15,8 +15,7 @@ import objects.Users;
 import java.net.URL;
 import java.util.ResourceBundle;
 
-import static Email.EmailDashController.loadEmailsStatic;
-import static Email.EmailDashController.reloadInstances;
+import static Email.EmailDashController.*;
 
 public class SolvedDialogController implements Initializable {
 
@@ -57,7 +56,8 @@ public class SolvedDialogController implements Initializable {
             sqlConn.solvEmail(selectedEmail, "S", user, !check_send.isSelected(), txt_body.getText().toString()); // S for solved
             loadEmailsStatic();
             reloadInstances();
-
+//            list_emailsF.getSelectionModel().select(EmailDashController.index++);
+//            System.out.println("Selecting index: " + EmailDashController.index++);
             Stage stage = (Stage) btn_solved.getScene().getWindow();
             stage.close();
         });

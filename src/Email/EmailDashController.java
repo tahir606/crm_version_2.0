@@ -98,7 +98,6 @@ public class EmailDashController implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         imgLoader.setVisible(true);
-        dController.img_load.setVisible(true);
 
         list_emailsF = list_emails;
 
@@ -287,8 +286,6 @@ public class EmailDashController implements Initializable {
             }
         });
 
-        loadEmails();
-
         //Right click menu
         ContextMenu contextMenu = new ContextMenu();
         MenuItem archiveItem = new MenuItem("Move to Archive");
@@ -329,6 +326,9 @@ public class EmailDashController implements Initializable {
         }
         list_emails.setContextMenu(contextMenu);
         list_emails.setOnContextMenuRequested(event -> event.consume());
+
+        //Display Emails
+        loadEmails();
     }
 
     private List<Email> checkIfEmailsExist() {
@@ -371,13 +371,6 @@ public class EmailDashController implements Initializable {
         inflateWindow("Archive", "Archive/archive.fxml");
     }
 
-    private void instantiateEmail() {
-        EResponseController.stTo = "";
-        EResponseController.stSubject = "";
-        EResponseController.stBody = "";
-        EResponseController.stInstance = 'N'; //N for New.
-    }
-
     //OPENING RESPONSE STAGE
     private void inflateEResponse(int i) {
         EResponseController.choice = i;
@@ -414,44 +407,58 @@ public class EmailDashController implements Initializable {
         }
     }
 
+    private void instantiateEmail() {
+        EResponseController.stTo = "";
+        EResponseController.stSubject = "";
+        EResponseController.stBody = "";
+        EResponseController.stInstance = 'N'; //N for New.
+    }
+
     //Track Down which load Email is Running
     public void loadEmails() {
-//        new Thread(() -> {
-            Email temp = selectedEmail;
-            list_emails.setItems(null);
-            selectedEmail = temp;   //Because when list_emails is emptied selected email becomes null
 
-            //making list filterable
-            ObservableList<Email> dataObj = FXCollections.observableArrayList(checkIfEmailsExist());
-            FilteredList<Email> filteredList = new FilteredList<>(dataObj, s -> true);
+        Email temp = selectedEmail;
+        list_emails.setItems(null);
+        selectedEmail = temp;   //Because when list_emails is emptied selected email becomes null
 
-            search_txt.textProperty().addListener((observable, oldValue, newValue) -> setSearch(filteredList));
+        //making list filterable
+        ObservableList<Email> dataObj = FXCollections.observableArrayList(checkIfEmailsExist());
+        FilteredList<Email> filteredList = new FilteredList<>(dataObj, s -> true);
 
-            setSearch(filteredList);
+        search_txt.textProperty().addListener((observable, oldValue, newValue) -> setSearch(filteredList));
 
-            list_emails.setItems(filteredList);
+        setSearch(filteredList);
 
-            if (selectedEmail == null) {
-                enableDisable(1);
-                imgLoader.setVisible(false);
-                return;
+        list_emails.setItems(filteredList);
+
+        if (selectedEmail == null) {
+            enableDisable(1);
+            imgLoader.setVisible(false);
+            return;
+        }
+
+        int index = -1;
+        boolean isFound = false;
+        for (Email email : list_emails.getItems()) {
+            index++;
+            if (email.getEmailNo() == selectedEmail.getEmailNo()) {
+                isFound = true;
+                break;
             }
+        }
+        if (isFound)
+            list_emails.getSelectionModel().select(index);
+        else {
+            enableDisable(1);
+        }
 
-            int index = -1;
-            boolean isFound = false;
-            for (Email email : list_emails.getItems()) {
-                index++;
-                if (email.getEmailNo() == selectedEmail.getEmailNo()) {
-                    isFound = true;
-                    break;
-                }
-            }
-            if (isFound)
-                list_emails.getSelectionModel().select(index);
-            else {
-                enableDisable(1);
-            }
-//        }).start();
+        //When Email is marked as solved
+        if (this.index != -1) {
+            list_emails.getSelectionModel().select(this.index);
+            this.index = -1;
+        }
+
+        imgLoader.setVisible(false);
     }
 
     public static void loadEmailsStatic() {      //Load Emails from other controller
@@ -463,6 +470,49 @@ public class EmailDashController implements Initializable {
         }
     }
 
+    public void onLock(ActionEvent actionEvent) {
+        imgLoader.setVisible(true);
+        sql.lockEmail(selectedEmail, 1);
+        loadEmailsStatic();
+        reloadInstances();
+    }
+
+
+    public int index;  //To select the next email in the list after solve
+    private ESetting eSetting;
+
+    public void onSolv(ActionEvent actionEvent) {
+        index = -1;
+
+        eSetting = sql.getEmailSettings();
+        index = list_emails.getSelectionModel().getSelectedIndex();
+        System.out.println("Selected Index: " + index);
+        if (!eSetting.isSolv()) {
+            Alert alert = new Alert(Alert.AlertType.CONFIRMATION, "Are you sure you want to mark this as solved?\n" +
+                    "This action cannot be taken back. No response will be issued.",
+                    ButtonType.YES, ButtonType.NO);
+            alert.showAndWait();
+
+            if (alert.getResult() == ButtonType.YES) {
+                sql.solvEmail(selectedEmail, "S", user, false, ""); // S for solved
+                loadEmailsStatic();
+                reloadInstances();
+            } else {
+                return;
+            }
+        } else {
+            inflateWindow("Confirmation", "SolvedDialog/SolvedDialog.fxml");
+        }
+    }
+
+    public void onUnlock(ActionEvent actionEvent) {
+        imgLoader.setVisible(true);
+        Email email = selectedEmail;
+        sql.lockEmail(email, 0);
+        loadEmailsStatic();
+        reloadInstances();
+    }
+
     static JFXButton allMail = new JFXButton("General"),
             tickets = new JFXButton("Tickets"),
             outbox = new JFXButton("Outbox"),
@@ -471,14 +521,10 @@ public class EmailDashController implements Initializable {
     private void populateCategoryBoxes() {
 
         prepBtn(tickets);
-        tickets.setOnAction(event -> {
-            changeEmailType(1, tickets);
-        });
+        tickets.setOnAction(event -> changeEmailType(1, tickets));
 
         prepBtn(allMail);
-        allMail.setOnAction(event -> {
-            changeEmailType(2, allMail);
-        });
+        allMail.setOnAction(event -> changeEmailType(2, allMail));
 
         prepBtn(outbox);
         outbox.setOnAction(event -> changeEmailType(3, outbox));
@@ -795,7 +841,7 @@ public class EmailDashController implements Initializable {
     }
 
     private void saveFilters() {
-        imgLoader.setVisible(true);
+//        imgLoader.setVisible(true);
         try {
             Filters filter = new Filters();
             filter.setSortBy(sortBy.getSelectionModel().getSelectedItem().toString());
@@ -835,43 +881,6 @@ public class EmailDashController implements Initializable {
         combo.getItems().addAll(options);
         combo.getStyleClass().add("check_box_style");
         HBox.setMargin(combo, new Insets(0, 5, 0, 5));
-    }
-
-    public void onLock(ActionEvent actionEvent) {
-        imgLoader.setVisible(true);
-        sql.lockEmail(selectedEmail, 1);
-        loadEmailsStatic();
-        reloadInstances();
-    }
-
-    ESetting eSetting;
-
-    public void onSolv(ActionEvent actionEvent) {
-        eSetting = sql.getEmailSettings();
-        if (!eSetting.isSolv()) {
-            Alert alert = new Alert(Alert.AlertType.CONFIRMATION, "Are you sure you want to mark this as solved?\n" +
-                    "This action cannot be taken back. No response will be issued.",
-                    ButtonType.YES, ButtonType.NO);
-            alert.showAndWait();
-
-            if (alert.getResult() == ButtonType.YES) {
-                sql.solvEmail(selectedEmail, "S", user, false, ""); // S for solved
-                loadEmailsStatic();
-                reloadInstances();
-            } else {
-                return;
-            }
-        } else {
-            inflateWindow("Confirmation", "SolvedDialog/SolvedDialog.fxml");
-        }
-    }
-
-    public void unLock(ActionEvent actionEvent) {
-        imgLoader.setVisible(true);
-        Email email = selectedEmail;
-        sql.lockEmail(email, 0);
-        loadEmailsStatic();
-        reloadInstances();
     }
 
     private void enableDisable(int i) {
