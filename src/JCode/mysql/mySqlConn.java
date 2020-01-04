@@ -75,7 +75,7 @@ public class mySqlConn {
 
         while (true) {
             try {
-                System.out.println("Trying times: " + times);
+                System.out.println("Trying: " + times);
                 Class.forName("com.mysql.jdbc.Driver");
 //                System.out.println(URL + "\n" + USER + "\n" + PASSWORD);
                 Connection con = DriverManager.getConnection(
@@ -84,8 +84,9 @@ public class mySqlConn {
             } catch (SQLException | ClassNotFoundException e) {
                 times++;
                 e.printStackTrace();
+                System.out.println("Sleeping for 10 Seconds");
                 try {
-                    Thread.sleep(8000);
+                    Thread.sleep(10000);
                 } catch (InterruptedException e1) {
                     e1.printStackTrace();
                 }

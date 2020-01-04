@@ -742,8 +742,10 @@ public class EmailDashController implements Initializable {
         })).start();
     }
 
-    JFXComboBox sortBy, ascDesc;
-    JFXCheckBox solved, unSolved, locked, unLocked, archived;
+    private JFXComboBox sortBy, ascDesc;
+    private JFXCheckBox solved, unSolved, locked, unLocked, archived;
+
+    private int filterChoice = 0; //1 == tickets 2 == general
 
     private void populateFilters() {
         vbox_filter.setSpacing(10);
