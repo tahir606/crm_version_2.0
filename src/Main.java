@@ -1,24 +1,21 @@
+import JCode.mysql.mySqlConn;
 import SplashScreen.SplashScreenThread;
-import com.sun.javafx.application.LauncherImpl;
-import dashboard.dController;
 import javafx.application.Application;
-import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.layout.Pane;
-import javafx.stage.Modality;
 import javafx.stage.Stage;
 
 import JCode.*;
-import javafx.stage.StageStyle;
+import objects.Users;
 import settings.network.networkSetController;
 
 import java.io.IOException;
 
 public class Main extends Application {
 
-    private fileHelper fHelper;
+    private FileHelper fHelper;
+    private mySqlConn mySql;
     private static trayHelper tray;
 
     static SplashScreenThread splash;
@@ -26,10 +23,12 @@ public class Main extends Application {
     @Override
     public void start(Stage primaryStage) throws Exception {
 
-        fHelper = new fileHelper();
+        fHelper = new FileHelper();
         tray = new trayHelper();
 
         fHelper.checkFolders();
+
+        Users userLoggedIn = fHelper.ReadUserDetails();
 
         if (fHelper.getNetworkDetails() == null) {
             networkSetController.fromMain = true;
@@ -39,13 +38,16 @@ public class Main extends Application {
             primaryStage.setResizable(false);
             tray.createIcon(primaryStage);
             primaryStage.show();
-        } else if (fHelper.ReadUserDetails() == null) {
-            Parent root = FXMLLoader.load(getClass().getResource("login/login.fxml"));
-            primaryStage.setTitle("Login- BITS-CRM");
-            primaryStage.setScene(new Scene(root, 1400, 500));
-            tray.createIcon(primaryStage);
-            primaryStage.show();
+        } else if (userLoggedIn == null) {
+            loginPage(primaryStage);
         } else {
+            //If user has been marked logged out, display login screen
+            mySql = new mySqlConn();
+            if (!mySql.checkIfUserIsLoggedIn(userLoggedIn)) {
+                fHelper.DeleteUserDetails();
+                loginPage(primaryStage);
+                return;
+            }
             Parent root = FXMLLoader.load(getClass().getResource("dashboard/dashboard.fxml"));
             primaryStage.setTitle("Dashboard- BITS-CRM");
             primaryStage.setScene(new Scene(root, 1400, 600));
@@ -53,6 +55,14 @@ public class Main extends Application {
             tray.createIcon(primaryStage);
             primaryStage.show();
         }
+    }
+
+    private void loginPage(Stage primaryStage) throws IOException {
+        Parent root = FXMLLoader.load(getClass().getResource("login/login.fxml"));
+        primaryStage.setTitle("Login- BITS-CRM");
+        primaryStage.setScene(new Scene(root, 1400, 500));
+        tray.createIcon(primaryStage);
+        primaryStage.show();
     }
 
 

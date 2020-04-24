@@ -4,8 +4,20 @@
     -fx-font-weight: bold;
 }
 
+.labelHeadingText {
+    -fx-font-size: 10pt;
+    -fx-text-fill: #002b05;
+    -fx-font-weight: 800;
+}
+
 .dataText {
     -fx-font-size: 10pt;
+    -fx-text-fill: #002b05;
+}
+
+.pieChartStyle {
+    -fx-font-size: 10pt;
+    -fx-font-weight: 700;
     -fx-text-fill: #002b05;
 }
 

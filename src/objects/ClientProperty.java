@@ -204,4 +204,16 @@ public class ClientProperty {
     public void setFromLead(int fromLead) {
         this.fromLead = fromLead;
     }
+
+    public int getTotalEmails() {
+        return totalEmails.get();
+    }
+
+    public SimpleIntegerProperty totalEmailsProperty() {
+        return totalEmails;
+    }
+
+    public void setTotalEmails(int totalEmails) {
+        this.totalEmails.set(totalEmails);
+    }
 }

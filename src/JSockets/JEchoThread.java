@@ -37,7 +37,8 @@ public class JEchoThread extends Thread {
                     JServer.broadcastMessages(line);
                 }
             } catch (IOException e) {
-                e.printStackTrace();
+//                e.printStackTrace();
+                System.out.println("Connection Error in JEchoThread");
                 return;
             }
         }

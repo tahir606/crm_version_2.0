@@ -1,10 +1,9 @@
 package JCode.mysql;
 
 import JCode.CommonTasks;
-import JCode.fileHelper;
+import JCode.FileHelper;
 import client.newClient.newClientController;
 import objects.ClientProperty;
-import objects.Lead;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -16,11 +15,11 @@ import java.util.List;
 public class ClientQueries {
 
     private Connection static_con;
-    private fileHelper fHelper;
+    private FileHelper fHelper;
     private EmailPhoneQueries emailPhoneQueries;
     private NoteQueries noteQueries;
 
-    public ClientQueries(Connection static_con, fileHelper fHelper, EmailPhoneQueries emailPhoneQueries, NoteQueries noteQueries) {
+    public ClientQueries(Connection static_con, FileHelper fHelper, EmailPhoneQueries emailPhoneQueries, NoteQueries noteQueries) {
         this.static_con = static_con;
         this.fHelper = fHelper;
         this.emailPhoneQueries = emailPhoneQueries;
@@ -143,7 +142,7 @@ public class ClientQueries {
 
         try {
             // Connection con = getConnection();
-            System.out.println(query);
+//            System.out.println(query);
             PreparedStatement statement = static_con.prepareStatement(query);
             ResultSet set = statement.executeQuery();
             //-------------Creating Email-------------
@@ -226,7 +225,7 @@ public class ClientQueries {
 
         try {
             // Connection con = getConnection();
-            System.out.println(query);
+//            System.out.println(query);
             PreparedStatement statement = static_con.prepareStatement(query);
             ResultSet set = statement.executeQuery();
             //-------------Creating Email-------------
@@ -300,7 +299,7 @@ public class ClientQueries {
 
         try {
             // Connection con = getConnection();
-            System.out.println(query);
+//            System.out.println(query);
             PreparedStatement statement = static_con.prepareStatement(query);
             statement.setInt(1, where.getCode());
             ResultSet set = statement.executeQuery();

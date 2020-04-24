@@ -24,8 +24,6 @@ public class ReportQueries {
                 " WHERE FREZE = 'N' " +
                 " ORDER BY MAXEMNO DESC";
 
-        System.out.println(query);
-
         List<Users> users = new ArrayList<>();
         try {
             PreparedStatement statement = static_con.prepareStatement(query);
@@ -53,6 +51,7 @@ public class ReportQueries {
                 "FROM client_store CS  " +
                 "WHERE CL_ID != 0  " +
                 "ORDER BY EMNO DESC ";
+        System.out.println(query);
         List<ClientProperty> clients = new ArrayList<>();
         try {
             PreparedStatement statement = static_con.prepareStatement(query);
@@ -62,7 +61,7 @@ public class ReportQueries {
                 client.setCode(set.getInt("CL_ID"));
                 client.setName(set.getString("CL_NAME"));
                 client.setOwner(set.getString("CL_OWNER"));
-//                client.setTotalEmails(set.getInt("EMNO"));
+                client.setTotalEmails(set.getInt("EMNO"));
                 clients.add(client);
             }
         } catch (SQLException e) {

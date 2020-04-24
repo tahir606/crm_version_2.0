@@ -1,7 +1,7 @@
 package Home;
 
 import JCode.CommonTasks;
-import JCode.fileHelper;
+import JCode.FileHelper;
 import JCode.mysql.mySqlConn;
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXComboBox;
@@ -55,7 +55,7 @@ public class HomeSplitController implements Initializable {
             pane_threeS,
             pane_fourS;
     private static Users user;
-    private static fileHelper fHelper;
+    private static FileHelper fHelper;
     private static mySqlConn sql;
 
     public static ProductModule sModule;
@@ -84,7 +84,7 @@ public class HomeSplitController implements Initializable {
         setAddButton(pane_three, 3);
         setAddButton(pane_four, 4);
 
-        fHelper = new fileHelper();
+        fHelper = new FileHelper();
         sql = new mySqlConn();
 
         user = fHelper.ReadUserDetails();
@@ -297,10 +297,10 @@ public class HomeSplitController implements Initializable {
         AnchorPane.setLeftAnchor(vBox, 20.0);
         AnchorPane.setTopAnchor(vBox, 20.0);
 
-        vBox.getChildren().addAll(inflateTraditionalHbox("Profile", "", "headingText"),
+        vBox.getChildren().addAll(inflateTraditionalHbox("Profile", "", "labelHeadingText", "headingText"),
                 inflateTraditionalHbox("", "", ""),
-                inflateTraditionalHbox("Name: ", String.valueOf(user.getFNAME()), "dataText"),
-                inflateTraditionalHbox("Email: ", String.valueOf(user.getEmail()), "dataText"));
+                inflateTraditionalHbox("Name: ", String.valueOf(user.getFNAME()), "labelHeadingText", "dataText"),
+                inflateTraditionalHbox("Email: ", String.valueOf(user.getEmail()), "labelHeadingText", "dataText"));
 
         pane.getChildren().clear();
         pane.getChildren().addAll(vBox);
@@ -316,10 +316,11 @@ public class HomeSplitController implements Initializable {
 
         vBox.getChildren().addAll(inflateTraditionalHbox("Tickets", "", "headingText"),
                 inflateTraditionalHbox("", "", ""),
-                inflateTraditionalHbox("Solved by you: ", String.valueOf(user.getSolved()), "dataText"),
+                inflateTraditionalHbox("Solved by you: ", String.valueOf(user.getSolved()), "labelHeadingText", "dataText"),
+                inflateTraditionalHbox("Locked by you: ", String.valueOf(sql.getNoOfLocked(user)), "labelHeadingText", "dataText"),
                 inflateTraditionalHbox("", "", ""),
-                inflateTraditionalHbox("No. of Unlocked: ", String.valueOf(sql.getNoOfUnlocked()), "dataText"),
-                inflateTraditionalHbox("No. of Unsolved: ", String.valueOf(sql.getNoOfUnsolved()), "dataText"));
+                inflateTraditionalHbox("No. of Unlocked: ", String.valueOf(sql.getNoOfUnlocked()), "labelHeadingText", "dataText"),
+                inflateTraditionalHbox("No. of Unsolved: ", String.valueOf(sql.getNoOfUnsolved()), "labelHeadingText", "dataText"));
 
         pane.getChildren().clear();
         pane.getChildren().addAll(vBox);
@@ -344,19 +345,16 @@ public class HomeSplitController implements Initializable {
                 }
                 case "Last 7 Days": {
                     LocalDate beforeDate = now.minusDays(7);
+                    now = now.plusDays(1);
                     ticketsFilter = " AND SOLVTIME BETWEEN '" + beforeDate + "' AND '" + now + "'";
                     break;
                 }
                 case "Last 30 Days": {
                     LocalDate beforeDate = now.minusDays(30);
+                    now = now.plusDays(1);
                     ticketsFilter = " AND SOLVTIME BETWEEN '" + beforeDate + "' AND '" + now + "'";
                     break;
                 }
-//                case "Last 365 Days": {
-//                    LocalDate beforeDate = now.minusDays(365);
-//                    reportFilter = " AND SOLVTIME BETWEEN '" + beforeDate + "' AND '" + now + "'";
-//                    break;
-//                }
                 case "All Time": {
                     ticketsFilter = "";
                     break;
@@ -379,14 +377,10 @@ public class HomeSplitController implements Initializable {
         else
             filters.getSelectionModel().select(filter);
 
-//        pane.getChildren().clear();
-//        pane.getChildren().addAll(inflatePieChart("All Time"), filters);
-//
-//        inflateClearButton(pane, panel);
     }
 
     private static PieChart inflatePieChart(String title) {
-        List<Users> users  = sql.ticketsSolvedByUser(ticketsFilter);
+        List<Users> users = sql.ticketsSolvedByUser(ticketsFilter);
 
         List<PieChart.Data> list = new ArrayList<>();
         double total = 0;
@@ -403,17 +397,24 @@ public class HomeSplitController implements Initializable {
                 FXCollections.observableArrayList(list);
         PieChart chart = new PieChart(pieChartData);
         chart.setTitle("Tickets Per User - " + title);
+        chart.getStyleClass().add("pieChartStyle");
         chart.setLegendVisible(false);
         AnchorPane.setTopAnchor(chart, 40.0);
 
         return chart;
     }
 
-
     private static HBox inflateTraditionalHbox(String label, String data, String style) {
         HBox hbox = new HBox();
         hbox.getChildren().addAll(inflateTraditionalLabel(label, style),
                 inflateTraditionalLabel(data, style));
+        return hbox;
+    }
+
+    private static HBox inflateTraditionalHbox(String label, String data, String labelStyle, String dataStyle) {
+        HBox hbox = new HBox();
+        hbox.getChildren().addAll(inflateTraditionalLabel(label, labelStyle),
+                inflateTraditionalLabel(data, dataStyle));
         return hbox;
     }
 

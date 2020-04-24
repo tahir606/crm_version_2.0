@@ -79,8 +79,6 @@ public class archiveController implements Initializable {
 
         }
 
-        System.out.println(where);
-
         Alert alert2 = new Alert(Alert.AlertType.CONFIRMATION, "Are you sure you want to Commit?",
                 ButtonType.YES, ButtonType.NO);
         alert2.showAndWait();

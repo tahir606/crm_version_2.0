@@ -3,7 +3,7 @@ package dashboard;
 import Home.HomeSplitController;
 import JCode.NotifyActivities;
 import JCode.emailControl;
-import JCode.fileHelper;
+import JCode.FileHelper;
 import JCode.mysql.mySqlConn;
 import JCode.trayHelper;
 import JSockets.JClient;
@@ -29,7 +29,6 @@ import objects.ESetting;
 import objects.Network;
 import objects.Users;
 
-import java.awt.*;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -49,7 +48,7 @@ public class  dController implements Initializable {
     
     public static ImageView img_load;
     
-    private fileHelper fHelper;
+    private FileHelper fHelper;
     private mySqlConn sql;
     private static Users user;
     private static Network network;
@@ -66,7 +65,7 @@ public class  dController implements Initializable {
     public void initialize(URL location, ResourceBundle resources) {
         img_load = img_loader;
         
-        fHelper = new fileHelper();
+        fHelper = new FileHelper();
         tHelper = new trayHelper();
         
         img_loader.setImage(

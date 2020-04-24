@@ -1,6 +1,6 @@
 package JCode.mysql;
 
-import JCode.fileHelper;
+import JCode.FileHelper;
 import objects.Document;
 
 import java.io.*;
@@ -42,7 +42,7 @@ public class DocumentQueries {
 
     public List<Document> getAllDocuments() {
 
-        fileHelper.createDirectoryIfDoesNotExist(fileHelper.FADD_DOCS);
+        FileHelper.createDirectoryIfDoesNotExist(FileHelper.FADD_DOCS);
 
         String query = "SELECT DCODE, DNAME, DFILE FROM DOCUMENT_STORE WHERE 1";
 
@@ -55,7 +55,7 @@ public class DocumentQueries {
             //-------------Creating Email-------------
             while (set.next()) {
                 // write binary stream into file
-                File file = new File(fileHelper.FADD_DOCS + "\\" + set.getString("DNAME"));
+                File file = new File(FileHelper.FADD_DOCS + "\\" + set.getString("DNAME"));
                 file.createNewFile();
                 FileOutputStream output = null;
                 try {

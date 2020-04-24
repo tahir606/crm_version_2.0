@@ -1,9 +1,8 @@
 package JCode.mysql;
 
 import JCode.CommonTasks;
-import JCode.fileHelper;
+import JCode.FileHelper;
 import objects.Lead;
-import objects.ProductModule;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -15,11 +14,11 @@ import java.util.List;
 public class LeadQueries {
 
     private Connection static_con;
-    private fileHelper fHelper;
+    private FileHelper fHelper;
     private EmailPhoneQueries emailPhoneQueries;
     private NoteQueries noteQueries;
 
-    public LeadQueries(Connection static_con, fileHelper fHelper, EmailPhoneQueries emailPhoneQueries, NoteQueries noteQueries) {
+    public LeadQueries(Connection static_con, FileHelper fHelper, EmailPhoneQueries emailPhoneQueries, NoteQueries noteQueries) {
         this.static_con = static_con;
         this.fHelper = fHelper;
         this.emailPhoneQueries = emailPhoneQueries;

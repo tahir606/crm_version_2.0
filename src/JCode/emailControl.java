@@ -37,14 +37,14 @@ public class emailControl {
     private static mySqlConn sqlConn;
 
     private static ESetting ESETTING;
-    private fileHelper fHelper;
+    private FileHelper fHelper;
 
     private static List<String> white_list;
 
     public static boolean EmailsNotSent = false;
 
     public emailControl() {
-        fHelper = new fileHelper();
+        fHelper = new FileHelper();
         sqlConn = new mySqlConn();
         ESETTING = sqlConn.getEmailSettings();
         white_list = sqlConn.getWhiteBlackListDomains(1);
@@ -96,8 +96,7 @@ public class emailControl {
             int i = -1;
             for (Message message : messages) {
                 i++;
-                String result = "";
-                result = storefile(message);
+                storefile(message);
                 message.setFlag(Flags.Flag.SEEN, true);
             }
         } catch (Exception ex) {
@@ -121,6 +120,7 @@ public class emailControl {
 
         if (message.isMimeType("text/plain")) {
             result = message.getContent().toString();
+            System.out.println("Result plain1: " + result);
         } else if (message.isMimeType("multipart/*")) {
             MimeMultipart mimeMultipart = (MimeMultipart) message.getContent();
             int numberofparts = mimeMultipart.getCount();
@@ -135,7 +135,7 @@ public class emailControl {
                     } catch (Exception e) {
                         folderName = "Others";
                     }
-                    fileHelper.createDirectoryIfDoesNotExist(ESETTING.getFspath() + "\\" + folderName + "\\");
+                    FileHelper.createDirectoryIfDoesNotExist(ESETTING.getFspath() + "\\" + folderName + "\\");
                     String filename = ESETTING.getFspath() + "\\" + folderName + "\\" + part.getFileName();
                     System.out.println(part.getFileName());
                     ATTACH += filename + "^";  //AttachFiles string is to be inserted into Database
@@ -207,10 +207,14 @@ public class emailControl {
             BodyPart bodyPart = mime.getBodyPart(i);
             if (bodyPart.isMimeType("text/plain")) {
                 result = result + "\n" + bodyPart.getContent();
-                break; // without break same text appears twice in my tests
+                System.out.println("Result plain2: " + result);
+//                break; // without break same text appears twice in my tests
             } else if (bodyPart.isMimeType("text/html")) {
                 String html = (String) bodyPart.getContent();
-                result = result + "\n" + org.jsoup.Jsoup.parse(html).text();
+                result = html;
+                System.out.println("\n\nHTML: " + result);
+//                result = result + "\n" + org.jsoup.Jsoup.parse(html).text();
+//                System.out.println("After Parsing: " + result);
             } else if (bodyPart.getContent() instanceof MimeMultipart) {
                 result = result + getTextFromMimeMultipart((MimeMultipart) bodyPart.getContent());
             }
@@ -298,29 +302,28 @@ public class emailControl {
 
         try {
             // Create a default MimeMessage object.
-            Message message = new MimeMessage(session);
+            MimeMessage message = new MimeMessage(session);
 
             // Set From: header field of the header.
             message.setFrom(new InternetAddress(ESETTING.getGenerated_reply_email()));
 
-
             // Set Subject: header field
             message.setSubject(email.getSubject());
-
-            // Create the message part
-            BodyPart messageBodyPart = new MimeBodyPart();
-
-            // Now set the actual message
-            messageBodyPart.setText(email.getBody() + "\n\n" + perDisc);
 
             // Create a multipar message
             Multipart multipart = new MimeMultipart();
 
+            //  Create the message part
+            MimeBodyPart messageBodyPart = new MimeBodyPart();
+            // Now set the actual message
+            String b = email.getBody() + "<br><br>" + perDisc;
+            b = b.replace("\n","<br>");
+            messageBodyPart.setText(b, "utf-8", "html");
             // Set text message part
             multipart.addBodyPart(messageBodyPart);
 
-//            if (email == null)
-//                return;
+            if (email == null)
+                return;
 
             String attach = ""; //String to save in the database
             if (email.getAttachments() == null) {

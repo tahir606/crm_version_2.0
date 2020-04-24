@@ -1,7 +1,7 @@
 package JCode.mysql;
 
 import JCode.CommonTasks;
-import JCode.fileHelper;
+import JCode.FileHelper;
 import objects.ProductModule;
 import objects.ProductProperty;
 
@@ -15,10 +15,10 @@ import java.util.List;
 public class ProductQueries {
     
     private Connection static_con;
-    private fileHelper fHelper;
+    private FileHelper fHelper;
     private NoteQueries noteQueries;
     
-    public ProductQueries(Connection static_con, fileHelper fHelper, NoteQueries noteQueries) {
+    public ProductQueries(Connection static_con, FileHelper fHelper, NoteQueries noteQueries) {
         this.static_con = static_con;
         this.fHelper = fHelper;
         this.noteQueries = noteQueries;

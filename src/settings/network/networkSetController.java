@@ -1,7 +1,7 @@
 package settings.network;
 
 import JCode.Toast;
-import JCode.fileHelper;
+import JCode.FileHelper;
 import JCode.mysql.mySqlConn;
 import JCode.trayHelper;
 import com.jfoenix.controls.JFXButton;
@@ -30,7 +30,7 @@ public class networkSetController implements Initializable {
 
     public static boolean fromMain;     //To check if network setting is from main or not
 
-    fileHelper fHelper;
+    FileHelper fHelper;
     trayHelper tHelper;
 
 //    private final static String DB_NAME = "bits_crm",
@@ -39,7 +39,7 @@ public class networkSetController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        fHelper = new fileHelper();
+        fHelper = new FileHelper();
         tHelper = new trayHelper();
 
         Network network = fHelper.getNetworkDetails();
