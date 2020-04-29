@@ -2,7 +2,7 @@ package Email.Search;
 
 import Email.EmailDashController;
 import JCode.Toast;
-import JCode.fileHelper;
+import JCode.FileHelper;
 import com.jfoenix.controls.*;
 import dashboard.dController;
 import javafx.application.Platform;
@@ -30,10 +30,10 @@ public class filterController implements Initializable {
     private JFXComboBox<String> combo_filter;
 
     private static Users user;
-    private fileHelper fHelper;
+    private FileHelper fHelper;
 
     public filterController() {
-        fHelper = new fileHelper();
+        fHelper = new FileHelper();
         user = fHelper.ReadUserDetails();
     }
 

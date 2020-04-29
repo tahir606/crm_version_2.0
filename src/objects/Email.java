@@ -8,16 +8,16 @@ import java.util.List;
 
 public class Email {
 
-    private int EmailNo, msgNo, lockd, solvBy, type, emailStoreNo;
+    private int EmailNo, msgNo, lockd, solvBy, type, emailStoreNo, manual;
     private Address[] toAddress, fromAddress, ccAddress, bccAddress;
-    private String subject, timestamp, timeFormatted, body, attch, uploadedDocumentsString, lockedByName, disclaimer, user, solvByName;
+    private String subject, timestamp, timeFormatted, body, attch, uploadedDocumentsString, lockedByName, disclaimer, user, solvByName, createdBy;
     private List<File> attachments;
     private List<Document> documents;
     private List<ContactProperty> relatedContacts;
     private List<ClientProperty> relatedClients;
     private List<Email> relatedEmails = new ArrayList<>();
     private char solvFlag, isAttch;
-    private boolean isManual, isSent, freze, isEmailTypeSent = false;
+    private boolean isSent, freze, isEmailTypeSent = false;
 
     public Email() {
     }
@@ -280,12 +280,20 @@ public class Email {
         this.user = user;
     }
 
-    public boolean isManual() {
-        return isManual;
+    public int getManual() {
+        return manual;
     }
 
-    public void setManual(boolean manual) {
-        isManual = manual;
+    public void setManual(int manual) {
+        this.manual = manual;
+    }
+
+    public String getCreatedBy() {
+        return createdBy;
+    }
+
+    public void setCreatedBy(String createdBy) {
+        this.createdBy = createdBy;
     }
 
     public int getSolvBy() {

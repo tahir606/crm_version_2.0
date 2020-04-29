@@ -1,6 +1,6 @@
 package Email.SolvedDialog;
 
-import JCode.fileHelper;
+import JCode.FileHelper;
 import JCode.mysql.mySqlConn;
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXCheckBox;
@@ -28,7 +28,7 @@ public class SolvedDialogController implements Initializable {
 
     private mySqlConn sqlConn;
     private Email selectedEmail;
-    private fileHelper fHelper;
+    private FileHelper fHelper;
 
     private Users user;
 
@@ -38,7 +38,7 @@ public class SolvedDialogController implements Initializable {
         sqlConn = new mySqlConn();
         selectedEmail = EmailDashController.selectedEmail;
 
-        fHelper = new fileHelper();
+        fHelper = new FileHelper();
 
         user = fHelper.ReadUserDetails();
 

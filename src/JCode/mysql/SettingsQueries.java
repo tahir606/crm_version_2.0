@@ -1,8 +1,9 @@
 package JCode.mysql;
 
-import JCode.fileHelper;
+import JCode.FileHelper;
 import objects.ESetting;
 import objects.NotificationSettings;
+import objects.Users;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -12,11 +13,58 @@ import java.sql.SQLException;
 public class SettingsQueries {
 
     private Connection static_con;
-    private fileHelper fHelper;
+    private FileHelper fHelper;
 
-    public SettingsQueries(Connection static_con, fileHelper fHelper) {
+    public SettingsQueries(Connection static_con, FileHelper fHelper) {
         this.static_con = static_con;
         this.fHelper = fHelper;
+    }
+
+    public boolean checkIfUserIsLoggedIn(Users user) {
+
+        if (user == null)
+            return false;
+
+        String query = "SELECT ISLOG FROM users WHERE UCODE = " + user.getUCODE();
+
+        try {
+            PreparedStatement statement = static_con.prepareStatement(query);
+            ResultSet set = statement.executeQuery();
+            while (set.next()) {
+                int islog = set.getInt("ISLOG");
+                if (islog == 1)
+                    return true;
+                return false;
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return false;
+
+    }
+
+    public void logUserOut(Users user) {
+        String query = "UPDATE USERS " +
+                " SET ISLOG = 0 " +
+                " WHERE UCODE = ?";
+
+        // Connection con = getConnection();
+        PreparedStatement statement = null;
+
+        try {
+            statement = static_con.prepareStatement(query);
+            statement.setInt(1, user.getUCODE());
+            statement.executeUpdate();
+
+            statement.close();
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
     public ESetting getEmailSettings() {

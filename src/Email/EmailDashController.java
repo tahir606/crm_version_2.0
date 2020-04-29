@@ -11,8 +11,6 @@ import com.jfoenix.controls.JFXComboBox;
 import com.jfoenix.controls.JFXTextField;
 import dashboard.dController;
 import javafx.application.Platform;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
@@ -35,6 +33,7 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import javafx.scene.web.WebView;
 import javafx.stage.Stage;
 import javafx.util.Callback;
 import objects.*;
@@ -53,7 +52,7 @@ public class EmailDashController implements Initializable {
     @FXML
     private AnchorPane anchor_body, anchor_details;
     @FXML
-    private Label label_ticket, label_time, label_locked, label_from, title_locked, label_related_emails;
+    private Label label_ticket, label_time, label_locked, label_created, title_created, label_from, title_locked, label_related_emails;
     @FXML
     private TextArea txt_subject;
     @FXML
@@ -76,7 +75,7 @@ public class EmailDashController implements Initializable {
     private ListView<Email> list_emails, relatedEmails;
 
     private mySqlConn sql;
-    private fileHelper fHelper;
+    private FileHelper fHelper;
     private Users user;
 
     private static ImageView imgLoader = dController.img_load;
@@ -104,7 +103,7 @@ public class EmailDashController implements Initializable {
         anchor_details.setVisible(false);
 
         sql = new mySqlConn();
-        fHelper = new fileHelper();
+        fHelper = new FileHelper();
 
         user = fHelper.ReadUserDetails();
 
@@ -308,6 +307,7 @@ public class EmailDashController implements Initializable {
             MenuItem createTicket = new MenuItem("Create Ticket");
             createTicket.setOnAction(t -> {
                 Email selectedItem = list_emails.getSelectionModel().getSelectedItem();
+                selectedItem.setManual(user.getUCODE());
                 System.out.println(selectedItem);
                 sql.insertEmailManual(selectedItem);
                 sql.ArchiveEmail(Email_Type, " EMNO = " + selectedItem.getEmailNo());
@@ -437,12 +437,18 @@ public class EmailDashController implements Initializable {
             return;
         }
 
+        //Reselect email from list
         int index = -1;
+//        System.out.println("\n\nDebugging: " +
+//                "\n   Selected Email No: " + selectedEmail.getEmailNo() +
+//                "\n   Index: " + index);
         boolean isFound = false;
         for (Email email : list_emails.getItems()) {
             index++;
+//            System.out.println("\n  Upd Index: " + index);
             if (email.getEmailNo() == selectedEmail.getEmailNo()) {
                 isFound = true;
+//                System.out.println("\n Found at: " + index);
                 break;
             }
         }
@@ -453,9 +459,9 @@ public class EmailDashController implements Initializable {
         }
 
         //When Email is marked as solved
-        if (this.index != -1) {
-            list_emails.getSelectionModel().select(this.index);
-            this.index = -1;
+        if (this.solvIndex != -1) {
+            list_emails.getSelectionModel().select(this.solvIndex);
+            this.solvIndex = -1;
         }
 
         imgLoader.setVisible(false);
@@ -478,15 +484,15 @@ public class EmailDashController implements Initializable {
     }
 
 
-    public int index;  //To select the next email in the list after solve
+    public int solvIndex = -1;  //To select the next email in the list after solve
     private ESetting eSetting;
 
     public void onSolv(ActionEvent actionEvent) {
-        index = -1;
+        solvIndex = -1;
 
         eSetting = sql.getEmailSettings();
-        index = list_emails.getSelectionModel().getSelectedIndex();
-        System.out.println("Selected Index: " + index);
+        solvIndex = list_emails.getSelectionModel().getSelectedIndex();
+        System.out.println("Selected Index: " + solvIndex);
         if (!eSetting.isSolv()) {
             Alert alert = new Alert(Alert.AlertType.CONFIRMATION, "Are you sure you want to mark this as solved?\n" +
                     "This action cannot be taken back. No response will be issued.",
@@ -579,6 +585,16 @@ public class EmailDashController implements Initializable {
                 from = email.getFromAddress();
                 title_locked.setText("Locked By: ");
                 label_locked.setText(email.getLockedByName());
+
+                if (email.getManual() != '\0') {
+                    label_created.setVisible(true);
+                    title_created.setVisible(true);
+                    label_created.setText(email.getCreatedBy());
+                } else {
+                    label_created.setVisible(false);
+                    title_created.setVisible(false);
+                }
+
             } else if (Email_Type == 2) {
                 from = email.getFromAddress();
             } else if (Email_Type == 4) {
@@ -681,15 +697,18 @@ public class EmailDashController implements Initializable {
 
             //----Ebody
             anchor_body.getChildren().clear();
-            TextArea eBody = new TextArea(email.getBody());
-            eBody.setWrapText(true);
+//            TextArea eBody = new TextArea(email.getBody());
+            WebView eBody = new WebView();
+            eBody.getEngine().setUserStyleSheetLocation("data:,body { font: 15px Calibri; }");
+            eBody.getEngine().loadContent(email.getBody());
+//            eBody.setWrapText(true);
             eBody.setPrefSize(anchor_body.getWidth(), anchor_body.getHeight());
             anchor_body.getChildren().add(eBody);
             AnchorPane.setLeftAnchor(eBody, 0.0);
             AnchorPane.setRightAnchor(eBody, 0.0);
             AnchorPane.setTopAnchor(eBody, 0.0);
             AnchorPane.setBottomAnchor(eBody, 0.0);
-            eBody.setEditable(false);
+//            eBody.setEditable(false);
             if (!anchor_body.isVisible()) {
                 anchor_body.setVisible(true);
             }
@@ -742,8 +761,10 @@ public class EmailDashController implements Initializable {
         })).start();
     }
 
-    JFXComboBox sortBy, ascDesc;
-    JFXCheckBox solved, unSolved, locked, unLocked, archived;
+    private JFXComboBox sortBy, ascDesc;
+    private JFXCheckBox solved, unSolved, locked, unLocked, lockedByMe, hideReminders, archived;
+
+    private int filterChoice = 0; //1 == tickets 2 == general
 
     private void populateFilters() {
         vbox_filter.setSpacing(10);
@@ -784,6 +805,16 @@ public class EmailDashController implements Initializable {
         setUpCheck(unLocked);
         unLocked.selectedProperty().addListener((observable, oldValue, newValue) -> saveFilters());
         unLocked.setSelected(filter.isUnlocked());
+
+        lockedByMe = new JFXCheckBox("Locked By Me");
+        setUpCheck(lockedByMe);
+        lockedByMe.selectedProperty().addListener((observable, oldValue, newValue) -> saveFilters());
+        lockedByMe.setSelected(filter.isLockedByMe());
+
+        hideReminders = new JFXCheckBox("Hide Reminders");
+        setUpCheck(hideReminders);
+        hideReminders.selectedProperty().addListener((observable, oldValue, newValue) -> saveFilters());
+        hideReminders.setSelected(filter.isHideReminders());
 
         archived = new JFXCheckBox("Archived");
         setUpCheck(archived);
@@ -850,6 +881,8 @@ public class EmailDashController implements Initializable {
             filter.setUnsolved(unSolved.isSelected());
             filter.setLocked(locked.isSelected());
             filter.setUnlocked(unLocked.isSelected());
+            filter.setLockedByMe(lockedByMe.isSelected());
+            filter.setHideReminders(hideReminders.isSelected());
             filter.setArchived(archived.isSelected());
             filter.writeToFile();
 

@@ -1,6 +1,7 @@
 package Email.EResponse;
 
 import Email.EmailDashController;
+import JCode.FileHelper;
 import JCode.emailControl;
 import JCode.mysql.mySqlConn;
 import com.jfoenix.controls.JFXButton;
@@ -26,7 +27,10 @@ import javax.mail.Address;
 import javax.mail.internet.AddressException;
 import javax.mail.internet.InternetAddress;
 import java.io.File;
+import java.io.IOException;
 import java.net.URL;
+import java.nio.file.Files;
+import java.nio.file.StandardCopyOption;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
@@ -41,6 +45,8 @@ public class EResponseController implements Initializable {
     @FXML
     private Text lbl_attach;
     @FXML
+    private Label txt_disclaimer;
+    @FXML
     private Button btn_Send, btn_attach;
     @FXML
     private HBox hbox_to, hbox_cc, hbox_bcc;
@@ -50,7 +56,8 @@ public class EResponseController implements Initializable {
     private List<File> file;
     private List<Document> attachedDocuments;
 
-    emailControl helper = new emailControl();
+    private emailControl helper = new emailControl();
+    private FileHelper fileHelper;
 
     String Subject, Email, cc, bcc, Body, Disclaimer, Attachment;
 
@@ -66,10 +73,15 @@ public class EResponseController implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
 
+        fileHelper = new FileHelper();
+
         if (choice == 1)
             btn_Send.setText("Send");
-        else if (choice == 2)
+        else if (choice == 2) {
             btn_Send.setText("Create");
+
+            txt_disclaimer.setVisible(false);
+        }
 
         pullingEmails();
 
@@ -136,10 +148,6 @@ public class EResponseController implements Initializable {
         for (String c : cc) {
             txt_cc.setText(c + ",");
         }
-    }
-
-    private void populateBCC() {
-
     }
 
     private void populatHbox(TextField txt_field, HBox box) {
@@ -295,8 +303,6 @@ public class EResponseController implements Initializable {
         Address bcc[] = bcc_emails.toArray(new Address[bcc_emails.size()]);
         em.setBccAddress(bcc);
 
-        System.out.println(Arrays.toString(em.getBccAddress()));
-
         em.setSubject(Subject);
         em.setBody(Body);
         em.setDisclaimer(Disclaimer);
@@ -317,6 +323,30 @@ public class EResponseController implements Initializable {
             em.setFromAddress(em.getToAddress());
             String timeStamp = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.S").format(Calendar.getInstance().getTime());
             em.setTimestamp(timeStamp);
+            em.setManual(fileHelper.ReadUserDetails().getUCODE());
+
+            //Pretty Garbage Code. Try to Clean it up a bit later
+            //This copies all attachments to File System to be viewed later
+            //Still have to check Ticket Generation from General for attachment Carry Forward. Peace.
+            String path = sql.getEmailSettings().getFspath() + "\\manual\\";
+            fileHelper.createDirectoryIfDoesNotExist(path);
+            String attch = "";
+            if (file == null) {
+            } else if (file.size() > -1) {
+                for (File aFile : file) {
+                    try {
+                        Files.copy(aFile.toPath(),
+                                (new File(path + aFile.getName())).toPath(),
+                                StandardCopyOption.REPLACE_EXISTING);
+                        attch += path + aFile.getName();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+            if (!attch.equals(""))
+                em.setAttch(attch);
+
             sql.insertEmailManual(em);
             EmailDashController.loadEmailsStatic();
         }

@@ -1,10 +1,8 @@
 package JSockets;
 
 import Email.EmailDashController;
-import JCode.fileHelper;
+import JCode.FileHelper;
 import JCode.trayHelper;
-import dashboard.dController;
-import objects.Email;
 import objects.Network;
 
 import java.io.DataInputStream;
@@ -19,7 +17,7 @@ public class JClient {
     DataInputStream dis;
     DataOutputStream dos;
 
-    fileHelper fh = new fileHelper();
+    FileHelper fh = new FileHelper();
     Network network;
     static trayHelper th;
 

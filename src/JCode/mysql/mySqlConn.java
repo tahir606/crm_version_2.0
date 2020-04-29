@@ -1,6 +1,6 @@
 package JCode.mysql;
 
-import JCode.fileHelper;
+import JCode.FileHelper;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
 import objects.*;
@@ -19,7 +19,7 @@ public class mySqlConn {
             DBNAME = "bits_crm";
     private String URL;
 
-    private fileHelper fHelper;
+    private FileHelper fHelper;
     private ESetting eSetting;
 
     private Users user;
@@ -43,7 +43,7 @@ public class mySqlConn {
     private DocumentQueries documentQueries;
 
     public mySqlConn() {
-        fHelper = new fileHelper();
+        fHelper = new FileHelper();
         Network network = fHelper.getNetworkDetails();
         if (network == null)
             return;
@@ -73,9 +73,17 @@ public class mySqlConn {
     private Connection getConnection() {
         int times = 1;
 
+//        if (static_con != null) {
+//            try {
+//                static_con.close();
+//            } catch (SQLException e) {
+//                e.printStackTrace();
+//            }
+//        }
+
         while (true) {
             try {
-                System.out.println("Trying times: " + times);
+                System.out.println("Trying: " + times);
                 Class.forName("com.mysql.jdbc.Driver");
 //                System.out.println(URL + "\n" + USER + "\n" + PASSWORD);
                 Connection con = DriverManager.getConnection(
@@ -84,8 +92,9 @@ public class mySqlConn {
             } catch (SQLException | ClassNotFoundException e) {
                 times++;
                 e.printStackTrace();
+                System.out.println("Sleeping for 10 Seconds");
                 try {
-                    Thread.sleep(8000);
+                    Thread.sleep(10000);
                 } catch (InterruptedException e1) {
                     e1.printStackTrace();
                 }
@@ -172,6 +181,10 @@ public class mySqlConn {
         return emailQueries.getEmailClientRelations(email);
     }
 
+    public int getNoOfLocked(Users user) {
+        return emailQueries.getNoOfLocked(user);
+    }
+
     public int getNoOfUnsolved() {
         return emailQueries.getNoOfUnsolved();
     }
@@ -224,6 +237,14 @@ public class mySqlConn {
         emailQueries.markAsSent(email);
     }
 
+    public boolean checkIfUserIsLoggedIn(Users user) {
+        return settingsQueries.checkIfUserIsLoggedIn(user);
+    }
+
+    public void logUserOut(Users user) {
+        settingsQueries.logUserOut(user);
+    }
+
     public ESetting getEmailSettings() {
         return settingsQueries.getEmailSettings();
     }
@@ -243,6 +264,7 @@ public class mySqlConn {
     public NotificationSettings getNotificationSettings() {
         return settingsQueries.getNotificationSettings();
     }
+
 
     public boolean insertClient(ClientProperty client) {
         return clientQueries.insertClient(client);
@@ -552,9 +574,7 @@ public class mySqlConn {
         else
             query = query + where;
 
-        Connection con = null;
         try {
-            con = getConnection();
             PreparedStatement statement = static_con.prepareStatement(query);
             ResultSet set = statement.executeQuery();
             //-------------Creating Email-------------

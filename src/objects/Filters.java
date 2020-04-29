@@ -1,6 +1,6 @@
 package objects;
 
-import JCode.fileHelper;
+import JCode.FileHelper;
 
 public class Filters {
 
@@ -9,11 +9,13 @@ public class Filters {
             unsolved,
             locked,
             unlocked,
+            lockedByMe,
+            hideReminders,
             archived;
-    private static fileHelper fHelper;
+    private static FileHelper fHelper;
 
     public Filters() {
-        fHelper = new fileHelper();
+        fHelper = new FileHelper();
     }
 
     @Override
@@ -33,6 +35,15 @@ public class Filters {
         if (unlocked) {
             filters = filters + " AND LOCKD = 0 ";
         }
+
+        if (lockedByMe) {
+            filters = filters + " AND LOCKD = " + fHelper.ReadUserDetails().getUCODE();
+        }
+
+        if (hideReminders) {
+            filters = filters + " AND SBJCT NOT LIKE '%reminder%' ";
+        }
+
         if (archived) {
             filters = filters + " AND FREZE = 1 ";
         } else {
@@ -46,13 +57,13 @@ public class Filters {
 
     public void writeToFile() {
         String filter;
-        filter = getSortBy() + "," + ascDesc + "," + solved + "," + unsolved + "," + locked + "," + unlocked + "," + archived;
+        filter = getSortBy() + "," + ascDesc + "," + solved + "," + unsolved + "," + locked + "," + unlocked + "," + lockedByMe + "," + hideReminders + "," + archived;
         fHelper.WriteFilter(filter);
     }
 
     public static Filters readFromFile() {
         if (fHelper == null) {
-            fHelper = new fileHelper();
+            fHelper = new FileHelper();
         }
         String[] filters;
         try {
@@ -66,7 +77,9 @@ public class Filters {
             filter.setUnsolved(Boolean.parseBoolean(filters[3]));
             filter.setLocked(Boolean.parseBoolean(filters[4]));
             filter.setUnlocked(Boolean.parseBoolean(filters[5]));
-            filter.setArchived(Boolean.parseBoolean(filters[6]));
+            filter.setLockedByMe(Boolean.parseBoolean(filters[6]));
+            filter.setHideReminders(Boolean.parseBoolean(filters[7]));
+            filter.setArchived(Boolean.parseBoolean(filters[8]));
 
             return filter;
         } catch (Exception e) {
@@ -154,6 +167,22 @@ public class Filters {
 
     public void setUnlocked(boolean unlocked) {
         this.unlocked = unlocked;
+    }
+
+    public boolean isLockedByMe() {
+        return lockedByMe;
+    }
+
+    public void setLockedByMe(boolean lockedByMe) {
+        this.lockedByMe = lockedByMe;
+    }
+
+    public boolean isHideReminders() {
+        return hideReminders;
+    }
+
+    public void setHideReminders(boolean hideReminders) {
+        this.hideReminders = hideReminders;
     }
 
     public boolean isArchived() {

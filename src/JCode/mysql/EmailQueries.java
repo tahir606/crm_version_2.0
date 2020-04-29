@@ -166,6 +166,33 @@ public class EmailQueries {
         return clients;
     }
 
+    //Locked Emails by you
+    public int getNoOfLocked(Users user) {
+        String query = "SELECT COUNT(EMNO) AS EMNO FROM EMAIL_STORE " +
+                "WHERE LOCKD = ? " +
+                "AND ESOLV != 'S' " +
+                "AND FREZE = 0";
+
+//        // Connection con = getConnection();
+        PreparedStatement statement = null;
+        ResultSet set = null;
+
+        try {
+            statement = static_con.prepareStatement(query);
+            statement.setInt(1, user.getUCODE());
+            set = statement.executeQuery();
+
+            while (set.next()) {
+                return set.getInt("EMNO");
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return 0;
+    }
+
     public int getNoOfUnsolved() {
         String query = " SELECT COUNT(EMNO) AS EMNO FROM EMAIL_STORE " +
                 " WHERE ESOLV != 'S' AND FREZE = 0";
@@ -273,7 +300,7 @@ public class EmailQueries {
             statement.setInt(9, email.getMsgNo());
             statement.setInt(10, email.getLockd());
             statement.setBoolean(11, email.isFreze());
-            statement.setBoolean(12, true);
+            statement.setInt(12, email.getManual());
             statement.executeUpdate();
 
             statement.close();
@@ -441,19 +468,19 @@ public class EmailQueries {
 
     private void autoReply(Email email, Message message) {
 
-        String body = "The Ticket Number Issued to you is: " + email.getEmailNo() + "\n" + eSetting.getAutotext();
+        String body = "<h3>The Ticket Number Issued to you is: <b>" + email.getEmailNo() + "</b></h3>\n" + eSetting.getAutotext();
 
         Email e = new Email();
         e.setSubject(autoReplySubject + email.getEmailNo());
         e.setToAddress(new Address[]{email.getFromAddress()[0]});
-        e.setBody(body + "\n\n\n" + "--------In Reply To--------" + "\n\nSubject:   " + email.getSubject() + "\n\n" + email.getBody());
+        e.setBody(body + "\n\n\n" + "--------In Reply To--------" + "\n\nSubject:   <b>" + email.getSubject() + "</b>\n\n" + email.getBody());
 
         emailControl.sendEmail(e, message);
 
     }
-    
+
     public int getLatestEmailNo(int email_type) {
-        
+
         String tablename = null;
         switch (email_type) {
             case 1:
@@ -463,33 +490,33 @@ public class EmailQueries {
                 tablename = "EMAIL_GENERAL";
                 break;
         }
-        
+
         String query = "SELECT MAX(EMNO) FROM " + tablename +
                 " WHERE FREZE = 0";
-    
+
         try {
-        
+
             PreparedStatement statementEMNO = static_con.prepareStatement(query);
             ResultSet set = statementEMNO.executeQuery();
-        
+
             int emno = 0;
             while (set.next()) {
                 emno = set.getInt(1);
             }
-        
+
             statementEMNO.close();
             set.close();
-        
+
             return emno;
-        
+
         } catch (SQLException e) {
             e.printStackTrace();
         } finally {
             // doRelease(con);
         }
-    
+
         return 0;
-        
+
     }
 
     private int getEmailNo(Email email) {
@@ -530,7 +557,7 @@ public class EmailQueries {
     public List<Email> readAllEmails(Filters filters, UserQueries userQueries) {
 
         String query = "SELECT EMNO, MSGNO, SBJCT, FRADD, TOADD, CCADD, TSTMP, " +
-                " EBODY, ATTCH, ESOLV, LOCKD, SOLVBY, SOLVTIME FROM EMAIL_STORE";
+                " EBODY, ATTCH, ESOLV, LOCKD, SOLVBY, SOLVTIME, MANUAL FROM EMAIL_STORE";
 
         if (filters == null) {
             query = query + " ORDER BY EMNO DESC";
@@ -543,13 +570,14 @@ public class EmailQueries {
         try {
             // Connection con = getConnection();
             PreparedStatement statement = static_con.prepareStatement(query);
-            System.out.println(query);
+//            System.out.println(query);
             ResultSet set = statement.executeQuery();
             //-------------Creating Email-------------
             if (!set.isBeforeFirst()) {
                 return null;
             }
 
+            mySqlConn sql = null;
             while (set.next()) {
                 Email email = new Email();
                 email.setEmailNo(set.getInt("EMNO"));
@@ -562,6 +590,11 @@ public class EmailQueries {
                 email.setAttch(set.getString("ATTCH"));
                 email.setSolvFlag(set.getString("ESOLV").charAt(0));
                 email.setLockd(set.getInt("LOCKD"));
+                email.setManual(set.getInt("MANUAL"));
+                if (email.getManual() != '\0'){
+                    if (sql == null) sql = new mySqlConn();
+                    email.setCreatedBy(sql.getUserName(email.getManual()));
+                }
                 if (set.getInt("LOCKD") == '\0') {
                     email.setLockedByName("Unlocked");
                 } else {
@@ -668,7 +701,7 @@ public class EmailQueries {
         try {
             // Connection con = getConnection();
             PreparedStatement statement = static_con.prepareStatement(query);
-            System.out.println(query);
+//            System.out.println(query);
             ResultSet set = statement.executeQuery();
             //-------------Creating Email-------------
             if (!set.isBeforeFirst()) {
@@ -800,14 +833,14 @@ public class EmailQueries {
             query = query + where + " ORDER BY EMNO DESC ";
         }
 
-        System.out.println(query);
+//        System.out.println(query);
 
         List<Email> allEmails = new ArrayList<>();
 
         try {
             // Connection con = getConnection();
             PreparedStatement statement = static_con.prepareStatement(query);
-            System.out.println(query);
+//            System.out.println(query);
             ResultSet set = statement.executeQuery();
             //-------------Creating Email-------------
             if (!set.isBeforeFirst()) {
@@ -967,7 +1000,11 @@ public class EmailQueries {
 
         String sb = "Ticket Number: " + email.getEmailNo() + " Resolved";
 
-        String bd = msg;
+        String bd = msg +
+                "\n\n\n------------------- Ticket " + email.getEmailNo() + " -------------------" +
+                "\n\nTimestamp:     " + email.getTimeFormatted() +
+                "\n\nSubject:       " + email.getSubject() +
+                "\n\n" + email.getBody();
 
         Email send = new Email();
         send.setSubject(sb);

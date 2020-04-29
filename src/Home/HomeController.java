@@ -1,7 +1,7 @@
 package Home;
 
 import JCode.CommonTasks;
-import JCode.fileHelper;
+import JCode.FileHelper;
 import JCode.mysql.mySqlConn;
 import dashboard.dController;
 import javafx.fxml.FXML;
@@ -35,7 +35,7 @@ public class HomeController implements Initializable {
     private VBox vbox_modules;
     
     private Users user;
-    private fileHelper fHelper;
+    private FileHelper fHelper;
     private mySqlConn sql;
     private ArrayList<ProductModule> lockedModules;
     
@@ -48,7 +48,7 @@ public class HomeController implements Initializable {
         
         main_anchor.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
         
-        fHelper = new fileHelper();
+        fHelper = new FileHelper();
         sql = new mySqlConn();
         
         user = fHelper.ReadUserDetails();
@@ -63,7 +63,6 @@ public class HomeController implements Initializable {
         
         populatLockedModules();
 
-        System.out.println("Setting Visibility False");
         dController.img_load.setVisible(false);
     }
     

@@ -1,0 +1,13 @@
+.headingText {
+    -fx-text-fill: #002b05;
+    -fx-font-weight: bold;
+}
+
+.labelHeadingText {
+    -fx-text-fill: #002b05;
+    -fx-font-weight: 800;
+}
+
+.dataText {
+    -fx-text-fill: #002b05;
+}

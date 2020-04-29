@@ -1,6 +1,6 @@
 package JCode.mysql;
 
-import JCode.fileHelper;
+import JCode.FileHelper;
 import objects.Users;
 
 import java.sql.Connection;
@@ -13,9 +13,9 @@ import java.util.List;
 public class UserQueries {
 
     private Connection static_con;
-    private fileHelper fHelper;
+    private FileHelper fHelper;
     
-    public UserQueries(Connection static_con, fileHelper fHelper) {
+    public UserQueries(Connection static_con, FileHelper fHelper) {
         this.static_con = static_con;
         this.fHelper = fHelper;
     }

@@ -66,19 +66,23 @@ public class JServer {
     }
 
     public static void broadcastMessages(String msg) {
-        for (Socket s : sockets) {
-            try {
-                DataOutputStream dos = new DataOutputStream(s.getOutputStream());
-                dos.writeUTF(msg);
-            } catch (IOException e) {
+        try {
+            for (Socket s : sockets) {
                 try {
-                    s.close();
-                    sockets.remove(s);
-                } catch (IOException e1) {
-                    e1.printStackTrace();
+                    DataOutputStream dos = new DataOutputStream(s.getOutputStream());
+                    dos.writeUTF(msg);
+                } catch (IOException e) {
+                    try {
+                        s.close();
+                        sockets.remove(s);
+                    } catch (IOException e1) {
+                        e1.printStackTrace();
+                    }
+                    e.printStackTrace();
                 }
-                e.printStackTrace();
             }
+        } catch (Exception e) {
+            System.out.println("Exception in JServer");
         }
     }
 }

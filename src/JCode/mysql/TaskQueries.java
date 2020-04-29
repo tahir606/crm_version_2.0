@@ -1,7 +1,7 @@
 package JCode.mysql;
 
 import JCode.CommonTasks;
-import JCode.fileHelper;
+import JCode.FileHelper;
 import objects.*;
 
 import java.sql.Connection;
@@ -14,9 +14,9 @@ import java.util.List;
 public class TaskQueries {
 
     private Connection static_con;
-    private fileHelper fHelper;
+    private FileHelper fHelper;
 
-    public TaskQueries(Connection static_con, fileHelper fHelper) {
+    public TaskQueries(Connection static_con, FileHelper fHelper) {
         this.static_con = static_con;
         this.fHelper = fHelper;
     }

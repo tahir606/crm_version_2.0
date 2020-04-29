@@ -32,7 +32,7 @@
             <AnchorPane fx:id="anchor_body" layoutX="737.0" prefHeight="448.0" prefWidth="303.0" styleClass="emailAnchorBody" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="737.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" BorderPane.alignment="CENTER" />
             <AnchorPane fx:id="anchor_details" layoutX="345.0" maxWidth="-Infinity" prefHeight="448.0" prefWidth="400.0" styleClass="emailAnchorDetails" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="345.0" AnchorPane.topAnchor="0.0" BorderPane.alignment="CENTER">
                 <children>
-                    <ScrollPane layoutX="13.0" layoutY="2.0" prefHeight="362.0" prefWidth="375.0" style="-fx-background: #fcfcfc;" styleClass="scroll-view" AnchorPane.bottomAnchor="80.0" AnchorPane.leftAnchor="13.0" AnchorPane.rightAnchor="12.0" AnchorPane.topAnchor="2.0">
+                    <ScrollPane layoutX="13.0" layoutY="2.0" prefHeight="376.0" prefWidth="375.0" style="-fx-background: #fcfcfc;" styleClass="scroll-view" AnchorPane.bottomAnchor="70.0" AnchorPane.leftAnchor="13.0" AnchorPane.rightAnchor="12.0" AnchorPane.topAnchor="2.0">
                         <VBox fx:id="vbox_details" prefHeight="354.0" prefWidth="370.0" spacing="2.0">
                             <HBox>
                                 <children>
@@ -76,6 +76,20 @@
                                     </Label>
                                 </children>
                             </HBox>
+                     <HBox>
+                        <children>
+                           <Label fx:id="title_created" prefHeight="17.0" prefWidth="100.0" styleClass="blackText" text="Created By:">
+                              <font>
+                                 <Font size="11.0" />
+                              </font>
+                           </Label>
+                           <Label fx:id="label_created" prefHeight="17.0" prefWidth="200.0" styleClass="normalText" text="Created By">
+                              <font>
+                                 <Font size="11.0" />
+                              </font>
+                           </Label>
+                        </children>
+                     </HBox>
                             <HBox minHeight="5.0" />
                             <HBox fx:id="hbox_from" prefHeight="80.0" prefWidth="327.0">
                                 <Label fx:id="label_from" layoutX="14.0" layoutY="57.0" prefHeight="17.0" prefWidth="70.0" styleClass="blackText" text="From:">
@@ -168,7 +182,7 @@
                     </ScrollPane>
                     <JFXButton fx:id="btn_lock" buttonType="RAISED" layoutX="28.0" layoutY="386.0" onAction="#onLock" styleClass="emailDetailsButton" text="Lock" AnchorPane.bottomAnchor="11.0" />
                     <JFXButton fx:id="btn_solv" buttonType="RAISED" layoutX="95.0" layoutY="386.0" onAction="#onSolv" styleClass="emailDetailsButton" text="Solved" AnchorPane.bottomAnchor="11.0" />
-                    <JFXComboBox fx:id="combo_attach" layoutX="106.0" layoutY="365.0" prefHeight="25.0" prefWidth="188.0" AnchorPane.bottomAnchor="58.0" />
+                    <JFXComboBox fx:id="combo_attach" layoutX="106.0" layoutY="374.0" prefHeight="25.0" prefWidth="188.0" AnchorPane.bottomAnchor="45.0" />
                     <JFXComboBox fx:id="combo_respond" layoutX="244.0" layoutY="383.0" prefHeight="24.0" prefWidth="89.0" AnchorPane.bottomAnchor="11.0" />
                     <JFXButton fx:id="btn_unlock" buttonType="RAISED" layoutX="28.0" layoutY="386.0" onAction="#onUnlock" styleClass="emailUnlockButton" text="Unlock" visible="false" AnchorPane.bottomAnchor="11.0" />
                     <!--<Label fx:id="label_cc2" layoutX="10.0" layoutY="234.0" prefHeight="17.0" prefWidth="82.0"-->

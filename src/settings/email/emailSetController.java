@@ -1,7 +1,7 @@
 package settings.email;
 
 import JCode.Toast;
-import JCode.fileHelper;
+import JCode.FileHelper;
 import JCode.mysql.mySqlConn;
 import JCode.trayHelper;
 import com.jfoenix.controls.*;
@@ -60,7 +60,7 @@ public class emailSetController implements Initializable {
     private static ESetting eSetting;
 
     private mySqlConn sql;
-    private fileHelper fHelper;
+    private FileHelper fHelper;
 
     private static String autoText, discText, solvRespText;
 
@@ -69,10 +69,9 @@ public class emailSetController implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         sql = new mySqlConn();
-        fHelper = new fileHelper();
+        fHelper = new FileHelper();
 
         eSetting = sql.getEmailSettings();
-        System.out.println(eSetting);
 
         autoText = eSetting.getAutotext();
         discText = eSetting.getDisctext();

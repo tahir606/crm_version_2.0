@@ -37,6 +37,7 @@ public class EmailPhoneQueries {
                 try {
                     statement.executeUpdate();
                 } catch (Exception e) {
+//                    e.printStackTrace();
                     System.out.println(e);
                 }
             }
@@ -160,7 +161,6 @@ public class EmailPhoneQueries {
                     if (emails[i] == null)
                         continue;
                     String[] t = emails[i].split("\\@");
-                    System.out.println(t);
                     insertDomainsWhitelist(t[1]);
                 } catch (Exception e) {
                     System.out.println(e);

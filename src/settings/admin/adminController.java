@@ -1,6 +1,7 @@
 package settings.admin;
 
 import JCode.Toast;
+import JCode.FileHelper;
 import JCode.mysql.mySqlConn;
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXCheckBox;
@@ -14,6 +15,7 @@ import javafx.geometry.Insets;
 import javafx.scene.Node;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
+import javafx.scene.control.Label;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
@@ -29,6 +31,8 @@ public class adminController implements Initializable {
     @FXML
     private JFXTextField txt_uname, txt_fname, txt_email, txt_password;
     @FXML
+    private Label label_message;
+    @FXML
     private VBox vbox_rights;
     @FXML
     private JFXCheckBox check_freeze;
@@ -37,9 +41,10 @@ public class adminController implements Initializable {
     @FXML
     private JFXComboBox<Users> combo_users;
     @FXML
-    private JFXButton btn_save, btn_archive;
+    private JFXButton btn_save, btn_archive, btn_log_out_user;
 
     private mySqlConn sql;
+    private FileHelper fileHelper;
     private ImageView imm_load = dController.img_load;
 
     private List<Users> usersList = null;
@@ -65,6 +70,22 @@ public class adminController implements Initializable {
                 sql.archiveUser(userSel);
                 init();
             }
+        });
+
+        btn_log_out_user.setVisible(false);
+        btn_log_out_user.setOnAction(event -> {
+            if (fileHelper == null)
+                fileHelper = new FileHelper();
+
+            if (userSel.getUCODE() == fileHelper.ReadUserDetails().getUCODE()) {
+                Toast.makeText((Stage) btn_save.getScene().getWindow(), "You can't log yourself out.");
+                return;
+            }
+
+            sql.logUserOut(userSel);
+            Toast.makeText((Stage) btn_save.getScene().getWindow(), "User will be logged out the next time he/she opens KiT");
+            populateDetails(userSel);
+
         });
     }
 
@@ -96,6 +117,16 @@ public class adminController implements Initializable {
     }
 
     private void populateDetails(Users newValue) {
+
+        boolean isLoggedIn = sql.checkIfUserIsLoggedIn(newValue);
+        if (isLoggedIn) {
+            label_message.setVisible(true);
+            btn_log_out_user.setVisible(true);
+        }
+        else {
+            label_message.setVisible(false);
+            btn_log_out_user.setVisible(false);
+        }
 
         vbox_rights.getChildren().clear();
 
