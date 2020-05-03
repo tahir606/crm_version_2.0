@@ -304,6 +304,8 @@ public class EResponseController implements Initializable {
         em.setBccAddress(bcc);
 
         em.setSubject(Subject);
+        //Replace Line Breaks with <br> tags
+        Body = Body.replace("\n","<br>");
         em.setBody(Body);
         em.setDisclaimer(Disclaimer);
         if (file == null) {

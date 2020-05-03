@@ -56,7 +56,7 @@ public class emailControl {
         }
     }
 
-    public void RecieveEmail() {
+    public void receiveEmail() {
         Properties props = System.getProperties();
         props.setProperty("mail.store.protocol", "imaps");
         trayHelper help = new trayHelper();
@@ -176,7 +176,6 @@ public class emailControl {
 
         for (String t : white_list) {
             for (Address e : email.getFromAddress()) {
-                System.out.println("Checking " + e);
                 if (e.toString().contains(t)) {
                     tix = 2;
                     System.out.println("Exists " + t);
@@ -207,12 +206,12 @@ public class emailControl {
             BodyPart bodyPart = mime.getBodyPart(i);
             if (bodyPart.isMimeType("text/plain")) {
                 result = result + "\n" + bodyPart.getContent();
-                System.out.println("Result plain2: " + result);
+//                System.out.println("Result plain2: " + result);
 //                break; // without break same text appears twice in my tests
             } else if (bodyPart.isMimeType("text/html")) {
                 String html = (String) bodyPart.getContent();
                 result = html;
-                System.out.println("\n\nHTML: " + result);
+//                System.out.println("\n\nHTML: " + result);
 //                result = result + "\n" + org.jsoup.Jsoup.parse(html).text();
 //                System.out.println("After Parsing: " + result);
             } else if (bodyPart.getContent() instanceof MimeMultipart) {
@@ -242,9 +241,6 @@ public class emailControl {
         }
         return null;
     }
-
-
-    //-----------------Email Send
 
     public static void sendEmail(Email email, Message messageReply) {
 
@@ -310,14 +306,14 @@ public class emailControl {
             // Set Subject: header field
             message.setSubject(email.getSubject());
 
-            // Create a multipar message
+            // Create a multipart message
             Multipart multipart = new MimeMultipart();
 
             //  Create the message part
             MimeBodyPart messageBodyPart = new MimeBodyPart();
             // Now set the actual message
             String b = email.getBody() + "<br><br>" + perDisc;
-            b = b.replace("\n","<br>");
+//            b = b.replace("\n","<br>");
             messageBodyPart.setText(b, "utf-8", "html");
             // Set text message part
             multipart.addBodyPart(messageBodyPart);

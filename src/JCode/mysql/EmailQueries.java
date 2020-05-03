@@ -473,7 +473,7 @@ public class EmailQueries {
         Email e = new Email();
         e.setSubject(autoReplySubject + email.getEmailNo());
         e.setToAddress(new Address[]{email.getFromAddress()[0]});
-        e.setBody(body + "\n\n\n" + "--------In Reply To--------" + "\n\nSubject:   <b>" + email.getSubject() + "</b>\n\n" + email.getBody());
+        e.setBody(body + "<br><br><br>" + "--------In Reply To--------" + "<br><br><h4>Subject:   <b>" + email.getSubject() + "</b></h4><br><br>" + email.getBody());
 
         emailControl.sendEmail(e, message);
 
@@ -1002,8 +1002,8 @@ public class EmailQueries {
 
         String bd = msg +
                 "\n\n\n------------------- Ticket " + email.getEmailNo() + " -------------------" +
-                "\n\nTimestamp:     " + email.getTimeFormatted() +
-                "\n\nSubject:       " + email.getSubject() +
+                "\n\nTimestamp:     <b>" + email.getTimeFormatted() + "</b>" +
+                "\n\nSubject:       <b>" + email.getSubject() + "</b>" +
                 "\n\n" + email.getBody();
 
         Email send = new Email();

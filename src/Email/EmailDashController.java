@@ -699,8 +699,9 @@ public class EmailDashController implements Initializable {
             anchor_body.getChildren().clear();
 //            TextArea eBody = new TextArea(email.getBody());
             WebView eBody = new WebView();
-            eBody.getEngine().setUserStyleSheetLocation("data:,body { font: 15px Calibri; }");
             eBody.getEngine().loadContent(email.getBody());
+//            System.out.println("NOT SETTING UP FONT");
+            eBody.getEngine().setUserStyleSheetLocation("data:,body { font: 15px Calibri; }");
 //            eBody.setWrapText(true);
             eBody.setPrefSize(anchor_body.getWidth(), anchor_body.getHeight());
             anchor_body.getChildren().add(eBody);

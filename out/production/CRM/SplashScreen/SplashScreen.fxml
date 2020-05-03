@@ -6,20 +6,24 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane fx:id="rootAnchor" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/9"
+<AnchorPane fx:id="rootAnchor" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/9" stylesheets="@../styles/splash.css"
             xmlns:fx="http://javafx.com/fxml/1" fx:controller="SplashScreen.SplashScreenThread">
     <children>
-        <Label layoutX="173.0" layoutY="113.0" text="Customer Relationship Manager">
+        <Label styleClass="headingText" layoutX="276.0" layoutY="89.0" text="A Simple ">
+            <font>
+                <Font size="15.0"/>
+            </font>
+        </Label>
+        <Label styleClass="headingText" layoutX="173.0" layoutY="113.0" text="Customer Relationship Manager">
             <font>
                 <Font size="18.0"/>
             </font>
         </Label>
-        <Label layoutX="226.0" layoutY="48.0" text="Keep In Touch" textAlignment="CENTER">
+        <Label styleClass="headingText" layoutX="226.0" layoutY="48.0" text="Keep In Touch" textAlignment="CENTER">
             <font>
-                <Font name="Baskerville Old Face" size="24.0"/>
+                <Font name="Baskerville Old Face" size="28.0"/>
             </font>
         </Label>
-        <Label layoutX="276.0" layoutY="89.0" text="A Simple "/>
         <ImageView fx:id="img_logo" fitHeight="218.0" fitWidth="371.0" layoutX="116.0" layoutY="160.0"
                    pickOnBounds="true" preserveRatio="true">
         </ImageView>
