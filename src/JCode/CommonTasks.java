@@ -22,6 +22,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.Locale;
+import java.util.concurrent.TimeUnit;
 
 public class CommonTasks {
 
@@ -41,7 +42,6 @@ public class CommonTasks {
         Date date = new Date();
         return dateFormat.format(date);
     }
-
 
 
     public static String getTimeFormatted(String timeStamp) {
@@ -122,6 +122,43 @@ public class CommonTasks {
 
     }
 
+    /**
+     * Get a diff between two dates
+     *
+     * @param d1       the oldest date
+     * @param d2       the newest date
+     * @param timeUnit the unit in which you want the diff
+     * @return the diff value, in the provided unit
+     */
+    public static String getDateDiff(String d1, String d2, TimeUnit timeUnit) {
+
+        DateFormat inputFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.S");
+
+        Date date1 = null;
+        Date date2 = null;
+        try {
+            date1 = inputFormat.parse(d1);
+            date2 = inputFormat.parse(d2);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        } catch (NullPointerException e) {
+            return "";
+        }
+
+        long diffInMillies = date2.getTime() - date1.getTime();
+        long diffInMin = timeUnit.convert(diffInMillies, TimeUnit.MILLISECONDS);
+        System.out.println(diffInMin);
+        return timeConvert(diffInMin);
+    }
+
+    //Convert Time in minutes to:
+    private static String timeConvert(long time) {
+        // Days + Hours + Min
+//        return time/24/60 + " Day(s) " + time/60%24 + " Hour(s) " + time%60 + " Min(s) ";
+        // Hours + Min
+        return time / 60 + " hr " + time % 60 + " min";
+    }
+
     public static LocalDate createLocalDate(String timeStamp) {
 
 //        DateFormat inputFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.S");
@@ -148,7 +185,7 @@ public class CommonTasks {
     }
 
     public static LocalTime createLocalTime(String timeStamp) {
-        LocalTime localTime = LocalTime.of(Integer.parseInt(timeStamp.split(":")[0]),Integer.parseInt(timeStamp.split(":")[1]));
+        LocalTime localTime = LocalTime.of(Integer.parseInt(timeStamp.split(":")[0]), Integer.parseInt(timeStamp.split(":")[1]));
         return localTime;
     }
 

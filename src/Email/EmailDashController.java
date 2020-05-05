@@ -46,13 +46,14 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
+import java.util.concurrent.TimeUnit;
 
 public class EmailDashController implements Initializable {
 
     @FXML
     private AnchorPane anchor_body, anchor_details;
     @FXML
-    private Label label_ticket, label_time, label_locked, label_created, title_created, label_from, title_locked, label_related_emails;
+    private Label label_ticket, label_time, label_locked, label_created, title_created, label_from, title_locked, label_related_emails, label_count;
     @FXML
     private TextArea txt_subject;
     @FXML
@@ -439,16 +440,11 @@ public class EmailDashController implements Initializable {
 
         //Reselect email from list
         int index = -1;
-//        System.out.println("\n\nDebugging: " +
-//                "\n   Selected Email No: " + selectedEmail.getEmailNo() +
-//                "\n   Index: " + index);
         boolean isFound = false;
         for (Email email : list_emails.getItems()) {
             index++;
-//            System.out.println("\n  Upd Index: " + index);
             if (email.getEmailNo() == selectedEmail.getEmailNo()) {
                 isFound = true;
-//                System.out.println("\n Found at: " + index);
                 break;
             }
         }
@@ -730,7 +726,10 @@ public class EmailDashController implements Initializable {
             //Locked/Solved Label
             //Buttons
             if (email.getSolvFlag() == 'S') {    //If Email is solved disable all buttons
-                label_locked.setText(email.getLockedByName());
+                String display = email.getLockedByName();
+                if (email.getLockTime() != null)
+                    display = display + " ( " + CommonTasks.getDateDiff(email.getLockTime(), email.getSolveTime(), TimeUnit.MINUTES) + " ) ";
+                label_locked.setText(display);
                 enableDisable(2);
             } else {    //If Email is not solved
                 if (email.getLockd() != '\0') {     //If Email is locked
@@ -901,6 +900,7 @@ public class EmailDashController implements Initializable {
         } else {
             filteredList.setPredicate(s -> s.toString().toUpperCase().contains(filter.toUpperCase()));
         }
+        label_count.setText("Displaying " + filteredList.size() + " Emails");
     }
 
     private void setUpCheck(JFXCheckBox combo) {

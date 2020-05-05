@@ -10,7 +10,7 @@ public class Email {
 
     private int EmailNo, msgNo, lockd, solvBy, type, emailStoreNo, manual;
     private Address[] toAddress, fromAddress, ccAddress, bccAddress;
-    private String subject, timestamp, timeFormatted, body, attch, uploadedDocumentsString, lockedByName, disclaimer, user, solvByName, createdBy;
+    private String subject, timestamp, timeFormatted, body, attch, uploadedDocumentsString, lockedByName, disclaimer, user, solvByName, createdBy, lockTime, solveTime;
     private List<File> attachments;
     private List<Document> documents;
     private List<ContactProperty> relatedContacts;
@@ -270,6 +270,22 @@ public class Email {
 
     public void setLockedByName(String lockedByName) {
         this.lockedByName = lockedByName;
+    }
+
+    public String getLockTime() {
+        return lockTime;
+    }
+
+    public void setLockTime(String lockTime) {
+        this.lockTime = lockTime;
+    }
+
+    public String getSolveTime() {
+        return solveTime;
+    }
+
+    public void setSolveTime(String solveTime) {
+        this.solveTime = solveTime;
     }
 
     public String getUser() {

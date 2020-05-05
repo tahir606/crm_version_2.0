@@ -557,7 +557,7 @@ public class EmailQueries {
     public List<Email> readAllEmails(Filters filters, UserQueries userQueries) {
 
         String query = "SELECT EMNO, MSGNO, SBJCT, FRADD, TOADD, CCADD, TSTMP, " +
-                " EBODY, ATTCH, ESOLV, LOCKD, SOLVBY, SOLVTIME, MANUAL FROM EMAIL_STORE";
+                " EBODY, ATTCH, ESOLV, LOCKD, LOCKTIME, SOLVBY, SOLVTIME, MANUAL FROM EMAIL_STORE";
 
         if (filters == null) {
             query = query + " ORDER BY EMNO DESC";
@@ -590,6 +590,8 @@ public class EmailQueries {
                 email.setAttch(set.getString("ATTCH"));
                 email.setSolvFlag(set.getString("ESOLV").charAt(0));
                 email.setLockd(set.getInt("LOCKD"));
+                email.setLockTime(set.getString("LOCKTIME"));
+                email.setSolveTime(set.getString("SOLVTIME"));
                 email.setManual(set.getInt("MANUAL"));
                 if (email.getManual() != '\0'){
                     if (sql == null) sql = new mySqlConn();
@@ -935,7 +937,8 @@ public class EmailQueries {
     public void lockEmail(Email email, int op) {        //0 Unlock 1 Lock
 
         String query = " UPDATE EMAIL_STORE " +
-                " SET LOCKD = ? " +
+                " SET LOCKD = ?, " +
+                " LOCKTIME = ? " +
                 " WHERE EMNO = ? ";
 
         // Connection con = getConnection();
@@ -946,10 +949,12 @@ public class EmailQueries {
 
             if (op == 1) {  //Locking
                 statement.setInt(1, user.getUCODE());
-                statement.setInt(2, email.getEmailNo());
+                statement.setString(2, CommonTasks.getCurrentTimeStamp());
+                statement.setInt(3, email.getEmailNo());
             } else if (op == 0) {   //Unlocking
                 statement.setInt(1, 0);
-                statement.setInt(2, email.getEmailNo());
+                statement.setString(2, null);
+                statement.setInt(3, email.getEmailNo());
             }
             statement.executeUpdate();
 
@@ -998,13 +1003,18 @@ public class EmailQueries {
 
     private void solvResponder(Email email, String msg) {
 
+        //Make it html worthy
+        msg = msg.replace("\n", "<br>");
+
         String sb = "Ticket Number: " + email.getEmailNo() + " Resolved";
 
         String bd = msg +
-                "\n\n\n------------------- Ticket " + email.getEmailNo() + " -------------------" +
-                "\n\nTimestamp:     <b>" + email.getTimeFormatted() + "</b>" +
-                "\n\nSubject:       <b>" + email.getSubject() + "</b>" +
-                "\n\n" + email.getBody();
+                "<br><br><br>------------------- Ticket " + email.getEmailNo() + " -------------------" +
+                "<br><br>Timestamp:     <b>" + email.getTimeFormatted() + "</b>" +
+                "<br><br>Subject:       <b>" + email.getSubject() + "</b>" +
+                "<br><br>" + email.getBody();
+
+        
 
         Email send = new Email();
         send.setSubject(sb);
