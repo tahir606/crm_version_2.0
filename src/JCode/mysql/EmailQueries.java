@@ -3,6 +3,8 @@ package JCode.mysql;
 import JCode.CommonTasks;
 import JCode.emailControl;
 import objects.*;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
 
 import javax.mail.Address;
 import javax.mail.Message;
@@ -61,12 +63,10 @@ public class EmailQueries {
     public void createEmailRelations(Email email) {
         try {
             for (Address address : email.getFromAddress()) {
-                System.out.println("In from");
                 subCreateEmailRelation(address, email);
             }
             if (email.getCcAddress() != null) {
                 for (Address address : email.getCcAddress()) {
-                    System.out.println("in Cc");
                     subCreateEmailRelation(address, email);
                 }
             }
@@ -280,6 +280,7 @@ public class EmailQueries {
 
     }
 
+    /// help
     public void insertEmailManual(Email email) {
 
         String query = "INSERT INTO email_store(EMNO,SBJCT,TOADD,FRADD,TSTMP,EBODY,ATTCH,CCADD,ESOLV,MSGNO,LOCKD," +
@@ -553,6 +554,42 @@ public class EmailQueries {
         return 0;
     }
 
+    public List<EmailProperty> readSolvedEmailsByUsers(Users users, String reportFilter) {
+
+        String query = "SELECT EMNO, SBJCT, FRADD, TSTMP, LOCKTIME, SOLVTIME " +
+                " FROM EMAIL_STORE " +
+                " WHERE SOLVBY = ? " + reportFilter;
+
+        List<EmailProperty> allEmails = new ArrayList<>();
+        try {
+            PreparedStatement statement = static_con.prepareStatement(query);
+            statement.setInt(1, users.getUCODE());
+            ResultSet set = statement.executeQuery();
+
+            while (set.next()) {
+                EmailProperty email = new EmailProperty();
+                email.setEmail_No(set.getInt("EMNO"));
+                email.setSubject(set.getString("SBJCT"));
+                email.setFrom_Address(set.getString("FRADD").replace("^", " "));
+//                Document doc = Jsoup.parse(set.getString("EBODY"));
+//                String text = doc.body().text();
+//                email.setEmail_Body(text);
+                email.setTimestamp(CommonTasks.getTimeFormatted(set.getString("TSTMP")));
+                email.setLock_time(CommonTasks.getTimeFormatted(set.getString("LOCKTIME")));
+                email.setSolve_Time(CommonTasks.getTimeFormatted(set.getString("SOLVTIME")));
+                email.setDuration(CommonTasks.getTimeDuration(set.getString("LOCKTIME"), set.getString("SOLVTIME")));
+                allEmails.add(email);
+            }
+
+
+        } catch (SQLException | ParseException ex) {
+            ex.printStackTrace();
+        }
+        return allEmails;
+
+    }
+
+    /// help
     //Reading tickets
     public List<Email> readAllEmails(Filters filters, UserQueries userQueries) {
 
@@ -593,7 +630,7 @@ public class EmailQueries {
                 email.setLockTime(set.getString("LOCKTIME"));
                 email.setSolveTime(set.getString("SOLVTIME"));
                 email.setManual(set.getInt("MANUAL"));
-                if (email.getManual() != '\0'){
+                if (email.getManual() != '\0') {
                     if (sql == null) sql = new mySqlConn();
                     email.setCreatedBy(sql.getUserName(email.getManual()));
                 }
@@ -826,8 +863,7 @@ public class EmailQueries {
 
     public List<Email> readAllEmailsSent(String where) {
 
-        String query = "SELECT EMNO,SBJCT,FRADD,TOADD,CCADD,BCCADD,TSTMP,EBODY,ATTCH,U.FNAME FROM EMAIL_SENT E, users" +
-                " U WHERE E.UCODE = U.UCODE ";
+        String query = "SELECT EMNO,SBJCT,FRADD,TOADD,CCADD,BCCADD,TSTMP,EBODY,ATTCH,U.FNAME FROM EMAIL_SENT ";
 
         if (where == null) {
             query = query + " ORDER BY EMNO DESC";
@@ -1014,7 +1050,6 @@ public class EmailQueries {
                 "<br><br>Subject:       <b>" + email.getSubject() + "</b>" +
                 "<br><br>" + email.getBody();
 
-        
 
         Email send = new Email();
         send.setSubject(sb);
@@ -1098,5 +1133,31 @@ public class EmailQueries {
             e.printStackTrace();
         }
     }
+
+    public List<EmailProperty> average_Calculate() {
+        String query= "SELECT EMNO,FNAME, concat (concat ( concat ( substr(SEC_TO_TIME(AVG(TIME_TO_SEC(SOLVTIME))),1,2) , ' Hours ') ," +
+                " concat ( substr(SEC_TO_TIME(AVG(TIME_TO_SEC(SOLVTIME))),4,2) , ' Minutes ') ) ," +
+                "concat ( substr(SEC_TO_TIME(AVG(TIME_TO_SEC(SOLVTIME))),7,2) , ' Sec ')) As Time" +
+                " FROM email_store AS es,users";
+
+//        String query = "SELECT EMNO,FNAME,SOLVTIME AS Average FROM email_store AS es,users WHERE SOLVBY = UCODE ";
+        List<EmailProperty> allEmails = new ArrayList<>();
+        try {
+            PreparedStatement statement = static_con.prepareStatement(query);
+            ResultSet set = statement.executeQuery();
+
+            while (set.next()) {
+                EmailProperty email = new EmailProperty();
+                email.setEmail_No(set.getInt("EMNO"));
+                email.setUser_name(set.getString("FNAME"));
+                email.setAverage(set.getString("Time"));
+                allEmails.add(email);
+            }
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+        return allEmails;
+    }
+
 
 }

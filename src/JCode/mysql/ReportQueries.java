@@ -1,12 +1,15 @@
 package JCode.mysql;
 
+import JCode.CommonTasks;
 import objects.ClientProperty;
+import objects.EmailProperty;
 import objects.Users;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -41,6 +44,7 @@ public class ReportQueries {
         }
         return users;
     }
+
 
     public List<ClientProperty> emailsPerClient(String filter) {
         String query = "SELECT CL_ID, CL_NAME, CL_OWNER,  " +

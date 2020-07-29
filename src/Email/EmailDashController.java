@@ -331,7 +331,7 @@ public class EmailDashController implements Initializable {
         //Display Emails
         loadEmails();
     }
-
+//help
     private List<Email> checkIfEmailsExist() {
 
         List<Email> emails = null;

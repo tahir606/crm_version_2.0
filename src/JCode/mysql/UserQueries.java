@@ -166,7 +166,7 @@ public class UserQueries {
     }
 
     public Users getUserDetails(Users user) {
-        String query = " SELECT FNAME, SOLV, LOCKD, EMAIL FROM USERS " +
+        String query = " SELECT FNAME, EMAIL FROM USERS " +
                 " WHERE UCODE = ?";
 
 //        // Connection con = getConnection();
@@ -181,8 +181,6 @@ public class UserQueries {
             while (set.next()) {
                 user.setFNAME(set.getString("FNAME"));
                 user.setEmail(set.getString("EMAIL"));
-                user.setLocked(set.getInt("LOCKD"));
-                user.setSolved(set.getInt("SOLV"));
             }
 
         } catch (SQLException e) {

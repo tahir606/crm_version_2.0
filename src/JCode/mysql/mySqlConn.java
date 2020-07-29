@@ -200,7 +200,7 @@ public class mySqlConn {
     public void insertEmailManual(Email email) {
         emailQueries.insertEmailManual(email);
     }
-
+//help
     public List<Email> readAllEmails(Filters filters) {
         return emailQueries.readAllEmails(filters, userQueries);
     }
@@ -634,4 +634,15 @@ public class mySqlConn {
         }
     }
 
+    public List<EmailProperty> readSolvedEmailsByUsers(Users newValue, String reportFilter) {
+        return emailQueries.readSolvedEmailsByUsers(newValue,reportFilter);
+    }
+
+    public List<EmailProperty> average_Calculate() {
+        return emailQueries.average_Calculate();
+    }
+//
+//    public List<EmailProperty> readSolvedEmailsByUsersFiltered(Users newValue, String reportFilter) {
+//        return emailQueries.readSolvedEmailsByUsersFiltered(newValue,reportFilter);
+//    }
 }
