@@ -766,7 +766,7 @@ public class EmailDashController implements Initializable {
 
     private int filterChoice = 0; //1 == tickets 2 == general
 
-    private void populateFilters() {
+    private void  populateFilters() {
         vbox_filter.setSpacing(10);
 
         Filters filter = Filters.readFromFile();
