@@ -5,9 +5,8 @@ import JCode.FileHelper;
 import JCode.emailControl;
 import JCode.mysql.mySqlConn;
 import com.jfoenix.controls.JFXButton;
+import com.jfoenix.controls.JFXCheckBox;
 import com.jfoenix.controls.JFXComboBox;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -36,6 +35,7 @@ import java.util.*;
 
 public class EResponseController implements Initializable {
 
+    public static String stAttach;
     @FXML
     private TextField txt_to, txt_cc, txt_bcc, txt_attach, txt_subject;
     @FXML
@@ -50,7 +50,8 @@ public class EResponseController implements Initializable {
     private Button btn_Send, btn_attach;
     @FXML
     private HBox hbox_to, hbox_cc, hbox_bcc;
-
+    @FXML
+    private JFXCheckBox sendAsEmail;
     public static volatile int choice = 1;      //1- Send Email 2-Create Ticket
 
     private List<File> file;
@@ -71,16 +72,19 @@ public class EResponseController implements Initializable {
     }
 
     @Override
-    public void initialize(URL location, ResourceBundle resources) {
+        public void initialize(URL location, ResourceBundle resources) {
 
         fileHelper = new FileHelper();
 
-        if (choice == 1)
+        if (choice == 1) {
+            sendAsEmail.setVisible(false);
             btn_Send.setText("Send");
+        }
         else if (choice == 2) {
+            sendAsEmail.setVisible(true);
             btn_Send.setText("Create");
 
-            txt_disclaimer.setVisible(false);
+            txt_disclaimer.setVisible(true);
         }
 
         pullingEmails();
@@ -101,7 +105,6 @@ public class EResponseController implements Initializable {
         });
 
         txt_subject.setText(stSubject);
-
         if (stInstance == 'R') {
             populateTo();
             populateCC();
@@ -110,17 +113,54 @@ public class EResponseController implements Initializable {
             btn_Send.setText("Reply");
 
         } else if (stInstance == 'F') {
+//            DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+//            DocumentBuilder builder;
+//            try
+//            {
+//                builder = factory.newDocumentBuilder();
+//                Document doc = (Document) builder.parse(String.valueOf(new InputSource( new StringReader( stAttach ))));
+//
+//                combo_uploaded.getItems().add(doc);
+//            } catch (Exception e) {
+//                e.printStackTrace();
+//            }
+//            File file2 = new File(stAttach);
+//            List<FileDev> attFiles = new ArrayList<>();
+//            for (String c : stAttach.split("\\^")) {
+//                FileDev file = new FileDev(c);
+//                attFiles.add(file);
+//            }
+            FileChooser fileChooser = new FileChooser();
+            fileChooser.setTitle("Upload File Path");
+            fileChooser.getExtensionFilters().addAll(
+                    new FileChooser.ExtensionFilter("ALL FILES", "*.*"),
+                    new FileChooser.ExtensionFilter("ZIP", "*.zip"),
+                    new FileChooser.ExtensionFilter("PDF", "*.pdf"),
+                    new FileChooser.ExtensionFilter("TEXT", "*.txt"),
+                    new FileChooser.ExtensionFilter("IMAGE FILES", "*.jpg", "*.png", "*.gif")
+            );
+
+
+            File file =new  File(stAttach);
+
+            if (file != null) {
+                // pickUpPathField it's your TextField fx:id
+                txt_attach.setText(file.getPath());
+
+            } else  {
+                System.out.println("error"); // or something else
+            }
+            System.out.println("abh yeh attachment dhaiko "+ stAttach);
             txt_body.setText(stBody);
             txt_body.setDisable(true);
-            txt_attach.setVisible(false);
-            txt_attach.setDisable(true);
-
-            txt_subject.setDisable(true);
-
+            txt_attach.setVisible(true);
+            txt_attach.setText(stAttach);
+//            txt_attach.setText(String.valueOf(attFiles));
+//            txt_attach.setDisable(true);
+//            txt_subject.setDisable(true);
             lbl_attach.setVisible(false);
             btn_attach.setVisible(false);
             btn_attach.setDisable(true);
-
             btn_Send.setText("Forward");
         } else if (stInstance == 'N') {
             populateTo();
@@ -318,12 +358,17 @@ public class EResponseController implements Initializable {
             em.setDocuments(attachedDocuments);
         }
 
-        if (choice == 1)
+        if (choice == 1) {
+
             helper.sendEmail(em, null);
+        }
         else if (choice == 2) {
+//       send_or_Not.setVisible(true);
+
+
             mySqlConn sql = new mySqlConn();
             em.setFromAddress(em.getToAddress());
-            String timeStamp = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.S").format(Calendar.getInstance().getTime());
+            String timeStamp = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(Calendar.getInstance().getTime());
             em.setTimestamp(timeStamp);
             em.setManual(fileHelper.ReadUserDetails().getUCODE());
 
@@ -350,6 +395,21 @@ public class EResponseController implements Initializable {
                 em.setAttch(attch);
 
             sql.insertEmailManual(em);
+
+            if(!sendAsEmail.isSelected()){
+                int ticketNo=sql.getManualTicketNo(em);
+                Subject = "Ticket No: "+ ticketNo + " "+txt_subject.getText();
+                Body = "This Ticket is manually created by The Burhani IT Solutions Support Team"+"<br>"+"Your Ticket No is: "+ticketNo + "<br>"+txt_body.getText();
+                em.setSubject(Subject);
+                //Replace Line Breaks with <br> tags
+                Body = Body.replace("\n","<br>");
+                em.setBody(Body);
+//                int var=sql.generateTicket();
+                System.out.println("check ticket No"+ticketNo);
+                helper.sendEmail(em, null);
+            }
+
+
             EmailDashController.loadEmailsStatic();
         }
 

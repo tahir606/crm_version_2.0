@@ -18,6 +18,7 @@ public class Email {
     private List<Email> relatedEmails = new ArrayList<>();
     private char solvFlag, isAttch;
     private boolean isSent, freze, isEmailTypeSent = false;
+    private String rawContent;
 
     public Email() {
     }
@@ -85,6 +86,7 @@ public class Email {
         return s;
     }
 
+    //
     public String getFromAddressCommaString() {
         String s = "";
         for (Address ad : fromAddress) {
@@ -375,4 +377,6 @@ public class Email {
     public void setFreze(boolean freze) {
         this.freze = freze;
     }
+
+
 }

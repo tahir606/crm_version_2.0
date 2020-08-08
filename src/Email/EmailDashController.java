@@ -14,6 +14,7 @@ import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
+import javafx.embed.swing.SwingFXUtils;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -22,13 +23,14 @@ import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.*;
 import javafx.scene.control.Label;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.TextArea;
+import javafx.scene.control.*;
 import javafx.scene.image.ImageView;
+import javafx.scene.image.WritableImage;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
@@ -38,15 +40,20 @@ import javafx.stage.Stage;
 import javafx.util.Callback;
 import objects.*;
 
-import javax.mail.*;
+import javax.imageio.ImageIO;
+import javax.mail.Address;
 import javax.mail.internet.InternetAddress;
 import java.awt.*;
-import java.io.*;
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
 import java.util.concurrent.TimeUnit;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class EmailDashController implements Initializable {
 
@@ -134,8 +141,8 @@ public class EmailDashController implements Initializable {
         populateMenuBar();
         populateFilters();
 
-        //Populating List
-        //Creates the changes in the Details Section
+//        Populating List
+//        Creates the changes in the Details Section
         list_emails.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
             selectedEmail = newValue;
             populateDetails(selectedEmail);
@@ -176,6 +183,9 @@ public class EmailDashController implements Initializable {
                 EResponseController.stSubject = "FW: " + sEmail.getSubject();
                 EResponseController.stInstance = 'F';
                 EResponseController.stBody = sEmail.getBody();
+                System.out.println("body"+sEmail.getBody());
+                EResponseController.stAttach = sEmail.getAttch();
+                System.out.println("check"+sEmail.getAttch());
             }
             inflateEResponse(1);
             combo_respond.getSelectionModel().select(0);
@@ -350,6 +360,8 @@ public class EmailDashController implements Initializable {
                 break;
         }
 
+        System.out.println(emails);
+
         if (emails == null) {
             emails = new ArrayList<>();
             Email nEm = new Email();
@@ -417,7 +429,7 @@ public class EmailDashController implements Initializable {
 
     //Track Down which load Email is Running
     public void loadEmails() {
-
+        //yeh samj nai aaya
         Email temp = selectedEmail;
         list_emails.setItems(null);
         selectedEmail = temp;   //Because when list_emails is emptied selected email becomes null
@@ -425,7 +437,6 @@ public class EmailDashController implements Initializable {
         //making list filterable
         ObservableList<Email> dataObj = FXCollections.observableArrayList(checkIfEmailsExist());
         FilteredList<Email> filteredList = new FilteredList<>(dataObj, s -> true);
-
         search_txt.textProperty().addListener((observable, oldValue, newValue) -> setSearch(filteredList));
 
         setSearch(filteredList);
@@ -571,10 +582,10 @@ public class EmailDashController implements Initializable {
             vbox_from.setSpacing(2.0);
             vbox_cc.getChildren().clear();    //Both VBoxes
             vbox_cc.setSpacing(2.0);
-            vbox_contacts.getChildren().clear();
-            vbox_contacts.setSpacing(2.0);
-            vbox_clients.getChildren().clear();
-            vbox_clients.setSpacing(2.0);
+//            vbox_contacts.getChildren().clear();
+//            vbox_contacts.setSpacing(2.0);
+//            vbox_clients.getChildren().clear();
+//            vbox_clients.setSpacing(2.0);
 
             label_from.setText("From:");
             if (Email_Type == 1) {
@@ -627,49 +638,50 @@ public class EmailDashController implements Initializable {
             }
 
             txt_subject.setText(email.getSubject());
+//
+//            if (Email_Type == 1) {                              //Check for email relations only if ticket is selected
+//                relatedContacts = email.getRelatedContacts();
+//                if (relatedContacts == null) {
+//                } else {
+//                    if (relatedContacts.size() > 0) {
+//                        hbox_contacts.setVisible(true);
+//                        for (ContactProperty c : relatedContacts) {
+//                            try {
+//                                Label label = new Label(c.toString());
+//                                label.setPadding(new Insets(2, 5, 2, 5));
+//                                label.getStyleClass().add("moduleDetails");
+//                                vbox_contacts.getChildren().add(label);
+//                            } catch (NullPointerException ex) {
+//                                //Because null is saved
+//                            }
+//                        }
+//                    } else
+//                        hbox_contacts.setVisible(false);
+//                }
 
-            if (Email_Type == 1) {                              //Check for email relations only if ticket is selected
-                relatedContacts = email.getRelatedContacts();
-                if (relatedContacts == null) {
-                } else {
-                    if (relatedContacts.size() > 0) {
-                        hbox_contacts.setVisible(true);
-                        for (ContactProperty c : relatedContacts) {
-                            try {
-                                Label label = new Label(c.toString());
-                                label.setPadding(new Insets(2, 5, 2, 5));
-                                label.getStyleClass().add("moduleDetails");
-                                vbox_contacts.getChildren().add(label);
-                            } catch (NullPointerException ex) {
-                                //Because null is saved
-                            }
-                        }
-                    } else
-                        hbox_contacts.setVisible(false);
-                }
-
-                relatedClients = email.getRelatedClients();
-                if (relatedContacts == null) {
-                } else {
-                    if (relatedClients.size() > 0) {
-                        hbox_clients.setVisible(true);
-                        for (ClientProperty c : relatedClients) {
-                            try {
-                                Label label = new Label(c.toString());
-                                label.setPadding(new Insets(2, 5, 2, 5));
-                                label.getStyleClass().add("moduleDetails");
-                                vbox_clients.getChildren().add(label);
-                            } catch (NullPointerException ex) {
-                                //Because null is saved
-                            }
-                        }
-                    } else
-                        hbox_clients.setVisible(false);
-                }
-            } else {
-                hbox_contacts.setVisible(false);
-                hbox_clients.setVisible(false);
-            }
+//                relatedClients = email.getRelatedClients();
+//                if (relatedContacts == null) {
+//                } else {
+//                    if (relatedClients.size() > 0) {
+//                        hbox_clients.setVisible(true);
+//                        for (ClientProperty c : relatedClients) {
+//                            try {
+//                                Label label = new Label(c.toString());
+//                                label.setPadding(new Insets(2, 5, 2, 5));
+//                                label.getStyleClass().add("moduleDetails");
+//                                vbox_clients.getChildren().add(label);
+//                            } catch (NullPointerException ex) {
+//                                //Because null is saved
+//                            }
+//                        }
+//                    } else
+//                        hbox_clients.setVisible(false);
+//                }
+//            }
+//            else {
+//                hbox_contacts.setVisible(false);
+//                hbox_clients.setVisible(false);
+//            }
 
             anchor_details.setVisible(true);
 
@@ -691,11 +703,16 @@ public class EmailDashController implements Initializable {
 
             }
 
+
+
             //----Ebody
             anchor_body.getChildren().clear();
+
 //            TextArea eBody = new TextArea(email.getBody());
             WebView eBody = new WebView();
+
             eBody.getEngine().loadContent(email.getBody());
+
 //            System.out.println("NOT SETTING UP FONT");
             eBody.getEngine().setUserStyleSheetLocation("data:,body { font: 15px Calibri; }");
 //            eBody.setWrapText(true);
@@ -759,6 +776,17 @@ public class EmailDashController implements Initializable {
 
             imgLoader.setVisible(false);
         })).start();
+    }
+    private static WritableImage convertToJavaFXImage(byte[] raw, final double width, final double height)  {
+        WritableImage image = new WritableImage( Integer.parseInt(String.valueOf(width)),Integer.parseInt(String.valueOf(height)));
+        try {
+            ByteArrayInputStream bis = new ByteArrayInputStream(raw);
+            BufferedImage read = ImageIO.read(bis);
+            image = SwingFXUtils.toFXImage(read, null);
+        } catch (IOException ex) {
+            Logger.getLogger(EmailDashController.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return image;
     }
 
     private JFXComboBox sortBy, ascDesc;

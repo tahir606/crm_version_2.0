@@ -135,42 +135,42 @@
                                     </font>
                                 </TextArea>
                             </HBox>
-                            <HBox fx:id="hbox_contacts" prefHeight="80.0" prefWidth="327.0">
-                                <children>
-                                    <Label fx:id="label_from1" layoutX="14.0" layoutY="57.0" prefHeight="17.0" prefWidth="70.0" styleClass="blackText" text="Contacts:">
-                                        <font>
-                                            <Font size="11.0" />
-                                        </font>
-                                    </Label>
-                                    <ScrollPane layoutX="94.0" layoutY="58.0" minHeight="60.0" prefHeight="60.0" prefWidth="275.0" AnchorPane.leftAnchor="94.0" AnchorPane.rightAnchor="13.0">
-                                        <content>
-                                            <VBox fx:id="vbox_contacts" prefHeight="48.0" prefWidth="270.0" styleClass="blackText" />
-                                        </content>
-                                        <styleClass>
-                                            <String fx:value="scroll-view" />
-                                            <String fx:value="hbox_border" />
-                                        </styleClass>
-                                    </ScrollPane>
-                                </children>
-                            </HBox>
-                            <HBox fx:id="hbox_clients" prefHeight="80.0" prefWidth="327.0">
-                                <children>
-                                    <Label fx:id="label_cc1" layoutX="14.0" layoutY="104.0" prefHeight="17.0" prefWidth="70.0" styleClass="blackText" text="Clients:">
-                                        <font>
-                                            <Font size="11.0" />
-                                        </font>
-                                    </Label>
-                                    <ScrollPane layoutX="94.0" layoutY="99.0" minHeight="60.0" prefHeight="65.0" prefWidth="275.0" AnchorPane.leftAnchor="94.0" AnchorPane.rightAnchor="13.0">
-                                        <content>
-                                            <VBox fx:id="vbox_clients" prefHeight="48.0" prefWidth="270.0" styleClass="blackText" />
-                                        </content>
-                                        <styleClass>
-                                            <String fx:value="scroll-view" />
-                                            <String fx:value="hbox_border" />
-                                        </styleClass>
-                                    </ScrollPane>
-                                </children>
-                            </HBox>
+<!--                            <HBox fx:id="hbox_contacts" prefHeight="80.0" prefWidth="327.0">-->
+<!--                                <children>-->
+<!--                                    <Label fx:id="label_from1" layoutX="14.0" layoutY="57.0" prefHeight="17.0" prefWidth="70.0" styleClass="blackText" text="Contacts:">-->
+<!--                                        <font>-->
+<!--                                            <Font size="11.0" />-->
+<!--                                        </font>-->
+<!--                                    </Label>-->
+<!--                                    <ScrollPane layoutX="94.0" layoutY="58.0" minHeight="60.0" prefHeight="60.0" prefWidth="275.0" AnchorPane.leftAnchor="94.0" AnchorPane.rightAnchor="13.0">-->
+<!--                                        <content>-->
+<!--                                            <VBox fx:id="vbox_contacts" prefHeight="48.0" prefWidth="270.0" styleClass="blackText" />-->
+<!--                                        </content>-->
+<!--                                        <styleClass>-->
+<!--                                            <String fx:value="scroll-view" />-->
+<!--                                            <String fx:value="hbox_border" />-->
+<!--                                        </styleClass>-->
+<!--                                    </ScrollPane>-->
+<!--                                </children>-->
+<!--                            </HBox>-->
+<!--                            <HBox fx:id="hbox_clients" prefHeight="80.0" prefWidth="327.0">-->
+<!--                                <children>-->
+<!--                                    <Label fx:id="label_cc1" layoutX="14.0" layoutY="104.0" prefHeight="17.0" prefWidth="70.0" styleClass="blackText" text="Clients:">-->
+<!--                                        <font>-->
+<!--                                            <Font size="11.0" />-->
+<!--                                        </font>-->
+<!--                                    </Label>-->
+<!--                                    <ScrollPane layoutX="94.0" layoutY="99.0" minHeight="60.0" prefHeight="65.0" prefWidth="275.0" AnchorPane.leftAnchor="94.0" AnchorPane.rightAnchor="13.0">-->
+<!--                                        <content>-->
+<!--                                            <VBox fx:id="vbox_clients" prefHeight="48.0" prefWidth="270.0" styleClass="blackText" />-->
+<!--                                        </content>-->
+<!--                                        <styleClass>-->
+<!--                                            <String fx:value="scroll-view" />-->
+<!--                                            <String fx:value="hbox_border" />-->
+<!--                                        </styleClass>-->
+<!--                                    </ScrollPane>-->
+<!--                                </children>-->
+<!--                            </HBox>-->
                             <HBox prefHeight="8" />
                             <Label fx:id="label_related_emails" styleClass="blackText" text="Related Emails:" />
                             <HBox fx:id="hbox_related" prefHeight="80.0" prefWidth="327.0">

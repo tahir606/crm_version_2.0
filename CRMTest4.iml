@@ -23,5 +23,6 @@
     <orderEntry type="library" name="joda-time-2.10" level="project" />
     <orderEntry type="library" name="commons-io-2.6" level="project" />
     <orderEntry type="library" name="mysql-connector-java-5.1.47" level="project" />
+    <orderEntry type="library" name="google-http-client-1.13.1-beta" level="project" />
   </component>
 </module>

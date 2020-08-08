@@ -33,7 +33,6 @@ public class emailControl {
 //    private static String FADD_FILE = "\\\\192.168.100.110\\g$\\Bits\\CRM\\";
 
     private static String F_ADD = "";
-
     private static mySqlConn sqlConn;
 
     private static ESetting ESETTING;
@@ -104,11 +103,15 @@ public class emailControl {
         }
     }
 
+
+    private static String ATTACH = "";
+
     private static String storefile(Message message) throws Exception {
         Email email = new Email();
 
         String result = "";
-        String SUBJECT, ATTACH = "";
+        String SUBJECT;
+        ATTACH = "";
 
         Address[] fromAddress = message.getFrom();
         Address[] toAddress = message.getRecipients(Message.RecipientType.TO);
@@ -120,30 +123,8 @@ public class emailControl {
 
         if (message.isMimeType("text/plain")) {
             result = message.getContent().toString();
-            System.out.println("Result plain1: " + result);
         } else if (message.isMimeType("multipart/*")) {
-            MimeMultipart mimeMultipart = (MimeMultipart) message.getContent();
-            int numberofparts = mimeMultipart.getCount();
-
-            for (int partcounts = 0; partcounts < numberofparts; partcounts++) {
-                MimeBodyPart part = (MimeBodyPart) mimeMultipart.getBodyPart(partcounts);
-                if (Part.ATTACHMENT.equalsIgnoreCase(part.getDisposition())) {
-                    //Add Files in a folder created specifically for that email
-                    String folderName = "";
-                    try {
-                        folderName = fromAddress[0].toString().trim().split("<")[1].replace(">", "");
-                    } catch (Exception e) {
-                        folderName = "Others";
-                    }
-                    FileHelper.createDirectoryIfDoesNotExist(ESETTING.getFspath() + "\\" + folderName + "\\");
-                    String filename = ESETTING.getFspath() + "\\" + folderName + "\\" + part.getFileName();
-                    System.out.println(part.getFileName());
-                    ATTACH += filename + "^";  //AttachFiles string is to be inserted into Database
-                    part.saveFile(filename);
-                } else {
-                    result = getTextFromMimeMultipart(mimeMultipart);
-                }
-            }
+            result = parseMultipart((MimeMultipart) message.getContent(), fromAddress);
         }
 
         System.out.println(message.getSentDate());
@@ -199,47 +180,44 @@ public class emailControl {
         return result;
     }
 
-    private static String getTextFromMimeMultipart(MimeMultipart mime) throws Exception {
+    private static String parseMultipart(MimeMultipart mimeMultipart, Address[] fromAddress) throws MessagingException, IOException {
+
         String result = "";
-        int count = mime.getCount();
-        for (int i = 0; i < count; i++) {
-            BodyPart bodyPart = mime.getBodyPart(i);
-            if (bodyPart.isMimeType("text/plain")) {
-                result = result + "\n" + bodyPart.getContent();
-//                System.out.println("Result plain2: " + result);
+
+        int numberofparts = mimeMultipart.getCount();
+
+        for (int partcounts = 0; partcounts < numberofparts; partcounts++) {
+            MimeBodyPart part = (MimeBodyPart) mimeMultipart.getBodyPart(partcounts);
+            if (Part.ATTACHMENT.equalsIgnoreCase(part.getDisposition()) || Part.INLINE.equalsIgnoreCase(part.getDisposition())) {
+                //Add Files in a folder created specifically for that email
+                String folderName = "";
+                try {
+                    folderName = fromAddress[0].toString().trim().split("<")[1].replace(">", "");
+                } catch (Exception e) {
+                    folderName = "Others";
+                }
+                FileHelper.createDirectoryIfDoesNotExist(ESETTING.getFspath() + "\\" + folderName + "\\");
+                String filename = ESETTING.getFspath() + "\\" + folderName + "\\" + part.getFileName();
+                ATTACH += filename + "^";  //AttachFiles string is to be inserted into Database
+                part.saveFile(filename);
+            } else if (part.isMimeType("text/plain")) {
+                result = result + "\n" + part.getContent();
 //                break; // without break same text appears twice in my tests
-            } else if (bodyPart.isMimeType("text/html")) {
-                String html = (String) bodyPart.getContent();
+            } else if (part.isMimeType("text/html")) {
+                String html = (String) part.getContent();
                 result = html;
-//                System.out.println("\n\nHTML: " + result);
 //                result = result + "\n" + org.jsoup.Jsoup.parse(html).text();
 //                System.out.println("After Parsing: " + result);
-            } else if (bodyPart.getContent() instanceof MimeMultipart) {
-                result = result + getTextFromMimeMultipart((MimeMultipart) bodyPart.getContent());
+            } else if (part.isMimeType("multipart/*")) {
+                result = parseMultipart((MimeMultipart) part.getContent(), fromAddress);
+            } else {
+                System.out.println("Else Part");
+                System.out.println(part.getDisposition());
+                System.out.println(part.getContent().toString());
             }
         }
+
         return result;
-    }
-
-    //Reading file
-    public String readMessageFile(String fileAdd) {
-        try {
-            InputStream mailFile = new FileInputStream(new File(fileAdd));
-            Properties properties = new Properties();
-            Session session = Session.getDefaultInstance(properties, null);
-            MimeMessage message = new MimeMessage(session, mailFile);
-            if (message.isMimeType("multipart/*")) {
-                MimeMultipart mime = (MimeMultipart) message.getContent();
-                String result = getTextFromMimeMultipart(mime);
-                return result;
-            }
-
-        } catch (FileNotFoundException | MessagingException e) {
-            e.printStackTrace();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return null;
     }
 
     public static void sendEmail(Email email, Message messageReply) {
@@ -304,6 +282,8 @@ public class emailControl {
             message.setFrom(new InternetAddress(ESETTING.getGenerated_reply_email()));
 
             // Set Subject: header field
+
+
             message.setSubject(email.getSubject());
 
             // Create a multipart message
@@ -459,5 +439,6 @@ public class emailControl {
         }
         return ret;
     }
+
 
 }

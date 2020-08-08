@@ -641,6 +641,16 @@ public class mySqlConn {
     public List<EmailProperty> average_Calculate() {
         return emailQueries.average_Calculate();
     }
+
+    public int generateTicket() {
+        return  emailQueries.generateTicket();
+    }
+
+    public int getManualTicketNo(Email em) {
+        return emailQueries.getManualTicketNo(em);
+    }
+
+
 //
 //    public List<EmailProperty> readSolvedEmailsByUsersFiltered(Users newValue, String reportFilter) {
 //        return emailQueries.readSolvedEmailsByUsersFiltered(newValue,reportFilter);

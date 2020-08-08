@@ -1,6 +1,5 @@
 package JCode;
 
-import Email.EResponse.EResponseController;
 import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -10,15 +9,12 @@ import javafx.stage.Stage;
 
 import java.io.IOException;
 import java.net.URL;
-import java.nio.charset.Charset;
-import java.text.*;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.Period;
-import java.time.Year;
-import java.time.format.DateTimeFormatter;
-import java.time.temporal.ChronoField;
-import java.time.temporal.ChronoUnit;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
@@ -238,16 +234,24 @@ public class CommonTasks {
     public static String getTimeDuration(String locktime, String solvtime) throws ParseException {
 
         SimpleDateFormat inputFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.S");
-        Date date1 = inputFormat.parse(locktime);
-        Date date2 = inputFormat.parse(solvtime);
-        long diff = date1.getTime() - date2.getTime();
+        Date date1 = null, date2;
+        long diff = 0;
+        if(locktime == null) {
+            date2 = inputFormat.parse(solvtime);
+        } else {
+            date1 = inputFormat.parse(locktime);
+            date2 = inputFormat.parse(solvtime);
+            diff= date2.getTime() - date1.getTime();
+        }
+
+        
         int diffDays = (int) (diff / (24 * 60 * 60 * 1000));
         int diffHours = (int) (diff / (60 * 60 * 1000));
-        int hours =diffHours-(24*diffDays);
+        int hours = diffHours - (24 * diffDays);
 
         int diffMin = (int) (diff / (60 * 1000));
-        int min =diffMin-(diffHours*60);
-        String str = (diffDays +" Days "+hours+" Hours "+min+" Minutes ");
+        int min = diffMin - (diffHours * 60);
+        String str = (diffDays + " Days " + hours + " Hours " + min + " Minutes ");
         return str;
 
     }
