@@ -1,23 +1,21 @@
 package objects;
 
 
-import javax.mail.Address;
 import java.io.File;
-import java.util.ArrayList;
 import java.util.List;
 
 public class Email {
 
-    private int EmailNo, msgNo, lockd, solvBy, type, emailStoreNo, manual;
-    private Address[] toAddress, fromAddress, ccAddress, bccAddress;
-    private String subject, timestamp, timeFormatted, body, attch, uploadedDocumentsString, lockedByName, disclaimer, user, solvByName, createdBy, lockTime, solveTime;
+    private int code, messageNo, locked=0, solvedBy,freeze=0,  emailStoreNo, manualEmail=0,sent;
+    private String toAddress, fromAddress, ccAddress, bccAddress;
+    private String subject, timestamp, timeFormatted, body, attachment,userCode,type, uploadedDocumentsString, lockedByName, disclaimer, solvByName, createdBy, lockTime, solveTime;
     private List<File> attachments;
     private List<Document> documents;
     private List<ContactProperty> relatedContacts;
     private List<ClientProperty> relatedClients;
-    private List<Email> relatedEmails = new ArrayList<>();
-    private char solvFlag, isAttch;
-    private boolean isSent, freze, isEmailTypeSent = false;
+//    private List<Email> relatedEmails = new ArrayList<>();
+    private char solved;
+//    private boolean   isEmailTypeSent = false;
     private String rawContent;
     private List<Note> notes;
 
@@ -26,137 +24,62 @@ public class Email {
     public Email() {
     }
 
-    @Override
-    public String toString() {
-
-        String e = EmailNo + " - ";
-
-        if (!isEmailTypeSent) {
-            e = e + fromAddress[0].toString();
-        } else {
-            e = e + toAddress[0].toString();
-        }
-
-        e = e + "\n" +
-                getTimeFormatted() + "\n" +
-                ((subject.length() > 20) ? subject.substring(0, 20) + "..." : subject) +
-                ((relatedEmails.size() > 0) ? "\nAttached @: " + relatedEmails.size() : "");
-        return e;
+    public void setType(String type) {
+        this.type = type;
     }
 
-    public int getEmailNo() {
-        return EmailNo;
-    }
-
-    public void setEmailNo(int emailNo) {
-        EmailNo = emailNo;
-    }
-
-    public int getMsgNo() {
-        return msgNo;
-    }
-
-    public void setMsgNo(int msgNo) {
-        this.msgNo = msgNo;
-    }
-
-    public Address[] getToAddress() {
+    public String getToAddress() {
         return toAddress;
     }
 
-    public String getToAddressString() {
-        String s = "";
-        for (Address ad : toAddress) {
-            if(ad !=null) // my change
-                s = s + "^" + ad;
-        }
-        return s;
-    }
-
-    public void setToAddress(Address[] toAddress) {
+    public void setToAddress(String toAddress) {
         this.toAddress = toAddress;
     }
 
-    public Address[] getFromAddress() {
+    public String getFromAddress() {
         return fromAddress;
     }
 
-    public String getFromAddressString() {
-        String s = "";
-        for (Address ad : fromAddress) {
-            if (ad != null)
-                s = s + "^" + ad;
-        }
-        return s;
-    }
-
-    //
-    public String getFromAddressCommaString() {
-        String s = "";
-        for (Address ad : fromAddress) {
-            if (ad != null)
-                s = s + ad + ",";
-        }
-        return s;
-    }
-
-    public void setFromAddress(Address[] fromAddress) {
+    public void setFromAddress(String fromAddress) {
         this.fromAddress = fromAddress;
     }
 
-    public Address[] getCcAddress() {
+    public String getCcAddress() {
         return ccAddress;
     }
 
-    public String getCcAddressString() {
-        String s = "";
-        try {
-            for (Address ad : ccAddress) {
-                if (ad != null)
-                    s = s + "^" + ad;
-            }
-        } catch (NullPointerException e) {
-            return "";
-        }
-        return s;
-    }
-
-    public String getCcAddressCommaString() {
-        String s = "";
-        try {
-            for (Address ad : ccAddress) {
-                if (ad != null)
-                    s = s + ad + ",";
-            }
-        } catch (NullPointerException e) {
-            return "";
-        }
-        return s;
-    }
-
-    public void setCcAddress(Address[] ccAddress) {
+    public void setCcAddress(String ccAddress) {
         this.ccAddress = ccAddress;
     }
 
-    public Address[] getBccAddress() {
+    public String getBccAddress() {
         return bccAddress;
     }
 
-    public String getBccAddressString() {
-        String s = "";
-        try {
-            for (Address ad : bccAddress) {
-                s = s + "^" + ad;
-            }
-        } catch (NullPointerException e) {
-            return "";
-        }
-        return s;
-    }
-
-    public void setBccAddress(Address[] bccAddress) {
+    public void setBccAddress(String bccAddress) {
         this.bccAddress = bccAddress;
     }
+
+    public String getType() {
+        return type;
+    }
+
+    public int getCode() {
+        return code;
+    }
+
+    public void setCode(int code) {
+        this.code = code;
+    }
+
+    public int getMessageNo() {
+        return messageNo;
+    }
+
+    public void setMessageNo(int messageNo) {
+        this.messageNo = messageNo;
+    }
+
 
     public List<ContactProperty> getRelatedContacts() {
         return relatedContacts;
@@ -222,12 +145,12 @@ public class Email {
         this.documents = documents;
     }
 
-    public String getAttch() {
-        return attch;
+    public String getAttachment() {
+        return attachment;
     }
 
-    public void setAttch(String attch) {
-        this.attch = attch;
+    public void setAttachment(String attachment) {
+        this.attachment = attachment;
     }
 
     public String getUploadedDocumentsString() {
@@ -246,28 +169,21 @@ public class Email {
         this.attachments = attachments;
     }
 
-    public char getIsAttch() {
-        return isAttch;
+
+    public char getSolved() {
+        return solved;
     }
 
-    public void setIsAttch(char isAttch) {
-        this.isAttch = isAttch;
+    public void setSolved(char solved) {
+        this.solved = solved;
     }
 
-    public char getSolvFlag() {
-        return solvFlag;
+    public int getLocked() {
+        return locked;
     }
 
-    public void setSolvFlag(char solvFlag) {
-        this.solvFlag = solvFlag;
-    }
-
-    public int getLockd() {
-        return lockd;
-    }
-
-    public void setLockd(int lockd) {
-        this.lockd = lockd;
+    public void setLocked(int locked) {
+        this.locked = locked;
     }
 
     public String getLockedByName() {
@@ -294,20 +210,20 @@ public class Email {
         this.solveTime = solveTime;
     }
 
-    public String getUser() {
-        return user;
+//    public String getUserCode() {
+//        return userCode;
+//    }
+//
+//    public void setUserCode(String userCode) {
+//        this.userCode = userCode;
+//    }
+
+    public int getManualEmail() {
+        return manualEmail;
     }
 
-    public void setUser(String user) {
-        this.user = user;
-    }
-
-    public int getManual() {
-        return manual;
-    }
-
-    public void setManual(int manual) {
-        this.manual = manual;
+    public void setManualEmail(int manualEmail) {
+        this.manualEmail = manualEmail;
     }
 
     public String getCreatedBy() {
@@ -318,12 +234,12 @@ public class Email {
         this.createdBy = createdBy;
     }
 
-    public int getSolvBy() {
-        return solvBy;
+    public int getSolvedBy() {
+        return solvedBy;
     }
 
-    public void setSolvBy(int solvBy) {
-        this.solvBy = solvBy;
+    public void setSolvedBy(int solvedBy) {
+        this.solvedBy = solvedBy;
     }
 
     public String getSolvByName() {
@@ -334,13 +250,13 @@ public class Email {
         this.solvByName = solvByName;
     }
 
-    public int getType() {
-        return type;
-    }
-
-    public void setType(int type) {
-        this.type = type;
-    }
+//    public int getType() {
+//        return type;
+//    }
+//
+//    public void setType(int type) {
+//        this.type = type;
+//    }
 
     public int getEmailStoreNo() {
         return emailStoreNo;
@@ -350,37 +266,37 @@ public class Email {
         this.emailStoreNo = emailStoreNo;
     }
 
-    public List<Email> getRelatedEmails() {
-        return relatedEmails;
-    }
+//    public List<Email> getRelatedEmails() {
+//        return relatedEmails;
+//    }
+//
+//    public void setRelatedEmails(List<Email> relatedEmails) {
+//        this.relatedEmails = relatedEmails;
+//    }
 
-    public void setRelatedEmails(List<Email> relatedEmails) {
-        this.relatedEmails = relatedEmails;
-    }
+//    public boolean isSent() {
+//        return sent;
+//    }
+//
+//    public void setSent(boolean sent) {
+//        this.sent = sent;
+//    }
 
-    public boolean isSent() {
-        return isSent;
-    }
+//    public boolean isEmailTypeSent() {
+//        return isEmailTypeSent;
+//    }
+//
+//    public void setEmailTypeSent(boolean emailTypeSent) {
+//        isEmailTypeSent = emailTypeSent;
+//    }
 
-    public void setSent(boolean sent) {
-        isSent = sent;
-    }
-
-    public boolean isEmailTypeSent() {
-        return isEmailTypeSent;
-    }
-
-    public void setEmailTypeSent(boolean emailTypeSent) {
-        isEmailTypeSent = emailTypeSent;
-    }
-
-    public boolean isFreze() {
-        return freze;
-    }
-
-    public void setFreze(boolean freze) {
-        this.freze = freze;
-    }
+//    public boolean isFreeze() {
+//        return freeze;
+//    }
+//
+//    public void setFreeze(boolean freeze) {
+//        this.freeze = freeze;
+//    }
 
     public List<Note> getNotes() {
         return notes;
@@ -390,4 +306,35 @@ public class Email {
         this.notes = notes;
     }
 
+    public int getFreeze() {
+        return freeze;
+    }
+
+    public void setFreeze(int freeze) {
+        this.freeze = freeze;
+    }
+
+    public String getUserCode() {
+        return userCode;
+    }
+
+    public void setUserCode(String userCode) {
+        this.userCode = userCode;
+    }
+
+    public int getSent() {
+        return sent;
+    }
+
+    public void setSent(int sent) {
+        this.sent = sent;
+    }
+
+    public String getRawContent() {
+        return rawContent;
+    }
+
+    public void setRawContent(String rawContent) {
+        this.rawContent = rawContent;
+    }
 }

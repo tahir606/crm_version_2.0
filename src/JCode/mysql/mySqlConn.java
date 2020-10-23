@@ -691,4 +691,12 @@ public class mySqlConn {
     public void updateNote(Note note, Email email) {
         noteQueries.updateNote(note, email);
     }
+
+    public List<EmailProperty> clientReportWithDomain(ClientProperty clientProperty, String reportFilter) {
+        return  reportQueries.clientReportWithDomain(clientProperty,reportFilter);
+    }
+
+    public List<ClientProperty> clientName() {
+        return clientQueries.clientName();
+    }
 }

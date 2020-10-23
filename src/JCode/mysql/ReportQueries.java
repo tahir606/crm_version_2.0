@@ -1,12 +1,17 @@
 package JCode.mysql;
 
+import JCode.CommonTasks;
 import objects.ClientProperty;
+import objects.EmailProperty;
 import objects.Users;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -65,5 +70,35 @@ public class ReportQueries {
             e.printStackTrace();
         }
         return clients;
+    }
+
+    public List<EmailProperty> clientReportWithDomain(ClientProperty clientProperty, String reportFilter) {
+        String query = "SELECT EMNO, SBJCT, FRADD,SUBSTRING(EBODY, 1, 100) AS emailBody, TSTMP, LOCKTIME, SOLVTIME" +
+                " FROM email_store  WHERE FREZE=0  AND  SUBSTRING_INDEX(SUBSTRING_INDEX(FRADD,'>',1),'<',-1)  IN (Select email_list.EM_NAME FROM email_list" +
+                "  WHERE email_list.CL_ID =? and email_list.CL_ID!=0 GROUP BY email_list.EM_NAME) " +reportFilter ;
+        System.out.println(query);
+        List<EmailProperty> allEmails = new ArrayList<>();
+        try {
+            PreparedStatement statement = static_con.prepareStatement(query);
+            statement.setInt(1, clientProperty.getCode());
+            ResultSet set = statement.executeQuery();
+            while (set.next()) {
+                EmailProperty email = new EmailProperty();
+                email.setEmail_No(set.getInt("EMNO"));
+                email.setSubject(set.getString("SBJCT"));
+                email.setFrom_Address(set.getString("FRADD").replace("^", " "));
+                Document doc = Jsoup.parse(set.getString("emailBody"));
+                String text = doc.body().text();
+                email.setEmail_Body(text);
+                email.setTimestamp(CommonTasks.getTimeFormatted(set.getString("TSTMP")));
+                email.setLock_time(CommonTasks.getTimeFormatted(set.getString("LOCKTIME")));
+                email.setSolve_Time(CommonTasks.getTimeFormatted(set.getString("SOLVTIME")));
+                email.setDuration(CommonTasks.getTimeDuration(set.getString("LOCKTIME"), set.getString("SOLVTIME")));
+                allEmails.add(email);
+            }
+        } catch (SQLException | ParseException ex) {
+            ex.printStackTrace();
+        }
+        return allEmails;
     }
 }

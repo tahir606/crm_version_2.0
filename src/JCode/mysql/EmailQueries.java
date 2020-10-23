@@ -2,13 +2,10 @@ package JCode.mysql;
 
 import Email.EResponse.EResponseController;
 import JCode.CommonTasks;
-import JCode.emailControl;
 import objects.*;
 
 import javax.mail.Address;
 import javax.mail.Message;
-import javax.mail.internet.AddressException;
-import javax.mail.internet.InternetAddress;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -28,6 +25,7 @@ public class EmailQueries {
     private Users user;
     private EmailPhoneQueries emailPhoneQueries;
     private NoteQueries noteQueries;
+
     public EmailQueries(Connection static_con, Users user, ESetting eSetting, EmailPhoneQueries emailPhoneQueries, NoteQueries
             noteQueries) {
         this.static_con = static_con;
@@ -62,18 +60,18 @@ public class EmailQueries {
     }
 
     public void createEmailRelations(Email email) {
-        try {
+//        try {
 //            for (Address address : email.getFromAddress()) {
 //                subCreateEmailRelation(address, email);
 //            }
-            if (email.getCcAddress() != null) {
-                for (Address address : email.getCcAddress()) {
-                    subCreateEmailRelation(address, email);
-                }
-            }
-        } catch (SQLException e) {
-            e.getLocalizedMessage();
-        }
+//            if (email.getCcAddress() != null) {
+//                for (Address address : email.getCcAddress()) {
+//                    subCreateEmailRelation(address, email);
+//                }
+//            }
+//        } catch (SQLException e) {
+//            e.getLocalizedMessage();
+//        }
     }
 
     private String mainQuery = "SELECT DISTINCT EM_ID, EM_NAME, CL_ID, CS_ID, UCODE FROM EMAIL_LIST WHERE EM_NAME LIKE ";
@@ -89,11 +87,10 @@ public class EmailQueries {
                 System.out.println(e);
                 splitted = address.toString();
             }
-            System.out.println("Email split : " + splitted);
             PreparedStatement statement = static_con.prepareStatement(mainQuery + " '%" + splitted + "%'");
             ResultSet set = statement.executeQuery();
             while (set.next()) {
-                int emno = email.getEmailNo(),
+                int emno = email.getCode(),
                         emid = set.getInt("EM_ID"),
                         cl = set.getInt("CL_ID"),
                         cs = set.getInt("CS_ID"),
@@ -125,7 +122,7 @@ public class EmailQueries {
         List<ContactProperty> contacts = new ArrayList<>();
         try {
             statement = static_con.prepareStatement(query);
-            statement.setInt(1, email.getEmailNo());
+            statement.setInt(1, email.getCode());
             ResultSet set = statement.executeQuery();
             while (set.next()) {
                 ContactProperty c = new ContactProperty();
@@ -152,7 +149,7 @@ public class EmailQueries {
         List<ClientProperty> clients = new ArrayList<>();
         try {
             statement = static_con.prepareStatement(query);
-            statement.setInt(1, email.getEmailNo());
+            statement.setInt(1, email.getCode());
             ResultSet set = statement.executeQuery();
             while (set.next()) {
                 ClientProperty c = new ClientProperty();
@@ -253,22 +250,22 @@ public class EmailQueries {
         try {
             statement = static_con.prepareStatement(query);
             statement.setString(1, email.getSubject());
-            statement.setString(2, email.getToAddressString());
-            statement.setString(3, email.getFromAddressString());
+//            statement.setString(2, email.getToAddressString());
+//            statement.setString(3, email.getFromAddressString());
             statement.setString(4, email.getTimestamp());
             statement.setString(5, email.getBody());
-            statement.setString(6, email.getAttch());
-            statement.setString(7, email.getCcAddressString());
-            statement.setString(8, String.valueOf(email.getSolvFlag()));
-            statement.setInt(9, email.getMsgNo());
-            statement.setInt(10, email.getLockd());
-            statement.setBoolean(11, email.isFreze());
+            statement.setString(6, email.getAttachment());
+//            statement.setString(7, email.getCcAddressString());
+            statement.setString(8, String.valueOf(email.getSolved()));
+            statement.setInt(9, email.getMessageNo());
+            statement.setInt(10, email.getLocked());
+            statement.setInt(11, email.getFreeze());
             statement.executeUpdate();
 
             statement.close();
 
             int emno = getEmailNo(email);
-            email.setEmailNo(emno);
+            email.setCode(emno);
 
             createEmailRelations(email);
 
@@ -292,17 +289,17 @@ public class EmailQueries {
         try {
             statement = static_con.prepareStatement(query);
             statement.setString(1, email.getSubject());
-            statement.setString(2, email.getToAddressString());
-            statement.setString(3, email.getFromAddressString());
+//            statement.setString(2, email.getToAddressString());
+//            statement.setString(3, email.getFromAddressString());
             statement.setString(4, email.getTimestamp());
             statement.setString(5, email.getBody());
-            statement.setString(6, email.getAttch());
-            statement.setString(7, email.getCcAddressString());
+            statement.setString(6, email.getAttachment());
+//            statement.setString(7, email.getCcAddressString());
             statement.setString(8, "N");
-            statement.setInt(9, email.getMsgNo());
-            statement.setInt(10, email.getLockd());
-            statement.setBoolean(11, email.isFreze());
-            statement.setInt(12, email.getManual());
+            statement.setInt(9, email.getMessageNo());
+            statement.setInt(10, email.getLocked());
+            statement.setInt(11, email.getFreeze());
+            statement.setInt(12, email.getManualEmail());
             statement.executeUpdate();
 
             statement.close();
@@ -321,9 +318,8 @@ public class EmailQueries {
             return false;
         else {
             for (int i : ints) {
-                email.setEmailNo(i);
+                email.setCode(i);
                 insertEmailRelated(email);
-                System.out.println("Attached to: \n\t\t" + email);
             }
             return true;
         }
@@ -347,7 +343,6 @@ public class EmailQueries {
             List<Integer> list = new ArrayList<>();
 
             while (set.next()) {
-                System.out.println("Attaching to: " + set.getInt("EMNO"));
                 list.add(set.getInt("EMNO"));
             }
 
@@ -368,15 +363,15 @@ public class EmailQueries {
 
         try {
             statement = static_con.prepareStatement(query);
-            statement.setInt(1, email.getEmailNo());
+            statement.setInt(1, email.getCode());
             statement.setString(2, email.getSubject());
-            statement.setString(3, email.getToAddressString());
-            statement.setString(4, email.getFromAddressString());
+//            statement.setString(3, email.getToAddressString());
+//            statement.setString(4, email.getFromAddressString());
             statement.setString(5, email.getTimestamp());
             statement.setString(6, email.getBody());
-            statement.setString(7, email.getAttch());
-            statement.setString(8, email.getCcAddressString());
-            statement.setInt(9, email.getMsgNo());
+            statement.setString(7, email.getAttachment());
+//            statement.setString(8, email.getCcAddressString());
+            statement.setInt(9, email.getMessageNo());
             statement.executeUpdate();
 
             statement.close();
@@ -404,54 +399,54 @@ public class EmailQueries {
 
         try {
             PreparedStatement statement = static_con.prepareStatement(query);
-            statement.setInt(1, where.getEmailNo());
+            statement.setInt(1, where.getCode());
             ResultSet set = statement.executeQuery();
             //-------------Creating Email-------------
             while (set.next()) {
                 Email email = new Email();
-                email.setEmailNo(set.getInt("EMNO"));
-                email.setMsgNo(set.getInt("MSGNO"));
+                email.setCode(set.getInt("EMNO"));
+                email.setMessageNo(set.getInt("MSGNO"));
                 email.setSubject(set.getString("SBJCT"));
                 email.setTimestamp(set.getString("TSTMP"));
                 email.setTimeFormatted(CommonTasks.getTimeFormatted(email.getTimestamp()));
 
                 email.setBody(set.getString("EBODY"));
-                email.setAttch(set.getString("ATTCH"));
+                email.setAttachment(set.getString("ATTCH"));
                 //------From Address
                 String[] from = set.getString("FRADD").split("\\^");
-                Address[] fromAddress = new Address[from.length];
-                for (int i = 1, j = 0; i < from.length; i++, j++) {
-                    try {
-                        fromAddress[j] = new InternetAddress(from[i]);
-                    } catch (AddressException e) {
-                        e.printStackTrace();
-                    }
-                }
-                email.setFromAddress(fromAddress);
+//                Address[] fromAddress = new Address[from.length];
+//                for (int i = 1, j = 0; i < from.length; i++, j++) {
+//                    try {
+//                        fromAddress[j] = new InternetAddress(from[i]);
+//                    } catch (AddressException e) {
+//                        e.printStackTrace();
+//                    }
+//                }
+//                email.setFromAddress(fromAddress);
 
                 //-----To Address
                 String[] to = set.getString("TOADD").split("\\^");
-                Address[] toAddress = new Address[to.length];
-                for (int i = 1, j = 0; i < to.length; i++, j++) {
-                    try {
-                        toAddress[j] = new InternetAddress(to[i]);
-                    } catch (AddressException e) {
-                        e.printStackTrace();
-                    }
-                }
-                email.setToAddress(toAddress);
+//                Address[] toAddress = new Address[to.length];
+//                for (int i = 1, j = 0; i < to.length; i++, j++) {
+//                    try {
+//                        toAddress[j] = new InternetAddress(to[i]);
+//                    } catch (AddressException e) {
+//                        e.printStackTrace();
+//                    }
+//                }
+//                email.setToAddress(toAddress);
 
                 //----- CC Address
-                String[] cc = set.getString("CCADD").split("\\^");
-                Address[] ccAddress = new Address[cc.length];
-                for (int i = 1, j = 0; i < cc.length; i++, j++) {
-                    try {
-                        ccAddress[j] = new InternetAddress(cc[i]);
-                    } catch (AddressException e) {
-                        e.printStackTrace();
-                    }
-                }
-                email.setCcAddress(ccAddress);
+//                String[] cc = set.getString("CCADD").split("\\^");
+//                Address[] ccAddress = new Address[cc.length];
+//                for (int i = 1, j = 0; i < cc.length; i++, j++) {
+//                    try {
+//                        ccAddress[j] = new InternetAddress(cc[i]);
+//                    } catch (AddressException e) {
+//                        e.printStackTrace();
+//                    }
+//                }
+//                email.setCcAddress(ccAddress);
 
                 allEmails.add(email);
             }
@@ -469,14 +464,13 @@ public class EmailQueries {
     public static String autoReplySubject = "Burhani Customer Support - Ticket Number: ";
 
     private void autoReply(Email email, Message message) {
-        System.out.println("auto text:"+eSetting.getAutotext());
-        String body = "<h3>The Ticket Number Issued to you is: <b>" + email.getEmailNo() + "</b></h3>\n" + eSetting.getAutotext();
+        String body = "<h3>The Ticket Number Issued to you is: <b>" + email.getCode() + "</b></h3>\n" + eSetting.getAutotext();
 
         Email e = new Email();
-        e.setSubject(autoReplySubject + email.getEmailNo());
-        e.setToAddress(new Address[]{email.getFromAddress()[0]});
+        e.setSubject(autoReplySubject + email.getCode());
+//        e.setToAddress(new Address[]{email.getFromAddress()[0]});
         e.setBody(body + "<br><br><br>" + "--------In Reply To--------" + "<br><br><h4>Subject:   <b>" + email.getSubject() + "</b></h4><br><br>" + email.getBody());
-        emailControl.sendEmail(e, message);
+//        emailControl.sendEmail(e, message);
 
     }
 
@@ -529,7 +523,7 @@ public class EmailQueries {
         try {
 
             PreparedStatement statementEMNO = static_con.prepareStatement(queryEMNO);
-            statementEMNO.setInt(1, email.getMsgNo());
+            statementEMNO.setInt(1, email.getMessageNo());
             statementEMNO.setString(2, email.getSubject());
             statementEMNO.setString(3, email.getTimestamp());
             ResultSet set = statementEMNO.executeQuery();
@@ -617,67 +611,67 @@ public class EmailQueries {
             mySqlConn sql = null;
             while (set.next()) {
                 Email email = new Email();
-                email.setEmailNo(set.getInt("EMNO"));
-                email.setMsgNo(set.getInt("MSGNO"));
+                email.setCode(set.getInt("EMNO"));
+                email.setMessageNo(set.getInt("MSGNO"));
                 email.setSubject(set.getString("SBJCT"));
                 email.setTimestamp(set.getString("TSTMP"));
                 email.setTimeFormatted(CommonTasks.getTimeFormatted(email.getTimestamp()));
 
                 email.setBody(set.getString("EBODY"));
-                email.setAttch(set.getString("ATTCH"));
-                email.setSolvFlag(set.getString("ESOLV").charAt(0));
-                email.setLockd(set.getInt("LOCKD"));
+                email.setAttachment(set.getString("ATTCH"));
+                email.setSolved(set.getString("ESOLV").charAt(0));
+                email.setLocked(set.getInt("LOCKD"));
                 email.setLockTime(set.getString("LOCKTIME"));
                 email.setSolveTime(set.getString("SOLVTIME"));
-                email.setManual(set.getInt("MANUAL"));
-                if (email.getManual() != '\0') {
+                email.setManualEmail(set.getInt("MANUAL"));
+                if (email.getManualEmail() != '\0') {
                     if (sql == null) sql = new mySqlConn();
-                    email.setCreatedBy(sql.getUserName(email.getManual()));
+                    email.setCreatedBy(sql.getUserName(email.getManualEmail()));
                 }
                 if (set.getInt("LOCKD") == '\0') {
                     email.setLockedByName("Unlocked");
                 } else {
-                    email.setLockedByName(userQueries.getUserName(email.getLockd())); //Getting name of username that
+                    email.setLockedByName(userQueries.getUserName(email.getLocked())); //Getting name of username that
                     // locked
                 }                                                              // particular email
 
 
                 //------From Address
                 String[] from = set.getString("FRADD").split("\\^");
-                Address[] fromAddress = new Address[from.length];
-                for (int i = 1, j = 0; i < from.length; i++, j++) {
-                    try {
-                        fromAddress[j] = new InternetAddress(from[i]);
-                    } catch (AddressException e) {
-                        e.printStackTrace();
-                    }
-                }
-                email.setFromAddress(fromAddress);
+//                Address[] fromAddress = new Address[from.length];
+//                for (int i = 1, j = 0; i < from.length; i++, j++) {
+//                    try {
+//                        fromAddress[j] = new InternetAddress(from[i]);
+//                    } catch (AddressException e) {
+//                        e.printStackTrace();
+//                    }
+//                }
+//                email.setFromAddress(fromAddress);
 
                 //-----To Address
                 String[] to = set.getString("TOADD").split("\\^");
-                Address[] toAddress = new Address[to.length];
-                for (int i = 1, j = 0; i < to.length; i++, j++) {
-                    try {
-                        toAddress[j] = new InternetAddress(to[i]);
-                    } catch (AddressException e) {
-                        e.printStackTrace();
-                    }
-                }
-                email.setToAddress(toAddress);
+//                Address[] toAddress = new Address[to.length];
+//                for (int i = 1, j = 0; i < to.length; i++, j++) {
+//                    try {
+//                        toAddress[j] = new InternetAddress(to[i]);
+//                    } catch (AddressException e) {
+//                        e.printStackTrace();
+//                    }
+//                }
+//                email.setToAddress(toAddress);
 
                 //----- CC Address
                 String[] cc = set.getString("CCADD").split("\\^");
-                Address[] ccAddress = new Address[cc.length];
-                for (int i = 1, j = 0; i < cc.length; i++, j++) {
-                    try {
-                        ccAddress[j] = new InternetAddress(cc[i]);
-                    } catch (AddressException e) {
-                        e.printStackTrace();
-                    }
-                }
-                email.setCcAddress(ccAddress);
-//
+//                Address[] ccAddress = new Address[cc.length];
+//                for (int i = 1, j = 0; i < cc.length; i++, j++) {
+//                    try {
+//                        ccAddress[j] = new InternetAddress(cc[i]);
+//                    } catch (AddressException e) {
+//                        e.printStackTrace();
+//                    }
+//                }
+//                email.setCcAddress(ccAddress);
+////
 //                email.setRelatedContacts(getEmailContactRelations(email));
 //                email.setRelatedClients(getEmailClientRelations(email));
 //
@@ -706,14 +700,14 @@ public class EmailQueries {
         try {
             statement = static_con.prepareStatement(query);
             statement.setString(1, email.getSubject());
-            statement.setString(2, email.getToAddressString());
-            statement.setString(3, email.getFromAddressString());
+//            statement.setString(2, email.getToAddressString());
+//            statement.setString(3, email.getFromAddressString());
             statement.setString(4, email.getTimestamp());
             statement.setString(5, email.getBody());
-            statement.setString(6, email.getAttch());
-            statement.setString(7, email.getCcAddressString());
-            statement.setInt(8, email.getMsgNo());
-            statement.setBoolean(9, email.isFreze());
+            statement.setString(6, email.getAttachment());
+//            statement.setString(7, email.getCcAddressString());
+            statement.setInt(8, email.getMessageNo());
+            statement.setInt(9, email.getFreeze());
             statement.executeUpdate();
 
             statement.close();
@@ -748,8 +742,8 @@ public class EmailQueries {
 
             while (set.next()) {
                 Email email = new Email();
-                email.setEmailNo(set.getInt("EMNO"));
-                email.setMsgNo(set.getInt("MSGNO"));
+                email.setCode(set.getInt("EMNO"));
+                email.setMessageNo(set.getInt("MSGNO"));
                 email.setSubject(set.getString("SBJCT"));
                 email.setTimestamp(set.getString("TSTMP"));
 
@@ -770,46 +764,46 @@ public class EmailQueries {
                 }
 
                 email.setBody(set.getString("EBODY"));
-                email.setAttch(set.getString("ATTCH"));
+                email.setAttachment(set.getString("ATTCH"));
                 // particular email
 
 
                 //------From Address
                 String[] from = set.getString("FRADD").split("\\^");
-                Address[] fromAddress = new Address[from.length];
-                for (int i = 1, j = 0; i < from.length; i++, j++) {
-                    try {
-                        fromAddress[j] = new InternetAddress(from[i]);
-                    } catch (AddressException e) {
-                        e.printStackTrace();
-                    }
-                }
-                email.setFromAddress(fromAddress);
+//                Address[] fromAddress = new Address[from.length];
+//                for (int i = 1, j = 0; i < from.length; i++, j++) {
+//                    try {
+//                        fromAddress[j] = new InternetAddress(from[i]);
+//                    } catch (AddressException e) {
+//                        e.printStackTrace();
+//                    }
+//                }
+//                email.setFromAddress(fromAddress);
 
 
                 //-----To Address
                 String[] to = set.getString("TOADD").split("\\^");
-                Address[] toAddress = new Address[to.length];
-                for (int i = 1, j = 0; i < to.length; i++, j++) {
-                    try {
-                        toAddress[j] = new InternetAddress(to[i]);
-                    } catch (AddressException e) {
-                        e.printStackTrace();
-                    }
-                }
-                email.setToAddress(toAddress);
-
-                //----- CC Address
-                String[] cc = set.getString("CCADD").split("\\^");
-                Address[] ccAddress = new Address[cc.length];
-                for (int i = 1, j = 0; i < cc.length; i++, j++) {
-                    try {
-                        ccAddress[j] = new InternetAddress(cc[i]);
-                    } catch (AddressException e) {
-                        e.printStackTrace();
-                    }
-                }
-                email.setCcAddress(ccAddress);
+//                Address[] toAddress = new Address[to.length];
+//                for (int i = 1, j = 0; i < to.length; i++, j++) {
+//                    try {
+//                        toAddress[j] = new InternetAddress(to[i]);
+//                    } catch (AddressException e) {
+//                        e.printStackTrace();
+//                    }
+//                }
+//                email.setToAddress(toAddress);
+//
+//                //----- CC Address
+//                String[] cc = set.getString("CCADD").split("\\^");
+//                Address[] ccAddress = new Address[cc.length];
+//                for (int i = 1, j = 0; i < cc.length; i++, j++) {
+//                    try {
+//                        ccAddress[j] = new InternetAddress(cc[i]);
+//                    } catch (AddressException e) {
+//                        e.printStackTrace();
+//                    }
+//                }
+//                email.setCcAddress(ccAddress);
 
                 allEmails.add(email);
             }
@@ -828,31 +822,30 @@ public class EmailQueries {
 
         PreparedStatement statement = null;
 
-        System.out.println(email.getTimestamp());
         try {
             statement = static_con.prepareStatement(query);
             statement.setString(1, email.getSubject());
-            statement.setString(2, email.getFromAddressString());
-            statement.setString(3, email.getToAddressString());
-            statement.setString(4, email.getCcAddressString());
-            statement.setString(5, email.getBccAddressString());
+//            statement.setString(2, email.getFromAddressString());
+//            statement.setString(3, email.getToAddressString());
+//            statement.setString(4, email.getCcAddressString());
+//            statement.setString(5, email.getBccAddressString());
             statement.setString(6, email.getTimestamp());
             statement.setString(7, email.getBody());
-            statement.setString(8, email.getAttch());
+            statement.setString(8, email.getAttachment());
             statement.setInt(9, user.getUCODE());
             statement.setBoolean(10, false);
             statement.setInt(11, email.getEmailStoreNo());
             statement.setString(12, email.getUploadedDocumentsString());
-            statement.setBoolean(13, email.isSent());
+            statement.setInt(13, email.getSent());
             statement.executeUpdate();
 
             statement.close();
 
-            String[] allEmails = (email.getToAddressString() + "^"
-                    + email.getCcAddressString() + "^"
-                    + email.getBccAddressString()).split("\\^");
+//            String[] allEmails = (email.getToAddressString() + "^"
+//                    + email.getCcAddressString() + "^"
+//                    + email.getBccAddressString()).split("\\^");
 
-            emailPhoneQueries.emailsListInsertion(allEmails);
+//            emailPhoneQueries.emailsListInsertion(allEmails);
 
         } catch (SQLException e) {
             e.printStackTrace();
@@ -884,7 +877,7 @@ public class EmailQueries {
 
             while (set.next()) {
                 Email email = new Email();
-                email.setEmailNo(set.getInt("EMNO"));
+                email.setCode(set.getInt("EMNO"));
                 email.setSubject(set.getString("SBJCT"));
                 email.setTimestamp(set.getString("TSTMP"));
 
@@ -902,58 +895,58 @@ public class EmailQueries {
                 email.setTimeFormatted(outputText);
 
                 email.setBody(set.getString("EBODY"));
-                email.setAttch(set.getString("ATTCH"));
+                email.setAttachment(set.getString("ATTCH"));
 
                 //------From Address
                 String[] from = set.getString("FRADD").split("\\^");
-                Address[] fromAddress = new Address[from.length];
-                for (int i = 1, j = 0; i < from.length; i++, j++) {
-                    try {
-                        fromAddress[j] = new InternetAddress(from[i]);
-                    } catch (AddressException e) {
-                        e.printStackTrace();
-                    }
-                }
-                email.setFromAddress(fromAddress);
+//                Address[] fromAddress = new Address[from.length];
+//                for (int i = 1, j = 0; i < from.length; i++, j++) {
+//                    try {
+//                        fromAddress[j] = new InternetAddress(from[i]);
+//                    } catch (AddressException e) {
+//                        e.printStackTrace();
+//                    }
+//                }
+//                email.setFromAddress(fromAddress);
 
-                //-----To Address
-                String[] to = set.getString("TOADD").split("\\^");
-                Address[] toAddress = new Address[to.length];
-                for (int i = 1, j = 0; i < to.length; i++, j++) {
-                    try {
-                        toAddress[j] = new InternetAddress(to[i]);
-                    } catch (AddressException e) {
-                        e.printStackTrace();
-                    }
-                }
-                email.setToAddress(toAddress);
+//                //-----To Address
+//                String[] to = set.getString("TOADD").split("\\^");
+//                Address[] toAddress = new Address[to.length];
+//                for (int i = 1, j = 0; i < to.length; i++, j++) {
+//                    try {
+//                        toAddress[j] = new InternetAddress(to[i]);
+//                    } catch (AddressException e) {
+//                        e.printStackTrace();
+//                    }
+//                }
+//                email.setToAddress(toAddress);
+//
+//                //----- CC Address
+//                String[] cc = set.getString("CCADD").split("\\^");
+//                Address[] ccAddress = new Address[cc.length];
+//                for (int i = 1, j = 0; i < cc.length; i++, j++) {
+//                    try {
+//                        ccAddress[j] = new InternetAddress(cc[i]);
+//                    } catch (AddressException e) {
+//                        e.printStackTrace();
+//                    }
+//                }
+//                email.setCcAddress(ccAddress);
+//
+//                //----- CC Address
+//                String[] bcc = set.getString("BCCADD").split("\\^");
+//                Address[] bccAddress = new Address[bcc.length];
+//                for (int i = 1, j = 0; i < bcc.length; i++, j++) {
+//                    try {
+//                        bccAddress[j] = new InternetAddress(bcc[i]);
+//                    } catch (AddressException e) {
+//                        e.printStackTrace();
+//                    }
+//                }
+//                email.setBccAddress(bccAddress);
+                email.setUserCode(set.getString("FNAME"));
 
-                //----- CC Address
-                String[] cc = set.getString("CCADD").split("\\^");
-                Address[] ccAddress = new Address[cc.length];
-                for (int i = 1, j = 0; i < cc.length; i++, j++) {
-                    try {
-                        ccAddress[j] = new InternetAddress(cc[i]);
-                    } catch (AddressException e) {
-                        e.printStackTrace();
-                    }
-                }
-                email.setCcAddress(ccAddress);
-
-                //----- CC Address
-                String[] bcc = set.getString("BCCADD").split("\\^");
-                Address[] bccAddress = new Address[bcc.length];
-                for (int i = 1, j = 0; i < bcc.length; i++, j++) {
-                    try {
-                        bccAddress[j] = new InternetAddress(bcc[i]);
-                    } catch (AddressException e) {
-                        e.printStackTrace();
-                    }
-                }
-                email.setBccAddress(bccAddress);
-                email.setUser(set.getString("FNAME"));
-
-                email.setEmailTypeSent(true);
+//                email.setEmailTypeSent(true);
 
                 allEmails.add(email);
             }
@@ -983,11 +976,11 @@ public class EmailQueries {
             if (op == 1) {  //Locking
                 statement.setInt(1, user.getUCODE());
                 statement.setString(2, CommonTasks.getCurrentTimeStamp());
-                statement.setInt(3, email.getEmailNo());
+                statement.setInt(3, email.getCode());
             } else if (op == 0) {   //Unlocking
                 statement.setInt(1, 0);
                 statement.setString(2, null);
-                statement.setInt(3, email.getEmailNo());
+                statement.setInt(3, email.getCode());
             }
             statement.executeUpdate();
 
@@ -1017,7 +1010,7 @@ public class EmailQueries {
             statement.setString(1, flag);
             statement.setInt(2, user.getUCODE());
             statement.setString(3, email.getTimestamp());
-            statement.setInt(4, email.getEmailNo());
+            statement.setInt(4, email.getCode());
 
             statement.executeUpdate();
             statement.close();
@@ -1040,23 +1033,23 @@ public class EmailQueries {
         //Make it html worthy
         msg = msg.replace("\n", "<br>");
 
-        String sb = "Ticket Number: " + email.getEmailNo() + " Resolved";
+        String sb = "Ticket Number: " + email.getCode() + " Resolved";
 
         String bd = msg +
-                "<br><br><br>------------------- Ticket " + email.getEmailNo() + " -------------------" +
+                "<br><br><br>------------------- Ticket " + email.getCode() + " -------------------" +
                 "<br><br>Timestamp:     <b>" + email.getTimeFormatted() + "</b>" +
                 "<br><br>Subject:       <b>" + email.getSubject() + "</b>" +
-                "<br><br>" + email.getBody() ;
+                "<br><br>" + email.getBody();
         Email send = new Email();
         send.setSubject(sb);
         send.setToAddress(email.getFromAddress());
         send.setCcAddress(email.getCcAddress());
         send.setBody(bd);
-        if(email.getAttch()==null || email.getAttch().isEmpty()){
-        }else{
-            send.setAttachments(EResponseController.addFile(email.getAttch()));
+        if (email.getAttachment() == null || email.getAttachment().isEmpty()) {
+        } else {
+            send.setAttachments(EResponseController.addFile(email.getAttachment()));
         }
-        emailControl.sendEmail(send, null);
+//        emailControl.sendEmail(send, null);
 
     }
 
@@ -1089,7 +1082,7 @@ public class EmailQueries {
     }
 
     public void markAsSent(Email email) {
-        String query = "UPDATE EMAIL_SENT SET SENT = 1 WHERE EMNO = " + email.getEmailNo();
+        String query = "UPDATE EMAIL_SENT SET SENT = 1 WHERE EMNO = " + email.getCode();
 
         // Connection con = getConnection();
         PreparedStatement statement = null;
@@ -1188,8 +1181,8 @@ public class EmailQueries {
 
         try {
             PreparedStatement statement = static_con.prepareStatement(query);
-            statement.setBoolean(1, email.isSent());
-            statement.setInt(2, email.getEmailNo());
+            statement.setInt(1, email.getSent());
+            statement.setInt(2, email.getCode());
             statement.executeUpdate();
             statement.close();
         } catch (SQLException ex) {
@@ -1215,65 +1208,65 @@ public class EmailQueries {
             mySqlConn sql = null;
             while (set.next()) {
 //                Email email = new Email();
-                email.setEmailNo(set.getInt("EMNO"));
-                email.setMsgNo(set.getInt("MSGNO"));
+                email.setCode(set.getInt("EMNO"));
+                email.setMessageNo(set.getInt("MSGNO"));
                 email.setSubject(set.getString("SBJCT"));
                 email.setTimestamp(set.getString("TSTMP"));
                 email.setTimeFormatted(CommonTasks.getTimeFormatted(email.getTimestamp()));
 
                 email.setBody(set.getString("EBODY"));
-                email.setAttch(set.getString("ATTCH"));
-                email.setSolvFlag(set.getString("ESOLV").charAt(0));
-                email.setLockd(set.getInt("LOCKD"));
+                email.setAttachment(set.getString("ATTCH"));
+                email.setSolved(set.getString("ESOLV").charAt(0));
+                email.setLocked(set.getInt("LOCKD"));
                 email.setLockTime(set.getString("LOCKTIME"));
                 email.setSolveTime(set.getString("SOLVTIME"));
-                email.setManual(set.getInt("MANUAL"));
-                if (email.getManual() != '\0') {
+                email.setManualEmail(set.getInt("MANUAL"));
+                if (email.getManualEmail() != '\0') {
                     if (sql == null) sql = new mySqlConn();
-                    email.setCreatedBy(sql.getUserName(email.getManual()));
+                    email.setCreatedBy(sql.getUserName(email.getManualEmail()));
                 }
                 if (set.getInt("LOCKD") == '\0') {
                     email.setLockedByName("Unlocked");
                 } else {
-                    email.setLockedByName(userQueries.getUserName(email.getLockd())); //Getting name of username that
+                    email.setLockedByName(userQueries.getUserName(email.getLocked())); //Getting name of username that
                     // locked
                 }                                                              // particular email
 
                 //------From Address
-                String[] from = set.getString("FRADD").split("\\^");
-                Address[] fromAddress = new Address[from.length];
-                for (int i = 1, j = 0; i < from.length; i++, j++) {
-                    try {
-                        fromAddress[j] = new InternetAddress(from[i]);
-                    } catch (AddressException e) {
-                        e.printStackTrace();
-                    }
-                }
-                email.setFromAddress(fromAddress);
-
-                //-----To Address
-                String[] to = set.getString("TOADD").split("\\^");
-                Address[] toAddress = new Address[to.length];
-                for (int i = 1, j = 0; i < to.length; i++, j++) {
-                    try {
-                        toAddress[j] = new InternetAddress(to[i]);
-                    } catch (AddressException e) {
-                        e.printStackTrace();
-                    }
-                }
-                email.setToAddress(toAddress);
-
-                //----- CC Address
-                String[] cc = set.getString("CCADD").split("\\^");
-                Address[] ccAddress = new Address[cc.length];
-                for (int i = 1, j = 0; i < cc.length; i++, j++) {
-                    try {
-                        ccAddress[j] = new InternetAddress(cc[i]);
-                    } catch (AddressException e) {
-                        e.printStackTrace();
-                    }
-                }
-                email.setCcAddress(ccAddress);
+//                String[] from = set.getString("FRADD").split("\\^");
+//                Address[] fromAddress = new Address[from.length];
+//                for (int i = 1, j = 0; i < from.length; i++, j++) {
+//                    try {
+//                        fromAddress[j] = new InternetAddress(from[i]);
+//                    } catch (AddressException e) {
+//                        e.printStackTrace();
+//                    }
+//                }
+//                email.setFromAddress(fromAddress);
+//
+//                //-----To Address
+//                String[] to = set.getString("TOADD").split("\\^");
+//                Address[] toAddress = new Address[to.length];
+//                for (int i = 1, j = 0; i < to.length; i++, j++) {
+//                    try {
+//                        toAddress[j] = new InternetAddress(to[i]);
+//                    } catch (AddressException e) {
+//                        e.printStackTrace();
+//                    }
+//                }
+//                email.setToAddress(toAddress);
+//
+//                //----- CC Address
+//                String[] cc = set.getString("CCADD").split("\\^");
+//                Address[] ccAddress = new Address[cc.length];
+//                for (int i = 1, j = 0; i < cc.length; i++, j++) {
+//                    try {
+//                        ccAddress[j] = new InternetAddress(cc[i]);
+//                    } catch (AddressException e) {
+//                        e.printStackTrace();
+//                    }
+//                }
+//                email.setCcAddress(ccAddress);
 //                allEmails.add(email);
             }
 
@@ -1294,60 +1287,60 @@ public class EmailQueries {
 
         try {
             PreparedStatement statement = static_con.prepareStatement(query);
-            statement.setInt(1, email.getEmailNo());
+            statement.setInt(1, email.getCode());
             ResultSet set = statement.executeQuery();
             while (set.next()) {
                 Email email1 = new Email();
-                email1.setEmailNo(set.getInt("EMNO"));
-                email1.setMsgNo(set.getInt("MSGNO"));
+                email1.setCode(set.getInt("EMNO"));
+                email1.setMessageNo(set.getInt("MSGNO"));
                 email1.setSubject(set.getString("SBJCT"));
                 email1.setTimestamp(set.getString("TSTMP"));
                 email1.setTimeFormatted(CommonTasks.getTimeFormatted(email1.getTimestamp()));
 
                 email1.setBody(set.getString("EBODY"));
-                email1.setAttch(set.getString("ATTCH"));
-                email1.setSolvFlag(set.getString("ESOLV").charAt(0));
-                email1.setLockd(set.getInt("LOCKD"));
+                email1.setAttachment(set.getString("ATTCH"));
+                email1.setSolved(set.getString("ESOLV").charAt(0));
+                email1.setLocked(set.getInt("LOCKD"));
                 email1.setLockTime(set.getString("LOCKTIME"));
                 email1.setSolveTime(set.getString("SOLVTIME"));
-                email1.setManual(set.getInt("MANUAL"));
+                email1.setManualEmail(set.getInt("MANUAL"));
 
 
                 //------From Address
-                String[] from = set.getString("FRADD").split("\\^");
-                Address[] fromAddress = new Address[from.length];
-                for (int i = 1, j = 0; i < from.length; i++, j++) {
-                    try {
-                        fromAddress[j] = new InternetAddress(from[i]);
-                    } catch (AddressException e) {
-                        e.printStackTrace();
-                    }
-                }
-                email1.setFromAddress(fromAddress);
-
-                //-----To Address
-                String[] to = set.getString("TOADD").split("\\^");
-                Address[] toAddress = new Address[to.length];
-                for (int i = 1, j = 0; i < to.length; i++, j++) {
-                    try {
-                        toAddress[j] = new InternetAddress(to[i]);
-                    } catch (AddressException e) {
-                        e.printStackTrace();
-                    }
-                }
-                email1.setToAddress(toAddress);
-
-                //----- CC Address
-                String[] cc = set.getString("CCADD").split("\\^");
-                Address[] ccAddress = new Address[cc.length];
-                for (int i = 1, j = 0; i < cc.length; i++, j++) {
-                    try {
-                        ccAddress[j] = new InternetAddress(cc[i]);
-                    } catch (AddressException e) {
-                        e.printStackTrace();
-                    }
-                }
-                email1.setCcAddress(ccAddress);
+//                String[] from = set.getString("FRADD").split("\\^");
+//                Address[] fromAddress = new Address[from.length];
+//                for (int i = 1, j = 0; i < from.length; i++, j++) {
+//                    try {
+//                        fromAddress[j] = new InternetAddress(from[i]);
+//                    } catch (AddressException e) {
+//                        e.printStackTrace();
+//                    }
+//                }
+//                email1.setFromAddress(fromAddress);
+//
+//                //-----To Address
+//                String[] to = set.getString("TOADD").split("\\^");
+//                Address[] toAddress = new Address[to.length];
+//                for (int i = 1, j = 0; i < to.length; i++, j++) {
+//                    try {
+//                        toAddress[j] = new InternetAddress(to[i]);
+//                    } catch (AddressException e) {
+//                        e.printStackTrace();
+//                    }
+//                }
+//                email1.setToAddress(toAddress);
+//
+//                //----- CC Address
+//                String[] cc = set.getString("CCADD").split("\\^");
+//                Address[] ccAddress = new Address[cc.length];
+//                for (int i = 1, j = 0; i < cc.length; i++, j++) {
+//                    try {
+//                        ccAddress[j] = new InternetAddress(cc[i]);
+//                    } catch (AddressException e) {
+//                        e.printStackTrace();
+//                    }
+//                }
+//                email1.setCcAddress(ccAddress);
 
                 email1.setNotes(noteQueries.getNotes(email1));
                 return email1;

@@ -5,13 +5,7 @@ import objects.Email;
 import objects.Event;
 import objects.Task;
 
-import javax.mail.Address;
-import javax.mail.internet.AddressException;
-import javax.mail.internet.InternetAddress;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.List;
-import java.util.Locale;
 
 public class NotifyActivities {
 
@@ -84,12 +78,12 @@ public class NotifyActivities {
         Email e = new Email();
         e.setSubject(subject);
         e.setBody(body);
-        try {
-            e.setToAddress(new Address[]{new InternetAddress(toAddress)});
-        } catch (AddressException e1) {
-            e1.printStackTrace();
-        }
-        email.sendEmail(e, null);
+//        try {
+//            e.setToAddress(new Address[]{new InternetAddress(toAddress)});
+//        } catch (AddressException e1) {
+//            e1.printStackTrace();
+//        }
+//        email.sendEmail(e, null);
     }
 
 

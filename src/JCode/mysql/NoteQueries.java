@@ -77,7 +77,6 @@ public class NoteQueries {
         try {
 //            System.out.println(query);
             PreparedStatement statement = static_con.prepareStatement(query);
-            System.out.println("contact.getContact:" + contact.getCode());
             statement.setInt(1, contact.getCode());
             ResultSet set = statement.executeQuery();
             //-------------Creating Email-------------
@@ -418,7 +417,7 @@ public class NoteQueries {
 //            System.out.println(query);
             PreparedStatement statement = static_con.prepareStatement(query);
 
-            statement.setInt(1, email.getEmailNo());
+//            statement.setInt(1, email.getCode());
             ResultSet set = statement.executeQuery();
             //-------------Creating Email-------------
             while (set.next()) {
@@ -447,10 +446,10 @@ public class NoteQueries {
         try {
             statement = static_con.prepareStatement(query);
             statement.setString(1, note);
-            statement.setInt(2, email.getEmailNo());
+//            statement.setInt(2, email.getCode());
             statement.setString(3, CommonTasks.getCurrentTimeStamp());
             statement.setInt(4, fHelper.ReadUserDetails().getUCODE());
-            statement.setInt(5,email.getEmailNo());
+//            statement.setInt(5,email.getCode());
 
             statement.executeUpdate();
 
@@ -489,7 +488,7 @@ public class NoteQueries {
         try {
             statement = static_con.prepareStatement(query);
             statement.setString(1, note.getText());
-            statement.setInt(2, email.getEmailNo());
+//            statement.setInt(2, email.getCode());
             statement.setInt(3, note.getCode());
             statement.setInt(4 ,fHelper.ReadUserDetails().getUCODE());
             statement.executeUpdate();

@@ -81,9 +81,9 @@ public class sentController implements Initializable {
             vbox_bcc.getChildren().clear();    //Both VBoxes
             vbox_bcc.setSpacing(2.0);
 
-            to = email.getToAddress();
-            cc = email.getCcAddress();
-            bcc = email.getBccAddress();
+//            to = email.getToAddress();
+//            cc = email.getCcAddress();
+//            bcc = email.getBccAddress();
             for (Address f : to) {
                 try {
                     Label label = new Label(f.toString());
@@ -122,11 +122,11 @@ public class sentController implements Initializable {
             //----Attachments
             combo_attach.getItems().clear();
 
-            if (email.getAttch() != null) {
+            if (email.getAttachment() != null) {
                 combo_attach.setDisable(false);
                 combo_attach.setPromptText("Open Attachment");
                 List<FileDev> attFiles = new ArrayList<>();
-                for (String c : email.getAttch().split("\\^")) {
+                for (String c : email.getAttachment().split("\\^")) {
                     FileDev file = new FileDev(c);
                     attFiles.add(file);
                 }

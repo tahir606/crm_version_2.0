@@ -1,5 +1,6 @@
 package Email.EResponse;
 
+import ApiHandler.UploadAttachmentHandler;
 import Email.EmailDashController;
 import JCode.FileDev;
 import JCode.FileHelper;
@@ -14,7 +15,10 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
-import javafx.scene.control.*;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.control.TextArea;
+import javafx.scene.control.TextField;
 import javafx.scene.layout.HBox;
 import javafx.scene.text.Text;
 import javafx.stage.FileChooser;
@@ -29,13 +33,12 @@ import javax.mail.internet.InternetAddress;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
-import java.nio.file.Files;
-import java.nio.file.StandardCopyOption;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.List;
 import java.util.ResourceBundle;
+
+import static ApiHandler.RequestHandler.post;
+import static ApiHandler.RequestHandler.writeJSON;
 
 public class EResponseController implements Initializable {
 
@@ -117,8 +120,6 @@ public class EResponseController implements Initializable {
 
         } else if (stInstance == 'F') {
             if (stAttach == null) {
-
-//                txt_attach.setVisible(false);
             } else {
                 fileList = addFile(stAttach);
                 String at = "";
@@ -127,13 +128,6 @@ public class EResponseController implements Initializable {
                         at = at + " -- " + f.getName();
                     }
                 }
-//                if (fileList != null) {
-//                    for (File f : fileList) {
-//                        at = at + " -- " + f.getName();
-//                    }
-//                }
-//                return at;
-//                txt_attach.setText(addFile());
                 txt_attach.setText(at);
                 txt_attach.setVisible(true);
             }
@@ -148,14 +142,11 @@ public class EResponseController implements Initializable {
             btn_Send.setText("Forward");
         } else if (stInstance == 'N') {
             populateTo();
-        } else {
-
         }
     }
 
     public static List<File> addFile(String attach) {
         List<File> newFileList = new ArrayList<>();
-
         for (String c : attach.split("\\^")) {
             FileDev file = new FileDev(c);
             newFileList.add(file);
@@ -180,6 +171,7 @@ public class EResponseController implements Initializable {
         String cc[] = stCc.split(",");
         for (String c : cc) {
             txt_cc.setText(c + ",");
+
         }
     }
 
@@ -189,16 +181,16 @@ public class EResponseController implements Initializable {
                 return;
             if (newValue.contains(",")) {
 //                if (validateAddress(newValue)) {
-                    HBox hb = new HBox();
-                    Label l = new Label(newValue.split("\\,")[0]);
-                    l.setMaxWidth(120);
-                    l.setAccessibleText("txt");
-                    JFXButton b = new JFXButton("x");
-                    b.setStyle("-fx-font-size: 5pt");
-                    b.setOnAction(event -> box.getChildren().remove(hb));
-                    hb.getChildren().addAll(l, b);
-                    box.getChildren().add(hb);
-                    txt_field.setText("");
+                HBox hb = new HBox();
+                Label l = new Label(newValue.split("\\,")[0]);
+                l.setMaxWidth(120);
+                l.setAccessibleText("txt");
+                JFXButton b = new JFXButton("x");
+                b.setStyle("-fx-font-size: 5pt");
+                b.setOnAction(event -> box.getChildren().remove(hb));
+                hb.getChildren().addAll(l, b);
+                box.getChildren().add(hb);
+                txt_field.setText("");
 //                } else {
 //                    newValue=newValue.replaceAll(",",""); // replace comma for correcting valid email
 //                    Alert alert = new Alert(Alert.AlertType.WARNING, "Email Entered is Invalid",
@@ -220,20 +212,19 @@ public class EResponseController implements Initializable {
         String at = "";
         if (fileList != null) {
             for (File f : fileList) {
-                at = at + " -- " + f.getName();
+                at = at +"^" + f.getAbsolutePath();
             }
+
             txt_attach.setText(at);
         }
     }
 
-    public void btnSendClick(ActionEvent actionEvent) {
+
+    public void btnSendClick(ActionEvent actionEvent) throws IOException {
         Subject = txt_subject.getText();
         Body = txt_body.getText();
-        cc = "";
-        bcc = "";
-        Disclaimer = "";
 
-        objects.Email em = new Email();
+        Email em = new Email();
 
         //--------------To
         List<Address> to_emails = new ArrayList<>();
@@ -255,32 +246,10 @@ public class EResponseController implements Initializable {
                 }
             }
         }
-        try {
-            if (!txt_to.getText().equals("")) {
-                Address to = new InternetAddress(txt_to.getText());
-                to_emails.add(to);
-            }
-        } catch (AddressException e) {
-            e.printStackTrace();
+        if (!txt_to.getText().equals("")) {
+            em.setToAddress(txt_to.getText());
         }
 
-        Address ad[] = to_emails.toArray(new Address[to_emails.size()]);
-        em.setToAddress(ad);
-
-        if(em.getToAddressString().isEmpty()){ // check txtField is empty or Not
-            Alert alert = new Alert(Alert.AlertType.WARNING, "Required To Address is Empty",
-                    ButtonType.OK);
-            alert.showAndWait();
-            return;
-        }
-//        if (validateAddress(txt_to.getText() ) || !em.getToAddressString().isEmpty()) { // check email pattern
-//        } else {
-//            Alert alert = new Alert(Alert.AlertType.WARNING, "Required To Address is Invalid",
-//                    ButtonType.OK);
-//            alert.showAndWait();
-//
-//            return;
-//        }
         //--------------CC
         List<Address> cc_emails = new ArrayList<>();
         for (Node n : hbox_cc.getChildren()) {
@@ -299,24 +268,10 @@ public class EResponseController implements Initializable {
                 }
             }
         }
-        try {
-            if (!txt_cc.getText().equals("")) {
-                Address cc = new InternetAddress(txt_cc.getText());
-                cc_emails.add(cc);
-            }
-        } catch (AddressException e) {
-            e.printStackTrace();
+        if (!txt_cc.getText().equals("")) {
+            em.setCcAddress(txt_cc.getText());
         }
-        Address cc[] = cc_emails.toArray(new Address[cc_emails.size()]);
-        em.setCcAddress(cc);
 
-//        if (validateAddress(txt_cc.getText()) || txt_cc.getText().equals("")) { // check email pattern
-//        } else {
-//            Alert alert = new Alert(Alert.AlertType.WARNING, "Required CC Address is Invalid",
-//                    ButtonType.OK);
-//            alert.showAndWait();
-//            return;
-//        }
         //--------------BCC
         List<Address> bcc_emails = new ArrayList<>();
         for (Node n : hbox_bcc.getChildren()) {
@@ -335,95 +290,52 @@ public class EResponseController implements Initializable {
                 }
             }
         }
-        try {
-            if (!txt_bcc.getText().equals("")) {
-                Address bcc = new InternetAddress(txt_bcc.getText());
-                bcc_emails.add(bcc);
-            }
-        } catch (AddressException e) {
-            e.printStackTrace();
+        if (!txt_bcc.getText().equals("")) {
+            em.setBccAddress(txt_bcc.getText());
         }
-        Address bcc[] = bcc_emails.toArray(new Address[bcc_emails.size()]);
-        em.setBccAddress(bcc);
 
-//        if (validateAddress(txt_bcc.getText()) || txt_bcc.getText().equals("")) { // check email pattern
-//        } else {
-//            Alert alert = new Alert(Alert.AlertType.WARNING, "Required Bcc Address is Invalid",
-//                    ButtonType.OK);
-//            alert.showAndWait();
-//
-//            return;
-//        }
         em.setSubject(Subject);
         //Replace Line Breaks with <br> tags
         Body = Body.replace("\n", "<br>");
         em.setBody(Body);
-        em.setDisclaimer(Disclaimer);
-        if (fileList == null) {
-        } else if (fileList.size() > -1) {
-            em.setAttachments(fileList);
-        } else
-            em.setAttch("");
 
-        if (attachedDocuments != null) {
-            em.setDocuments(attachedDocuments);
-        }
+        em.setAttachment(txt_attach.getText());
+        uploadAttachmentHandler(em.getAttachment());
         if (choice == 1) {
-            helper.sendEmail(em, null);
+            em.setType("sent");
+            post("email/send", writeJSON(em));
         } else if (choice == 2) {
-//       send_or_Not.setVisible(true);
-
-
-            mySqlConn sql = new mySqlConn();
-            em.setFromAddress(em.getToAddress());
-            String timeStamp = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(Calendar.getInstance().getTime());
-            em.setTimestamp(timeStamp);
-            em.setManual(fileHelper.ReadUserDetails().getUCODE());
-
-            //Pretty Garbage Code. Try to Clean it up a bit later
-            //This copies all attachments to File System to be viewed later
-            //Still have to check Ticket Generation from General for attachment Carry Forward. Peace.
-            String path = sql.getEmailSettings().getFspath() + "\\manual\\";
-            fileHelper.createDirectoryIfDoesNotExist(path);
-            String attch = "";
-            if (fileList == null) {
-            } else if (fileList.size() > -1) {
-                for (File aFile : fileList) {
-                    try {
-                        Files.copy(aFile.toPath(),
-                                (new File(path + aFile.getName())).toPath(),
-                                StandardCopyOption.REPLACE_EXISTING);
-                        attch += path + aFile.getName();
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                }
+            if (!sendAsEmail.isSelected()) {
+                em.setType("ticket");
+                post("ticket/create", writeJSON(em));
             }
-            if (!attch.equals(""))
-                em.setAttch(attch);
-
-            sql.insertEmailManual(em);
-
-            if (!sendAsEmail.isSelected()) { //if check box is not check then email will send and this condition will be execute
-                int ticketNo = sql.getManualTicketNo(em);
-                Subject = "Ticket No: " + ticketNo + " " + txt_subject.getText();
-                Body = "This Ticket is manually created by The Burhani IT Solutions Support Team" + "<br>" + "Your Ticket No is: " + ticketNo + "<br>" + txt_body.getText();
-                em.setSubject(Subject);
-                //Replace Line Breaks with <br> tags
-                Body = Body.replace("\n", "<br>");
-                em.setBody(Body);
-//                int var=sql.generateTicket();
-//                System.out.println("check ticket No" + ticketNo);
-                helper.sendEmail(em, null);
-            }
-
-
             EmailDashController.loadEmailsStatic();
         }
 
         Stage stage = (Stage) btn_Send.getScene().getWindow();
         stage.close();
 
+    }
+
+    public void uploadAttachmentHandler(String attachment) {
+        String charset = "UTF-8";
+        String requestURL = "http://localhost:8080/ticket/uploadMultipleFiles";
+        try {
+            UploadAttachmentHandler multipart = new UploadAttachmentHandler(requestURL, charset);
+            for (File file : fileList) {
+                multipart.addFilePart("files", file);
+            }
+
+            List<String> response = multipart.finish();
+
+            System.out.println("SERVER REPLIED:");
+
+            for (String line : response) {
+                System.out.println(line);
+            }
+        } catch (IOException ex) {
+            System.err.println(ex);
+        }
     }
 
     //Pulling all email IDs from database

@@ -145,33 +145,32 @@ public class emailControl {
         }
 
         //-------------------------------------Creating Email--------------------------------
-        email.setMsgNo(message.getMessageNumber());
+        email.setMessageNo(message.getMessageNumber());
         try {
             email.setTimestamp(dt.format(message.getSentDate()).substring(1));
         } catch (NullPointerException e) {
             System.out.println(e);
         }
-        email.setFromAddress(fromAddress);
-        email.setToAddress(toAddress);
-        email.setCcAddress(ccAddress);
+//        email.setFromAddress(fromAddress);
+//        email.setToAddress(toAddress);
+//        email.setCcAddress(ccAddress);
         email.setSubject(SUBJECT);
         email.setBody(result);
-        email.setAttch(ATTACH);
-        email.setSolvFlag('N');
-        email.setLockd(0);
-        email.setFreze(false);
-        System.out.println("Email:"+email);
+        email.setAttachment(ATTACH);
+        email.setSolved('N');
+        email.setLocked(0);
+        email.setFreeze(0);
+        System.out.println("Email:" + email);
         int tix = 1;    //2 means ticket 1 means general
 
-        for (String t : white_list) {
-            for (Address e : email.getFromAddress()) {
-                if (e.toString().contains(t)) {
-                    tix = 2;
-                    System.out.println("Exists " + t);
-                    break;
-                }
-            }
-        }
+//        for (String t : white_list) {
+//            for (Address e : email.getFromAddress()) {
+//                if (e.toString().contains(t)) {
+//                    tix = 2;
+//                    break;
+//                }
+//            }
+//        }
 
         if (tix == 2) {
             sqlConn.insertEmail(email, message);
@@ -214,14 +213,8 @@ public class emailControl {
             } else if (part.isMimeType("text/html")) {
                 String html = (String) part.getContent();
                 result = html;
-//                result = result + "\n" + org.jsoup.Jsoup.parse(html).text();
-//                System.out.println("After Parsing: " + result);
             } else if (part.isMimeType("multipart/*")) {
                 result = parseMultipart((MimeMultipart) part.getContent(), fromAddress);
-            } else {
-                System.out.println("Else Part");
-                System.out.println(part.getDisposition());
-                System.out.println(part.getContent().toString());
             }
         }
 
@@ -264,15 +257,15 @@ public class emailControl {
             e.printStackTrace();
         }
 
-        email.setFromAddress(new Address[]{ia});
+//        email.setFromAddress(new Address[]{ia});
 
-        InternetAddress emailAddr;
-        try {
-            emailAddr = new InternetAddress(email.getFromAddress()[0].toString());
-            emailAddr.validate();
-        } catch (AddressException ex) {
-            System.out.println("Invalid Email ID");
-        }
+//        InternetAddress emailAddr;
+//        try {
+//            emailAddr = new InternetAddress(email.getFromAddress()[0].toString());
+//            emailAddr.validate();
+//        } catch (AddressException ex) {
+//            System.out.println("Invalid Email ID");
+//        }
 
         Session session = Session.getInstance(props,
                 new javax.mail.Authenticator() {
@@ -323,14 +316,13 @@ public class emailControl {
                         attachment.setDataHandler(new DataHandler(source));
                         attachment.setFileName(f.getName());
                         attach = attach + f.getAbsolutePath() + "^";    //Concatenating String for Database
-                    }
-                    else {
+                    } else {
                         trayHelper.trayIcon.displayMessage("IOException", "File Not Found", TrayIcon.MessageType.ERROR);
                     }
                     multipart.addBodyPart(attachment);
                 }
             }
-            email.setAttch(attach);
+            email.setAttachment(attach);
             String upDocSt = ""; //String to save in the database
             if (email.getDocuments() == null) {
             } else if (!(email.getDocuments().size() < 0)) {
@@ -357,30 +349,30 @@ public class emailControl {
             message.saveChanges();
 
             //message.setText(multipart);
-            if (email.getToAddress() == null) { //Just to check if its null
-            } else if (email.getToAddress().length > -1) {
-                Address[] toAdd = email.getToAddress();
-                for (int i = 0; i < toAdd.length; i++) {
-                    if (toAdd[i] != null)
-                        message.addRecipient(Message.RecipientType.TO, toAdd[i]);
-                }
-            }
-            if (email.getCcAddress() == null) { //Just to check if its null
-            } else if (email.getCcAddress().length > -1) {
-                Address[] ccAdd = email.getCcAddress();
-                for (int i = 0; i < ccAdd.length; i++) {
-                    if (ccAdd[i] != null)
-                        message.addRecipient(Message.RecipientType.CC, ccAdd[i]);
-                }
-            }
-            if (email.getBccAddress() == null) { //Just to check if its null
-            } else if (email.getBccAddress().length > -1) {
-                Address[] bccAdd = email.getBccAddress();
-                for (int i = 0; i < bccAdd.length; i++) {
-                    if (bccAdd[i] != null)
-                        message.addRecipient(Message.RecipientType.BCC, bccAdd[i]);
-                }
-            }
+//            if (email.getToAddress() == null) { //Just to check if its null
+//            } else if (email.getToAddress().length > -1) {
+//                Address[] toAdd = email.getToAddress();
+//                for (int i = 0; i < toAdd.length; i++) {
+//                    if (toAdd[i] != null)
+//                        message.addRecipient(Message.RecipientType.TO, toAdd[i]);
+//                }
+//            }
+//            if (email.getCcAddress() == null) { //Just to check if its null
+//            } else if (email.getCcAddress().length > -1) {
+//                Address[] ccAdd = email.getCcAddress();
+//                for (int i = 0; i < ccAdd.length; i++) {
+//                    if (ccAdd[i] != null)
+//                        message.addRecipient(Message.RecipientType.CC, ccAdd[i]);
+//                }
+//            }
+//            if (email.getBccAddress() == null) { //Just to check if its null
+//            } else if (email.getBccAddress().length > -1) {
+//                Address[] bccAdd = email.getBccAddress();
+//                for (int i = 0; i < bccAdd.length; i++) {
+//                    if (bccAdd[i] != null)
+//                        message.addRecipient(Message.RecipientType.BCC, bccAdd[i]);
+//                }
+//            }
 
             //Put Message Reply
             if (messageReply != null) {
@@ -392,22 +384,20 @@ public class emailControl {
             new Thread(() -> {
                 try {
                     Transport.send(message);
-                    System.out.println("Sent E-Mail to: " + email.getToAddress()[0].toString());
-//                    if (!email.isSent()) {
+//                    System.out.println("Sent E-Mail to: " + email.getToAddress()[0].toString());
                     if (!message.getSubject().contains(EmailQueries.autoReplySubject)) {
-                        email.setSent(true);
+                        email.setSent(1);
                         if (EmailDashController.Email_Type == 3) {
                             sqlConn.updateResendEmail(email); //update email_Sent table
                         } else {
                             sqlConn.insertEmailSent(email); //insert email_Sent table
                         }
                     }
-//                    }
                 } catch (MessagingException ex) {
                     ex.printStackTrace();
                     trayHelper tray = new trayHelper();
                     tray.displayNotification("Error", "Messaging Exception: Email Not Sent");
-                    email.setSent(false);
+                    email.setSent(0);
                     sqlConn.insertEmailSent(email); //insert email_Sent table
 
                 }

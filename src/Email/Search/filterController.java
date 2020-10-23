@@ -55,9 +55,6 @@ public class filterController implements Initializable {
         Insets inset = new Insets(5, 2, 5, 1);
 
         combo_filter.valueProperty().addListener((observable, oldValue, newValue) -> {
-
-            System.out.println(newValue);
-
             switch (newValue) {
                 case "Email Type": {
                     if (email == true) {
