@@ -2,30 +2,22 @@ package JCode;
 
 
 import Email.EmailDashController;
-import JCode.mysql.EmailQueries;
 import JCode.mysql.mySqlConn;
 import JSockets.JServer;
-import objects.Document;
 import objects.ESetting;
 import objects.Email;
 
-import javax.activation.DataHandler;
-import javax.activation.DataSource;
-import javax.activation.FileDataSource;
 import javax.mail.*;
-import javax.mail.internet.*;
-import javax.mail.search.FlagTerm;
-import java.awt.*;
+import javax.mail.internet.MimeBodyPart;
+import javax.mail.internet.MimeMultipart;
 import java.io.File;
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Properties;
 
 public class emailControl {
 
@@ -64,39 +56,39 @@ public class emailControl {
         }
     }
 
-    public void receiveEmail() {
-        Properties props = System.getProperties();
-        props.setProperty("mail.store.protocol", "imaps");
-        trayHelper help = new trayHelper();
-        try {
-            Session session = Session.getDefaultInstance(props, null);
-            Store store = session.getStore("imaps");
-            //store.connect("imap.gmail.com", "tahirshakir606@gmail.com", "king786786");
-//            System.out.println(ESETTING.getHost() + " " + ESETTING.getEmail() + " " + ESETTING.getPass());
-            store.connect(ESETTING.getHost(), ESETTING.getEmail(), ESETTING.getPass());
-
-            Folder inbox = store.getFolder("Inbox");
-            inbox.open(Folder.READ_WRITE);      //Read_Write Is Necessary For Marking Emails as Read.
-            FlagTerm ft = new FlagTerm(new Flags(Flags.Flag.SEEN), false);
-            Message messages[] = inbox.search(ft);
-            String result;
-            int i = 0;
-
-            StoreData(messages);
-
-            inbox.close(false);
-            store.close();
-
-        } catch (NoSuchProviderException e) {
-            e.printStackTrace();
-            help.displayNotification("Error", "Mail Connect Exception");
-        } catch (MessagingException e) {
-            e.printStackTrace();
-            help.displayNotification("Error", "Mail Connect Exception");
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
+//    public void receiveEmail() {
+//        Properties props = System.getProperties();
+//        props.setProperty("mail.store.protocol", "imaps");
+//        trayHelper help = new trayHelper();
+//        try {
+//            Session session = Session.getDefaultInstance(props, null);
+//            Store store = session.getStore("imaps");
+//            //store.connect("imap.gmail.com", "tahirshakir606@gmail.com", "king786786");
+////            System.out.println(ESETTING.getHost() + " " + ESETTING.getEmail() + " " + ESETTING.getPass());
+//            store.connect(ESETTING.getHost(), ESETTING.getEmail(), ESETTING.getPass());
+//
+//            Folder inbox = store.getFolder("Inbox");
+//            inbox.open(Folder.READ_WRITE);      //Read_Write Is Necessary For Marking Emails as Read.
+//            FlagTerm ft = new FlagTerm(new Flags(Flags.Flag.SEEN), false);
+//            Message messages[] = inbox.search(ft);
+//            String result;
+//            int i = 0;
+//
+//            StoreData(messages);
+//
+//            inbox.close(false);
+//            store.close();
+//
+//        } catch (NoSuchProviderException e) {
+//            e.printStackTrace();
+//            help.displayNotification("Error", "Mail Connect Exception");
+//        } catch (MessagingException e) {
+//            e.printStackTrace();
+//            help.displayNotification("Error", "Mail Connect Exception");
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
+//    }
 
     private static void StoreData(Message messages[]) {
         try {
@@ -221,193 +213,193 @@ public class emailControl {
         return result;
     }
 
-    public static void sendEmail(Email email, Message messageReply) {
-        String perDisc;
-
-        if (email.getDisclaimer() == null) {
-            email.setDisclaimer("");
-        }
-
-        if (sqlConn == null) {
-            sqlConn = new mySqlConn();
-        }
-
-        if (ESETTING == null) {
-            ESETTING = sqlConn.getEmailSettings();
-        }
-
-        if (ESETTING.isDisc())
-            perDisc = email.getDisclaimer() + "\n" + ESETTING.getDisctext();
-        else
-            perDisc = email.getDisclaimer();
-
-        Properties props = new Properties();
-        props.put("mail.transport.protocol", "smtp");
-        props.put("mail.smtp.auth", "true");
-        props.put("mail.smtp.starttls.enable", "false");
-        props.put("mail.smtp.host", ESETTING.getHost());
-        props.put("mail.smtp.port", "26");
-
-        InternetAddress ia = null;
-        try {
-//            ia = new InternetAddress(ESETTING.getEmail());
-            System.out.println(ESETTING.getGenerated_reply_email());
-            ia = new InternetAddress(ESETTING.getGenerated_reply_email());
-        } catch (AddressException e) {
-            e.printStackTrace();
-        }
-
-//        email.setFromAddress(new Address[]{ia});
-
-//        InternetAddress emailAddr;
-//        try {
-//            emailAddr = new InternetAddress(email.getFromAddress()[0].toString());
-//            emailAddr.validate();
-//        } catch (AddressException ex) {
-//            System.out.println("Invalid Email ID");
+//    public static void sendEmail(Email email, Message messageReply) {
+//        String perDisc;
+//
+//        if (email.getDisclaimer() == null) {
+//            email.setDisclaimer("");
 //        }
-
-        Session session = Session.getInstance(props,
-                new javax.mail.Authenticator() {
-                    protected PasswordAuthentication getPasswordAuthentication() {
-                        return new PasswordAuthentication(ESETTING.getEmail(), ESETTING.getPass());
-                    }
-                });
-//        replacing keyword
-        truncateBlacklistedKeywords(email);
-
-        try {
-            // Create a default MimeMessage object.
-            MimeMessage message = new MimeMessage(session);
-
-            // Set From: header field of the header.
-            message.setFrom(new InternetAddress(ESETTING.getGenerated_reply_email()));
-
-            // Set Subject: header field
-
-//            checkBlacklist(email,message);
-//            comment for check noor domain
-            message.setSubject(email.getSubject());
-
-            // Create a multipart message
-            Multipart multipart = new MimeMultipart();
-
-            //  Create the message part
-            MimeBodyPart messageBodyPart = new MimeBodyPart();
-            // Now set the actual message
-            String b = email.getBody() + "<br><br>" + perDisc;
-//            b = b.replace("\n","<br>");
-            messageBodyPart.setText(b, "utf-8", "html");
-            // Set text message part
-            multipart.addBodyPart(messageBodyPart);
-
-            if (email == null)
-                return;
-//            String attach = email.getAttch();
-//lets check
-            String attach = ""; //String to save in the database
-            if (email.getAttachments() == null) {
-            } else if (!(email.getAttachments().size() < 0)) {
-                // Part two is attachment
-                for (File f : email.getAttachments()) {
-                    BodyPart attachment = new MimeBodyPart();
-                    if (f.exists()) {
-                        DataSource source = new FileDataSource(f.getAbsolutePath());
-                        attachment.setDataHandler(new DataHandler(source));
-                        attachment.setFileName(f.getName());
-                        attach = attach + f.getAbsolutePath() + "^";    //Concatenating String for Database
-                    } else {
-                        trayHelper.trayIcon.displayMessage("IOException", "File Not Found", TrayIcon.MessageType.ERROR);
-                    }
-                    multipart.addBodyPart(attachment);
-                }
-            }
-            email.setAttachment(attach);
-            String upDocSt = ""; //String to save in the database
-            if (email.getDocuments() == null) {
-            } else if (!(email.getDocuments().size() < 0)) {
-                // Part two is attachment
-                for (Document d : email.getDocuments()) {
-                    BodyPart attachment = new MimeBodyPart();
-                    File f = d.getFile();
-                    if (f.exists()) {
-                        DataSource source = new FileDataSource(f.getAbsolutePath());
-                        attachment.setDataHandler(new DataHandler(source));
-                        attachment.setFileName(f.getName());
-                        upDocSt = upDocSt + d.getName() + "^";    //Concatenating String for Database
-                    } else {
-                        trayHelper.trayIcon.displayMessage("IOException", "File Not Found", TrayIcon.MessageType.ERROR);
-                    }
-                    multipart.addBodyPart(attachment);
-                }
-            }
-            email.setUploadedDocumentsString(upDocSt);
-
-            // Send the complete message parts
-            message.setContent(multipart);
-
-            message.saveChanges();
-
-            //message.setText(multipart);
-//            if (email.getToAddress() == null) { //Just to check if its null
-//            } else if (email.getToAddress().length > -1) {
-//                Address[] toAdd = email.getToAddress();
-//                for (int i = 0; i < toAdd.length; i++) {
-//                    if (toAdd[i] != null)
-//                        message.addRecipient(Message.RecipientType.TO, toAdd[i]);
+//
+//        if (sqlConn == null) {
+//            sqlConn = new mySqlConn();
+//        }
+//
+//        if (ESETTING == null) {
+//            ESETTING = sqlConn.getEmailSettings();
+//        }
+//
+//        if (ESETTING.isDisc())
+//            perDisc = email.getDisclaimer() + "\n" + ESETTING.getDisctext();
+//        else
+//            perDisc = email.getDisclaimer();
+//
+//        Properties props = new Properties();
+//        props.put("mail.transport.protocol", "smtp");
+//        props.put("mail.smtp.auth", "true");
+//        props.put("mail.smtp.starttls.enable", "false");
+//        props.put("mail.smtp.host", ESETTING.getHost());
+//        props.put("mail.smtp.port", "26");
+//
+//        InternetAddress ia = null;
+//        try {
+////            ia = new InternetAddress(ESETTING.getEmail());
+//            System.out.println(ESETTING.getGenerated_reply_email());
+//            ia = new InternetAddress(ESETTING.getGenerated_reply_email());
+//        } catch (AddressException e) {
+//            e.printStackTrace();
+//        }
+//
+////        email.setFromAddress(new Address[]{ia});
+//
+////        InternetAddress emailAddr;
+////        try {
+////            emailAddr = new InternetAddress(email.getFromAddress()[0].toString());
+////            emailAddr.validate();
+////        } catch (AddressException ex) {
+////            System.out.println("Invalid Email ID");
+////        }
+//
+//        Session session = Session.getInstance(props,
+//                new javax.mail.Authenticator() {
+//                    protected PasswordAuthentication getPasswordAuthentication() {
+//                        return new PasswordAuthentication(ESETTING.getEmail(), ESETTING.getPass());
+//                    }
+//                });
+////        replacing keyword
+//        truncateBlacklistedKeywords(email);
+//
+//        try {
+//            // Create a default MimeMessage object.
+//            MimeMessage message = new MimeMessage(session);
+//
+//            // Set From: header field of the header.
+//            message.setFrom(new InternetAddress(ESETTING.getGenerated_reply_email()));
+//
+//            // Set Subject: header field
+//
+////            checkBlacklist(email,message);
+////            comment for check noor domain
+//            message.setSubject(email.getSubject());
+//
+//            // Create a multipart message
+//            Multipart multipart = new MimeMultipart();
+//
+//            //  Create the message part
+//            MimeBodyPart messageBodyPart = new MimeBodyPart();
+//            // Now set the actual message
+//            String b = email.getBody() + "<br><br>" + perDisc;
+////            b = b.replace("\n","<br>");
+//            messageBodyPart.setText(b, "utf-8", "html");
+//            // Set text message part
+//            multipart.addBodyPart(messageBodyPart);
+//
+//            if (email == null)
+//                return;
+////            String attach = email.getAttch();
+////lets check
+//            String attach = ""; //String to save in the database
+//            if (email.getAttachments() == null) {
+//            } else if (!(email.getAttachments().size() < 0)) {
+//                // Part two is attachment
+//                for (File f : email.getAttachments()) {
+//                    BodyPart attachment = new MimeBodyPart();
+//                    if (f.exists()) {
+//                        DataSource source = new FileDataSource(f.getAbsolutePath());
+//                        attachment.setDataHandler(new DataHandler(source));
+//                        attachment.setFileName(f.getName());
+//                        attach = attach + f.getAbsolutePath() + "^";    //Concatenating String for Database
+//                    } else {
+//                        trayHelper.trayIcon.displayMessage("IOException", "File Not Found", TrayIcon.MessageType.ERROR);
+//                    }
+//                    multipart.addBodyPart(attachment);
 //                }
 //            }
-//            if (email.getCcAddress() == null) { //Just to check if its null
-//            } else if (email.getCcAddress().length > -1) {
-//                Address[] ccAdd = email.getCcAddress();
-//                for (int i = 0; i < ccAdd.length; i++) {
-//                    if (ccAdd[i] != null)
-//                        message.addRecipient(Message.RecipientType.CC, ccAdd[i]);
+//            email.setAttachment(attach);
+//            String upDocSt = ""; //String to save in the database
+//            if (email.getDocuments() == null) {
+//            } else if (!(email.getDocuments().size() < 0)) {
+//                // Part two is attachment
+//                for (Document d : email.getDocuments()) {
+//                    BodyPart attachment = new MimeBodyPart();
+//                    File f = d.getFile();
+//                    if (f.exists()) {
+//                        DataSource source = new FileDataSource(f.getAbsolutePath());
+//                        attachment.setDataHandler(new DataHandler(source));
+//                        attachment.setFileName(f.getName());
+//                        upDocSt = upDocSt + d.getName() + "^";    //Concatenating String for Database
+//                    } else {
+//                        trayHelper.trayIcon.displayMessage("IOException", "File Not Found", TrayIcon.MessageType.ERROR);
+//                    }
+//                    multipart.addBodyPart(attachment);
 //                }
 //            }
-//            if (email.getBccAddress() == null) { //Just to check if its null
-//            } else if (email.getBccAddress().length > -1) {
-//                Address[] bccAdd = email.getBccAddress();
-//                for (int i = 0; i < bccAdd.length; i++) {
-//                    if (bccAdd[i] != null)
-//                        message.addRecipient(Message.RecipientType.BCC, bccAdd[i]);
-//                }
+//            email.setUploadedDocumentsString(upDocSt);
+//
+//            // Send the complete message parts
+//            message.setContent(multipart);
+//
+//            message.saveChanges();
+//
+//            //message.setText(multipart);
+////            if (email.getToAddress() == null) { //Just to check if its null
+////            } else if (email.getToAddress().length > -1) {
+////                Address[] toAdd = email.getToAddress();
+////                for (int i = 0; i < toAdd.length; i++) {
+////                    if (toAdd[i] != null)
+////                        message.addRecipient(Message.RecipientType.TO, toAdd[i]);
+////                }
+////            }
+////            if (email.getCcAddress() == null) { //Just to check if its null
+////            } else if (email.getCcAddress().length > -1) {
+////                Address[] ccAdd = email.getCcAddress();
+////                for (int i = 0; i < ccAdd.length; i++) {
+////                    if (ccAdd[i] != null)
+////                        message.addRecipient(Message.RecipientType.CC, ccAdd[i]);
+////                }
+////            }
+////            if (email.getBccAddress() == null) { //Just to check if its null
+////            } else if (email.getBccAddress().length > -1) {
+////                Address[] bccAdd = email.getBccAddress();
+////                for (int i = 0; i < bccAdd.length; i++) {
+////                    if (bccAdd[i] != null)
+////                        message.addRecipient(Message.RecipientType.BCC, bccAdd[i]);
+////                }
+////            }
+//
+//            //Put Message Reply
+//            if (messageReply != null) {
+//                message.setReplyTo(messageReply.getReplyTo());
 //            }
-
-            //Put Message Reply
-            if (messageReply != null) {
-                message.setReplyTo(messageReply.getReplyTo());
-            }
-
-            String timeStamp = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.S").format(Calendar.getInstance().getTime());
-            email.setTimestamp(timeStamp);
-            new Thread(() -> {
-                try {
-                    Transport.send(message);
-//                    System.out.println("Sent E-Mail to: " + email.getToAddress()[0].toString());
-                    if (!message.getSubject().contains(EmailQueries.autoReplySubject)) {
-                        email.setSent(1);
-                        if (EmailDashController.Email_Type == 3) {
-                            sqlConn.updateResendEmail(email); //update email_Sent table
-                        } else {
-                            sqlConn.insertEmailSent(email); //insert email_Sent table
-                        }
-                    }
-                } catch (MessagingException ex) {
-                    ex.printStackTrace();
-                    trayHelper tray = new trayHelper();
-                    tray.displayNotification("Error", "Messaging Exception: Email Not Sent");
-                    email.setSent(0);
-                    sqlConn.insertEmailSent(email); //insert email_Sent table
-
-                }
-            }).start();
-
-        } catch (MessagingException e) {
-            e.printStackTrace();
-        }
-
-    }
+//
+//            String timeStamp = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.S").format(Calendar.getInstance().getTime());
+//            email.setTimestamp(timeStamp);
+//            new Thread(() -> {
+//                try {
+//                    Transport.send(message);
+////                    System.out.println("Sent E-Mail to: " + email.getToAddress()[0].toString());
+//                    if (!message.getSubject().contains(EmailQueries.autoReplySubject)) {
+//                        email.setSent(1);
+//                        if (EmailDashController.Email_Type == 3) {
+//                            sqlConn.updateResendEmail(email); //update email_Sent table
+//                        } else {
+//                            sqlConn.insertEmailSent(email); //insert email_Sent table
+//                        }
+//                    }
+//                } catch (MessagingException ex) {
+//                    ex.printStackTrace();
+//                    trayHelper tray = new trayHelper();
+//                    tray.displayNotification("Error", "Messaging Exception: Email Not Sent");
+//                    email.setSent(0);
+//                    sqlConn.insertEmailSent(email); //insert email_Sent table
+//
+//                }
+//            }).start();
+//
+//        } catch (MessagingException e) {
+//            e.printStackTrace();
+//        }
+//
+//    }
 
     //  replacing keyword
     public static void truncateBlacklistedKeywords(Email email) {

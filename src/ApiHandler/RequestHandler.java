@@ -1,5 +1,6 @@
 package ApiHandler;
 
+import JCode.trayHelper;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import javafx.scene.control.ProgressBar;
@@ -8,7 +9,8 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.IOException;
+import java.io.*;
+import java.net.ConnectException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -100,20 +102,96 @@ public class RequestHandler {
     }
 
 
-    private static String run(String url) throws IOException {
+    public static Response run(String endPoint) throws IOException {
         Request request = new Request.Builder()
-                .url(url)
+                .url(url + endPoint)
                 .build();
+        Response response = client.newCall(request).execute();
+        ResponseBody body = response.body();
+        try {
 
-        try (Response response = client.newCall(request).execute()) {
-            return response.body().string();
+        } finally {
+            body.close();
         }
+        return client.newCall(request).execute();
+    }
+
+    public static boolean checkUpdate(String endPoint) throws IOException {
+        InputStream inputStream = null;
+        ResponseBody body = null;
+        try {
+            Request request = new Request.Builder()
+                    .url(url + endPoint)
+                    .build();
+            body = client.newCall(request).execute().body();
+            inputStream = client.newCall(request).execute().body().byteStream();
+
+        } catch (ConnectException e) {
+            trayHelper tray = new trayHelper();
+            tray.displayNotification("Error", "Server isn't Running");
+            return false;
+        }finally {
+            if (body!=null){
+                body.close();
+            }
+
+        }
+
+        BufferedReader in = new BufferedReader(new InputStreamReader(inputStream));
+        StringBuilder response = new StringBuilder();
+        String currentLine;
+
+        while ((currentLine = in.readLine()) != null)
+            response.append(currentLine);
+
+        in.close();
+
+        boolean value = Boolean.parseBoolean(response.toString());
+        return value;
     }
 
     public static String writeJSON(Object object) throws IOException, IOException {
         GsonBuilder builder = new GsonBuilder();
         Gson gson = builder.create();
         return gson.toJson(object);
+    }
+
+    public static String downloadZipFile(String endPoint, String destFile) throws Exception {
+        OkHttpClient client = new OkHttpClient();
+        Request request = new Request.Builder().url(url + endPoint).build();
+        Response response = client.newCall(request).execute();
+
+        FileOutputStream fos = new FileOutputStream(destFile);
+        fos.write(response.body().bytes());
+        fos.close();
+        return destFile;
+    }
+
+    public static String postWithFile(String endPoint, String json, List<File> fileList) throws IOException {
+        RequestBody body = RequestBody.create(json, JSON);
+        MultipartBody.Builder builder = new MultipartBody.Builder()
+                .setType(MultipartBody.FORM);
+        if (fileList == null) {
+            builder.addPart(Headers.of("Content-Disposition",
+                    "form-data; name=\"email\""), body);
+        } else {
+            builder.addPart(Headers.of("Content-Disposition",
+                    "form-data; name=\"email\""), body);
+            for (File file : fileList) {
+                builder.addFormDataPart("files", file.getName(), RequestBody.create(MediaType.parse("image/png"), file));
+            }
+        }
+
+        RequestBody requestBody = builder.build();
+
+        Request request = new Request.Builder()
+                .url(url + endPoint)
+                .post(requestBody)
+                .build();
+
+        try (Response response = client.newCall(request).execute()) {
+            return response.body().string();
+        }
     }
 
 

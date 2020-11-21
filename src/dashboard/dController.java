@@ -311,7 +311,7 @@ public class  dController implements Initializable {
                         }
                         continue;
                     } else {
-                        ec.receiveEmail();
+//                        ec.receiveEmail();
                         try {
                             Thread.sleep(60000);
                         } catch (InterruptedException e) {

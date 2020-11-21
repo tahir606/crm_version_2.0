@@ -1,27 +1,120 @@
 package objects;
 
 
+import javax.mail.Address;
 import java.io.File;
+import java.io.Serializable;
 import java.util.List;
 
-public class Email {
+public class Email implements Serializable {
 
-    private int code, messageNo, locked=0, solvedBy,freeze=0,  emailStoreNo, manualEmail=0,sent;
+    private int code, messageNo, locked = 0, solvedBy, freeze = 0, emailStoreNo, manualEmail = 0, sent, ticketNo;
     private String toAddress, fromAddress, ccAddress, bccAddress;
-    private String subject, timestamp, timeFormatted, body, attachment,userCode,type, uploadedDocumentsString, lockedByName, disclaimer, solvByName, createdBy, lockTime, solveTime;
+    private String subject, timestamp, timeFormatted, body, attachment, userCode, type, uploadedDocumentsString, lockedByName, disclaimer, solvedByName, createdBy, lockTime, solveTime, status;
+    private Users users;
+    private Address[] toAddresses, fromAddresses, ccAddresses, bccAddresses;
     private List<File> attachments;
     private List<Document> documents;
     private List<ContactProperty> relatedContacts;
     private List<ClientProperty> relatedClients;
-//    private List<Email> relatedEmails = new ArrayList<>();
-    private char solved;
-//    private boolean   isEmailTypeSent = false;
+    private char solved = 'N';
+    public static boolean isEmailTypeSent = false;
     private String rawContent;
     private List<Note> notes;
-
-
+    private List<History> history;
 
     public Email() {
+    }
+
+    public Address[] getToAddresses() {
+        return toAddresses;
+    }
+
+    public String getToAddressString() {
+        String s = "";
+        for (Address ad : toAddresses) {
+            if (ad != null) // my change
+                s = s + "^" + ad;
+        }
+        return s;
+    }
+
+    public int getTicketNo() {
+        return ticketNo;
+    }
+
+    public void setTicketNo(int ticketNo) {
+        this.ticketNo = ticketNo;
+    }
+
+    public void setToAddresses(Address[] toAddresses) {
+        this.toAddresses = toAddresses;
+    }
+
+    public Address[] getFromAddresses() {
+        return fromAddresses;
+    }
+
+    public void setFromAddresses(Address[] fromAddresses) {
+        this.fromAddresses = fromAddresses;
+    }
+
+    public Address[] getCcAddresses() {
+        return ccAddresses;
+    }
+
+    public String getCcAddressString() {
+        String s = "";
+        for (Address ad : ccAddresses) {
+            if (ad != null) // my change
+                s = s + "^" + ad;
+        }
+        return s;
+    }
+
+    public void setCcAddresses(Address[] ccAddresses) {
+        this.ccAddresses = ccAddresses;
+    }
+
+    public Address[] getBccAddresses() {
+        return bccAddresses;
+    }
+
+    public String getBccAddressString() {
+        String s = "";
+        for (Address ad : bccAddresses) {
+            if (ad != null) // my change
+                s = s + "^" + ad;
+        }
+        return s;
+    }
+
+    public void setBccAddresses(Address[] bccAddresses) {
+        this.bccAddresses = bccAddresses;
+    }
+
+    public List<History> getHistory() {
+        return history;
+    }
+
+    public void setHistory(List<History> history) {
+        this.history = history;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+    public Users getUsers() {
+        return users;
+    }
+
+    public void setUsers(Users users) {
+        this.users = users;
     }
 
     public void setType(String type) {
@@ -112,6 +205,7 @@ public class Email {
     public void setTimestamp(String timestamp) {
         this.timestamp = timestamp;
     }
+
 
     public String getTimeFormatted() {
         return timeFormatted;
@@ -210,14 +304,6 @@ public class Email {
         this.solveTime = solveTime;
     }
 
-//    public String getUserCode() {
-//        return userCode;
-//    }
-//
-//    public void setUserCode(String userCode) {
-//        this.userCode = userCode;
-//    }
-
     public int getManualEmail() {
         return manualEmail;
     }
@@ -242,21 +328,13 @@ public class Email {
         this.solvedBy = solvedBy;
     }
 
-    public String getSolvByName() {
-        return solvByName;
+    public String getSolvedByName() {
+        return solvedByName;
     }
 
-    public void setSolvByName(String solvByName) {
-        this.solvByName = solvByName;
+    public void setSolvedByName(String solvedByName) {
+        this.solvedByName = solvedByName;
     }
-
-//    public int getType() {
-//        return type;
-//    }
-//
-//    public void setType(int type) {
-//        this.type = type;
-//    }
 
     public int getEmailStoreNo() {
         return emailStoreNo;
@@ -265,38 +343,6 @@ public class Email {
     public void setEmailStoreNo(int emailStoreNo) {
         this.emailStoreNo = emailStoreNo;
     }
-
-//    public List<Email> getRelatedEmails() {
-//        return relatedEmails;
-//    }
-//
-//    public void setRelatedEmails(List<Email> relatedEmails) {
-//        this.relatedEmails = relatedEmails;
-//    }
-
-//    public boolean isSent() {
-//        return sent;
-//    }
-//
-//    public void setSent(boolean sent) {
-//        this.sent = sent;
-//    }
-
-//    public boolean isEmailTypeSent() {
-//        return isEmailTypeSent;
-//    }
-//
-//    public void setEmailTypeSent(boolean emailTypeSent) {
-//        isEmailTypeSent = emailTypeSent;
-//    }
-
-//    public boolean isFreeze() {
-//        return freeze;
-//    }
-//
-//    public void setFreeze(boolean freeze) {
-//        this.freeze = freeze;
-//    }
 
     public List<Note> getNotes() {
         return notes;
@@ -336,5 +382,29 @@ public class Email {
 
     public void setRawContent(String rawContent) {
         this.rawContent = rawContent;
+    }
+
+
+    @Override
+    public String toString() {
+
+        String e = "";
+        if (!isEmailTypeSent) {
+            if (ticketNo == 0) {
+                e = code + " - ";
+            } else {
+                e = ticketNo + " - ";
+            }
+
+            e = e + fromAddress;
+        } else {
+            e = code + " - ";
+            e = e + toAddress;
+        }
+
+        e = e + "\n" +
+                getTimestamp() + "\n" +
+                getSubject();
+        return e;
     }
 }

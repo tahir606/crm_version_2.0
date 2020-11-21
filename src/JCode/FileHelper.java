@@ -1,25 +1,16 @@
 package JCode;
 
-import javafx.application.Platform;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
-import javafx.stage.Modality;
-import javafx.stage.Stage;
-import javafx.stage.StageStyle;
 import objects.ESetting;
 import objects.Network;
 import objects.Users;
 
 import java.io.*;
-import java.net.URL;
 import java.util.ArrayList;
-import java.util.Scanner;
 
 public class FileHelper {
 
     private static final String FADD = "C:/Users/" + System.getProperty("user.name") + "/Bits/CRM/";
-//    private static final String FADD = "../Bits/CRM/";
+    //    private static final String FADD = "../Bits/CRM/";
     private static final String FADD_ROOT = "settings/";
     public static final String FADD_DOCS = "docs/";
 
@@ -175,6 +166,63 @@ public class FileHelper {
 //                ex.printStackTrace();
 //            }
         }
+    }
+    public static String readFilePath(){
+        String text = "";
+        InputStreamReader isReader = null;
+        try {
+
+            isReader =
+                    new InputStreamReader(
+                            new FileInputStream(
+                                    new File(FADD + "filePath.txt")));
+            BufferedReader br = new BufferedReader(isReader);
+
+            text = br.readLine();
+
+            if (text == null) {
+                return null;
+            }
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+        return text;
+    }
+
+    public static Users readApiUserDetails() {
+        String text = "";
+        InputStreamReader isReader = null;
+        Users user = new Users();
+        try {
+
+            isReader =
+                    new InputStreamReader(
+                            new FileInputStream(
+                                    new File(FADD + "apiUserDetails.txt")));
+            BufferedReader br = new BufferedReader(isReader);
+
+            text = br.readLine();
+
+            if (text == null) {
+                return null;
+            }
+
+            String[] t = text.split("\\^");
+
+            String[] u = t[0].split("\\*");
+
+            user.setUserCode(Integer.parseInt(u[0]));
+            user.setFullName(u[1]);
+            user.setUserName(u[2]);
+
+            return user;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+
     }
 
     public void DeleteUserDetails() {
@@ -683,7 +731,7 @@ public class FileHelper {
 
     public static void createDirectoryIfDoesNotExist(String path) {
         File directory = new File(path);
-        if (!directory.exists()){
+        if (!directory.exists()) {
             directory.mkdir();
         }
     }

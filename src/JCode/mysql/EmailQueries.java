@@ -6,10 +6,7 @@ import objects.*;
 
 import javax.mail.Address;
 import javax.mail.Message;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -252,7 +249,7 @@ public class EmailQueries {
             statement.setString(1, email.getSubject());
 //            statement.setString(2, email.getToAddressString());
 //            statement.setString(3, email.getFromAddressString());
-            statement.setString(4, email.getTimestamp());
+//            statement.setString(4, email.getTimestamp());
             statement.setString(5, email.getBody());
             statement.setString(6, email.getAttachment());
 //            statement.setString(7, email.getCcAddressString());
@@ -291,7 +288,7 @@ public class EmailQueries {
             statement.setString(1, email.getSubject());
 //            statement.setString(2, email.getToAddressString());
 //            statement.setString(3, email.getFromAddressString());
-            statement.setString(4, email.getTimestamp());
+//            statement.setString(4, email.getTimestamp());
             statement.setString(5, email.getBody());
             statement.setString(6, email.getAttachment());
 //            statement.setString(7, email.getCcAddressString());
@@ -367,7 +364,7 @@ public class EmailQueries {
             statement.setString(2, email.getSubject());
 //            statement.setString(3, email.getToAddressString());
 //            statement.setString(4, email.getFromAddressString());
-            statement.setString(5, email.getTimestamp());
+//            statement.setString(5, email.getTimestamp());
             statement.setString(6, email.getBody());
             statement.setString(7, email.getAttachment());
 //            statement.setString(8, email.getCcAddressString());
@@ -407,8 +404,8 @@ public class EmailQueries {
                 email.setCode(set.getInt("EMNO"));
                 email.setMessageNo(set.getInt("MSGNO"));
                 email.setSubject(set.getString("SBJCT"));
-                email.setTimestamp(set.getString("TSTMP"));
-                email.setTimeFormatted(CommonTasks.getTimeFormatted(email.getTimestamp()));
+//                email.setTimestamp(set.getString("TSTMP"));
+//                email.setTimeFormatted(CommonTasks.getTimeFormatted(email.getTimestamp()));
 
                 email.setBody(set.getString("EBODY"));
                 email.setAttachment(set.getString("ATTCH"));
@@ -525,7 +522,7 @@ public class EmailQueries {
             PreparedStatement statementEMNO = static_con.prepareStatement(queryEMNO);
             statementEMNO.setInt(1, email.getMessageNo());
             statementEMNO.setString(2, email.getSubject());
-            statementEMNO.setString(3, email.getTimestamp());
+//            statementEMNO.setString(3, email.getTimestamp());
             ResultSet set = statementEMNO.executeQuery();
 
             int emno = 0;
@@ -588,7 +585,7 @@ public class EmailQueries {
     /// help
     //Reading tickets
     public List<Email> readAllEmails(Filters filters, UserQueries userQueries) {
-
+        System.out.println(filters.toString());
         String query = "SELECT EMNO, MSGNO, SBJCT, FRADD, TOADD, CCADD, TSTMP, " +
                 " EBODY, ATTCH, ESOLV, LOCKD, LOCKTIME, SOLVBY, SOLVTIME, MANUAL FROM EMAIL_STORE";
 
@@ -702,7 +699,7 @@ public class EmailQueries {
             statement.setString(1, email.getSubject());
 //            statement.setString(2, email.getToAddressString());
 //            statement.setString(3, email.getFromAddressString());
-            statement.setString(4, email.getTimestamp());
+//            statement.setString(4, email.getTimestamp());
             statement.setString(5, email.getBody());
             statement.setString(6, email.getAttachment());
 //            statement.setString(7, email.getCcAddressString());
@@ -745,7 +742,7 @@ public class EmailQueries {
                 email.setCode(set.getInt("EMNO"));
                 email.setMessageNo(set.getInt("MSGNO"));
                 email.setSubject(set.getString("SBJCT"));
-                email.setTimestamp(set.getString("TSTMP"));
+//                email.setTimestamp(set.getString("TSTMP"));
 
                 // Note, MM is months, not mm
                 DateFormat inputFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.S");
@@ -753,11 +750,9 @@ public class EmailQueries {
 
                 Date date = null;
                 try {
-                    date = inputFormat.parse(email.getTimestamp());
+//                    date = inputFormat.parse(email.getTimestamp());
                     String outputText = outputFormat.format(date);
                     email.setTimeFormatted(outputText);
-                } catch (ParseException e) {
-                    e.printStackTrace();
                 } catch (NullPointerException e) {
                     System.out.println(e);
                     email.setTimeFormatted("");
@@ -829,7 +824,7 @@ public class EmailQueries {
 //            statement.setString(3, email.getToAddressString());
 //            statement.setString(4, email.getCcAddressString());
 //            statement.setString(5, email.getBccAddressString());
-            statement.setString(6, email.getTimestamp());
+//            statement.setString(6, email.getTimestamp());
             statement.setString(7, email.getBody());
             statement.setString(8, email.getAttachment());
             statement.setInt(9, user.getUCODE());
@@ -879,7 +874,7 @@ public class EmailQueries {
                 Email email = new Email();
                 email.setCode(set.getInt("EMNO"));
                 email.setSubject(set.getString("SBJCT"));
-                email.setTimestamp(set.getString("TSTMP"));
+//                email.setTimestamp(set.getString("TSTMP"));
 
                 // Note, MM is months, not mm
                 DateFormat inputFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.S");
@@ -993,7 +988,7 @@ public class EmailQueries {
     }
 
     public void solvEmail(Email email, String flag, Users user, boolean choice, String msg) {
-
+        System.out.println("first");
         String query = " UPDATE EMAIL_STORE " +     //Query to Update Email status to solve
                 " SET ESOLV = ?, " +
                 " SOLVBY = ?, " +
@@ -1001,7 +996,7 @@ public class EmailQueries {
                 " WHERE EMNO = ? ";
 
         String timeStamp = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.S").format(Calendar.getInstance().getTime());
-        email.setTimestamp(timeStamp);
+//        email.setTimestamp(timeStamp);
 
         PreparedStatement statement = null;
 
@@ -1009,7 +1004,7 @@ public class EmailQueries {
             statement = static_con.prepareStatement(query);
             statement.setString(1, flag);
             statement.setInt(2, user.getUCODE());
-            statement.setString(3, email.getTimestamp());
+//            statement.setString(3, email.getTimestamp());
             statement.setInt(4, email.getCode());
 
             statement.executeUpdate();
@@ -1160,7 +1155,7 @@ public class EmailQueries {
         int ticketNo = 0;
         try {
             PreparedStatement statement = static_con.prepareStatement(query);
-            statement.setString(1, email.getTimestamp());
+//            statement.setString(1, email.getTimestamp());
             statement.setString(2, email.getSubject());
             ResultSet set = statement.executeQuery();
 
@@ -1211,8 +1206,8 @@ public class EmailQueries {
                 email.setCode(set.getInt("EMNO"));
                 email.setMessageNo(set.getInt("MSGNO"));
                 email.setSubject(set.getString("SBJCT"));
-                email.setTimestamp(set.getString("TSTMP"));
-                email.setTimeFormatted(CommonTasks.getTimeFormatted(email.getTimestamp()));
+//                email.setTimestamp(set.getString("TSTMP"));
+//                email.setTimeFormatted(CommonTasks.getTimeFormatted(email.getTimestamp()));
 
                 email.setBody(set.getString("EBODY"));
                 email.setAttachment(set.getString("ATTCH"));
@@ -1294,8 +1289,8 @@ public class EmailQueries {
                 email1.setCode(set.getInt("EMNO"));
                 email1.setMessageNo(set.getInt("MSGNO"));
                 email1.setSubject(set.getString("SBJCT"));
-                email1.setTimestamp(set.getString("TSTMP"));
-                email1.setTimeFormatted(CommonTasks.getTimeFormatted(email1.getTimestamp()));
+//                email1.setTimestamp(set.getString("TSTMP"));
+//                email1.setTimeFormatted(CommonTasks.getTimeFormatted(email1.getTimestamp()));
 
                 email1.setBody(set.getString("EBODY"));
                 email1.setAttachment(set.getString("ATTCH"));

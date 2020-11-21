@@ -1,6 +1,5 @@
 package Email.EResponse;
 
-import ApiHandler.UploadAttachmentHandler;
 import Email.EmailDashController;
 import JCode.FileDev;
 import JCode.FileHelper;
@@ -37,7 +36,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
 
-import static ApiHandler.RequestHandler.post;
+import static ApiHandler.RequestHandler.postWithFile;
 import static ApiHandler.RequestHandler.writeJSON;
 
 public class EResponseController implements Initializable {
@@ -157,7 +156,7 @@ public class EResponseController implements Initializable {
     private void populateTo() {
         if (stTo.equals(""))
             return;
-        String to[] = stTo.split(",");
+        String to[] = stTo.split("\\^");
         for (String t : to) {
             txt_to.setText(t + ",");
         }
@@ -168,7 +167,7 @@ public class EResponseController implements Initializable {
             return;
         else if (stCc.equals(""))
             return;
-        String cc[] = stCc.split(",");
+        String cc[] = stCc.split("\\^");
         for (String c : cc) {
             txt_cc.setText(c + ",");
 
@@ -212,7 +211,7 @@ public class EResponseController implements Initializable {
         String at = "";
         if (fileList != null) {
             for (File f : fileList) {
-                at = at +"^" + f.getAbsolutePath();
+                at = at + "^" + f.getAbsolutePath();
             }
 
             txt_attach.setText(at);
@@ -233,11 +232,10 @@ public class EResponseController implements Initializable {
             for (Node node : b.getChildren()) {
                 if (node.getAccessibleText() == null)
                     continue;
-//                System.out.println(node.getAccessibleText());
+
                 if (node.getAccessibleText().equals("txt")) {
                     Label l = (Label) node;
                     try {
-//                        System.out.println(l.getText());
                         Address to = new InternetAddress(l.getText());
                         to_emails.add(to);
                     } catch (AddressException e) {
@@ -246,9 +244,16 @@ public class EResponseController implements Initializable {
                 }
             }
         }
-        if (!txt_to.getText().equals("")) {
-            em.setToAddress(txt_to.getText());
+        try {
+            if (!txt_to.getText().equals("")) {
+                Address to = new InternetAddress(txt_to.getText());
+                to_emails.add(to);
+            }
+        } catch (AddressException e) {
+            e.printStackTrace();
         }
+        Address to[] = to_emails.toArray(new Address[to_emails.size()]);
+        em.setToAddresses(to);
 
         //--------------CC
         List<Address> cc_emails = new ArrayList<>();
@@ -260,17 +265,24 @@ public class EResponseController implements Initializable {
                 if (node.getAccessibleText().equals("txt")) {
                     Label l = (Label) node;
                     try {
-                        Address to = new InternetAddress(l.getText());
-                        cc_emails.add(to);
+                        Address cc = new InternetAddress(l.getText());
+                        cc_emails.add(cc);
                     } catch (AddressException e) {
                         e.printStackTrace();
                     }
                 }
             }
         }
-        if (!txt_cc.getText().equals("")) {
-            em.setCcAddress(txt_cc.getText());
+        try {
+            if (!txt_cc.getText().equals("")) {
+                Address cc = new InternetAddress(txt_cc.getText());
+                cc_emails.add(cc);
+            }
+        } catch (AddressException e) {
+            e.printStackTrace();
         }
+        Address cc[] = cc_emails.toArray(new Address[cc_emails.size()]);
+        em.setCcAddresses(cc);
 
         //--------------BCC
         List<Address> bcc_emails = new ArrayList<>();
@@ -290,9 +302,20 @@ public class EResponseController implements Initializable {
                 }
             }
         }
-        if (!txt_bcc.getText().equals("")) {
-            em.setBccAddress(txt_bcc.getText());
+        try {
+            if (!txt_bcc.getText().equals("")) {
+                Address bcc = new InternetAddress(txt_bcc.getText());
+                cc_emails.add(bcc);
+            }
+        } catch (AddressException e) {
+            e.printStackTrace();
         }
+        Address bcc[] = cc_emails.toArray(new Address[cc_emails.size()]);
+        em.setBccAddresses(bcc);
+
+        em.setToAddress(em.getToAddressString());
+        em.setCcAddress(em.getCcAddressString());
+        em.setBccAddress(em.getBccAddressString());
 
         em.setSubject(Subject);
         //Replace Line Breaks with <br> tags
@@ -300,14 +323,16 @@ public class EResponseController implements Initializable {
         em.setBody(Body);
 
         em.setAttachment(txt_attach.getText());
-        uploadAttachmentHandler(em.getAttachment());
+
+        int userCode=FileHelper.readApiUserDetails().getUserCode(); //get user Code From File
+
         if (choice == 1) {
             em.setType("sent");
-            post("email/send", writeJSON(em));
+            postWithFile("email/send/"+userCode, writeJSON(em), fileList);
         } else if (choice == 2) {
             if (!sendAsEmail.isSelected()) {
                 em.setType("ticket");
-                post("ticket/create", writeJSON(em));
+                postWithFile("ticket/create/"+userCode, writeJSON(em), fileList);
             }
             EmailDashController.loadEmailsStatic();
         }
@@ -317,26 +342,6 @@ public class EResponseController implements Initializable {
 
     }
 
-    public void uploadAttachmentHandler(String attachment) {
-        String charset = "UTF-8";
-        String requestURL = "http://localhost:8080/ticket/uploadMultipleFiles";
-        try {
-            UploadAttachmentHandler multipart = new UploadAttachmentHandler(requestURL, charset);
-            for (File file : fileList) {
-                multipart.addFilePart("files", file);
-            }
-
-            List<String> response = multipart.finish();
-
-            System.out.println("SERVER REPLIED:");
-
-            for (String line : response) {
-                System.out.println(line);
-            }
-        } catch (IOException ex) {
-            System.err.println(ex);
-        }
-    }
 
     //Pulling all email IDs from database
     public void pullingEmails() {

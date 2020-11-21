@@ -4,7 +4,7 @@ import JCode.FileHelper;
 
 public class Filters {
 
-    private String sortBy, ascDesc;
+    public static String sortBy, ascDesc;
     private boolean solved,
             unsolved,
             locked,
@@ -21,36 +21,39 @@ public class Filters {
     @Override
     public String toString() {
 
-        String filters = " 1 ";
+        String filters = "";
 
         if (solved) {
-            filters = filters + " AND ESOLV = 'S' ";
+            filters = filters +"," + "solved";
         }
         if (unsolved) {
-            filters = filters + " AND ESOLV = 'N' ";
+            filters = filters +","+ "unsolved";
         }
         if (locked) {
-            filters = filters + " AND LOCKD != 0 ";
+            filters = filters+","+ "locked";
         }
         if (unlocked) {
-            filters = filters + " AND LOCKD = 0 ";
+            filters = filters +","+ "unlocked";
         }
 
         if (lockedByMe) {
-            filters = filters + " AND LOCKD = " + fHelper.ReadUserDetails().getUCODE();
+            filters = filters+"," + "lockedByMe";
+//            filters = filters + "locked = :" + fHelper.ReadUserDetails().getUCODE();
         }
 
         if (hideReminders) {
-            filters = filters + " AND SBJCT NOT LIKE '%reminder%' ";
+            filters = filters +","+ "subject";
+//            filters = filters + "AND subject NOT LIKE '%reminder%' ";
         }
 
         if (archived) {
-            filters = filters + " AND FREZE = 1 ";
-        } else {
-            filters = filters + " AND FREZE = 0 ";
+            filters = filters +","+ "freeze";
+        }
+        else {
+            filters = filters +","+ "unfreeze";
         }
 
-        filters = filters + " ORDER BY " + sortBy + " " + ascDesc;
+//        filters = filters + " ORDER BY " + sortBy + " " + ascDesc;
 
         return filters;
     }

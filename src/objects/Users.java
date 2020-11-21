@@ -2,7 +2,11 @@ package objects;
 
 import java.util.ArrayList;
 
-public class Users {
+public class Users  {
+
+    private int userCode,isLog;
+    private String fullName,userName,email,password,note,userRight;
+
 
     private int UCODE, solved, locked;
     private String UNAME;
@@ -16,7 +20,59 @@ public class Users {
 
     @Override
     public String toString() {
-        return FNAME;
+        return userCode +" - "+fullName+" - "+userName ;
+    }
+
+    public int getUserCode() {
+        return userCode;
+    }
+
+    public void setUserCode(int userCode) {
+        this.userCode = userCode;
+    }
+
+    public int getIsLog() {
+        return isLog;
+    }
+
+    public void setIsLog(int isLog) {
+        this.isLog = isLog;
+    }
+
+    public String getFullName() {
+        return fullName;
+    }
+
+    public void setFullName(String fullName) {
+        this.fullName = fullName;
+    }
+
+    public String getUserName() {
+        return userName;
+    }
+
+    public void setUserName(String userName) {
+        this.userName = userName;
+    }
+
+    public String getNote() {
+        return note;
+    }
+
+    public void setNote(String note) {
+        this.note = note;
+    }
+
+    public String getUserRight() {
+        return userRight;
+    }
+
+    public void setUserRight(String userRight) {
+        this.userRight = userRight;
+    }
+
+    public void setEmail(boolean email) {
+        isEmail = email;
     }
 
     public int getUCODE() {

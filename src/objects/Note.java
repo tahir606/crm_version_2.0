@@ -2,11 +2,14 @@ package objects;
 
 import JCode.CommonTasks;
 
-public class Note {
+import java.io.Serializable;
+
+public class Note implements Serializable {
     
-    private int code, createdBy, contact, client,emailNo;
+    private int code,noteCode, createdBy, contact,contactID,clientID,psID,leadsID, emailId, client,emailNo,freeze;
     private String text, createdOn, createdByName, contactName;
-    
+    private Users users;
+    private Email emailTickets;
     public Note() {
     }
 
@@ -14,8 +17,82 @@ public class Note {
 
     @Override
     public String toString() {
-        return "" + text + "        " + createdOn + "       " + createdByName;
+        return "  "+text + "      " + createdOn + "      " + noteCode+ "      " + emailTickets.getCode() + "    " + users.getUserCode();
     }
+
+    public Users getUsers() {
+        return users;
+    }
+
+    public void setUsers(Users users) {
+        this.users = users;
+    }
+
+    public Email getEmail() {
+        return emailTickets;
+    }
+
+    public void setEmail(Email email) {
+        this.emailTickets = email;
+    }
+
+    public int getNoteCode() {
+        return noteCode;
+    }
+
+    public void setNoteCode(int noteCode) {
+        this.noteCode = noteCode;
+    }
+
+    public int getContactID() {
+        return contactID;
+    }
+
+    public void setContactID(int contactID) {
+        this.contactID = contactID;
+    }
+
+    public int getClientID() {
+        return clientID;
+    }
+
+    public void setClientID(int clientID) {
+        this.clientID = clientID;
+    }
+
+    public int getPsID() {
+        return psID;
+    }
+
+    public void setPsID(int psID) {
+        this.psID = psID;
+    }
+
+    public int getLeadsID() {
+        return leadsID;
+    }
+
+    public void setLeadsID(int leadsID) {
+        this.leadsID = leadsID;
+    }
+
+    public int getFreeze() {
+        return freeze;
+    }
+
+    public void setFreeze(int freeze) {
+        this.freeze = freeze;
+    }
+
+    public int getEmailId() {
+        return emailId;
+    }
+
+    public void setEmailId(int emailId) {
+        this.emailId = emailId;
+    }
+
+
 
     public int getEmailNo() {
         return emailNo;

@@ -1,5 +1,6 @@
 package Email.Archive;
 
+import ApiHandler.RequestHandler;
 import Email.EmailDashController;
 import JCode.Toast;
 import JCode.mysql.mySqlConn;
@@ -8,10 +9,14 @@ import com.jfoenix.controls.JFXDatePicker;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.*;
+import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonType;
+import javafx.scene.control.CheckBox;
+import javafx.scene.control.TextField;
 import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
 
+import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
@@ -52,28 +57,33 @@ public class archiveController implements Initializable {
         });
     }
 
-    public void setArchive(ActionEvent actionEvent) {
+    public void setArchive(ActionEvent actionEvent) throws IOException {
 
 
         String where = " 1 ";
-
+        int freeze = 0;
+        String beforeDate = null;
+        String ticketFrom = null, ticketTo = null;
         if (check_all.isSelected()) {
+            freeze = 1;
             where = where + " AND FREZE != 1 ";
         } else {
             String before = String.valueOf(before_date.getValue());
             String tF = txt_from.getText();
             String tT = txt_to.getText();
-
             if (tF.equals("") ^ tT.equals("")) {   //Exclusive OR || XOR
                 Toast.makeText((Stage) btn_move.getScene().getWindow(), "Please Fill Both To and From Tickets");
                 return;
             }
 
             if (!before.equals("null")) {
+                beforeDate = before;
                 where = where + " AND TSTMP <= '" + before + "' ";
             }
 
             if (!tF.equals("") && !tT.equals("")) {
+                ticketFrom=tF;
+                ticketTo=tT;
                 where = where + " AND EMNO >= " + tF + " AND EMNO <= " + tT;
             }
 
@@ -84,7 +94,9 @@ public class archiveController implements Initializable {
         alert2.showAndWait();
 
         if (alert2.getResult() == ButtonType.YES) {
-            sql.ArchiveEmail(EmailDashController.Email_Type, where);
+            RequestHandler.run("ticket/archiveAll?freeze=" + freeze + "&beforeDate=" + beforeDate + "&ticketFrom="+ticketFrom+"&ticketTo="+ticketTo);
+
+//            sql.ArchiveEmail(EmailDashController.Email_Type, where);
             EmailDashController.loadEmailsStatic();
             Stage stage = (Stage) btn_move.getScene().getWindow();
             stage.close();

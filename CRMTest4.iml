@@ -31,5 +31,9 @@
     <orderEntry type="library" name="okio-2.2.2" level="project" />
     <orderEntry type="library" name="json-20200518" level="project" />
     <orderEntry type="library" name="mimecraft-1.1.1" level="project" />
+    <orderEntry type="library" name="httpclient-4.2.3" level="project" />
+    <orderEntry type="library" name="apache-httpcomponents-httpcore" level="project" />
+    <orderEntry type="library" name="httpclient-4.3-beta1" level="project" />
+    <orderEntry type="library" name="httpcore-4.0-alpha5" level="project" />
   </component>
 </module>

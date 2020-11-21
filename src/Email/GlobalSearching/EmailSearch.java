@@ -1,9 +1,10 @@
 package Email.GlobalSearching;
 
+import ApiHandler.RequestHandler;
 import Email.EmailDashController;
-import JCode.CommonTasks;
 import JCode.FileDev;
 import JCode.mysql.mySqlConn;
+import ZipFile.ZipFileUtility;
 import com.jfoenix.controls.JFXComboBox;
 import com.jfoenix.controls.JFXTextField;
 import javafx.application.Platform;
@@ -18,6 +19,7 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.web.WebView;
 import objects.Email;
+import objects.History;
 import objects.Users;
 
 import javax.mail.Address;
@@ -27,7 +29,8 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
-import java.util.concurrent.TimeUnit;
+
+import static Email.EmailDashController.*;
 
 public class EmailSearch implements Initializable {
     @FXML
@@ -87,7 +90,9 @@ public class EmailSearch implements Initializable {
                 try {
 
                     int ticketNo = Integer.parseInt(search);
-                    Email emails = sql.readSearchEmail(ticketNo);//Search Email through Query
+                    Email emails= (Email) RequestHandler.objectRequestHandler(RequestHandler.run("ticket/email/"+ticketNo),Email.class);
+
+//                    Email emails = sql.readSearchEmail(ticketNo);//Search Email through Query
                     if (emails == null) {
                         anchor_details.setVisible(false);
                         anchor_body.setVisible(false);
@@ -100,23 +105,29 @@ public class EmailSearch implements Initializable {
                     anchor_details.setVisible(false);
                     anchor_body.setVisible(false);
                     label_error.setText("Invalid Ticket No");
+                }catch (IOException e){
+                    e.printStackTrace();
                 }
 
             }
         });
     }
 
-    Address[] from, cc;
+    Address[]  cc;
+    String from;
 // This method display the details of search
     public void populateDetails(Email email) {
         new Thread(() -> Platform.runLater(() -> {
             try {
-                label_ticket.setText(String.valueOf(email.getCode()));
+                label_ticket.setText(String.valueOf(email.getTicketNo()));
             } catch (NullPointerException e) {
                 return;
             }
+            List<History> historyList= getSelectEmailHistory(email);
+            String statusTime = getStatusTime(historyList);
+            String userName = getUserName(historyList, statusTime,email);
 
-            label_time.setText(email.getTimeFormatted());
+            label_time.setText(email.getTimestamp());
 
             vbox_from.getChildren().clear();  //Clearing
             vbox_from.setSpacing(2.0);
@@ -125,52 +136,59 @@ public class EmailSearch implements Initializable {
 
             label_from.setText("From:");
             if (emailDashController.Email_Type == 1) {
-//                from = email.getFromAddress();
+                from = email.getFromAddress();
                 title_locked.setText("Locked By: ");
-                label_locked.setText(email.getLockedByName());
+                if (userName.equals("")) {
+                    label_locked.setText("");
+                } else {
+                    label_locked.setText(userName + " " + statusTime);
+                }
 
-                if (email.getManualEmail() != '\0') {
+                if (email.getUsers().getUserCode() !=22) {
                     label_created.setVisible(true);
                     title_created.setVisible(true);
-                    label_created.setText(email.getCreatedBy());
+                    label_created.setText(email.getUsers().getFullName());
                 } else {
                     label_created.setVisible(false);
                     title_created.setVisible(false);
                 }
 
             } else if (emailDashController.Email_Type == 2) {
-//                from = email.getFromAddress();
+                from = email.getFromAddress();
             } else if (emailDashController.Email_Type == 4) {
                 label_from.setText("To:");
-//                from = email.getToAddress();
+                from = email.getToAddress();
                 title_locked.setText("Sent By User: ");
                 label_locked.setText(email.getUserCode());
             }
 //            cc = email.getCcAddress();
             if (from != null) {
-                for (Address f : from) {
+//                for (Address f : from) {
                     try {
-                        Label label = new Label(f.toString());
+                        Label label = new Label(from);
                         label.setPadding(new Insets(2, 2, 2, 5));
                         label.getStyleClass().add("moduleDetails");
                         vbox_from.getChildren().add(label);
                     } catch (NullPointerException ex) {
                         //Because null is saved
                     }
-                }
+//                }
             }
-            if (cc != null) {
-                for (Address c : cc) {
+            if (email.getCcAddress() != null) {
+                for (String c : email.getCcAddress().split("\\^")) {
                     try {
-                        Label label = new Label(c.toString());
-                        label.setPadding(new Insets(2, 5, 2, 5));
-                        label.getStyleClass().add("moduleDetails");
-                        vbox_cc.getChildren().add(label);
+                        if (!c.equals("")) {
+                            Label label = new Label(c);
+                            label.setPadding(new Insets(2, 5, 2, 5));
+                            label.getStyleClass().add("moduleDetails");
+                            vbox_cc.getChildren().add(label);
+                        }
                     } catch (NullPointerException ex) {
                         //Because null is saved
                     }
                 }
             }
+
 
             txt_subject.setText(email.getSubject());
 
@@ -185,11 +203,38 @@ public class EmailSearch implements Initializable {
                 combo_attach.setPromptText("Open Attachment");
                 combo_attach.setDisable(false);
                 List<FileDev> attFiles = new ArrayList<>();
+                List<String> fileNamesString = new ArrayList<>();
                 for (String c : email.getAttachment().split("\\^")) {
                     FileDev file = new FileDev(c);
-                    attFiles.add(file);
+                    if (!c.equals("")) {
+                        EmailDashController.path = file.getAbsolutePath();
+                        attFiles.add(new FileDev(EmailDashController.temp + "\\" + file.getName()));
+                        fileNamesString.add(file.getName());
+                    }
+                }
+                String comma = ",";
+
+                StringBuilder sb = new StringBuilder();
+
+                int i = 0;
+                while (i < fileNamesString.size() - 1) {
+                    sb.append(fileNamesString.get(i));
+                    sb.append(comma);
+                    i++;
+                }
+                sb.append(fileNamesString.get(i));
+                String fileNames = sb.toString(); // only Names of file with comma
+                int index = EmailDashController.path.lastIndexOf('\\');
+                String actualPath = EmailDashController.path.substring(0, index) + "\\"; //actual path without fileName
+                actualPath = actualPath.replace("\\", "/"); //replace slash sign for proper path
+                try {
+                    ZipFileUtility zipFileUtility = new ZipFileUtility();
+                    zipFileUtility.unzip(RequestHandler.downloadZipFile("ticket/download/" + fileNames + "?path=" + actualPath, EmailDashController.temp + "temp.zip"), EmailDashController.temp);
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
                 combo_attach.getItems().addAll(attFiles);
+
             }
             //----Ebody
             anchor_body.getChildren().clear();
@@ -211,14 +256,6 @@ public class EmailSearch implements Initializable {
             //            eBody.setEditable(false);
             if (!anchor_body.isVisible()) {
                 anchor_body.setVisible(true);
-            }
-            if (email.getSolved() == 'S') {    //If Email is solved disable all buttons
-                String display = email.getLockedByName();
-                if (email.getLockTime() != null)
-                    display = display + " ( " + CommonTasks.getDateDiff(email.getLockTime(), email.getSolveTime(), TimeUnit.MINUTES) + " ) ";
-                label_locked.setText(display);
-                title_locked.setText("Solved By: ");
-
             }
 //            eBody.setEditable(false);
             if (!anchor_body.isVisible()) {
