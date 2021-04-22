@@ -1,21 +1,21 @@
 package activity.view;
 
+import ApiHandler.RequestHandler;
 import JCode.mysql.mySqlConn;
 import activity.ActivityDashController;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
-import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableRow;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.scene.layout.AnchorPane;
 import objects.Event;
 import objects.Task;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.List;
 import java.util.ResourceBundle;
 
 public class ActivityViewController implements Initializable {
@@ -48,7 +48,8 @@ public class ActivityViewController implements Initializable {
     private TableColumn<Event, String> col_status_event;
 
     private mySqlConn sql = new mySqlConn();
-
+    List<Task> taskList;
+    List<Event> eventList;
     public static Task staticTask;
     public static Event staticEvent;
 
@@ -56,12 +57,18 @@ public class ActivityViewController implements Initializable {
     public void initialize(URL location, ResourceBundle resources) {
 
         col_subject.setCellValueFactory(new PropertyValueFactory<>("subject"));
-        col_due_date.setCellValueFactory(new PropertyValueFactory<>("dueDateFormatted"));
+        col_due_date.setCellValueFactory(new PropertyValueFactory<>("dueDate"));
         col_created_on.setCellValueFactory(new PropertyValueFactory<>("createdOn"));
         col_created_by.setCellValueFactory(new PropertyValueFactory<>("createdBy"));
-        col_status.setCellValueFactory(new PropertyValueFactory<>("statusString"));
+        col_status.setCellValueFactory(new PropertyValueFactory<>("status"));
+//        table_activity.getItems().setAll(sql.getAllTasks(null));
+        try {
+            taskList= RequestHandler.listRequestHandler(RequestHandler.run("task/getAllTask"),Task.class);
+            table_activity.getItems().setAll(taskList);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
-        table_activity.getItems().setAll(sql.getAllTasks(null));
 
         table_activity.setRowFactory(tv -> {
             TableRow<Task> row = new TableRow<>();
@@ -81,14 +88,19 @@ public class ActivityViewController implements Initializable {
             return row;
         });
 
-        col_title.setCellValueFactory(new PropertyValueFactory<>("title"));
-        col_from.setCellValueFactory(new PropertyValueFactory<>("fromDate"));
-        col_to.setCellValueFactory(new PropertyValueFactory<>("createdOn"));
+        col_title.setCellValueFactory(new PropertyValueFactory<>("tittle"));
+        col_from.setCellValueFactory(new PropertyValueFactory<>("from"));
+        col_to.setCellValueFactory(new PropertyValueFactory<>("to"));
         col_location.setCellValueFactory(new PropertyValueFactory<>("location"));
         col_created_by_event.setCellValueFactory(new PropertyValueFactory<>("createdBy"));
-        col_status_event.setCellValueFactory(new PropertyValueFactory<>("statusString"));
-
-        table_events.getItems().setAll(sql.getAllEvents(null));
+        col_status_event.setCellValueFactory(new PropertyValueFactory<>("status"));
+        try {
+            eventList = RequestHandler.listRequestHandler(RequestHandler.run("event/getAllEvent"),Event.class);
+            table_events.getItems().setAll(eventList);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+//        table_events.getItems().setAll(sql.getAllEvents(null));
 
         table_events.setRowFactory(tv -> {
             TableRow<Event> row = new TableRow<>();

@@ -1,21 +1,23 @@
-import JCode.mysql.mySqlConn;
+import JCode.FileHelper;
+import JCode.trayHelper;
 import SplashScreen.SplashScreenThread;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
-
-import JCode.*;
 import objects.Users;
 import settings.network.networkSetController;
 
 import java.io.IOException;
+import java.net.InetSocketAddress;
+import java.net.Socket;
+
+import static settings.admin.adminController.checkIfUserIsLoggedInn;
 
 public class Main extends Application {
 
     private FileHelper fHelper;
-    private mySqlConn mySql;
     private static trayHelper tray;
 
     static SplashScreenThread splash;
@@ -28,9 +30,8 @@ public class Main extends Application {
 
         fHelper.checkFolders();
 
-        Users userLoggedIn = fHelper.ReadUserDetails();
-
-        if (fHelper.getNetworkDetails() == null) {
+        Users userLoggedIn= FileHelper.ReadUserApiDetails();
+        if (FileHelper.getNetworkDetails() == null) {
             networkSetController.fromMain = true;
             Parent root = FXMLLoader.load(getClass().getResource("settings/network/networkSet.fxml"));
             primaryStage.setTitle("Network Settings- BITS-CRM");
@@ -38,18 +39,18 @@ public class Main extends Application {
             primaryStage.setResizable(false);
             tray.createIcon(primaryStage);
             primaryStage.show();
-        } else if (userLoggedIn == null) {
+        }
+        else if (userLoggedIn == null) {
             loginPage(primaryStage);
         } else {
             //If user has been marked logged out, display login screen
-            mySql = new mySqlConn();
-            if (!mySql.checkIfUserIsLoggedIn(userLoggedIn)) {
-                fHelper.DeleteUserDetails();
+            if (!checkIfUserIsLoggedInn(userLoggedIn)) {
                 loginPage(primaryStage);
                 return;
             }
             Parent root = FXMLLoader.load(getClass().getResource("dashboard/dashboard.fxml"));
-            primaryStage.setTitle("Dashboard- BITS-CRM");
+            primaryStage.setTitle("Dashboard - BITS-CRM");
+
             primaryStage.setScene(new Scene(root, 1400, 600));
             tray.createTrayIcon(primaryStage);
             tray.createIcon(primaryStage);
@@ -66,6 +67,14 @@ public class Main extends Application {
     }
 
 
+    public static boolean pingHost() {
+        try (Socket socket = new Socket()) {
+            socket.connect(new InetSocketAddress(FileHelper.getNetworkDetails().getHost(), FileHelper.getNetworkDetails().getPort()), 2000);
+            return true;
+        } catch (IOException e) {
+            return false; // Either timeout or unreachable or failed DNS lookup.
+        }
+    }
     public static void main(String[] args) {
         new SplashScreenThread().showSplashScreen();
         launch(args);

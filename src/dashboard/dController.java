@@ -1,9 +1,10 @@
 package dashboard;
 
+import ApiHandler.RequestHandler;
 import Home.HomeSplitController;
+import JCode.FileHelper;
 import JCode.NotifyActivities;
 import JCode.emailControl;
-import JCode.FileHelper;
 import JCode.mysql.mySqlConn;
 import JCode.trayHelper;
 import JSockets.JClient;
@@ -21,22 +22,24 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.layout.*;
-
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.Pane;
+import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
-import objects.ESetting;
-import objects.Network;
-import objects.Users;
+import objects.*;
 
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.ResourceBundle;
 
+import static Email.EmailDashController.timerTaskNewEmail;
 
-public class  dController implements Initializable {
-    
+
+public class dController implements Initializable {
+
     @FXML
     private BorderPane border_pane;
     @FXML
@@ -45,73 +48,95 @@ public class  dController implements Initializable {
     private VBox menu_pane;
     @FXML
     private Pane drawer_pane;
-    
+
     public static ImageView img_load;
-    
+
     private FileHelper fHelper;
-    private mySqlConn sql;
+//    private mySqlConn sql;
     private static Users user;
+    private static Users users;
     private static Network network;
-    private static ESetting eSetting;
-    private ArrayList<Users.uRights> rightsList;
-    
+//    private static ESetting eSetting;
+//    private ArrayList<Users.uRights> rightsList;
+
+    private List<RightsList> userRightsList;
+    private List<RightChart> rightCharts;
     public static boolean isServer = false;
-    
+    private List<Integer> rights=new ArrayList<>();
     trayHelper tHelper;
-    
+
     private static int currentPane;
-    
+
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         img_load = img_loader;
-        
+
         fHelper = new FileHelper();
         tHelper = new trayHelper();
-        
+
         img_loader.setImage(
                 new Image(getClass().getResourceAsStream("/res/img/loader.gif")));
         //Setting Loading Image to ImageView
         img_loader.setVisible(true);
         //Setting border to the right side
 //        drawer_pane.setStyle("-fx-border-width: 0 2 0 0; -fx-border-color: red black green yellow;");
-        
-        network = fHelper.getNetworkDetails();
-        
-        sql = new mySqlConn();
-        
-        eSetting = sql.getEmailSettings();
-        user = fHelper.ReadUserDetails();
-        rightsList = user.getuRightsList();
 
-        DrawerPane(); //Populate Drawer
-        
-        changeSelection(homeBtn, "Home/home_split.fxml", 1);
+        network = FileHelper.getNetworkDetails();
 
-        if (user.isEmail()) {
-            emailCtrl();
-            isServer = true;
-            new Thread(() -> new JServer()).start();
-        } else {
-            isServer = false;
-            new Thread(() -> new JClient()).start();
+//        sql = new mySqlConn();
+
+//        eSetting = sql.getEmailSettings();
+
+        users = FileHelper.ReadUserApiDetails();
+        Users user = null;
+
+        try {
+            user = (Users) RequestHandler.objectRequestHandler(RequestHandler.run("users/getUser/" + users.getUserCode()), Users.class);
+            if (user.getUserRight().equals("Admin")) {
+                userRightsList = RequestHandler.listRequestHandler(RequestHandler.run("rights_list/getRightList"), RightsList.class);
+                for (RightsList rightsList:userRightsList){
+                    rights.add(rightsList.getRightsCode());
+                }
+            } else {
+                rightCharts = RequestHandler.listRequestHandler(RequestHandler.run("rights_chart/getChartList/" + users.getUserCode()), RightChart.class);
+                for (RightChart rightChart:rightCharts){
+                    rights.add(rightChart.getRightsCode());
+                }
+            }
+
+        } catch (IOException e) {
+            e.printStackTrace();
         }
-        
+        DrawerPane(); //Populate Drawer
+
+        changeSelection(homeBtn, "Home/home_split.fxml", 1);
+//        if (users.getIsEmail() == 1) {
+//            emailCtrl();
+//            isServer = true;
+//            new Thread(() -> new JServer()).start();
+//        } else {
+//            isServer = false;
+//            new Thread(() -> new JClient()).start();
+//        }
+
+
+
         Platform.setImplicitExit(false);
 
         SplashScreenThread.hideSplashScreen();
 
-        startNotifications();
+//        startNotifications();
     }
-    
+
     private void DrawerPane() {
-        
+
         new Thread(() -> {
-            
+
             //Is an awarded right for everyone
             homeButton();
-            
-            for (Users.uRights r : rightsList) {
-                switch (r.getRCODE()) {
+
+            for (int r : rights) {
+                switch (r) {
                     case 1: {
                         mailButton();
                         break;
@@ -146,14 +171,14 @@ public class  dController implements Initializable {
                     }
                 }
             }
-            
+
             logoutButton();
             powerButton();
 
             img_loader.setVisible(false);
         }).start();
     }
-    
+
     //---------------------------BUTTONS-------------------------
     private void buttonSubSettings(JFXButton button, String btnName) {
         button.setText(btnName.toUpperCase());
@@ -166,63 +191,99 @@ public class  dController implements Initializable {
         button.setAlignment(Pos.CENTER_LEFT);
         Platform.runLater(() -> menu_pane.getChildren().add(button));
     }
-    
+
     private void buttonSettings(String btnName, String path, int paneNo) {
         JFXButton button = new JFXButton();
         buttonSubSettings(button, btnName);
         button.addEventHandler(MouseEvent.MOUSE_PRESSED, event -> changeSelection(button, path, paneNo));
     }
-    
+
     JFXButton homeBtn = new JFXButton("Home");
-    
+
     private void homeButton() {
 //        buttonSettings("Home", "Home/Home.fxml", 1);
+        if (timerTaskNewEmail!=null){
+            timerTaskNewEmail.cancel();
+        }
+
         buttonSettings("Home", "Home/home_split.fxml", 1);
     }
-    
+
     private void mailButton() {
         buttonSettings("Emails", "Email/emailDash.fxml", 2);
     }
-    
+
     private void clientButton() {
+        if (timerTaskNewEmail!=null){
+            timerTaskNewEmail.cancel();
+        }
         buttonSettings("clients", "client/dashBase.fxml", 3);
     }
-    
+
     private void leadButton() {
+        if (timerTaskNewEmail!=null){
+            timerTaskNewEmail.cancel();
+        }
         buttonSettings("leads", "lead/lead_dash.fxml", 4);
     }
-    
+
     private void productButton() {
+        if (timerTaskNewEmail!=null){
+            timerTaskNewEmail.cancel();
+        }
         buttonSettings("products", "product/product_dash.fxml", 5);
     }
-    
+
     private void activityButton() {
+        if (timerTaskNewEmail!=null){
+            timerTaskNewEmail.cancel();
+        }
         buttonSettings("activity", "activity/activity_dash.fxml", 6);
     }
 
     private void reportsButton() {
+
+        if (timerTaskNewEmail!=null){
+            timerTaskNewEmail.cancel();
+        }
         buttonSettings("reports", "reports/reports_dash.fxml", 7);
     }
 
     private void documentsButton() {
+
+        if (timerTaskNewEmail!=null){
+            timerTaskNewEmail.cancel();
+        }
         buttonSettings("documents", "documents/documents_dash.fxml", 8);
     }
 
     private void settingsButton() {
+        if (timerTaskNewEmail!=null){
+            timerTaskNewEmail.cancel();
+        }
+
         buttonSettings("settings", "settings/settings.fxml", 9);
     }
-    
+
     private void logoutButton() {
-        
+
+        if (timerTaskNewEmail!=null){
+            timerTaskNewEmail.cancel();
+        }
+
         JFXButton logoutBtn = new JFXButton("Logout");
         buttonSubSettings(logoutBtn, "Logout");
         logoutBtn.addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent event) {
                 img_loader.setVisible(true);
-                
-                sql.setLogin(user.getUCODE(), false);
-                
+
+                try {
+                    Users u = (Users) RequestHandler.objectRequestHandler(RequestHandler.run("users/updateUser/" + users.getUserCode() + "?isLog=" + 0), Users.class);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+
                 if (isServer == true) {
                     JServer.closeThread();
                 } else {
@@ -232,16 +293,16 @@ public class  dController implements Initializable {
                         e.printStackTrace();
                     }
                 }
-                
+
                 Stage dash = (Stage) menu_pane.getScene().getWindow();
                 dash.close();
-                
-                fHelper.DeleteUserDetails();
+                fHelper.DeleteUserApiDetails();
+//                fHelper.DeleteUserDetails();
                 fHelper.DeleteESettings();
-                
+
                 if (emailThread != null)
                     emailThread.interrupt();
-                
+
                 FXMLLoader fxmlLoader = new FXMLLoader(getClass().getClassLoader().getResource("login/login.fxml"));
                 Parent root1 = null;
                 try {
@@ -260,7 +321,7 @@ public class  dController implements Initializable {
             }
         });
     }
-    
+
     private void powerButton() {
         JFXButton powerBtn = new JFXButton("Power");
         buttonSubSettings(powerBtn, "Power");
@@ -269,20 +330,20 @@ public class  dController implements Initializable {
             System.exit(0);
         });
     }
-    
+
     //---------------------------EVENT HANDLERS---------------------------
-    
-    
+
+
     Thread emailThread;
-    
+
     private void emailCtrl() {
-        
+
         emailControl ec = new emailControl();
-        
+
         emailThread = new Thread(() -> {
-            
+
             int dbFirst = 0, connFirst = 0;
-            
+
             while (true) {
                 if (!mySqlConn.pingHost(network.getHost(), network.getPort(), 2000)) {          //MySQL Database Not Found!!
                     if (dbFirst < 2) {
@@ -319,13 +380,13 @@ public class  dController implements Initializable {
                         }
                     }
                 }
-                
+
             }
-            
+
         });
         emailThread.start();
     }
-    
+
     private void changeSelection(JFXButton btn, String path, int pane) {
 
         img_loader.setVisible(true);
@@ -335,16 +396,16 @@ public class  dController implements Initializable {
             node.getStyleClass().remove("btnMenuBoxPressed");
         }
         btn.getStyleClass().add("btnMenuBoxPressed");
-        
+
         new Thread(new Runnable() {
             @Override
             public void run() {
-                
+
                 if (currentPane == pane) {
                     img_loader.setVisible(false);
                     return;
                 }
-                
+
                 Platform.runLater(() -> {
                     try {
                         border_pane.setCenter(FXMLLoader.load(getClass().getClassLoader().getResource(path)));
@@ -356,7 +417,7 @@ public class  dController implements Initializable {
                 });
             }
         }).start();
-        
+
     }
 
     private void startNotifications() {
@@ -365,6 +426,6 @@ public class  dController implements Initializable {
             notify.startNotifying();
         }).start();
     }
-    
-    
+
+
 }

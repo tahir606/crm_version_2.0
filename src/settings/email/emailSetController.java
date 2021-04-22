@@ -1,5 +1,6 @@
 package settings.email;
 
+import ApiHandler.RequestHandler;
 import JCode.FileHelper;
 import JCode.Toast;
 import JCode.mysql.mySqlConn;
@@ -27,10 +28,13 @@ import javafx.stage.DirectoryChooser;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
+import objects.Domain;
 import objects.ESetting;
+import objects.Keyword;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
 
@@ -59,11 +63,11 @@ public class emailSetController implements Initializable {
     @FXML
     private BorderPane main_pane;
     @FXML
-    private JFXListView<String> white_list;
+    private JFXListView<Domain> white_list;
     @FXML
-    private JFXListView<String> black_list;
+    private JFXListView<Domain> black_list;
     @FXML
-    private JFXListView<String> blacklist_keyword;
+    private JFXListView<Keyword> blacklist_keyword;
     @FXML
     private JFXTextField txt_saveKeyword;
 
@@ -77,14 +81,24 @@ public class emailSetController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        sql = new mySqlConn();
+//        sql = new mySqlConn();
         fHelper = new FileHelper();
 
-        eSetting = sql.getEmailSettings();
+        try {
+            eSetting = (ESetting) RequestHandler.objectRequestHandler(RequestHandler.run("settings/getSettings"), ESetting.class);
 
-        autoText = eSetting.getAutotext();
-        discText = eSetting.getDisctext();
-        solvRespText = eSetting.getSolvRespText();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+//        eSetting = sql.getEmailSettings();
+
+//        autoText = eSetting.getAutotextt();
+//        discText = eSetting.getDisctextt();
+//        solvRespText = eSetting.getSolvRespTextt();
+
+        autoText = eSetting.getAutoText();
+        discText = eSetting.getDisclaimerText();
+        solvRespText = eSetting.getSolveText();
         try {
             populateCategoryBoxes();
         } catch (NullPointerException e) {
@@ -94,18 +108,44 @@ public class emailSetController implements Initializable {
         if (EmailSet_type == 1) {
 
             btnGmail();
-
             txt_host.setText(eSetting.getHost());
             txt_email.setText(eSetting.getEmail());
-            txt_pass.setText(eSetting.getPass());
-            txt_fspath.setText(eSetting.getFspath());
-            if (eSetting.getGenerated_reply_email() != null) {
-                if (!eSetting.getGenerated_reply_email().equals(eSetting.getHost()))
-                    txt_genReply.setText(eSetting.getGenerated_reply_email());
+            txt_pass.setText(eSetting.getPassword());
+            txt_fspath.setText(eSetting.getFilePath());
+//            txt_host.setText(eSetting.getHostt());
+//            txt_email.setText(eSetting.getEmailt());
+//            txt_pass.setText(eSetting.getPasst());
+//            txt_fspath.setText(eSetting.getFspatht());
+//            if (eSetting.getGenerated_reply_emailt() != null) {
+//                if (!eSetting.getGenerated_reply_emailt().equals(eSetting.getHostt()))
+//                    txt_genReply.setText(eSetting.getGenerated_reply_emailt());
+//            }
+            if (eSetting.getGeneraEmail() != null) {
+                if (!eSetting.getGeneraEmail().equals(eSetting.getHost()))
+                    txt_genReply.setText(eSetting.getGeneraEmail());
             }
-            check_auto.setSelected(eSetting.isAuto());
-            check_disclaimer.setSelected(eSetting.isDisc());
-            check_solvResp.setSelected(eSetting.isSolv());
+            boolean autoCheck, disclaimerCheck, solveCheck;
+            if (eSetting.getAutoCheck() == 1) {
+                autoCheck = true;
+            } else {
+                autoCheck = false;
+            }
+            if (eSetting.getDisclaimerCheck() == 1) {
+                disclaimerCheck = true;
+            } else {
+                disclaimerCheck = false;
+            }
+            if (eSetting.getSolveCheck() == 1) {
+                solveCheck = true;
+            } else {
+                solveCheck = false;
+            }
+//            check_auto.setSelected(eSetting.isAutot());
+//            check_disclaimer.setSelected(eSetting.isDisct());
+//            check_solvResp.setSelected(eSetting.isSolvt());
+            check_auto.setSelected(autoCheck);
+            check_disclaimer.setSelected(disclaimerCheck);
+            check_solvResp.setSelected(solveCheck);
 
             btn_genHelp.setTooltip(new Tooltip("This email will be used to send all emails. " +
                     "\nIf these field is left empty main email will be used to send emails."));
@@ -127,11 +167,32 @@ public class emailSetController implements Initializable {
     }
 
     void init() {
-        txt_saveKeyword.setText(sql.getReplacementKeyword());
-        List<String> whiteList = sql.getWhiteBlackListDomains(1);
-        List<String> blackList = sql.getWhiteBlackListDomains(2);
+        txt_saveKeyword.setText(eSetting.getReplacementKeyword());
+        List<Domain> whiteList = null;
+        List<Domain> blackList = null;
+        try {
+            whiteList = RequestHandler.listRequestHandler(RequestHandler.run("domains/getDomains/" + 1), Domain.class);
 
-        List<String> blackListKeyword = sql.getBlackListKeyword();// get blackList keyword and display in lestView
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        try {
+            blackList = RequestHandler.listRequestHandler(RequestHandler.run("domains/getDomains/" + 0), Domain.class);
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+//        List<String> whiteList = sql.getWhiteBlackListDomains(1);
+//        List<String> blackList = sql.getWhiteBlackListDomains(2);
+
+//        List<String> blackListKeyword = sql.getBlackListKeyword();// get blackList keyword and display in lestView
+        List<Keyword> blackListKeyword = null;
+        try {
+            blackListKeyword = RequestHandler.listRequestHandler(RequestHandler.run("keyword/getKeywords"), Keyword.class);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
         try {
             white_list.getItems().clear();
             white_list.getItems().addAll(whiteList);
@@ -148,7 +209,11 @@ public class emailSetController implements Initializable {
         final ContextMenu contextMenu = new ContextMenu();
         MenuItem blacklistItem = new MenuItem("BlackList Domain");
         blacklistItem.setOnAction(t -> {
-            sql.updateDomainType(2, white_list.getSelectionModel().getSelectedItem());
+            try {
+                RequestHandler.post("domains/updateDomains", RequestHandler.writeJSON(white_list.getSelectionModel().getSelectedItem())).close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
             init();
         });
         contextMenu.getItems().add(blacklistItem);
@@ -159,7 +224,12 @@ public class emailSetController implements Initializable {
         final ContextMenu replacedKeywordMenu = new ContextMenu();
         MenuItem replacedKeywordItem = new MenuItem("Remove Keyword");
         replacedKeywordItem.setOnAction(t -> {
-            sql.removeKeyword( blacklist_keyword.getSelectionModel().getSelectedItem());
+//            sql.removeKeyword( blacklist_keyword.getSelectionModel().getSelectedItem());
+            try {
+                RequestHandler.run("keyword/removeKeyword/" + blacklist_keyword.getSelectionModel().getSelectedItem().getCode()).close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
             init();
         });
         replacedKeywordMenu.getItems().add(replacedKeywordItem);
@@ -271,9 +341,28 @@ public class emailSetController implements Initializable {
 
         if (alert2.getResult() == ButtonType.YES) {
             ESetting es = new ESetting(host, email, pass, fspath);
-            es.setAuto(auto);
-            es.setDisc(disc);
-            es.setSolv(solv);
+//            es.setAutot(auto);
+//            es.setDisct(disc);
+//            es.setSolvt(solv);
+            int autoCheck, disclaimerCheck, solveCheck;
+            if (auto) {
+                autoCheck = 1;
+            } else {
+                autoCheck = 0;
+            }
+            if (disc) {
+                disclaimerCheck = 1;
+            } else {
+                disclaimerCheck = 0;
+            }
+            if (solv) {
+                solveCheck = 1;
+            } else {
+                solveCheck = 0;
+            }
+            es.setAutoCheck(autoCheck);
+            es.setDisclaimerCheck(disclaimerCheck);
+            es.setSolveCheck(solveCheck);
             if (autoText == null)
                 autoText = "";
             if (discText == null)
@@ -281,17 +370,24 @@ public class emailSetController implements Initializable {
             if (solvRespText == null)
                 solvRespText = "";
 
-            es.setAutotext(autoText);
-            es.setDisctext(discText);
-            es.setSolvRespText(solvRespText);
+            es.setAutoText(autoText);
+            es.setDisclaimerText(discText);
+            es.setSolveText(solvRespText);
 
             if (genReplyEmail.equals(""))
-                es.setGenerated_reply_email(email);
+                es.setGeneraEmail(email);
             else
-                es.setGenerated_reply_email(genReplyEmail);
+                es.setGeneraEmail(genReplyEmail);
 
-            sql.saveEmailSettings(es);
 
+            es.setCode(eSetting.getCode());
+            es.setReplacementKeyword(eSetting.getReplacementKeyword());
+
+            try {
+                RequestHandler.post("settings/updateSettings", RequestHandler.writeJSON(es)).close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
             new Thread(() -> Platform.runLater(() -> Toast.makeText((Stage) btn_auto.getScene().getWindow(), "Restart the application for the changes" +
                     " to be made!"))).start();
 
@@ -364,14 +460,19 @@ public class emailSetController implements Initializable {
 
         stage.setOnHiding(event -> {
 
-            String array[] = new String[noOfFields];
-
+            List<Domain> domains = new ArrayList<>();
             for (int i = 0; i < noOfFields; i++) {
                 String t = ((JFXTextField) pane.getChildren().get(i)).getText();
-                array[i] = t;
-            }
 
-            sql.insertDomainsWhitelist(array);
+                if (!t.equals("")) {
+                    domains.add(new Domain(t, 1));
+                }
+            }
+            try {
+                RequestHandler.post("domains/addDomains", RequestHandler.writeJSONDomainList(domains)).close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
             init();
 
         });
@@ -379,7 +480,8 @@ public class emailSetController implements Initializable {
         stage.show();
 
     }
-//      add blacklisted keywords
+
+    //      add blacklisted keywords
     public void addKeyword(ActionEvent actionEvent) {
 
         Stage stage = new Stage();
@@ -404,14 +506,19 @@ public class emailSetController implements Initializable {
 
         stage.setOnHiding(event -> {
 
-            String array[] = new String[noOfFields];
-
+            List<Keyword> keywords = new ArrayList<>();
             for (int i = 0; i < noOfFields; i++) {
                 String t = ((JFXTextField) pane.getChildren().get(i)).getText();
-                array[i] = t;
-            }
 
-            sql.insertBlackListKeywords(array);
+                if (!t.equals("")) {
+                    keywords.add(new Keyword(t));
+                }
+            }
+            try {
+                RequestHandler.post("keyword/addKeywords", RequestHandler.writeJSONKeywordList(keywords)).close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
             init();
 
         });
@@ -419,10 +526,16 @@ public class emailSetController implements Initializable {
         stage.show();
 
     }
-//    add replacement keyword
+
+    //    add replacement keyword
     public void addReplacementKeyword(ActionEvent actionEvent) {
         String saveKeyword = txt_saveKeyword.getText();
-        sql.updateReplacementKeyword(saveKeyword); //this method update keyword which is save newKeyword in a text field
+        try {
+            RequestHandler.run("settings/replacementKeyword?keyword=" + saveKeyword).close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+//        sql.updateReplacementKeyword(saveKeyword); //this method update keyword which is save newKeyword in a text field
     }
 
     public void onGmail(ActionEvent actionEvent) {

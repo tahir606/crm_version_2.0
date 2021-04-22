@@ -22,7 +22,7 @@ public class NoteQueries {
     }
 
     //Contact notes-----------------------------------------------------------------------------------------------------
-    public void addNewNote(String text, ContactProperty contact) {
+    public void addNewNote(String text, Contact contact) {
         String query = "INSERT INTO NOTE_STORE(N_ID, N_TEXT, CS_ID, CREATEDON, CREATEDBY) " +
                 " SELECT IFNULL(max(N_ID),0)+1,?,?,?,? from NOTE_STORE WHERE CS_ID =?";
 
@@ -32,10 +32,11 @@ public class NoteQueries {
         try {
             statement = static_con.prepareStatement(query);
             statement.setString(1, text);
-            statement.setInt(2, contact.getCode());
+            statement.setInt(2, contact.getClientID());
             statement.setString(3, CommonTasks.getCurrentTimeStamp());
-            statement.setInt(4, fHelper.ReadUserDetails().getUCODE());
-            statement.setInt(5, contact.getCode());
+            statement.setInt(4, FileHelper.ReadUserApiDetails().getUserCode());
+//            statement.setInt(4, fHelper.ReadUserDetails().getUCODE());
+            statement.setInt(5, contact.getClientID());
 
             statement.executeUpdate();
 
@@ -44,7 +45,7 @@ public class NoteQueries {
         }
     }
 
-    public void updateNote(Note note, ContactProperty contactProperty) {
+    public void updateNote(NoteOld noteOld, Contact contactProperty) {
         String query = " UPDATE NOTE_STORE SET N_TEXT = ? " +
                 " WHERE CS_ID =?  " +
                 " AND N_ID =? "+createdByQuery;
@@ -54,10 +55,11 @@ public class NoteQueries {
 
         try {
             statement = static_con.prepareStatement(query);
-            statement.setString(1, note.getText());
-            statement.setInt(2, contactProperty.getCode());
-            statement.setInt(3, note.getCode());
-            statement.setInt(4 ,fHelper.ReadUserDetails().getUCODE());
+            statement.setString(1, noteOld.getText());
+            statement.setInt(2, contactProperty.getClientID());
+            statement.setInt(3, noteOld.getCode());
+            statement.setInt(4 , FileHelper.ReadUserApiDetails().getUserCode());
+//            statement.setInt(4 ,fHelper.ReadUserDetails().getUCODE());
             statement.executeUpdate();
 
         } catch (SQLException e) {
@@ -65,38 +67,37 @@ public class NoteQueries {
         }
     }
 
-    public List<Note> getNotes(ContactProperty contact) {
+    public List<NoteOld> getNotes(ContactProperty contact) {
         String query = "SELECT N_ID, N_TEXT, CS_FNAME, NS.CREATEDON AS CREATEDON, FNAME,NS.CREATEDBY " +
                 " FROM NOTE_STORE AS NS, CONTACT_STORE AS CS, USERS AS US " +
                 " WHERE NS.CS_ID = ? " +
                 " AND NS.CS_ID = CS.CS_ID " +
                 " AND NS.CREATEDBY = US.UCODE";
 
-        List<Note> notes = new ArrayList<>();
+        List<NoteOld> noteOlds = new ArrayList<>();
 
         try {
-//            System.out.println(query);
             PreparedStatement statement = static_con.prepareStatement(query);
             statement.setInt(1, contact.getCode());
             ResultSet set = statement.executeQuery();
             //-------------Creating Email-------------
             while (set.next()) {
-                Note note = new Note();
-                note.setCode(set.getInt("N_ID"));
-                note.setContactName(set.getString("CS_FNAME"));
-                note.setCreatedByName(set.getString("FNAME"));
-                note.setCreatedOn(set.getString("CREATEDON"));
-                note.setText(set.getString("N_TEXT"));
-                note.setCreatedBy(set.getInt("CREATEDBY"));
-                notes.add(note);
+                NoteOld noteOld = new NoteOld();
+                noteOld.setCode(set.getInt("N_ID"));
+                noteOld.setContactName(set.getString("CS_FNAME"));
+                noteOld.setCreatedByName(set.getString("FNAME"));
+                noteOld.setCreatedOn(set.getString("CREATEDON"));
+                noteOld.setText(set.getString("N_TEXT"));
+                noteOld.setCreatedBy(set.getInt("CREATEDBY"));
+                noteOlds.add(noteOld);
             }
         } catch (SQLException ex) {
             ex.printStackTrace();
         }
-        return notes;
+        return noteOlds;
     }
 
-    public void deleteNote(Note note, ContactProperty contact) {
+    public void deleteNote(NoteOld noteOld, Contact contact) {
         String query = "DELETE FROM NOTE_STORE " +
                 " WHERE N_ID = ? " +
                 " AND CS_ID = ? "+createdByQuery;
@@ -106,9 +107,9 @@ public class NoteQueries {
 
         try {
             statement = static_con.prepareStatement(query);
-            statement.setInt(1, note.getCode());
-            statement.setInt(2, contact.getCode());
-            statement.setInt(3 ,fHelper.ReadUserDetails().getUCODE());
+            statement.setInt(1, noteOld.getCode());
+            statement.setInt(2, contact.getClientID());
+            statement.setInt(3 ,FileHelper.ReadUserApiDetails().getUserCode());
             statement.executeUpdate();
 
         } catch (SQLException e) {
@@ -117,7 +118,7 @@ public class NoteQueries {
     }
 
     //Client Notes------------------------------------------------------------------------------------------------------
-    public void addNewNote(String text, ClientProperty client) {
+    public void addNewNote(String text, Client client) {
         String query = "INSERT INTO NOTE_STORE(N_ID, N_TEXT, CL_ID, CREATEDON, CREATEDBY) " +
                 " SELECT IFNULL(max(N_ID),0)+1,?,?,?,? from NOTE_STORE WHERE CL_ID =?";
 
@@ -127,10 +128,10 @@ public class NoteQueries {
         try {
             statement = static_con.prepareStatement(query);
             statement.setString(1, text);
-            statement.setInt(2, client.getCode());
+            statement.setInt(2, client.getClientID());
             statement.setString(3, CommonTasks.getCurrentTimeStamp());
-            statement.setInt(4, fHelper.ReadUserDetails().getUCODE());
-            statement.setInt(5, client.getCode());
+            statement.setInt(4, FileHelper.ReadUserApiDetails().getUserCode());
+            statement.setInt(5, client.getCreatedBy());
 
             statement.executeUpdate();
 
@@ -139,7 +140,7 @@ public class NoteQueries {
         }
     }
 
-    public void updateNote(Note note, ClientProperty client) {
+    public void updateNote(NoteOld noteOld, Client client) {
         String query = " UPDATE NOTE_STORE SET N_TEXT = ? " +
                 " WHERE CL_ID =?  " +
                 " AND N_ID =? "+createdByQuery;
@@ -149,10 +150,10 @@ public class NoteQueries {
 
         try {
             statement = static_con.prepareStatement(query);
-            statement.setString(1, note.getText());
-            statement.setInt(2, client.getCode());
-            statement.setInt(3, note.getCode());
-            statement.setInt(4 ,fHelper.ReadUserDetails().getUCODE());
+            statement.setString(1, noteOld.getText());
+            statement.setInt(2, client.getClientID());
+            statement.setInt(3, noteOld.getCode());
+            statement.setInt(4 ,FileHelper.ReadUserApiDetails().getUserCode());
             statement.executeUpdate();
 
         } catch (SQLException e) {
@@ -160,39 +161,38 @@ public class NoteQueries {
         }
     }
 
-    public List<Note> getNotes(ClientProperty client) {
+    public List<NoteOld> getNotes(ClientProperty client) {
         String query = "SELECT N_ID, N_TEXT, CL_NAME, NS.CREATEDON AS CREATEDON, FNAME ,NS.CREATEDBY " +
                 " FROM NOTE_STORE AS NS, CLIENT_STORE AS CS, USERS AS US " +
                 " WHERE NS.CL_ID = ? " +
                 " AND NS.CL_ID = CS.CL_ID " +
                 " AND NS.CREATEDBY = US.UCODE";
 
-        List<Note> notes = new ArrayList<>();
+        List<NoteOld> noteOlds = new ArrayList<>();
 
         try {
-//            System.out.println(query);
             PreparedStatement statement = static_con.prepareStatement(query);
             statement.setInt(1, client.getCode());
             ResultSet set = statement.executeQuery();
             //-------------Creating Email-------------
             while (set.next()) {
-                Note note = new Note();
-                note.setCode(set.getInt("N_ID"));
-                note.setContactName(set.getString("CL_NAME"));
-                note.setCreatedByName(set.getString("FNAME"));
-                note.setCreatedOn(set.getString("CREATEDON"));
-                note.setText(set.getString("N_TEXT"));
-                note.setCreatedBy(set.getInt("CREATEDBY"));
-                notes.add(note);
+                NoteOld noteOld = new NoteOld();
+                noteOld.setCode(set.getInt("N_ID"));
+                noteOld.setContactName(set.getString("CL_NAME"));
+                noteOld.setCreatedByName(set.getString("FNAME"));
+                noteOld.setCreatedOn(set.getString("CREATEDON"));
+                noteOld.setText(set.getString("N_TEXT"));
+                noteOld.setCreatedBy(set.getInt("CREATEDBY"));
+                noteOlds.add(noteOld);
             }
         } catch (SQLException ex) {
             ex.printStackTrace();
         }
 
-        return notes;
+        return noteOlds;
     }
 
-    public void deleteNote(Note note, ClientProperty client) {
+    public void deleteNote(NoteOld noteOld, Client client) {
         String query = "DELETE FROM NOTE_STORE " +
                 " WHERE N_ID = ? " +
                 " AND CL_ID = ? "+createdByQuery;
@@ -202,9 +202,9 @@ public class NoteQueries {
 
         try {
             statement = static_con.prepareStatement(query);
-            statement.setInt(1, note.getCode());
-            statement.setInt(2, client.getCode());
-            statement.setInt(3 ,fHelper.ReadUserDetails().getUCODE());
+            statement.setInt(1, noteOld.getCode());
+            statement.setInt(2, client.getClientID());
+            statement.setInt(3 ,FileHelper.ReadUserApiDetails().getUserCode());
             statement.executeUpdate();
 
         } catch (SQLException e) {
@@ -225,7 +225,7 @@ public class NoteQueries {
             statement.setString(1, text);
             statement.setInt(2, lead.getCode());
             statement.setString(3, CommonTasks.getCurrentTimeStamp());
-            statement.setInt(4, fHelper.ReadUserDetails().getUCODE());
+            statement.setInt(4, FileHelper.ReadUserApiDetails().getUserCode());
             statement.setInt(5, lead.getCode());
 
             statement.executeUpdate();
@@ -235,7 +235,7 @@ public class NoteQueries {
         }
     }
 
-    public void updateNote(Note note, Lead lead) {
+    public void updateNote(NoteOld noteOld, Lead lead) {
         String query = " UPDATE NOTE_STORE SET N_TEXT = ? " +
                 " WHERE LS_ID =?  " +
                 " AND N_ID =? "+createdByQuery;
@@ -245,10 +245,10 @@ public class NoteQueries {
 
         try {
             statement = static_con.prepareStatement(query);
-            statement.setString(1, note.getText());
+            statement.setString(1, noteOld.getText());
             statement.setInt(2, lead.getCode());
-            statement.setInt(3, note.getCode());
-            statement.setInt(4 ,fHelper.ReadUserDetails().getUCODE());
+            statement.setInt(3, noteOld.getCode());
+            statement.setInt(4 ,FileHelper.ReadUserApiDetails().getUserCode());
             statement.executeUpdate();
 
         } catch (SQLException e) {
@@ -263,31 +263,30 @@ public class NoteQueries {
                 " AND NS.LS_ID = LS.LS_ID " +
                 " AND NS.CREATEDBY = US.UCODE ";
 
-        List<Note> notes = new ArrayList<>();
+        List<Note> noteOlds = new ArrayList<>();
 
         try {
-//            System.out.println(query);
             PreparedStatement statement = static_con.prepareStatement(query);
             statement.setInt(1, lead.getCode());
             ResultSet set = statement.executeQuery();
             //-------------Creating Email-------------
             while (set.next()) {
-                Note note = new Note();
-                note.setCode(set.getInt("N_ID"));
-                note.setContactName(set.getString("LS_CNAME"));
-                note.setCreatedByName(set.getString("FNAME"));
-                note.setCreatedOn(set.getString("CREATEDON"));
-                note.setText(set.getString("N_TEXT"));
-                note.setCreatedBy(set.getInt("CREATEDBY"));
-                notes.add(note);
+                Note noteOld = new Note();
+//                noteOld.setCode(set.getInt("N_ID"));
+//                noteOld.setContactName(set.getString("LS_CNAME"));
+//                noteOld.setCreatedByName(set.getString("FNAME"));
+                noteOld.setCreatedOn(set.getString("CREATEDON"));
+                noteOld.setText(set.getString("N_TEXT"));
+                noteOld.setCreatedBy(set.getInt("CREATEDBY"));
+                noteOlds.add(noteOld);
             }
         } catch (SQLException ex) {
             ex.printStackTrace();
         }
-        return notes;
+        return noteOlds;
     }
 
-    public void deleteNote(Note note, Lead lead) {
+    public void deleteNote(NoteOld noteOld, Lead lead) {
         String query = "DELETE FROM NOTE_STORE " +
                 " WHERE N_ID = ? " +
                 " AND LS_ID = ? "+createdByQuery;
@@ -297,9 +296,9 @@ public class NoteQueries {
 
         try {
             statement = static_con.prepareStatement(query);
-            statement.setInt(1, note.getCode());
+            statement.setInt(1, noteOld.getCode());
             statement.setInt(2, lead.getCode());
-            statement.setInt(3 ,fHelper.ReadUserDetails().getUCODE());
+            statement.setInt(3 ,FileHelper.ReadUserApiDetails().getUserCode());
             statement.executeUpdate();
 
         } catch (SQLException e) {
@@ -320,7 +319,7 @@ public class NoteQueries {
             statement.setString(1, text);
             statement.setInt(2, product.getCode());
             statement.setString(3, CommonTasks.getCurrentTimeStamp());
-            statement.setInt(4, fHelper.ReadUserDetails().getUCODE());
+            statement.setInt(4,FileHelper.ReadUserApiDetails().getUserCode());
             statement.setInt(5, product.getCode());
 
             statement.executeUpdate();
@@ -330,7 +329,7 @@ public class NoteQueries {
         }
     }
 
-    public void updateNote(Note note, ProductProperty product) {
+    public void updateNote(NoteOld noteOld, ProductProperty product) {
         String query = " UPDATE NOTE_STORE SET N_TEXT = ? " +
                 " WHERE PS_ID =?  " +
                 " AND N_ID =? "+createdByQuery;
@@ -340,10 +339,10 @@ public class NoteQueries {
 
         try {
             statement = static_con.prepareStatement(query);
-            statement.setString(1, note.getText());
+            statement.setString(1, noteOld.getText());
             statement.setInt(2, product.getCode());
-            statement.setInt(3, note.getCode());
-            statement.setInt(4 ,fHelper.ReadUserDetails().getUCODE());
+            statement.setInt(3, noteOld.getCode());
+            statement.setInt(4 ,FileHelper.ReadUserApiDetails().getUserCode());
             statement.executeUpdate();
 
         } catch (SQLException e) {
@@ -351,39 +350,38 @@ public class NoteQueries {
         }
     }
 
-    public List<Note> getNotes(ProductProperty product) {
+    public List<NoteOld> getNotes(ProductProperty product) {
         String query = "SELECT N_ID, N_TEXT, PS_NAME, NS.CREATEDON AS CREATEDON, FNAME ,NS.CREATEDBY " +
                 " FROM NOTE_STORE AS NS, PRODUCT_STORE AS LS, USERS AS US " +
                 " WHERE NS.PS_ID = ? " +
                 " AND NS.PS_ID = LS.PS_ID " +
                 " AND NS.CREATEDBY = US.UCODE ";
 
-        List<Note> notes = new ArrayList<>();
+        List<NoteOld> noteOlds = new ArrayList<>();
 
         try {
-//            System.out.println(query);
             PreparedStatement statement = static_con.prepareStatement(query);
             statement.setInt(1, product.getCode());
             ResultSet set = statement.executeQuery();
             //-------------Creating Email-------------
             while (set.next()) {
-                Note note = new Note();
-                note.setCode(set.getInt("N_ID"));
-                note.setContactName(set.getString("PS_NAME"));
-                note.setCreatedByName(set.getString("FNAME"));
-                note.setCreatedOn(set.getString("CREATEDON"));
-                note.setText(set.getString("N_TEXT"));
-                note.setCreatedBy(set.getInt("CREATEDBY"));
-                notes.add(note);
+                NoteOld noteOld = new NoteOld();
+                noteOld.setCode(set.getInt("N_ID"));
+                noteOld.setContactName(set.getString("PS_NAME"));
+                noteOld.setCreatedByName(set.getString("FNAME"));
+                noteOld.setCreatedOn(set.getString("CREATEDON"));
+                noteOld.setText(set.getString("N_TEXT"));
+                noteOld.setCreatedBy(set.getInt("CREATEDBY"));
+                noteOlds.add(noteOld);
             }
         } catch (SQLException ex) {
             ex.printStackTrace();
         }
 
-        return notes;
+        return noteOlds;
     }
 
-    public void deleteNote(Note note, ProductProperty product) {
+    public void deleteNote(NoteOld noteOld, ProductProperty product) {
         String query = "DELETE FROM NOTE_STORE " +
                 " WHERE N_ID = ? " +
                 " AND PS_ID = ? "+createdByQuery;
@@ -393,9 +391,9 @@ public class NoteQueries {
 
         try {
             statement = static_con.prepareStatement(query);
-            statement.setInt(1, note.getCode());
+            statement.setInt(1, noteOld.getCode());
             statement.setInt(2, product.getCode());
-            statement.setInt(3 ,fHelper.ReadUserDetails().getUCODE());
+            statement.setInt(3 ,FileHelper.ReadUserApiDetails().getUserCode());
             statement.executeUpdate();
 
         } catch (SQLException e) {
@@ -403,7 +401,7 @@ public class NoteQueries {
         }
     }
 
-    public List<Note> getNotes(Email email) {
+    public List<NoteOld> getNotes(EmailOld emailOld) {
 
         String query = "SELECT N_ID, N_TEXT, ES.EMNO , NS.CREATEDON AS CREATEDON, FNAME,NS.CREATEDBY " +
                 "                 FROM NOTE_STORE AS NS,EMAIL_STORE AS ES,  USERS AS US " +
@@ -411,32 +409,31 @@ public class NoteQueries {
                 "                 AND NS.EMNO = ES.EMNO" +
                 "                AND NS.CREATEDBY = US.UCODE ";
 
-        List<Note> notes = new ArrayList<>();
+        List<NoteOld> noteOlds = new ArrayList<>();
 
         try {
-//            System.out.println(query);
             PreparedStatement statement = static_con.prepareStatement(query);
 
 //            statement.setInt(1, email.getCode());
             ResultSet set = statement.executeQuery();
             //-------------Creating Email-------------
             while (set.next()) {
-                Note note = new Note();
-                note.setCode(set.getInt("N_ID"));
-                note.setEmailNo(set.getInt("EMNO"));
-                note.setCreatedByName(set.getString("FNAME"));
-                note.setCreatedOn(set.getString("CREATEDON"));
-                note.setText(set.getString("N_TEXT"));
-                note.setCreatedBy(set.getInt("CREATEDBY"));
-                notes.add(note);
+                NoteOld noteOld = new NoteOld();
+                noteOld.setCode(set.getInt("N_ID"));
+                noteOld.setEmailNo(set.getInt("EMNO"));
+                noteOld.setCreatedByName(set.getString("FNAME"));
+                noteOld.setCreatedOn(set.getString("CREATEDON"));
+                noteOld.setText(set.getString("N_TEXT"));
+                noteOld.setCreatedBy(set.getInt("CREATEDBY"));
+                noteOlds.add(noteOld);
             }
         } catch (SQLException ex) {
             ex.printStackTrace();
         }
-        return notes;
+        return noteOlds;
     }
 
-    public void addNewNote(String note, Email email) {
+    public void addNewNote(String note, EmailOld emailOld) {
         String query = "INSERT INTO NOTE_STORE(N_ID, N_TEXT, EMNO, CREATEDON, CREATEDBY) " +
                 " SELECT IFNULL(max(N_ID),0)+1,?,?,?,? from NOTE_STORE WHERE EMNO =?";
 
@@ -448,7 +445,7 @@ public class NoteQueries {
             statement.setString(1, note);
 //            statement.setInt(2, email.getCode());
             statement.setString(3, CommonTasks.getCurrentTimeStamp());
-            statement.setInt(4, fHelper.ReadUserDetails().getUCODE());
+            statement.setInt(4, FileHelper.ReadUserApiDetails().getUserCode());
 //            statement.setInt(5,email.getCode());
 
             statement.executeUpdate();
@@ -458,7 +455,7 @@ public class NoteQueries {
         }
     }
 
-    public void deleteNote(Note note, Email email) {
+    public void deleteNote(NoteOld noteOld, EmailOld emailOld) {
         String query = "DELETE FROM NOTE_STORE WHERE N_ID = ? AND EMNO = ? " + createdByQuery;
 
 
@@ -467,9 +464,9 @@ public class NoteQueries {
 
         try {
             statement = static_con.prepareStatement(query);
-            statement.setInt(1, note.getCode());
-            statement.setInt(2, note.getEmailNo());
-            statement.setInt(3 ,fHelper.ReadUserDetails().getUCODE());
+            statement.setInt(1, noteOld.getCode());
+            statement.setInt(2, noteOld.getEmailNo());
+            statement.setInt(3 ,FileHelper.ReadUserApiDetails().getUserCode());
             statement.executeUpdate();
 
         } catch (SQLException e) {
@@ -477,7 +474,7 @@ public class NoteQueries {
         }
     }
 
-    public void updateNote(Note note, Email email) {
+    public void updateNote(NoteOld noteOld, EmailOld emailOld) {
         String query = " UPDATE NOTE_STORE SET N_TEXT = ? " +
                 " WHERE EMNO =?  " +
                 " AND N_ID =? "+createdByQuery;
@@ -487,10 +484,10 @@ public class NoteQueries {
 
         try {
             statement = static_con.prepareStatement(query);
-            statement.setString(1, note.getText());
+            statement.setString(1, noteOld.getText());
 //            statement.setInt(2, email.getCode());
-            statement.setInt(3, note.getCode());
-            statement.setInt(4 ,fHelper.ReadUserDetails().getUCODE());
+            statement.setInt(3, noteOld.getCode());
+            statement.setInt(4 ,FileHelper.ReadUserApiDetails().getUserCode());
             statement.executeUpdate();
 
         } catch (SQLException e) {

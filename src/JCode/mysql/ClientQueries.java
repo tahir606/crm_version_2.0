@@ -3,6 +3,7 @@ package JCode.mysql;
 import JCode.CommonTasks;
 import JCode.FileHelper;
 import client.newClient.newClientController;
+import objects.Client;
 import objects.ClientProperty;
 
 import java.sql.Connection;
@@ -52,7 +53,8 @@ public class ClientQueries {
                 else
                     statement.setString(8, null);
             }
-            statement.setInt(9, fHelper.ReadUserDetails().getUCODE());
+            statement.setInt(9, FileHelper.ReadUserApiDetails().getUserCode());
+//            statement.setInt(9, fHelper.ReadUserDetails().getUCODE());
             statement.setString(10, CommonTasks.getCurrentTimeStamp());
 
             statement.executeUpdate();
@@ -238,8 +240,6 @@ public class ClientQueries {
         List<ClientProperty> allClients = new ArrayList<>();
 
         try {
-            // Connection con = getConnection();
-//            System.out.println(query);
             PreparedStatement statement = static_con.prepareStatement(query);
             ResultSet set = statement.executeQuery();
             //-------------Creating Email-------------
@@ -302,7 +302,7 @@ public class ClientQueries {
         return allClients;
     }
 
-    public ClientProperty getParticularClient(ClientProperty where) {
+    public ClientProperty getParticularClient(Client where) {
         String query = "SELECT CL_ID,CL_NAME,CL_OWNER,CL_ADDR," +
                 "CL_CITY,CL_COUNTRY,CL_WEBSITE,CL_TYPE,CL_JOINDATE FROM CLIENT_STORE";
 
@@ -313,9 +313,8 @@ public class ClientQueries {
 
         try {
             // Connection con = getConnection();
-//            System.out.println(query);
             PreparedStatement statement = static_con.prepareStatement(query);
-            statement.setInt(1, where.getCode());
+            statement.setInt(1, where.getClientID());
             ResultSet set = statement.executeQuery();
             //-------------Creating Email-------------
             if (!set.isBeforeFirst()) {
@@ -434,7 +433,8 @@ public class ClientQueries {
                 else
                     statement.setString(8, null);
             }
-            statement.setInt(9, fHelper.ReadUserDetails().getUCODE());
+            statement.setInt(9, FileHelper.ReadUserApiDetails().getUserCode());
+//            statement.setInt(9, fHelper.ReadUserDetails().getUCODE());
             statement.setString(10, CommonTasks.getCurrentTimeStamp());
 
             statement.setInt(11, client.getFromLead());

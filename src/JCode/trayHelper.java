@@ -1,16 +1,12 @@
 package JCode;
 
 import javafx.application.Platform;
-import javafx.event.EventHandler;
 import javafx.scene.image.Image;
 import javafx.stage.Stage;
-import javafx.stage.WindowEvent;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.File;
 
 public class trayHelper {
 
@@ -96,6 +92,27 @@ public class trayHelper {
     }
 
     private static int times = 0;   //Notification will be tried 3 times
+     public static void displayNotificationServerNotRunning(String caption,String msg){
+         if (times == 3) {
+             times = 0;
+             return;
+         }
+         try {
+             trayIcon.displayMessage(caption, msg, TrayIcon.MessageType.INFO);
+             times = 0;
+         } catch (NullPointerException e) {
+             System.out.println("Tray Helper: " + e);
+             times++;
+             new Thread(() -> {
+                 try {
+                     Thread.sleep(1000);
+                 } catch (InterruptedException e1) {
+                     e1.printStackTrace();
+                 }
+                 displayNotificationServerNotRunning(caption, msg);
+             }).start();
+         }
+    }
 
     public void displayNotification(String caption, String msg) {
         if (times == 3) {

@@ -1,13 +1,8 @@
 package product.details;
 
 import Home.HomeSplitController;
-import JCode.Toast;
 import JCode.mysql.mySqlConn;
 import com.jfoenix.controls.JFXButton;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.TextArea;
@@ -45,7 +40,6 @@ public class UnlockDialogController implements Initializable {
             }
         }
 
-        System.out.println(module);
 
 //        btn_unlock.setDisable(true);
 

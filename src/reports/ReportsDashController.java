@@ -1,6 +1,6 @@
 package reports;
 
-import JCode.CommonTasks;
+import ApiHandler.RequestHandler;
 import JCode.mysql.mySqlConn;
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXComboBox;
@@ -15,11 +15,9 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
-import objects.ClientProperty;
-import objects.EmailProperty;
-import objects.Users;
-import org.joda.time.LocalDate;
+import objects.*;
 
+import java.io.IOException;
 import java.net.URL;
 import java.util.List;
 import java.util.ResourceBundle;
@@ -36,7 +34,7 @@ public class ReportsDashController implements Initializable {
     private HBox hbox_User;
     //
     private List<Users> usersList = null;
-    private List<ClientProperty> clientList = null;
+    private List<Client> clientList = null;
     //
     @FXML
     private Label txt_reportName;
@@ -50,7 +48,7 @@ public class ReportsDashController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        sql = new mySqlConn();
+//        sql = new mySqlConn();
         txt_reportName.setVisible(false);
         txt_Count.setVisible(false);
         populateReports();
@@ -109,12 +107,20 @@ public class ReportsDashController implements Initializable {
         TableColumn<Users, Integer> cName = new TableColumn<>("Name");
         TableColumn<Users, Integer> cSolved = new TableColumn<>("Solved");
 
-        cCode.setCellValueFactory(new PropertyValueFactory<>("UCODE"));
-        cName.setCellValueFactory(new PropertyValueFactory<>("FNAME"));
-        cSolved.setCellValueFactory(new PropertyValueFactory<>("Solved"));
+        cCode.setCellValueFactory(new PropertyValueFactory<>("userCode"));
+        cName.setCellValueFactory(new PropertyValueFactory<>("fullName"));
+        cSolved.setCellValueFactory(new PropertyValueFactory<>("availableCount"));
         tableView.getColumns().addAll(cCode, cName, cSolved);
         durationFilter();
-        List<Users> user = sql.ticketsSolvedByUser(reportFilter);
+        List<Users> user = null;
+        try {
+
+            user = RequestHandler.listRequestHandler(RequestHandler.run("users/getSolvedEmailsByUsers?filter=" + reportFilter), Users.class);
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+//        List<Users> user = sql.ticketsSolvedByUser(reportFilter);
         txt_Count.setText("Displaying " + (user == null ? 0 : user.size()) + " Records");
         tableView.getItems().setAll(user);
         tableView.setPrefHeight(200);
@@ -138,19 +144,25 @@ public class ReportsDashController implements Initializable {
         txt_reportName.setText("Emails Received Per User");
         txt_Count.setVisible(true);
 
-        TableView<ClientProperty> tableView = new TableView<>();
-        TableColumn<ClientProperty, String> cCode = new TableColumn<>("Code");
-        TableColumn<ClientProperty, Integer> cName = new TableColumn<>("Name");
-        TableColumn<ClientProperty, Integer> cTotalEmails = new TableColumn<>("No. of Emails");
+        TableView<Client> tableView = new TableView<>();
+        TableColumn<Client, String> cCode = new TableColumn<>("Code");
+        TableColumn<Client, Integer> cName = new TableColumn<>("Name");
+        TableColumn<Client, Integer> cTotalEmails = new TableColumn<>("No. of Emails");
 
-        cCode.setCellValueFactory(new PropertyValueFactory<>("Code"));
-        cName.setCellValueFactory(new PropertyValueFactory<>("Name"));
-        cTotalEmails.setCellValueFactory(new PropertyValueFactory<>("totalEmails"));
+        cCode.setCellValueFactory(new PropertyValueFactory<>("clientID"));
+        cName.setCellValueFactory(new PropertyValueFactory<>("name"));
+        cTotalEmails.setCellValueFactory(new PropertyValueFactory<>("availableCount"));
         tableView.getColumns().addAll(cCode, cName, cTotalEmails);
         durationFilter();
-        List<ClientProperty> clientProperties = sql.emailsPerClient(reportFilter);
-        txt_Count.setText("Displaying " + (clientProperties == null ? 0 : clientProperties.size()) + " Records");
-        tableView.getItems().setAll(clientProperties);
+        List<Client> clients = null;
+        try {
+            clients = RequestHandler.listRequestHandler(RequestHandler.run("client/emailsPerClient?filter=" + reportFilter), Client.class);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+//        List<ClientProperty> clientProperties = sql.emailsPerClient(reportFilter);
+        txt_Count.setText("Displaying " + (clients == null ? 0 : clients.size()) + " Records");
+        tableView.getItems().setAll(clients);
         tableView.setPrefHeight(200);
         AnchorPane.setTopAnchor(tableView, 40.0);
         AnchorPane.setBottomAnchor(tableView, 20.0);
@@ -175,19 +187,25 @@ public class ReportsDashController implements Initializable {
         txt_Count.setVisible(true);
         txt_Count.setText("Displaying " + 0 + " Records");
         //set filters_Select
-        TableView<EmailProperty> tableView = new TableView<>();
-        TableColumn<EmailProperty, Integer> email_No = new TableColumn<>("Ticket No");
-        TableColumn<EmailProperty, String> subject = new TableColumn<>("Subject");
-        TableColumn<EmailProperty, String> from = new TableColumn<>("From");
-        TableColumn<EmailProperty, String> timesTamp = new TableColumn<>("Timestamp");
-        TableColumn<EmailProperty, String> lockTime = new TableColumn<>("Lock Time");
-        TableColumn<EmailProperty, String> solved_Time = new TableColumn<>("Solve Time");
-        TableColumn<EmailProperty, String> duration = new TableColumn<>("Duration");
+        TableView<Email> tableView = new TableView<>();
+        TableColumn<Email, Integer> email_No = new TableColumn<>("Ticket No");
+        TableColumn<Email, String> subject = new TableColumn<>("Subject");
+        TableColumn<Email, String> from = new TableColumn<>("From");
+        TableColumn<Email, String> timesTamp = new TableColumn<>("Timestamp");
+        TableColumn<Email, String> lockTime = new TableColumn<>("Lock Time");
+        TableColumn<Email, String> solved_Time = new TableColumn<>("Solve Time");
+        TableColumn<Email, String> duration = new TableColumn<>("Duration");
         hbox_User.getChildren().clear();
         JFXComboBox<Users> user_filters = new JFXComboBox<>();
         txt_reportName.setText("Tickets Solved by User: Details");
         user_filters.setPromptText("Select User");
-        usersList = sql.getAllUsers();
+        try {
+            usersList = RequestHandler.listRequestHandler(RequestHandler.run("users/getALlUsers"), Users.class);
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+//        usersList = sql.getAllUsers();
         user_filters.getItems().addAll(usersList);
         user_filters.valueProperty().addListener((observable, oldValue, newValue) -> {
             users = newValue;
@@ -196,19 +214,25 @@ public class ReportsDashController implements Initializable {
             durationFilter();
         });
         hbox_User.getChildren().add(user_filters);
-        List<EmailProperty> emailProperties_Filter = sql.readSolvedEmailsByUsers(users, reportFilter);
-        txt_Count.setText("Displaying " + (emailProperties_Filter == null ? 0 : emailProperties_Filter.size()) + " Records");
+        List<Email> emails = null;
+        try {
+
+            emails = RequestHandler.jsonListRequestHandler(RequestHandler.run("ticket/ticketsSolvedByUserDetails/" + users.getUserCode() + "?filter=" + reportFilter));
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        txt_Count.setText("Displaying " + (emails == null ? 0 : emails.size()) + " Records");
         tableView.getColumns().clear();
-        email_No.setCellValueFactory(new PropertyValueFactory<>("email_No"));
+        email_No.setCellValueFactory(new PropertyValueFactory<>("ticketNo"));
         subject.setCellValueFactory(new PropertyValueFactory<>("subject"));
-        from.setCellValueFactory(new PropertyValueFactory<>("from_Address"));
-        solved_Time.setCellValueFactory(new PropertyValueFactory<>("solve_Time"));
-        lockTime.setCellValueFactory(new PropertyValueFactory<>("lock_time"));
+        from.setCellValueFactory(new PropertyValueFactory<>("fromAddress"));
+        solved_Time.setCellValueFactory(new PropertyValueFactory<>("solvedTime"));
+        lockTime.setCellValueFactory(new PropertyValueFactory<>("lockedTime"));
         timesTamp.setCellValueFactory(new PropertyValueFactory<>("timestamp"));
         duration.setCellValueFactory(new PropertyValueFactory<>("duration"));
         tableView.getColumns().addAll(email_No, subject, from, timesTamp, lockTime, solved_Time, duration);
-        tableView.getItems().setAll(emailProperties_Filter);
-
+        tableView.getItems().setAll(emails);
         tableView.setPrefHeight(200);
         AnchorPane.setTopAnchor(tableView, 40.0);
         AnchorPane.setBottomAnchor(tableView, 20.0);
@@ -228,14 +252,22 @@ public class ReportsDashController implements Initializable {
         reportSelected = 4;
         txt_reportName.setVisible(true);
         txt_reportName.setText("Average Time For Each User To Solve a Ticket");
-        TableView<EmailProperty> tableView = new TableView<>();
-        TableColumn<EmailProperty, String> user_name = new TableColumn<>("User Name");
-        TableColumn<EmailProperty, String> average_Time = new TableColumn<>("Average Time");
-        user_name.setCellValueFactory(new PropertyValueFactory<>("user_name"));
-        average_Time.setCellValueFactory(new PropertyValueFactory<>("average"));
+        TableView<Users> tableView = new TableView<>();
+        TableColumn<Users, String> user_name = new TableColumn<>("User Name");
+        TableColumn<Users, String> average_Time = new TableColumn<>("Average Time");
+        user_name.setCellValueFactory(new PropertyValueFactory<>("fullName"));
+        average_Time.setCellValueFactory(new PropertyValueFactory<>("availableString"));
         tableView.getColumns().addAll(user_name, average_Time);
-        List<EmailProperty> averageTime = sql.average_Calculate();
-        tableView.getItems().setAll(averageTime);
+        List<Users> emails = null;
+        try {
+
+            emails = RequestHandler.jsonListUserRequestHandler(RequestHandler.run("users/averageCalculate" ));
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+//        List<EmailProperty> averageTime = sql.average_Calculate();
+        tableView.getItems().setAll(emails);
         tableView.setPrefHeight(200);
         AnchorPane.setTopAnchor(tableView, 40.0);
         AnchorPane.setBottomAnchor(tableView, 20.0);
@@ -246,7 +278,7 @@ public class ReportsDashController implements Initializable {
 
     }
 
-    ClientProperty clientName = new ClientProperty();
+    Client clientName = new Client();
 
     public void clientReport() {
         if (reportSelected != 5) {
@@ -259,44 +291,56 @@ public class ReportsDashController implements Initializable {
         txt_Count.setVisible(true);
         txt_Count.setText("Displaying " + 0 + " Records");
 
-        TableView<EmailProperty> tableView = new TableView<>();
-        TableColumn<EmailProperty, Integer> ticketNumber = new TableColumn<>("Ticket No");
-        TableColumn<EmailProperty, Integer> from = new TableColumn<>("From");
-        TableColumn<EmailProperty, String> subject = new TableColumn<>("Subject");
-        TableColumn<EmailProperty, Integer> body = new TableColumn<>("Body");
-        TableColumn<EmailProperty, String> receivedTime = new TableColumn<>("Received Time");
-        TableColumn<EmailProperty, String> lockTime = new TableColumn<>("Lock Time");
-        TableColumn<EmailProperty, Integer> solvedTime = new TableColumn<>("Solved Time");
-        TableColumn<EmailProperty, Integer> duration = new TableColumn<>("Duration");
+        TableView<Email> tableView = new TableView<>();
+        TableColumn<Email, Integer> ticketNumber = new TableColumn<>("Ticket No");
+        TableColumn<Email, Integer> from = new TableColumn<>("From");
+        TableColumn<Email, String> subject = new TableColumn<>("Subject");
+        TableColumn<Email, String> receivedTime = new TableColumn<>("Received Time");
+        TableColumn<Email, String> lockTime = new TableColumn<>("Lock Time");
+        TableColumn<Email, Integer> solvedTime = new TableColumn<>("Solved Time");
+        TableColumn<Email, Integer> duration = new TableColumn<>("Duration");
         hbox_User.getChildren().clear();
 
-        JFXComboBox<ClientProperty> client_filters = new JFXComboBox<>();
+        JFXComboBox<Client> client_filters = new JFXComboBox<>();
         txt_reportName.setText("Tickets Details by Clients Reports");
         client_filters.setPromptText("Select Client");
-        clientList = sql.clientName();
+        try {
+            clientList = RequestHandler.listRequestHandler(RequestHandler.run("client/clientList"), Client.class);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+//        clientList = sql.clientName();
         client_filters.getItems().addAll(clientList);
         client_filters.valueProperty().addListener((observable, oldValue, newValue) -> {
             clientName = newValue;
             clientReport();
-            txt_reportName.setText("Tickets Details by Clients Reports: "+clientName  + " in " + filter);
+            txt_reportName.setText("Tickets Details by Clients Reports: " + clientName + " in " + filter);
             durationFilter();
         });
         hbox_User.getChildren().add(client_filters);
-        List<EmailProperty> clientReport = sql.clientReportWithDomain(clientName, reportFilter);
-        txt_Count.setText("Displaying " + (clientReport == null ? 0 : clientReport.size()) + " Records");
+        List<Email> emails = null;
+        try {
+            emails = RequestHandler.jsonListRequestHandler(RequestHandler.run("ticket/clientReportWithDomain/" + clientName.getClientID() + "?filter=" + reportFilter));
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+//        List<EmailProperty> clientReport = sql.clientReportWithDomain(clientName, reportFilter);
+        txt_Count.setText("Displaying " + (emails == null ? 0 : emails.size()) + " Records");
 
         tableView.getColumns().clear();
 
-        ticketNumber.setCellValueFactory(new PropertyValueFactory<>("email_No"));
+        ticketNumber.setCellValueFactory(new PropertyValueFactory<>("ticketNo"));
         subject.setCellValueFactory(new PropertyValueFactory<>("subject"));
-        from.setCellValueFactory(new PropertyValueFactory<>("from_Address"));
-        body.setCellValueFactory(new PropertyValueFactory<>("email_Body"));
-        solvedTime.setCellValueFactory(new PropertyValueFactory<>("solve_Time"));
-        lockTime.setCellValueFactory(new PropertyValueFactory<>("lock_time"));
+        from.setCellValueFactory(new PropertyValueFactory<>("fromAddress"));
+        solvedTime.setCellValueFactory(new PropertyValueFactory<>("solvedTime"));
+        lockTime.setCellValueFactory(new PropertyValueFactory<>("lockedTime"));
         receivedTime.setCellValueFactory(new PropertyValueFactory<>("timestamp"));
         duration.setCellValueFactory(new PropertyValueFactory<>("duration"));
-        tableView.getColumns().addAll(ticketNumber, from, subject, body,  receivedTime,lockTime, solvedTime,duration);
-        tableView.getItems().setAll(clientReport);
+        tableView.getColumns().addAll(ticketNumber, from, subject, receivedTime, lockTime, solvedTime, duration);
+
+        tableView.getItems().setAll(emails);
         tableView.setPrefHeight(200);
         AnchorPane.setTopAnchor(tableView, 40.0);
         AnchorPane.setBottomAnchor(tableView, 20.0);
@@ -310,7 +354,7 @@ public class ReportsDashController implements Initializable {
 
     private void durationFilter() {
         hbox_filters.getChildren().clear();
-        if (reportSelected < 3 || reportSelected >3) {
+        if (reportSelected < 3 || reportSelected > 3) {
             column = "TSTMP";
         } else if (reportSelected == 3) {
             column = "SOLVTIME";
@@ -324,27 +368,45 @@ public class ReportsDashController implements Initializable {
 //            if (reportSelected == 1 && reportSelected == 2) {
             switch (newValue) {
                 case "Today": {
-                    reportFilter = " AND " + column + " BETWEEN '" + CommonTasks.getCurrentDate() + "' AND '" + CommonTasks.getCurrentDate() + " 23:59:59'";
+                    reportFilter = "Today";
                     break;
                 }
                 case "Last 7 Days": {
-                    LocalDate now = new LocalDate();
-                    LocalDate beforeDate = now.minusDays(7);
-                    reportFilter = " AND " + column + " BETWEEN '" + beforeDate + "' AND '" + now + " 23:59:59'";
+                    reportFilter = "Last 7 Days";
                     break;
                 }
                 case "Last 30 Days": {
-                    LocalDate now = new LocalDate();
-                    LocalDate beforeDate = now.minusDays(30);
-                    reportFilter = " AND " + column + " BETWEEN '" + beforeDate + "' AND '" + now + " 23:59:59'";
+                    reportFilter = "Last 30 Days";
                     break;
                 }
                 case "All Time": {
-                    reportFilter = "";
+                    reportFilter = "All Time";
                     break;
                 }
                 default:
                     break;
+//                case "Today": {
+//                    reportFilter = " AND " + column + " BETWEEN '" + CommonTasks.getCurrentDate() + "' AND '" + CommonTasks.getCurrentDate() + " 23:59:59'";
+//                    break;
+//                }
+//                case "Last 7 Days": {
+//                    LocalDate now = new LocalDate();
+//                    LocalDate beforeDate = now.minusDays(7);
+//                    reportFilter = " AND " + column + " BETWEEN '" + beforeDate + "' AND '" + now + " 23:59:59'";
+//                    break;
+//                }
+//                case "Last 30 Days": {
+//                    LocalDate now = new LocalDate();
+//                    LocalDate beforeDate = now.minusDays(30);
+//                    reportFilter = " AND " + column + " BETWEEN '" + beforeDate + "' AND '" + now + " 23:59:59'";
+//                    break;
+//                }
+//                case "All Time": {
+//                    reportFilter = "";
+//                    break;
+//                }
+//                default:
+//                    break;
             }
             if (reportSelected == 1) {
                 ticketsSolvedByUser();
@@ -358,7 +420,7 @@ public class ReportsDashController implements Initializable {
                 filter = newValue;
             } else if (reportSelected == 5) {
                 clientReport();
-                txt_reportName.setText("Tickets Details by Clients Reports: "+ clientName + " in " + newValue);
+                txt_reportName.setText("Tickets Details by Clients Reports: " + clientName + " in " + newValue);
                 filter = newValue;
             } else {
                 txt_reportName.setText("Average Time For Each User To Solve a Ticket");

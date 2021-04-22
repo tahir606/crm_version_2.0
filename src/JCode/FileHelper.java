@@ -5,7 +5,6 @@ import objects.Network;
 import objects.Users;
 
 import java.io.*;
-import java.util.ArrayList;
 
 public class FileHelper {
 
@@ -47,7 +46,7 @@ public class FileHelper {
         }
     }
 
-    public Network getNetworkDetails() {
+    public static Network getNetworkDetails() {
         String text = "";
         InputStreamReader isReader = null;
         try {
@@ -99,19 +98,21 @@ public class FileHelper {
 
     }
 
+    public static boolean WriteUserApiDetails(Users user) {
 
-    public boolean WriteUserDetails(Users user, ArrayList<Users.uRights> rights) {
-
-        String Details = user.getUCODE() + "*" + user.getFNAME() + "*" + user.getUNAME() + "*" + user.isEmail() + "^";
-
-        for (Users.uRights right : rights) {
-            Details = Details + right.getRCODE() + "*";
-        }
+        String Details = user.getUserCode() + "*" + user.getFullName() + "*" + user.getUserName() + "*" + user.getIsEmail() + "^";
+//
+//        for (RightChart right : rights) {
+//            if (right.getRightsList().getFreeze() == 0) {
+//                Details = Details + right.getRightsList().getRightsCode() + "*";
+//            }
+//
+//        }
 
         PrintWriter writer = null;
         try {
             writer = new PrintWriter(
-                    new File(FADD + "uDets.txt"));
+                    new File(FADD + "apiuDets.txt"));
 
             writer.write(Details);
 
@@ -125,8 +126,7 @@ public class FileHelper {
         }
 
     }
-
-    public Users ReadUserDetails() {
+    public static Users ReadUserApiDetails() {
         String text = "";
         InputStreamReader isReader = null;
         Users user = new Users();
@@ -135,7 +135,7 @@ public class FileHelper {
             isReader =
                     new InputStreamReader(
                             new FileInputStream(
-                                    new File(FADD + "uDets.txt")));
+                                    new File(FADD + "apiuDets.txt")));
             BufferedReader br = new BufferedReader(isReader);
 
             text = br.readLine();
@@ -145,29 +145,22 @@ public class FileHelper {
             }
 
             String[] t = text.split("\\^");
-
+//
             String[] u = t[0].split("\\*");
 
-            user.setUCODE(Integer.parseInt(u[0]));
-            user.setFNAME(u[1]);
-            user.setUNAME(u[2]);
-            user.setEmailBool(Boolean.parseBoolean(u[3]));
-
-            user.setRights(t[1].split("\\*"));
+            user.setUserCode(Integer.parseInt(u[0]));
+            user.setFullName(u[1]);
+            user.setUserName(u[2]);
+            user.setIsEmail(Integer.parseInt(u[3]));
 
             return user;
         } catch (Exception e) {
             e.printStackTrace();
             return null;
-        } finally {
-//            try {
-//                isReader.close();
-//            } catch (IOException ex) {
-//                ex.printStackTrace();
-//            }
         }
     }
-    public static String readFilePath(){
+
+    public static String readFilePath() {
         String text = "";
         InputStreamReader isReader = null;
         try {
@@ -183,46 +176,27 @@ public class FileHelper {
             if (text == null) {
                 return null;
             }
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
             return null;
         }
         return text;
     }
 
-    public static Users readApiUserDetails() {
-        String text = "";
-        InputStreamReader isReader = null;
-        Users user = new Users();
+    public static void DeleteUserApiDetails() {
+
+        PrintWriter writer = null;
         try {
+            writer = new PrintWriter(
+                    new File(FADD + "apiuDets.txt"));
 
-            isReader =
-                    new InputStreamReader(
-                            new FileInputStream(
-                                    new File(FADD + "apiUserDetails.txt")));
-            BufferedReader br = new BufferedReader(isReader);
+            writer.write("");
 
-            text = br.readLine();
-
-            if (text == null) {
-                return null;
-            }
-
-            String[] t = text.split("\\^");
-
-            String[] u = t[0].split("\\*");
-
-            user.setUserCode(Integer.parseInt(u[0]));
-            user.setFullName(u[1]);
-            user.setUserName(u[2]);
-
-            return user;
-        } catch (Exception e) {
-            e.printStackTrace();
-            return null;
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        } finally {
+            writer.close();
         }
-
     }
 
     public void DeleteUserDetails() {
@@ -371,8 +345,8 @@ public class FileHelper {
             writer = new PrintWriter(
                     new File(FADD + "eSet.txt"));
 
-            writer.write(es.getHost() + "^" + es.getEmail() + "^" + es.getPass() + "^" + es.getFspath() + "^" + es
-                    .isAuto() + "^" + es.isDisc());
+            writer.write(es.getHostt() + "^" + es.getEmailt() + "^" + es.getPasst() + "^" + es.getFspatht() + "^" + es
+                    .isAutot() + "^" + es.isDisct());
 
             WriteAutoDisc(1, es);
             WriteAutoDisc(2, es);
@@ -406,8 +380,8 @@ public class FileHelper {
             ESetting es = new ESetting(ar[0], ar[1], ar[2], ar[3], Boolean.parseBoolean(ar[4]), Boolean.parseBoolean
                     (ar[5]));
 
-            es.setAutotext(ReadAutoDisc(1).getAutotext());
-            es.setDisctext(ReadAutoDisc(2).getDisctext());
+            es.setAutotextt(ReadAutoDisc(1).getAutotextt());
+            es.setDisctextt(ReadAutoDisc(2).getDisctextt());
             return es;
         } catch (Exception e) {
             e.printStackTrace();
@@ -459,9 +433,9 @@ public class FileHelper {
                     new File(FADD + f + ".txt"));
 
             if (c == 1)
-                writer.write(es.getAutotext());
+                writer.write(es.getAutotextt());
             else if (c == 2)
-                writer.write(es.getDisctext());
+                writer.write(es.getDisctextt());
 
             return true;
 
@@ -494,9 +468,9 @@ public class FileHelper {
             ESetting e = new ESetting();
 
             if (c == 1)
-                e.setAutotext(text);
+                e.setAutotextt(text);
             else if (c == 2)
-                e.setDisctext(text);
+                e.setDisctextt(text);
 
             return e;
         } catch (Exception e) {

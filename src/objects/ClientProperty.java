@@ -14,8 +14,8 @@ public class ClientProperty {
     private SimpleStringProperty Name, owner, Addr, City, Country, Website, JoinDate, note;
     private String[] emails = new String[newClientController.noOfFields],
             phones = new String[newClientController.noOfFields];
-    private List<Note> notes;
-    private List<Task> tasks;
+    private List<NoteOld> noteOlds;
+    private List<TaskOld> taskOlds;
 
     public ClientProperty() {
 
@@ -32,7 +32,7 @@ public class ClientProperty {
         JoinDate = new SimpleStringProperty();
         note = new SimpleStringProperty();
 
-        notes = new ArrayList<>();
+        noteOlds = new ArrayList<>();
     }
 
     @Override
@@ -185,16 +185,16 @@ public class ClientProperty {
         this.phones = phones;
     }
 
-    public List<Note> getNotes() {
-        return notes;
+    public List<NoteOld> getNotes() {
+        return noteOlds;
     }
 
-    public void setNotes(List<Note> notes) {
-        this.notes = notes;
+    public void setNotes(List<NoteOld> noteOlds) {
+        this.noteOlds = noteOlds;
     }
 
-    public List<Task> getTasks() {
-        return tasks;
+    public List<TaskOld> getTasks() {
+        return taskOlds;
     }
 
     public int getFromLead() {

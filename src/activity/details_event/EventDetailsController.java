@@ -1,10 +1,11 @@
 package activity.details_event;
 
+import ApiHandler.RequestHandler;
 import JCode.CommonTasks;
+import JCode.Toast;
 import JCode.mysql.mySqlConn;
 import activity.ActivityDashController;
 import activity.event.NewEventController;
-import activity.task.NewTaskController;
 import activity.view.ActivityViewController;
 import com.jfoenix.controls.JFXButton;
 import javafx.fxml.FXML;
@@ -17,14 +18,12 @@ import javafx.scene.control.Tooltip;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
+import javafx.stage.Stage;
 import objects.Event;
-import objects.Task;
 
 import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
-
-import static gui.TasksConstructor.inflateNewTask;
 
 public class EventDetailsController implements Initializable {
 
@@ -45,7 +44,7 @@ public class EventDetailsController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        sql = new mySqlConn();
+//        sql = new mySqlConn();
 
         Image image = new Image(this.getClass().getResourceAsStream("/res/img/left-arrow.png"));
         btn_back.setGraphic(new ImageView(image));
@@ -67,35 +66,44 @@ public class EventDetailsController implements Initializable {
     }
 
     private void populateDetails() {
-        txt_title.setText(event.getTitle());
+        txt_title.setText(event.getTittle());
         txt_location.setText(event.getLocation());
-        txt_fromDate.setText(event.getFromDate() + " " + event.getFromTime());
-        txt_toDate.setText(event.getToDate() + " " + event.getToTime());
+        txt_fromDate.setText(event.getFrom());
+        txt_toDate.setText(event.getTo());
         txt_createdOn.setText(event.getCreatedOn());
-        txt_createdBy.setText(event.getCreatedBy());
-        txt_desc.setText(event.getDesc());
+        txt_createdBy.setText(event.getUsers().getFullName());
+        txt_desc.setText(event.getDescription());
 
         txt_type.setVisible(true);
         txt_name.setVisible(true);
 
-        if (event.getClient() != 0) {
+        if (event.getClientID() != 0) {
             txt_type.setText("Client");
-            txt_name.setText(event.getRelationName());
-        } else if (event.getLead() != 0) {
+            txt_name.setText(event.getUsers().getFullName());
+        } else if (event.getLeadsId() != 0) {
             txt_type.setText("Lead");
-            txt_name.setText(event.getRelationName());
+            txt_name.setText(event.getUsers().getFullName());
         } else {
             txt_type.setVisible(false);
             txt_name.setVisible(false);
         }
 
-        if (!event.isStatus())
+        if (event.getStatus()==0)
             btn_close.setDisable(false);
         else
             btn_close.setDisable(true);
 
         btn_close.setOnAction(event -> {
-            sql.closeEvent(this.event);
+            this.event.setClosedOn(CommonTasks.getCurrentTimeStamp());
+            this.event.setStatus(1);
+            String responseMessage = "";
+            try {
+                responseMessage = RequestHandler.basicRequestHandler(RequestHandler.postOfReturnResponse("event/addEvent", RequestHandler.writeJSON(this.event)));
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            Toast.makeText((Stage) btn_close.getScene().getWindow(), responseMessage);
+//            sql.closeEvent(this.event);
             btn_close.setDisable(true);
         });
 
@@ -109,7 +117,15 @@ public class EventDetailsController implements Initializable {
         buttonArchive.setPrefWidth(84);
         buttonArchive.setPrefHeight(34);
         buttonArchive.setOnAction(event -> {
-            sql.archiveEvent(this.event);
+            this.event.setFreeze(1);
+            String responseMessage = "";
+            try {
+                responseMessage = RequestHandler.basicRequestHandler(RequestHandler.postOfReturnResponse("event/addEvent", RequestHandler.writeJSON(this.event)));
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            Toast.makeText((Stage) buttonArchive.getScene().getWindow(), responseMessage);
+//            sql.archiveEvent(this.event);
             CommonTasks.loadInPane(ActivityDashController.main_paneF, "activity/view/activity_view.fxml");
         });
         hbox_tools.getChildren().add(buttonArchive);

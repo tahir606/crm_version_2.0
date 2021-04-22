@@ -2,6 +2,7 @@ package JCode.mysql;
 
 import JCode.CommonTasks;
 import JCode.FileHelper;
+import objects.Contact;
 import objects.ContactProperty;
 
 import java.sql.Connection;
@@ -47,8 +48,8 @@ public class ContactQueries {
             statement.setBoolean(8, contact.isIsFreeze());
             statement.setInt(9, contact.getClID());
             statement.setString(10, CommonTasks.getCurrentTimeStamp());
-            statement.setInt(11, fHelper.ReadUserDetails().getUCODE());
-            
+            statement.setInt(11, FileHelper.ReadUserApiDetails().getUserCode());
+//            statement.setInt(11, fHelper.ReadUserDetails().getUCODE());
             statement.executeUpdate();
             
             
@@ -81,7 +82,8 @@ public class ContactQueries {
             statement.setBoolean(8, contact.isIsFreeze());
             statement.setInt(9, contact.getClID());
             statement.setString(10, CommonTasks.getCurrentTimeStamp());
-            statement.setInt(11, fHelper.ReadUserDetails().getUCODE());
+            statement.setInt(11,FileHelper.ReadUserApiDetails().getUserCode());
+//            statement.setInt(11, fHelper.ReadUserDetails().getUCODE());
             statement.setInt(12, contact.getCode());
             
             statement.executeUpdate();
@@ -109,8 +111,6 @@ public class ContactQueries {
             query = query + " AND " + where;
         }
 
-        System.out.println(query);
-
         List<ContactProperty> allContacts = new ArrayList<>();
         
         try {
@@ -133,7 +133,6 @@ public class ContactQueries {
                 contact.setAge(CommonTasks.getAge(contact.getDob()));
                 contact.setNote(set.getString("CS_NOTE"));
                 contact.setIsFreeze(set.getBoolean("FREZE"));
-                System.out.println(contact);
                 contact.setContactNotes(noteQueries.getNotes(contact));
                 allContacts.add(contact);
             }
@@ -167,7 +166,7 @@ public class ContactQueries {
         return 0;
     }
     
-    public ContactProperty getParticularContact(ContactProperty where) {
+    public ContactProperty getParticularContact(Contact where) {
         String query = "SELECT CS.CS_ID AS CS_ID,CS_FNAME,CS_LNAME,CS_DOB,CS_ADDR, " +
                 " CS_CITY,CS_COUNTRY,CS_NOTE,CS.CREATEDON,FREZE,CS.CL_ID AS CL_ID,  " +
                 " (SELECT PH.PH_NUM FROM PHONE_LIST AS PH WHERE PH.CS_ID = CS.CS_ID) PH_NUM,  " +
@@ -179,7 +178,7 @@ public class ContactQueries {
         query = query + " AND FREZE = 0 ORDER BY CS.CS_ID";
         try {
             PreparedStatement statement = static_con.prepareStatement(query);
-            statement.setInt(1, where.getCode());
+            statement.setInt(1, where.getClientID());
             ResultSet set = statement.executeQuery();
             //-------------Creating Email-------------
             while (set.next()) {
@@ -195,7 +194,7 @@ public class ContactQueries {
                 contact.setDob(set.getString("CS_DOB"));
                 contact.setClID(set.getInt("CL_ID"));
                 contact.setClientName(set.getString("CL_NAME"));
-                contact.setAge(CommonTasks.getAge(contact.getDob()));
+//                contact.setAge(CommonTasks.getAge(contact.getDob()));
                 contact.setNote(set.getString("CS_NOTE"));
                 contact.setIsFreeze(set.getBoolean("FREZE"));
                 contact.setContactNotes(noteQueries.getNotes(contact));

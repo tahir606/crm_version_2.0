@@ -17,6 +17,7 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 import objects.Task;
+import objects.TaskOld;
 
 import java.io.IOException;
 import java.net.URL;
@@ -39,11 +40,11 @@ public class ActivityDetailsController implements Initializable {
 
     private mySqlConn sql;
 
+    private TaskOld taskOld;
     private Task task;
-
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        sql = new mySqlConn();
+//        sql = new mySqlConn();
 
         Image image = new Image(this.getClass().getResourceAsStream("/res/img/left-arrow.png"));
         btn_back.setGraphic(new ImageView(image));
@@ -65,37 +66,37 @@ public class ActivityDetailsController implements Initializable {
     }
 
     private void populateDetails() {
-        txt_subject.setText(task.getSubject());
-        txt_entryDate.setText(task.getEntryDate() == null ? " - " : CommonTasks.getDateFormatted(task.getEntryDate()));
-        txt_dueDate.setText(CommonTasks.getDateFormatted(task.getDueDate()));
-        txt_createdOn.setText(task.getCreatedOn());
-        txt_createdBy.setText(task.getCreatedBy());
-        txt_desc.setText(task.getDesc());
+        txt_subject.setText(taskOld.getSubject());
+        txt_entryDate.setText(taskOld.getEntryDate() == null ? " - " : CommonTasks.getDateFormatted(taskOld.getEntryDate()));
+        txt_dueDate.setText(CommonTasks.getDateFormatted(taskOld.getDueDate()));
+        txt_createdOn.setText(taskOld.getCreatedOn());
+        txt_createdBy.setText(taskOld.getCreatedBy());
+        txt_desc.setText(taskOld.getDesc());
 
         txt_type.setVisible(true);
         txt_name.setVisible(true);
 
-        if (task.getClient() != 0) {
+        if (taskOld.getClient() != 0) {
             txt_type.setText("Client");
-            txt_name.setText(task.getClientName());
-        } else if (task.getLead() != 0) {
+            txt_name.setText(taskOld.getClientName());
+        } else if (taskOld.getLead() != 0) {
             txt_type.setText("Lead");
-            txt_name.setText(task.getLeadName());
-        } else if (task.getProduct() != 0) {
+            txt_name.setText(taskOld.getLeadName());
+        } else if (taskOld.getProduct() != 0) {
             txt_type.setText("Product");
-            txt_name.setText(task.getProductName());
+            txt_name.setText(taskOld.getProductName());
         } else {
             txt_type.setVisible(false);
             txt_name.setVisible(false);
         }
 
-        if (!task.isStatus())
+        if (!taskOld.isStatus())
             btn_close.setDisable(false);
         else
             btn_close.setDisable(true);
 
         btn_close.setOnAction(event -> {
-            sql.closeTask(task);
+            sql.closeTask(taskOld);
             btn_close.setDisable(true);
         });
 
@@ -109,7 +110,7 @@ public class ActivityDetailsController implements Initializable {
         buttonArchive.setPrefWidth(84);
         buttonArchive.setPrefHeight(34);
         buttonArchive.setOnAction(event -> {
-            sql.archiveTask(task);
+            sql.archiveTask(taskOld);
             CommonTasks.loadInPane(ActivityDashController.main_paneF, "activity/view/activity_view.fxml");
         });
         hbox_tools.getChildren().add(buttonArchive);

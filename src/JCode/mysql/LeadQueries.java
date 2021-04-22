@@ -46,11 +46,11 @@ public class LeadQueries {
                 statement.setInt(8, '\0');
             else
                 statement.setInt(8, lead.getSource());
-            System.out.println("Source: " + lead.getSource());
+
             statement.setString(9, lead.getOtherText());
             statement.setString(10, CommonTasks.getCurrentTimeStamp());
-            statement.setInt(11, fHelper.ReadUserDetails().getUCODE());
-
+//            statement.setInt(11, fHelper.ReadUserDetails().getUCODE());
+            statement.setInt(11, FileHelper.ReadUserApiDetails().getUserCode());
             statement.executeUpdate();
 
             emailPhoneQueries.emailsPhoneInsertion(statement, lead);
@@ -86,7 +86,8 @@ public class LeadQueries {
             }
             statement.setString(9, lead.getOtherText());
             statement.setString(10, CommonTasks.getCurrentTimeStamp());
-            statement.setInt(11, fHelper.ReadUserDetails().getUCODE());
+//            statement.setInt(11, fHelper.ReadUserDetails().getUCODE());
+            statement.setInt(11, FileHelper.ReadUserApiDetails().getUserCode());
             statement.setInt(12, lead.getCode());
 
             statement.executeUpdate();
@@ -119,7 +120,6 @@ public class LeadQueries {
         } else {
             query = query + " AND " + where;
         }
-        System.out.println(query);
         List<Lead> allLeads = new ArrayList<>();
         try {
 
@@ -183,7 +183,7 @@ public class LeadQueries {
                 lead.setEmail(set.getString("EM_NAME"));
                 lead.setPhone(set.getString("PH_NUM"));
                 lead.setNotes(noteQueries.getNotes(lead));
-//                System.out.println(lead);
+
                 return lead;
             }
 

@@ -1,7 +1,7 @@
 package settings.network;
 
-import JCode.Toast;
 import JCode.FileHelper;
+import JCode.Toast;
 import JCode.mysql.mySqlConn;
 import JCode.trayHelper;
 import com.jfoenix.controls.JFXButton;
@@ -42,7 +42,7 @@ public class networkSetController implements Initializable {
         fHelper = new FileHelper();
         tHelper = new trayHelper();
 
-        Network network = fHelper.getNetworkDetails();
+        Network network = FileHelper.getNetworkDetails();
         if (network != null) {
             txt_ip.setText(network.getHost());
             txt_port.setText(String.valueOf(network.getPort()));
@@ -64,14 +64,14 @@ public class networkSetController implements Initializable {
         if (ping) {
             fHelper.WriteNetwork(new Network(ip, Integer.parseInt(port)));
 
-            if (fromMain == true) {
+            if (fromMain ) {
 
                 Stage stage = (Stage) btn_save.getScene().getWindow();
                 stage.close();
 
                 Stage primaryStage = new Stage();
 
-                if (fHelper.ReadUserDetails() == null) {
+                if (FileHelper.ReadUserApiDetails() == null) {
                     Parent root = null;
                     try {
                         root = FXMLLoader.load(getClass().getResource("../../login/login.fxml"));
@@ -95,7 +95,7 @@ public class networkSetController implements Initializable {
                     tHelper.createIcon(primaryStage);
                     primaryStage.show();
                 }
-            } else if (fromMain == false) {
+            } else  {
                 fHelper.WriteNetwork(new Network(ip, Integer.parseInt(port)));
             }
         } else

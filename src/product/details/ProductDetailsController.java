@@ -62,7 +62,7 @@ public class ProductDetailsController implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         vbox_modulesS = vbox_modules;
-        sql = new mySqlConn();
+//        sql = new mySqlConn();
 
         Image image = new Image(this.getClass().getResourceAsStream("/res/img/left-arrow.png"));
         btn_back.setGraphic(new ImageView(image));

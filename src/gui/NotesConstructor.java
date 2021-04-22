@@ -17,8 +17,6 @@ import javafx.stage.Stage;
 import objects.*;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 
 public class NotesConstructor {
 
@@ -30,8 +28,9 @@ public class NotesConstructor {
     VBox notes_list, main_box;
     mySqlConn sql;
     Email email;
-    ContactProperty contact;
-    ClientProperty client;
+    //    ContactProperty contact;
+    Contact contact;
+    Client client;
     Lead lead;
     ProductProperty product;
     private FileHelper fHelper = new FileHelper();
@@ -41,7 +40,7 @@ public class NotesConstructor {
 //        this.sql = sql;
 //        this.contact = contact;
 //    }
-    public NotesConstructor(TabPane tabPane, mySqlConn sql, ContactProperty contact) {
+    public NotesConstructor(TabPane tabPane,  Contact contact) {
         this.tabPane = tabPane;
         notes_list = new VBox();
         tab = new Tab("Notes");
@@ -49,11 +48,10 @@ public class NotesConstructor {
         this.contact = contact;
     }
 
-    public NotesConstructor(TabPane tabPane, mySqlConn sql, ClientProperty client) {
+    public NotesConstructor(TabPane tabPane, Client client) {
         this.tabPane = tabPane;
         notes_list = new VBox();
         tab = new Tab("Notes");
-        this.sql = sql;
         this.client = client;
     }
 
@@ -82,19 +80,17 @@ public class NotesConstructor {
     }
 
     public void constructingContactNotes(int choice) {
-        ContactProperty contact = sql.getParticularContact(this.contact);
         notes_list.getChildren().clear();
-        for (Note note : contact.getContactNotes())
-            constructNote(note, choice);
+        for (Note noteOld : contact.getCoNoteList())
+            constructNote(noteOld, choice);
 
         createNew(choice);
     }
 
     public void constructingClientNotes(int choice) {
-        ClientProperty client = sql.getParticularClient(this.client);
         notes_list.getChildren().clear();
-        for (Note note : client.getNotes())
-            constructNote(note, choice);
+        for (Note noteOld : client.getClNoteList())
+            constructNote(noteOld, choice);
 
         createNew(choice);
     }
@@ -102,8 +98,8 @@ public class NotesConstructor {
     public void constructingLeadNotes(int choice) {
         Lead lead = sql.getParticularLead(this.lead);
         notes_list.getChildren().clear();
-        for (Note note : lead.getNotes())
-            constructNote(note, choice);
+        for (Note noteOld : lead.getNotes())
+            constructNote(noteOld, choice);
 
         createNew(choice);
     }
@@ -111,45 +107,29 @@ public class NotesConstructor {
     public void constructingProductNotes(int choice) {
         ProductProperty product = sql.getParticularProduct(this.product);
         notes_list.getChildren().clear();
-        for (Note note : product.getNotes())
-            constructNote(note, choice);
+        for (Note noteOld : product.getNotes())
+            constructNote(noteOld, choice);
 
         createNew(choice);
     }
 
     public void constructingEmailNotes(int choice) {
-        List<Note> noteList = new ArrayList<>();
-        try {
 
-            List<Note> notes = RequestHandler.listRequestHandler(RequestHandler.run("note/view"), Note.class);
-            for (Note note : notes) {
-                if (email == null) {
-                    return;
-                }
-                if (note.getEmail().getCode() == this.email.getCode() && note.getFreeze() == 0) {
-                    noteList.add(note);
-                } else {
-
-                }
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-//        Email email = sql.getParticularEmail(this.email);
-//        if (email == null)
-//            return;
         notes_list.getChildren().clear();
-        for (Note note : noteList)
-            constructNote(note, choice);
-        createNew(choice);
+        if (email != null) {
+
+            for (Note noteOld : email.geteNoteList())
+                constructNote(noteOld, choice);
+            createNew(choice);
+        }
     }
 
-    private void constructNote(Note note, int choice) {
+    private void constructNote(Note noteOld, int choice) {
         //The First Part
         HBox body = new HBox();
         body.getChildren().clear();
         body.setSpacing(5);
-        TextArea area = new TextArea(note.getText());
+        TextArea area = new TextArea(noteOld.getText());
         if (choice == 5) {
             area.setMaxWidth(210);
             area.setMinWidth(210);
@@ -167,8 +147,23 @@ public class NotesConstructor {
         details.setSpacing(10);
         details.setMinHeight(25);
         details.setPadding(new Insets(3));
-        Label createdBy = new Label(note.getUsers().getFullName()),
-                createdOn = new Label(note.getCreatedOn());
+
+        if (noteOld == null) {
+            return;
+        }
+        String noteName = "";
+//        if (note.getUsers() == null) {
+//            System.out.println("IF ");
+//            noteName = note.getCreatedByName();
+//        } else {
+//            System.out.println("ELSE ");
+//            noteName = ;
+//        }
+        Label createdBy = new Label(noteOld.getUsers().getFullName()),
+                createdOn = new Label(noteOld.getCreatedOn());
+
+//        Label createdBy = new Label(note.getUsers().getFullName()),
+//                createdOn = new Label(note.getCreatedOn());
 
         if (choice == 5) {      //        if Emails Clicked then set the width of label
             createdOn.setMinWidth(100);
@@ -186,7 +181,7 @@ public class NotesConstructor {
                 editItem = new MenuItem("Edit");
         editItem.setOnAction(t -> {
 //            if (note.getCreatedBy() == fHelper.ReadUserDetails().getUCODE()) {
-            if (note.getCreatedBy() == 22) {
+            if (noteOld.getCreatedBy() == FileHelper.ReadUserApiDetails().getUserCode()) {
                 area.setEditable(true);
                 area.setStyle("-fx-background: #fcfcfc;");
                 area.requestFocus();
@@ -205,26 +200,22 @@ public class NotesConstructor {
                 cancelBtn.setStyle("-fx-background-color: #e8f0ff;");
 
                 saveBtn.setOnAction(event -> {
-                    note.setText(area.getText().toString());
+                    noteOld.setText(area.getText().toString());
                     switch (choice) {
                         case 1:
-                            sql.updateNote(note, contact);
-                            break;
                         case 2:
-                            sql.updateNote(note, client);
-                            break;
-                        case 3:
-                            sql.updateNote(note, lead);
-                            break;
-                        case 4:
-                            sql.updateNote(note, product);
-                            break;
                         case 5:
                             try {
-                                RequestHandler.run("note/updateNote?noteCode=" + note.getNoteCode() + "&noteText=" + note.getText());
+                                RequestHandler.run("note/updateNote?noteCode=" + noteOld.getNoteCode() + "&noteText=" + noteOld.getText()).close();
                             } catch (IOException e) {
                                 e.printStackTrace();
                             }
+                            break;
+                        case 3:
+//                            sql.updateNote(noteOld, lead);
+                            break;
+                        case 4:
+//                            sql.updateNote(noteOld, product);
                             break;
                     }
                     generalConstructor(choice);
@@ -244,27 +235,23 @@ public class NotesConstructor {
             }
         });
         delItem.setOnAction(t -> {
-            if (note.getCreatedBy() == 22) {
+            if (noteOld.getCreatedBy() == FileHelper.ReadUserApiDetails().getUserCode()) {
                 switch (choice) {
                     case 1:
-                        sql.deleteNote(note, contact);
-                        break;
                     case 2:
-                        sql.deleteNote(note, client);
-                        break;
-                    case 3:
-                        sql.deleteNote(note, lead);
-                        break;
-                    case 4:
-                        sql.deleteNote(note, product);
-                        break;
                     case 5:
                         try {
-                            RequestHandler.run("note/deleteNote/" + note.getNoteCode());
+                            RequestHandler.run("note/deleteNote/" + noteOld.getNoteCode()).close();
 
                         } catch (IOException e) {
                             e.printStackTrace();
                         }
+                        break;
+                    case 3:
+//                        sql.deleteNote(noteOld, lead);
+                        break;
+                    case 4:
+//                        sql.deleteNote(noteOld, product);
                         break;
                 }
                 generalConstructor(choice);
@@ -319,10 +306,13 @@ public class NotesConstructor {
             } else {
                 switch (choice) {
                     case 1:
-                        sql.addNote(note, contact);
-                        break;
+                    case 5:
                     case 2:
-                        sql.addNote(note, client);
+                        try {
+                            RequestHandler.post("note/addNote", RequestHandler.writeJSON(newNote(note))).close();
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
                         break;
                     case 3:
                         sql.addNote(note, lead);
@@ -330,14 +320,7 @@ public class NotesConstructor {
                     case 4:
                         sql.addNote(note, product);
                         break;
-                    case 5:
-                        try {
-                            RequestHandler.post("note/addNote", RequestHandler.writeJSON(newNote(note)));
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
 //                        sql.addNote(note, email);
-                        break;
                 }
                 generalConstructor(choice);
             }
@@ -345,10 +328,18 @@ public class NotesConstructor {
     }
 
     public Note newNote(String text) {
+        Users users = FileHelper.ReadUserApiDetails();
         Note note = new Note();
         note.setText(text);
-        note.setEmailId(this.email.getCode());
-        note.setCreatedBy(22);
+        if (email !=null){
+            note.setEmailId(email.getCode());
+        }else if(client!=null){
+            note.setClientID(client.getClientID());
+        }else if(contact !=null){
+           note.setContactID(contact.getContactID());
+        }
+        note.setCreatedBy(users.getUserCode());
+
         return note;
     }
 

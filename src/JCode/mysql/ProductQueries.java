@@ -43,12 +43,12 @@ public class ProductQueries {
             statement.setString(6, product.getStartedtimeStmp());
             statement.setInt(7, product.getPriority());
             statement.setString(8, CommonTasks.getCurrentTimeStamp());
-            statement.setInt(9, fHelper.ReadUserDetails().getUCODE());
+            statement.setInt(9,FileHelper.ReadUserApiDetails().getUserCode());
             
             statement.executeUpdate();
             
             for (ProductModule module : product.getProductModules()) {
-                System.out.println(module);
+
                 insertProductModule(module);
             }
             
@@ -77,14 +77,14 @@ public class ProductQueries {
             statement.setString(6, product.getStartedtimeStmp());
             statement.setInt(7, product.getPriority());
             statement.setString(8, CommonTasks.getCurrentTimeStamp());
-            statement.setInt(9, fHelper.ReadUserDetails().getUCODE());
+            statement.setInt(9,FileHelper.ReadUserApiDetails().getUserCode());
             statement.setInt(10, product.getCode());
             
             statement.executeUpdate();
             
             deleteAllProductModules(product.getCode());
             for (ProductModule module : product.getProductModules()) {
-                System.out.println(module);
+
                 insertProductModule(module);
             }
             
@@ -106,7 +106,7 @@ public class ProductQueries {
         List<ProductProperty> allProducts = new ArrayList<>();
         
         try {
-            System.out.println(query);
+
             PreparedStatement statement = static_con.prepareStatement(query);
             ResultSet set = statement.executeQuery();
             //-------------Creating Email-------------
@@ -141,7 +141,7 @@ public class ProductQueries {
                 " AND PS_ID = ? ";
         
         try {
-//            System.out.println(query);
+
             PreparedStatement statement = static_con.prepareStatement(query);
             statement.setInt(1, where.getCode());
             ResultSet set = statement.executeQuery();
@@ -160,7 +160,7 @@ public class ProductQueries {
                 product.setCreatedBy(set.getInt("CREATEDBY"));
                 
                 product.setProductModules(getAllProductModules(product.getCode()));
-                product.setNotes(noteQueries.getNotes(product));
+//                product.setNotes(noteQueries.getNotes(product));
                 
                 return product;
             }
@@ -186,7 +186,7 @@ public class ProductQueries {
             statement.setString(2, productModule.getDesc());
             statement.setInt(3, productModule.getProductCode());
             statement.setString(4, CommonTasks.getCurrentTimeStamp());
-            statement.setInt(5, fHelper.ReadUserDetails().getUCODE());
+            statement.setInt(5, FileHelper.ReadUserApiDetails().getUserCode());
             statement.setInt(6, productModule.getProductCode());
             
             statement.executeUpdate();
@@ -209,7 +209,7 @@ public class ProductQueries {
             statement.setString(2, productModule.getDesc());
             statement.setInt(3, productModule.getProductCode());
             statement.setString(4, CommonTasks.getCurrentTimeStamp());
-            statement.setInt(5, fHelper.ReadUserDetails().getUCODE());
+            statement.setInt(5,FileHelper.ReadUserApiDetails().getUserCode());
             statement.setInt(6, productModule.getProductCode());
             
             statement.executeUpdate();
@@ -266,7 +266,7 @@ public class ProductQueries {
                     module.setState(0);
                 else {
                     while (set.next()) {
-                        if (set.getInt("UCODE") == fHelper.ReadUserDetails().getUCODE())
+                        if (set.getInt("UCODE") == FileHelper.ReadUserApiDetails().getUserCode())
                             module.setState(1);
                         else
                             module.setState(2);
@@ -366,7 +366,7 @@ public class ProductQueries {
                 return 0;
             else {
                 while (set.next()) {
-                    if (set.getInt("UCODE") == fHelper.ReadUserDetails().getUCODE())
+                    if (set.getInt("UCODE") ==FileHelper.ReadUserApiDetails().getUserCode())
                         return 1;
                     else
                         return 2;
@@ -391,7 +391,7 @@ public class ProductQueries {
         try {
             statement = static_con.prepareStatement(query);
             statement.setInt(1, module.getCode());
-            statement.setInt(2, fHelper.ReadUserDetails().getUCODE());
+            statement.setInt(2,FileHelper.ReadUserApiDetails().getUserCode());
             statement.setString(3, CommonTasks.getCurrentTimeStamp());
             statement.setInt(4, module.getProductCode());
             
@@ -418,7 +418,7 @@ public class ProductQueries {
             statement = static_con.prepareStatement(query);
             statement.setString(1, CommonTasks.getCurrentTimeStamp());
             statement.setString(2, desc);
-            statement.setInt(3, fHelper.ReadUserDetails().getUCODE());
+            statement.setInt(3,FileHelper.ReadUserApiDetails().getUserCode());
             statement.setInt(4, module.getCode());
             statement.setInt(5, module.getProductCode());
             

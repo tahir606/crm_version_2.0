@@ -1,6 +1,8 @@
 package activity.task;
 
+import ApiHandler.RequestHandler;
 import JCode.CommonTasks;
+import JCode.FileHelper;
 import JCode.Toast;
 import JCode.mysql.mySqlConn;
 import activity.ActivityDashController;
@@ -27,7 +29,7 @@ import java.net.URL;
 import java.util.ResourceBundle;
 
 public class NewTaskController implements Initializable {
-    
+
     @FXML
     private JFXTextField txt_subject, txt_name;
     @FXML
@@ -42,61 +44,63 @@ public class NewTaskController implements Initializable {
     private JFXComboBox<String> relation_type;
     @FXML
     private JFXButton btn_save, btn_cancel;
-    
+
     //Which property is selected
     private int choice;
-    
+
     private mySqlConn sql;
-    
+
     public static char stInstance;
-    
-    private ClientProperty client;
+
+    //    private ClientProperty client;
+    private Client client;
     private Lead lead;
     private ProductProperty product;
-    
+
     private Task task;
-    
+
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        
-        sql = new mySqlConn();
-        
+
+//        sql = new mySqlConn();
+
         relation_type.getItems().addAll("Contact", "Client", "Lead", "Product");
-        
+
         choice = EventsConstructor.choice;
-        
+
         relation_type.setDisable(true);
         txt_name.setDisable(true);
-        
+
         switch (stInstance) {
             case 'N': {
                 btn_save.setText("Add");
-                
+
                 task = new Task();
                 break;
             }
             case 'U': {
                 btn_save.setText("Update");
-                
+
                 task = TasksConstructor.updatingTask;
                 populateFields(task);
                 break;
             }
             case 'D': { //D for from details
                 btn_save.setText("Update");
-                
+
                 task = ActivityViewController.staticTask;
                 populateFields(task);
                 break;
             }
         }
-        
+
         if (stInstance != 'D') {
             switch (choice) {
                 case 1: {       //Contacts
-                    ContactProperty contact = contactViewController.staticContact;
+//                    ContactProperty contact = contactViewController.staticContact;
+                    Contact contact = contactViewController.staticContact;
                     relation_type.getSelectionModel().select("Contact");
-                    txt_name.setText(contact.getFullName());
+                    txt_name.setText(contact.getFirstName());
                     break;
                 }
                 case 2: {       //Clients
@@ -119,18 +123,18 @@ public class NewTaskController implements Initializable {
                 }
             }
         } else {
-            if (task.getClient() != 0) {
+            if (task.getClientID() != 0) {
                 relation_type.getSelectionModel().select("Client");
-                txt_name.setText(task.getClientName());
-            } else if (task.getLead() != 0) {
+                txt_name.setText(task.getClientTaskList().getName());
+            } else if (task.getLeadsId() != 0) {
                 relation_type.getSelectionModel().select("Lead");
-                txt_name.setText(task.getLeadName());
-            } else if (task.getProduct() != 0) {
+//                txt_name.setText(task.getLeadName());
+            } else if (task.getPsID() != 0) {
                 relation_type.getSelectionModel().select("Product");
-                txt_name.setText(task.getProductName());
+//                txt_name.setText(task.getProductName());
             }
         }
-        
+
         btn_save.setOnAction(event -> {
             String subject = txt_subject.getText().toString(),
                     desc = txt_desc.getText().toString(),
@@ -139,7 +143,7 @@ public class NewTaskController implements Initializable {
                     type = relation_type.getSelectionModel().getSelectedItem(),
                     name = txt_name.getText().toString();
             boolean repeat = check_repeat.isSelected();
-            
+
             if (subject.equals("") || desc.equals("") || dueDate.equals("")) {
                 Toast.makeText((Stage) btn_save.getScene().getWindow(), "Required Fields Are Empty");
                 return;
@@ -161,56 +165,76 @@ public class NewTaskController implements Initializable {
                 Alert alert2 = new Alert(Alert.AlertType.CONFIRMATION, msg,
                         ButtonType.YES, ButtonType.NO);
                 alert2.showAndWait();
-                
+
                 if (alert2.getResult() == ButtonType.YES) {
-                    
+
                     task.setSubject(subject);
                     task.setEntryDate(entryDate);
                     task.setDueDate(dueDate);
-                    task.setDesc(desc);
-                    task.setRepeat(repeat);
-                    
+                    task.setDescription(desc);
+                    task.setCreatedOn(CommonTasks.getCurrentTimeStamp());
+                    task.setCreatedBy(FileHelper.ReadUserApiDetails().getUserCode());
+                    if (repeat) {
+                        task.setRepeat(1);
+                    } else {
+                        task.setRepeat(0);
+                    }
+
+
                     switch (stInstance) {
                         case 'N': {
                             try {
                                 if (type.equals("Contact")) {
-                                
+
                                 } else if (type.equals("Client")) {
-                                    task.setClient(client.getCode());
+                                    task.setClientID(client.getClientID());
                                 } else if (type.equals("Lead")) {
-                                    task.setLead(lead.getCode());
+                                    task.setLeadsId(lead.getCode());
                                 } else if (type.equals("Product")) {
-                                    task.setProduct(product.getCode());
+                                    task.setPsID(product.getCode());
                                 }
                             } catch (NullPointerException e) {
                                 System.out.println(e);
                             }
-                            sql.addTask(task);
+
+                            String responseMessage = "";
+                            try {
+                                responseMessage = RequestHandler.basicRequestHandler(RequestHandler.postOfReturnResponse("task/addTask", RequestHandler.writeJSON(task)));
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
+                            Toast.makeText((Stage) btn_save.getScene().getWindow(), responseMessage);
+
+//                            sql.addTask(task);
                             break;
                         }
-                        case 'U': {
-                            sql.updateTask(task);
-                            break;
-                        }
+                        case 'U':
                         case 'D': {
-                            sql.updateTask(task);
+                            String responseMessage = "";
+                            try {
+                                responseMessage = RequestHandler.basicRequestHandler(RequestHandler.postOfReturnResponse("task/addTask", RequestHandler.writeJSON(task)));
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
+                            Toast.makeText((Stage) btn_save.getScene().getWindow(), responseMessage);
+//                            sql.updateTask(task);
                             break;
                         }
                         default: {
                             break;
                         }
                     }
-                    
+
                 } else {
                     return;
                 }
                 closeStage();
             }
         });
-        
+
         btn_cancel.setOnAction(event -> closeStage());
     }
-    
+
     private void closeStage() {
         Stage stage = (Stage) btn_cancel.getScene().getWindow();
         stage.close();
@@ -222,7 +246,7 @@ public class NewTaskController implements Initializable {
                     ActivityDashController.main_paneF.setCenter(
                             FXMLLoader.load(
                                     getClass().getClassLoader().getResource("activity/view/activity_view.fxml")));
-                    
+
                 } catch (IOException ex) {
                     ex.printStackTrace();
                 }
@@ -232,16 +256,16 @@ public class NewTaskController implements Initializable {
                 ActivityDashController.main_paneF.setCenter(
                         FXMLLoader.load(
                                 getClass().getClassLoader().getResource("activity/view/activity_view.fxml")));
-                
+
             } catch (IOException e) {
                 e.printStackTrace();
             }
         }
     }
-    
+
     private void populateFields(Task task) {
         txt_subject.setText(task.getSubject());
-        txt_desc.setText(task.getDesc());
+        txt_desc.setText(task.getDescription());
         if (task.getEntryDate() != null)
             entry_date.setValue(CommonTasks.createLocalDate(task.getEntryDate()));
         else
@@ -251,6 +275,11 @@ public class NewTaskController implements Initializable {
             due_date.setValue(CommonTasks.createLocalDate(task.getDueDate()));
         else
             due_date.setValue(null);
-        check_repeat.setSelected(task.isRepeat());
+        if (task.getRepeat()==0){
+            check_repeat.setSelected(false);
+        }else{
+            check_repeat.setSelected(true);
+        }
+
     }
 }

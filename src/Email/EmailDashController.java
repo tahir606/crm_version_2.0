@@ -38,7 +38,6 @@ import javafx.scene.control.*;
 import javafx.scene.image.ImageView;
 import javafx.scene.image.WritableImage;
 import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.web.WebView;
@@ -47,14 +46,16 @@ import javafx.util.Callback;
 import objects.*;
 
 import javax.imageio.ImageIO;
-import javax.mail.Address;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.net.URL;
-import java.util.*;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.List;
+import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -64,27 +65,25 @@ public class EmailDashController implements Initializable {
     @FXML
     private AnchorPane anchor_body, anchor_details, anchor_remarks;
     @FXML
-    private Label label_ticket, label_time, label_locked, label_created, title_created, label_from, title_locked, label_related_emails, label_count;
+    private Label label_ticket, label_time, label_locked, label_created, title_created, label_from, title_locked, label_count, tittle_solveTime, label_solveTime;
     @FXML
     private TextArea txt_subject;
     @FXML
-    private JFXButton btn_lock, btn_solv, btn_unlock;
+    private JFXButton btn_lock, btn_solv, btn_unlock, btn_resolve;
     @FXML
     private JFXComboBox<String> combo_respond;
     @FXML
-    private BorderPane border_email;
-    @FXML
-    private VBox category_box, vbox_from, vbox_cc, vbox_contacts, vbox_clients, vbox_details, vbox_filter, vbox_Remarks;
-    @FXML
-    private HBox hbox_from, hbox_cc, hbox_clients, hbox_contacts;
+    private VBox category_box, vbox_from, vbox_cc, vbox_filter;
     @FXML
     private JFXComboBox<FileDev> combo_attach;
+    @FXML
+    private JFXComboBox<Users> selectUser;
     @FXML
     private MenuBar menu_bar;
     @FXML
     private JFXTextField search_txt;
     @FXML
-    private ListView<Email> list_emails, relatedEmails;
+    private ListView<Email> list_emails;
 
     private mySqlConn sql;
     private FileHelper fHelper;
@@ -98,11 +97,13 @@ public class EmailDashController implements Initializable {
     public static ListView<Email> list_emailsF;
 
     public static int Email_Type = 1;
+    public static String isAdmin;
 
     public int ticketNumberLatest,
             generalNumberLatest;
     private int ticketLastNumberSQL, generalLastNumberSQL;
     TabPane tabPane = new TabPane();
+    List<Users> usersList = new ArrayList<>();
 
     public EmailDashController() {
     }
@@ -114,32 +115,38 @@ public class EmailDashController implements Initializable {
 
         list_emailsF = list_emails;
         anchor_details.setVisible(false);
-        sql = new mySqlConn();
+//        sql = new mySqlConn();
         fHelper = new FileHelper();
 
-        user = fHelper.ReadUserDetails();
-
+        user = FileHelper.ReadUserApiDetails();
+        Users users = null;
+        try {
+            users = (Users) RequestHandler.objectRequestHandler(RequestHandler.run("users/getUser/" + user.getUserCode()), Users.class);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        isAdmin = users.getUserRight();
         //Setting icons notifier for unread emails
-        ticketNumberLatest = fHelper.ReadLastEmailNumber(1);
-        generalNumberLatest = fHelper.ReadLastEmailNumber(2);
-
-        ticketLastNumberSQL = sql.getLatestEmailNo(1);
-        generalLastNumberSQL = sql.getLatestEmailNo(2);
-
-        if (ticketLastNumberSQL > ticketNumberLatest) {
-            tickets.setText("Tickets*");
-        } else {
-            tickets.setText("Tickets");
-        }
-
-        if (generalLastNumberSQL > generalNumberLatest) {
-            allMail.setText("General*");
-        } else {
-            allMail.setText("General");
-        }
-
-        fHelper.WriteLastEmailNumber(1, ticketLastNumberSQL);
-        fHelper.WriteLastEmailNumber(2, generalLastNumberSQL);
+//        ticketNumberLatest = fHelper.ReadLastEmailNumber(1);
+//        generalNumberLatest = fHelper.ReadLastEmailNumber(2);
+//
+//        ticketLastNumberSQL = sql.getLatestEmailNo(1);
+//        generalLastNumberSQL = sql.getLatestEmailNo(2);
+//
+//        if (ticketLastNumberSQL > ticketNumberLatest) {
+//            tickets.setText("Tickets*");
+//        } else {
+//            tickets.setText("Tickets");
+//        }
+//
+//        if (generalLastNumberSQL > generalNumberLatest) {
+//            allMail.setText("General*");
+//        } else {
+//            allMail.setText("General");
+//        }
+//
+//        fHelper.WriteLastEmailNumber(1, ticketLastNumberSQL);
+//        fHelper.WriteLastEmailNumber(2, generalLastNumberSQL);
 
         populateCategoryBoxes();
         populateMenuBar();
@@ -152,16 +159,22 @@ public class EmailDashController implements Initializable {
 
             selectedEmail = newValue;
             populateDetails(selectedEmail);
-            populateRemarks(tabPane, selectedEmail);
+            if (Email_Type == 1) {
+                populateRemarks(tabPane, selectedEmail);
+            }
+
         });
+
         //Attaching listener to attaching combo box
+
         combo_attach.valueProperty().addListener((observable, oldValue, newValue) -> {
+
             if (newValue == null)
                 return;
-
             if (Desktop.isDesktopSupported()) {
                 try {
                     Desktop.getDesktop().open(newValue);
+                    loadEmailsStatic();
                 } catch (IOException ex) {
                     ex.printStackTrace();
                 }
@@ -176,7 +189,6 @@ public class EmailDashController implements Initializable {
                 return;
             }
             Email sEmail = selectedEmail;
-
             EResponseController.stTo = sEmail.getFromAddress();
             EResponseController.stCc = sEmail.getCcAddress();
             if (newValue.equals("Reply")) {
@@ -188,7 +200,7 @@ public class EmailDashController implements Initializable {
                     EResponseController.stSubject = "FW: " + sEmail.getSubject();
                     EResponseController.stInstance = 'F';
                     EResponseController.stBody = sEmail.getBody();
-                    EResponseController.stAttach = null;
+                    EResponseController.stAttach = new ArrayList<>();
                 } else {
                     EResponseController.stSubject = "FW: " + sEmail.getSubject();
                     EResponseController.stInstance = 'F';
@@ -199,8 +211,37 @@ public class EmailDashController implements Initializable {
             inflateEResponse(1);
             combo_respond.getSelectionModel().select(0);
         });
-        timer();
 
+        if (Email_Type == 1) {
+            timer();
+        } else {
+            timerTaskNewEmail.cancel();
+        }
+
+        List<Users> usersList = null;
+        try {
+            usersList = RequestHandler.listRequestHandler(RequestHandler.run("users/getALlUsers"), Users.class);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        for (Users c : usersList) {
+            this.usersList.add(c);
+        }
+        selectUser.valueProperty().addListener((observable, oldValue, newValue) -> {
+            if (isAdmin.equals("Admin")) {
+                if (newValue == null) {
+                    return;
+                } else {
+                    try {
+                        RequestHandler.run("ticket/allocate?code=" + selectedEmail.getCode() + "&allocatorCode=" + user.getUserCode() + "&userCode=" + newValue.getUserCode() + "&status=" + 3).close();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                    loadEmailsStatic();
+
+                }
+            }
+        });
 
     }
 
@@ -266,44 +307,27 @@ public class EmailDashController implements Initializable {
                                 case 1: {
                                     if (item.getCode() > ticketNumberLatest) {
                                         if (!getStyleClass().contains("unreadEmail")) {
-//                                            getStyleClass().add("unreadEmail");
                                             newEmail = true;
                                             break;
                                         }
                                     } else {
-//                                        getStyleClass().remove("unreadEmail");
                                         break;
                                     }
                                 }
                                 case 2: {
                                     if (item.getCode() > generalNumberLatest) {
                                         if (!getStyleClass().contains("unreadEmail")) {
-//                                            getStyleClass().add("unreadEmail");
                                             newEmail = true;
                                             break;
                                         }
                                     } else {
-//                                        getStyleClass().remove("unreadEmail");
                                         break;
                                     }
                                 }
                             }
 
-                            if (newEmail == false && Email_Type == 1) {
-                                if (item.getLocked() == 0) {
-                                    if (!getStyleClass().contains("unlockedEmail")) {
-//                                        getStyleClass().add("unlockedEmail");
-                                    }
-                                } else {
-//                                    getStyleClass().remove("unlockedEmail");
-                                }
-                            } else {    //If email type other than tickets is selected no styling should be shown
-//                                getStyleClass().remove("unlockedEmail");
-
-                            }
                         } else {
                             Platform.runLater(() -> setText(""));
-//                            getStyleClass().remove("unlockedEmail");
                         }
                     }
                 };
@@ -316,14 +340,18 @@ public class EmailDashController implements Initializable {
         MenuItem archiveItem = new MenuItem("Move to Archive");
         archiveItem.setOnAction(t -> {
             Email email = list_emails.getSelectionModel().getSelectedItem();
-            List<History> history = getSelectEmailHistory(email);
-            String statusTime = getStatusTime(history);
-            String userName = getUserName(history, statusTime, email);
+            List<History> historyList = getSelectEmailHistory(email);
+            String statusTime = getStatusTime(historyList);
+            History history = getHistory(historyList, statusTime, email);
+            String userName = "";
+            if (history != null) {
+                userName = history.getUsers().getFullName();
+            }
             try {
                 if (email.getStatus() != null) {
                     if (email.getStatus().equals("LOCKED")) {     //If Email is locked
-                        if (userName.equals(FileHelper.readApiUserDetails().getFullName())) {      //If Email is locked by YOU
-                            RequestHandler.run("ticket/archive/" + email.getCode());
+                        if (userName.equals(user.getFullName())) {      //If Email is locked by YOU
+                            RequestHandler.run("ticket/archive/" + email.getCode()).close();
                             try {
                                 loadEmails();
                             } catch (IOException e) {
@@ -334,14 +362,15 @@ public class EmailDashController implements Initializable {
                         }
                     } else {
                         if (Email_Type == 1) {
-                            RequestHandler.run("ticket/archive/" + email.getCode());
+                            RequestHandler.run("ticket/archive/" + email.getCode()).close();
+                            loadEmails();
                         }
                     }
                 } else {    //If Email is not locked
                     if (Email_Type == 2) {
-                        RequestHandler.run("general/archive/" + email.getCode());
+                        RequestHandler.run("general/archive/" + email.getCode()).close();
                     } else {
-                        RequestHandler.run("email/archive/" + email.getCode());
+                        RequestHandler.run("email/archive/" + email.getCode()).close();
                     }
 
                     try {
@@ -361,7 +390,7 @@ public class EmailDashController implements Initializable {
             createTicket.setOnAction(t -> {
                 Email selectedItem = list_emails.getSelectionModel().getSelectedItem();
                 try {
-                    RequestHandler.run("general/ticket/" + selectedItem.getCode());
+                    RequestHandler.run("general/ticket/" + selectedItem.getCode()).close();
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -379,7 +408,7 @@ public class EmailDashController implements Initializable {
             sendAgain.setOnAction(t -> {
                 Email selectedItem = list_emails.getSelectionModel().getSelectedItem();
                 try {
-                    RequestHandler.run("email/sendAgain/" + selectedItem.getCode());
+                    RequestHandler.run("email/sendAgain/" + selectedItem.getCode()).close();
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -408,9 +437,11 @@ public class EmailDashController implements Initializable {
         List<Email> emails = null;
         switch (Email_Type) {
             case 1:     //Tickets
+                Email.isEmailTypeSent = false;
                 emails = RequestHandler.listRequestHandler(RequestHandler.run("ticket/emails?filter=" + Filters.readFromFile() + "&order=" + Filters.ascDesc + "&orderBy=" + Filters.sortBy), Email.class);
                 break;
             case 2:     //General
+                Email.isEmailTypeSent = false;
                 emails = RequestHandler.listRequestHandler(RequestHandler.run("general/emails"), Email.class);
 
                 break;
@@ -429,7 +460,7 @@ public class EmailDashController implements Initializable {
             Email nEm = new Email();
             nEm.setSubject("Emails Found");
             nEm.setCode(0);
-            nEm.setAttachment("");
+            nEm.setAttachment(new ArrayList<>());
             emails.add(nEm);
 
             list_emails.setDisable(true);
@@ -487,7 +518,7 @@ public class EmailDashController implements Initializable {
     }
 
     private void instantiateEmail() {
-        EResponseController.stTo = "";
+        EResponseController.stTo = new ArrayList<>();
         EResponseController.stSubject = "";
         EResponseController.stBody = "";
         EResponseController.stInstance = 'N'; //N for New.
@@ -498,20 +529,19 @@ public class EmailDashController implements Initializable {
         return filteredList;
     }
 
-//    FilteredList<Email> filteredList;
-
     int ticketNo;
+
 
     //Track Down which load Email is Running
     public void loadEmails() throws IOException {
         //making list filterable
-//        ObservableList<Email> dataObj = FXCollections.observableArrayList(checkIfEmailsExist());
-
-//        FilteredList<Email> filteredList = new FilteredList<>(dataObj, s -> true);
         Email emailNo = (Email) RequestHandler.objectRequestHandler(RequestHandler.run("ticket/getMaxTicketNo"), Email.class);
+        if (emailNo == null) {
+            return;
+        }
         ticketNo = emailNo.getTicketNo();
         FilteredList<Email> filteredList;
-        if (Filters.readFromFile().isLockedByMe() == true) {
+        if (Filters.readFromFile().isLockedByMe()) {
             ObservableList<Email> dataObj = FXCollections.observableArrayList(checkIfEmailsExist());
             ObservableList<Email> emails = FXCollections.observableArrayList();
 
@@ -526,12 +556,12 @@ public class EmailDashController implements Initializable {
                 List<History> histories = new ArrayList<>();
                 for (History history : historyList) {
                     if (history.getTime().equals(timestamps.get(0)) && email.getStatus().equals(history.getStatus())) {
+
                         histories.add(history);
                     }
                 }
                 for (History history : histories) {
-//                    change User Code
-                    if (history.getUsers().getUserCode() == FileHelper.readApiUserDetails().getUserCode()) {
+                    if (history.getUsers().getUserCode() == user.getUserCode()) {
                         emails.add(email);
                     }
                 }
@@ -597,9 +627,7 @@ public class EmailDashController implements Initializable {
 
     public void onLock(ActionEvent actionEvent) throws IOException {
         imgLoader.setVisible(true);
-//        sql.lockEmail(selectedEmail, 1);
-//        change User Code
-        RequestHandler.run("ticket/lock?code=" + selectedEmail.getCode() + "&userCode=" + FileHelper.readApiUserDetails().getUserCode() + "&status=" + 1);
+        RequestHandler.run("ticket/lock?code=" + selectedEmail.getCode() + "&userCode=" + user.getUserCode() + "&status=" + 1).close();
         loadEmailsStatic();
         reloadInstances();
     }
@@ -610,18 +638,34 @@ public class EmailDashController implements Initializable {
 
     public void onSolv(ActionEvent actionEvent) throws IOException {
         solvIndex = -1;
+        Email email = selectedEmail;
+        try {
+            eSetting = (ESetting) RequestHandler.objectRequestHandler(RequestHandler.run("settings/getSettings"), ESetting.class);
 
-        eSetting = sql.getEmailSettings();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         solvIndex = list_emails.getSelectionModel().getSelectedIndex();
-        if (!eSetting.isSolv()) {
+        if (eSetting.getSolveCheck() == 0) {
             Alert alert = new Alert(Alert.AlertType.CONFIRMATION, "Are you sure you want to mark this as solved?\n" +
                     "This action cannot be taken back. No response will be issued.",
                     ButtonType.YES, ButtonType.NO);
             alert.showAndWait();
 
             if (alert.getResult() == ButtonType.YES) {
-//                sql.solvEmail(selectedEmail, "S", user, false, ""); // S for solved
-//                RequestHandler.run("ticket/solve?code="+selectedEmail.getCode()+"&userCode="+22 +"&status="+2);
+
+                List<History> historyList = getSelectEmailHistory(email);
+                String statusTime = getStatusTime(historyList);
+
+                History history = getHistory(historyList, statusTime, email);
+
+                if (history.getStatus().equals("RESOLVED") && isAdmin.equals("Admin") && selectedEmail.getIsAllocatedBy() == user.getUserCode()) {
+                    RequestHandler.run("ticket/solve?code=" + selectedEmail.getCode() + "&userCode=" + history.getUsers().getUserCode() + "&status=" + 2 + "&checkSend=" + true + "&solvedBody=" + "").close();
+                } else if (history.getUsers().getUserCode() == user.getUserCode() && history.getStatus().equals("LOCKED")) {
+                    RequestHandler.run("ticket/solve?code=" + selectedEmail.getCode() + "&userCode=" + user.getUserCode() + "&status=" + 2 + "&checkSend=" + true + "&solvedBody=" + "").close();
+                }
+
+
                 loadEmailsStatic();
                 reloadInstances();
             } else {
@@ -635,8 +679,17 @@ public class EmailDashController implements Initializable {
     public void onUnlock(ActionEvent actionEvent) throws IOException {
         imgLoader.setVisible(true);
         Email email = selectedEmail;
+        List<History> historyList = getSelectEmailHistory(email);
+        String statusTime = getStatusTime(historyList);
+
+        History history = getHistory(historyList, statusTime, email);
 //        user code
-        RequestHandler.run("ticket/unlock?code=" + selectedEmail.getCode() + "&userCode=" + FileHelper.readApiUserDetails().getUserCode() + "&status=" + 0);
+        if (email.getIsAllocatedBy() == user.getUserCode()) {
+            RequestHandler.run("ticket/unAllocate?code=" + email.getCode() + "&userCode=" + user.getUserCode() + "&status=" + 0).close();
+        } else if (user.getUserCode() == history.getUsers().getUserCode()) {
+            RequestHandler.run("ticket/unlock?code=" + email.getCode() + "&userCode=" + user.getUserCode() + "&status=" + 0).close();
+        }
+
         loadEmailsStatic();
         reloadInstances();
     }
@@ -704,30 +757,28 @@ public class EmailDashController implements Initializable {
         }
     }
 
-    Address[] cc;
-    String from;
-    List<ContactProperty> relatedContacts = new ArrayList<>();
-    List<ClientProperty> relatedClients = new ArrayList<>();
+    //    String from;
+    List<String> from;
     public static String path;
     public static final String temp = FileHelper.readFilePath();
 
-    public static String getUserName(List<History> historyList, String timestamps, Email email) {
-        String name = "";
+    public static History getHistory(List<History> historyList, String timestamps, Email email) {
+        History hist = null;
         if (Email_Type == 1) {
             for (History history : historyList) {
                 if (history.getTime().equals(timestamps) && email.getStatus().equals(history.getStatus())) {
-                    name = history.getUsers().getFullName();
+                    hist = history;
                 }
             }
         }
-        return name;
+        return hist;
     }
 
     public static String getStatusTime(List<History> historyList) {
         String statusTime = "";
         List<String> timestamps = new ArrayList<>();
         if (Email_Type == 1) {
-            if (!historyList.isEmpty()) {
+            if (!historyList.isEmpty() && historyList != null) {
                 for (History history : historyList) {
                     timestamps.add(history.getTime());
                 }
@@ -764,42 +815,84 @@ public class EmailDashController implements Initializable {
         return statusName;
     }
 
+    public static TimerTask timerTaskNewEmail;
+
     public void timer() {
-        // creating timer task, timer
-
-        Timer t = new Timer();
-        TimerTask tt = new TimerTask() {
-
-            public void run() {
-                Platform.runLater(() -> {
-                    try {
-                        if (Email_Type == 1) {
-                            if (ticketNo != 0) {
-                                if (RequestHandler.checkUpdate("ticket/check/" + ticketNo)) {
-                                    loadEmails();
-//                                    trayHelper tray = new trayHelper();
-//                                    tray.displayNotification("Refresh", "new Email Receive");
-
+        Timer timer = new Timer();
+        if (timer != null) {
+            synchronized (timer) {
+                if (timerTaskNewEmail != null) {
+                    timerTaskNewEmail.cancel();
+                    timerTaskNewEmail = null;
+                }
+                timerTaskNewEmail = new TimerTask() {
+                    @Override
+                    public void run() {
+                        try {
+                            if (Email_Type == 1) {
+                                if (ticketNo != 0) {
+                                    if (RequestHandler.checkUpdate("ticket/check/" + ticketNo)) {
+                                        List<Email> emails = RequestHandler.listRequestHandler(RequestHandler.run("ticket/getNewEmails/" + ticketNo), Email.class);
+                                        Collections.reverse(emails);
+                                        ObservableList<Email> dataObj = FXCollections.observableArrayList(emails);
+                                        for (Email email : list_emailsF.getItems()) {
+                                            dataObj.add(email);
+                                        }
+                                        list_emails.setItems(filteredList(dataObj));
+                                        ticketNo = list_emails.getItems().get(0).getTicketNo();
+                                    }
                                 }
                             }
-
+                        } catch (IOException e) {
+                            e.printStackTrace();
                         }
-
-                    } catch (IOException e) {
-                        e.printStackTrace();
                     }
-                });
-
+                };
+                timer.schedule(timerTaskNewEmail, 3000, 1000);
             }
+        }
 
-        };
-        t.schedule(tt, new Date(), 10000);
+
+    }
+
+    TimerTask timerTask;
+
+    private void checkStatus() {
+        Timer timer = new Timer();
+        if (timer != null) {
+            synchronized (timer) {
+                if (timerTask != null) {
+                    timerTask.cancel();
+                    timerTask = null;
+                }
+                timerTask = new TimerTask() {
+                    @Override
+                    public void run() {
+                        if (Email_Type == 1) {
+                            if (selectedEmail != null) {
+                                try {
+                                    if (RequestHandler.checkUpdate("ticket/statusCheck?code=" + selectedEmail.getCode() + "&status=" + selectedEmail.getStatus())) {
+                                        Email email = (Email) RequestHandler.objectRequestHandler(RequestHandler.run("ticket/updatedStatus/" + selectedEmail.getCode()), Email.class);
+                                        loadEmailsStatic();
+                                        reloadInstances();
+                                    }
+                                } catch (IOException e) {
+                                    e.printStackTrace();
+                                }
+                            }
+                        }
+                    }
+                };
+                timer.schedule(timerTask, 3000, 1000);
+            }
+        }
     }
 
 
     public void populateDetails(Email email) {
         imgLoader.setVisible(true);
         new Thread(() -> Platform.runLater(() -> {
+
             try {
                 if (Email_Type == 1) {
                     label_ticket.setText(String.valueOf(email.getTicketNo()));
@@ -810,13 +903,36 @@ public class EmailDashController implements Initializable {
             } catch (NullPointerException e) {
                 return;
             }
-            checkStatus();
-            List<History> history = getSelectEmailHistory(email);
+            if (Email_Type == 1) {
+                checkStatus();
+            }
 
-            String statusTime = getStatusTime(history);
-            String userName = getUserName(history, statusTime, email);
+            String allocatedUserName = "";
+            if (email.getIsAllocatedBy() != 0) {
+                try {
+                    allocatedUserName = String.valueOf(RequestHandler.run("users/getUserName/" + email.getIsAllocatedBy()).body().string());
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+            List<History> historyList = getSelectEmailHistory(email);
 
-            label_time.setText(email.getTimestamp().toString());
+            String statusTime = getStatusTime(historyList);
+            String displayTime = convertFormat(getStatusTime(historyList));
+
+            History history = getHistory(historyList, statusTime, email);
+
+            String userName = "";
+            String status = "";
+            int userId = 0;
+            if (history != null) {
+                userName = history.getUsers().getFullName();
+                status = history.getStatus();
+                userId = history.getUsers().getUserCode();
+            }
+
+            String timestamp = email.getTimestamp().toString();
+            label_time.setText(timestamp);
 
             vbox_from.getChildren().clear();  //Clearing
             vbox_from.setSpacing(2.0);
@@ -824,21 +940,33 @@ public class EmailDashController implements Initializable {
             vbox_cc.setSpacing(2.0);
             label_from.setText("From:");
             if (Email_Type == 1) {
-                from = email.getFromAddress();
-                String statusName = unLockedBy(history, statusTime, email);
-                if (statusName.equals("LOCKED")) {
-                    title_locked.setText("Locked By: ");
+                selectUser.getItems().clear();
+                if (email.getIsAllocatedBy() == 0) {
+                    selectUser.setPromptText("Allocate");
                 } else {
-                    title_locked.setText("UnLocked By: ");
-                }
-                if (userName.equals("")) {
-                    label_locked.setText("");
-                } else {
-                    label_locked.setText(userName + " " + statusTime);
+                    selectUser.setPromptText("Allocated");
                 }
 
-//                change 22
-                if (email.getUsers().getUserCode() != FileHelper.readApiUserDetails().getUserCode()) {
+                selectUser.setDisable(false);
+
+                selectUser.getItems().addAll(usersList);
+                from = email.getFromAddress();
+                String statusName = unLockedBy(historyList, statusTime, email);
+                if (statusName.equals("LOCKED") || statusName.equals("ALLOCATED") || statusName.equals("RESOLVED")) {
+                    title_locked.setText("Locked By: ");
+                    /* ADDED */
+                    if (email.getIsAllocatedBy() == 0) {
+                        label_locked.setText(userName);
+                    } else {
+                        label_locked.setText(userName + " ( " + allocatedUserName + " )");
+                    }
+                } else {
+                    title_locked.setText("UnLocked By: ");
+                    label_locked.setText("");
+                }
+
+                // 6 is for manually created
+                if (email.getUsers().getUserCode() != 6) {
                     label_created.setVisible(true);
                     title_created.setVisible(true);
                     label_created.setText(email.getUsers().getFullName());
@@ -853,6 +981,8 @@ public class EmailDashController implements Initializable {
                 title_created.setVisible(false);
                 label_locked.setVisible(false);
                 title_locked.setVisible(false);
+                tittle_solveTime.setText("");
+                label_solveTime.setText("");
             } else if (Email_Type == 4 || Email_Type == 3) {
                 label_from.setText("To:");
                 from = email.getToAddress();
@@ -862,22 +992,25 @@ public class EmailDashController implements Initializable {
                 label_locked.setVisible(true);
                 title_locked.setText("Sent By User: ");
                 label_locked.setText(email.getUsers().getFullName());
+                tittle_solveTime.setText("");
+                label_solveTime.setText("");
             }
 
-//            cc = email.getCcAddress();
-            if (from != null) {
-//                for (Address f : from) {
-                try {
-                    Label label = new Label(from);
-                    label.setPadding(new Insets(2, 2, 2, 5));
-                    label.getStyleClass().add("moduleDetails");
-                    vbox_from.getChildren().add(label);
-                } catch (NullPointerException ex) {
+            if (!from.isEmpty()) {
+                for (String f : from) {
+                    try {
+                        if (!f.equals("")) {
+                            Label label = new Label(f);
+                            label.setPadding(new Insets(2, 2, 2, 5));
+                            label.getStyleClass().add("moduleDetails");
+                            vbox_from.getChildren().add(label);
+                        }
+                    } catch (NullPointerException ex) {
+                    }
                 }
-//                }
             }
-            if (email.getCcAddress() != null) {
-                for (String c : email.getCcAddress().split("\\^")) {
+            if (!email.getCcAddress().isEmpty()) {
+                for (String c : email.getCcAddress()) {
                     try {
                         if (!c.equals("")) {
                             Label label = new Label(c);
@@ -895,18 +1028,20 @@ public class EmailDashController implements Initializable {
 
             anchor_details.setVisible(true);
 
+
             //----Attachments
             combo_attach.getItems().clear();
 
-            if (email.getAttachment() == null || email.getAttachment().equals("")) {
+            if (email.getAttachment() == null || email.getAttachment().isEmpty()) {
                 combo_attach.setPromptText("No Attachments");
                 combo_attach.setDisable(true);
-            } else if (!email.getAttachment().equals("")) {
+            } else if (!email.getAttachment().isEmpty()) {
                 combo_attach.setPromptText("Open Attachment");
+
                 combo_attach.setDisable(false);
                 List<FileDev> attFiles = new ArrayList<>();
                 List<String> fileNamesString = new ArrayList<>();
-                for (String c : email.getAttachment().split("\\^")) {
+                for (String c : email.getAttachment()) {
                     FileDev file = new FileDev(c);
                     if (!c.equals("")) {
                         path = file.getAbsolutePath();
@@ -914,37 +1049,38 @@ public class EmailDashController implements Initializable {
                         fileNamesString.add(file.getName());
                     }
                 }
+                if (!fileNamesString.isEmpty()) {
 
-                StringBuilder sb = new StringBuilder();
+                    StringBuilder sb = new StringBuilder();
 
-                int i = 0;
-                while (i < fileNamesString.size() - 1) {
-                    sb.append(fileNamesString.get(i));
-                    sb.append(",");
-                    i++;
-                }
-                sb.append(fileNamesString.get(i));
-                String fileNames = sb.toString(); // only Names of file with comma
-                int index = path.lastIndexOf('\\');
-                String actualPath = path.substring(0, index) + "\\"; //actual path without fileName
-                actualPath = actualPath.replace("\\", "/"); //replace slash sign for proper path
-                String finalActualPath = actualPath;
-                new Thread(() -> Platform.runLater(() -> {
-                    try {
-                        ZipFileUtility zipFileUtility = new ZipFileUtility();
-                        zipFileUtility.unzip(RequestHandler.downloadZipFile("ticket/download/" + fileNames + "?path=" + finalActualPath, temp + "temp.zip"), temp);
-                    } catch (Exception e) {
-                        e.printStackTrace();
+                    int i = 0;
+                    while (i < fileNamesString.size() - 1) {
+                        sb.append(fileNamesString.get(i));
+                        sb.append(",");
+                        i++;
                     }
-                })).start();
-                combo_attach.getItems().addAll(attFiles);
+                    sb.append(fileNamesString.get(i));
+                    String fileNames = sb.toString(); // only Names of file with comma
+                    int index = path.lastIndexOf('\\');
+                    String actualPath = path.substring(0, index) + "\\"; //actual path without fileName
+                    actualPath = actualPath.replace("\\", "/"); //replace slash sign for proper path
+                    String finalActualPath = actualPath;
+                    new Thread(() -> Platform.runLater(() -> {
+                        try {
+                            ZipFileUtility zipFileUtility = new ZipFileUtility();
+                            zipFileUtility.unzip(RequestHandler.downloadZipFile("ticket/download/" , fileNames   ,"?path="+ finalActualPath, temp + "temp.zip"), temp);
 
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    })).start();
+                    combo_attach.getItems().addAll(attFiles);
+                }
             }
 
             //----Ebody
             anchor_body.getChildren().clear();
 
-//            TextArea eBody = new TextArea(email.getBody());
             WebView eBody = new WebView();
 
             eBody.getEngine().loadContent(email.getBody());
@@ -965,13 +1101,22 @@ public class EmailDashController implements Initializable {
                 btn_lock.setVisible(false);
                 btn_unlock.setVisible(false);
                 btn_solv.setVisible(false);
-
+                btn_resolve.setVisible(false);
+                selectUser.setVisible(false);
                 imgLoader.setVisible(false);
                 return;
             } else {
                 btn_lock.setVisible(true);
                 btn_unlock.setVisible(true);
                 btn_solv.setVisible(true);
+                btn_resolve.setVisible(true);
+                selectUser.setVisible(true);
+                imgLoader.setVisible(false);
+            }
+            if (isAdmin.equals("Admin")) {
+                selectUser.setVisible(true);  // combo select user visible for allocation
+            } else {
+                selectUser.setVisible(false);
             }
 
             //Locked/Solved Label
@@ -982,21 +1127,49 @@ public class EmailDashController implements Initializable {
                 if (userName.equals("")) {
                     display = "";
                 } else {
-                    display = userName + " " + statusTime;
+                    display = userName;
                 }
                 label_locked.setText(display);
+                label_solveTime.setText(displayTime);
                 enableDisable(2);
+            } else if (email.getIsAllocatedBy() != 0) {
+                if (!status.equals("RESOLVED") && isAdmin.equals("Admin") && email.getIsAllocatedBy() == user.getUserCode()) { //email is allocated but not resolve it can be unlocked by same admin
+                    label_solveTime.setText(displayTime);
+                    enableDisable(10);
+                } else if (status.equals("RESOLVED") && isAdmin.equals("Admin") && email.getIsAllocatedBy() == user.getUserCode()) {  //  email is allocated and resolved admin can solve
+                    label_solveTime.setText(displayTime);
+                    enableDisable(8);
+                } else if (status.equals("RESOLVED")) { // email is allocated and resolve by user resolved disable and other button is invisible
+                    label_solveTime.setText(displayTime);
+                    enableDisable(7);
+                } else if (userId == user.getUserCode() && status.equals("ALLOCATED")) {  // email is allocated and user is same and the resolve button is visible
+                    label_solveTime.setText(displayTime);
+                    enableDisable(6);
+                } else if (userId != user.getUserCode() && status.equals("ALLOCATED")) {  // email is allocated and user is same and the resolve button is invisible
+                    tittle_solveTime.setText("Allocate Time: ");
+                    label_solveTime.setText(displayTime);
+                    enableDisable(4);
+                } else {
+                    tittle_solveTime.setText("Locked Time: ");
+                    enableDisable(4); // email is allocated
+                }
             } else {    //If Email is not solved
-
                 if (email.getStatus().equals("LOCKED")) {     //If Email is locked
 //                    change name
-                    if (userName.equals(FileHelper.readApiUserDetails().getFullName())) {      //If Email is locked by YOU // it will modify when user start
+                    if (userId == user.getUserCode()) {      //If Email is locked by YOU // it will modify when user start
+                        label_solveTime.setText(displayTime);
                         enableDisable(3);
-                    } else {                        //If Email is locked but NOT by you
+                    } else {
+                        tittle_solveTime.setText("Locked Time: ");
+                        label_solveTime.setText(displayTime);//If Email is locked but NOT by you
                         enableDisable(4);
                     }
                 } else {                            //If Email is not locked
-                    enableDisable(5);
+                    if (isAdmin.equals("Admin")) { // email is locked by admin
+                        enableDisable(9);
+                    } else {
+                        enableDisable(5); // email is locked by user
+                    }
                 }
             }
 
@@ -1004,38 +1177,83 @@ public class EmailDashController implements Initializable {
         })).start();
     }
 
-    private void checkStatus() {
-        Timer t = new Timer();
-        TimerTask tt = new TimerTask() {
+    private void populateAttachments() {
+        try {
+            combo_attach.getItems().clear();
 
-            public void run() {
-                Platform.runLater(() -> {
-                    try {
-                        if (Email_Type == 1) {
-                            if (selectedEmail != null) {
-                                if (RequestHandler.checkUpdate("ticket/statusCheck?code=" + selectedEmail.getCode() + "&status=" + selectedEmail.getStatus())) {
-                                    System.out.println(selectedEmail.getCode() + "-list-" + selectedEmail.getStatus());
-                                    trayHelper tray = new trayHelper();
-                                    tray.displayNotification("Refresh Emails ", "Email Status have been changed");
-                                    t.cancel();
-//                                    Email email= (Email) RequestHandler.objectRequestHandler(RequestHandler.run("ticket/"+selectedEmail.getCode()),Email.class);
-//                                    populateDetails(email);
-
-
-                                }
-                            }
-
-                        }
-
-                    } catch (IOException e) {
-                        e.printStackTrace();
+            if (selectedEmail.getAttachment() == null || selectedEmail.getAttachment().isEmpty()) {
+                combo_attach.setPromptText("No Attachments");
+                combo_attach.setDisable(true);
+            } else if (!selectedEmail.getAttachment().isEmpty()) {
+                combo_attach.setPromptText("Open Attachment");
+                combo_attach.setDisable(false);
+                List<FileDev> attFiles = new ArrayList<>();
+                List<String> fileNamesString = new ArrayList<>();
+                for (String c : selectedEmail.getAttachment()) {
+                    FileDev file = new FileDev(c);
+                    if (!c.equals("")) {
+                        path = file.getAbsolutePath();
+                        attFiles.add(new FileDev(temp + "\\" + file.getName()));
+                        fileNamesString.add(file.getName());
                     }
-                });
-            }
+                }
+                if (!fileNamesString.isEmpty()) {
 
-        };
-        t.schedule(tt, new Date(), 10000);
+                    StringBuilder sb = new StringBuilder();
+
+                    int i = 0;
+                    while (i < fileNamesString.size() - 1) {
+                        sb.append(fileNamesString.get(i));
+                        sb.append(",");
+                        i++;
+                    }
+                    sb.append(fileNamesString.get(i));
+                    String fileNames = sb.toString(); // only Names of file with comma
+                    int index = path.lastIndexOf('\\');
+                    String actualPath = path.substring(0, index) + "\\"; //actual path without fileName
+                    actualPath = actualPath.replace("\\", "/"); //replace slash sign for proper path
+                    String finalActualPath = actualPath;
+                    new Thread(() -> Platform.runLater(() -> {
+                        try {
+                            ZipFileUtility zipFileUtility = new ZipFileUtility();
+//                            zipFileUtility.unzip(RequestHandler.downloadZipFile("ticket/download/" + fileNames + "?path=" + finalActualPath, temp + "temp.zip"), temp);
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    })).start();
+                    combo_attach.getItems().addAll(attFiles);
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
     }
+
+    public static String convertFormat(String timeStamp) {
+        if (timeStamp.equals("") || timeStamp == null) {
+            return "";
+        }
+        // Note, MM is months, not mm
+        DateFormat inputFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+        DateFormat outputFormat = new SimpleDateFormat("dd-MMM-yy hh:mm:ss a");
+        inputFormat.setTimeZone(TimeZone.getTimeZone("UTC+5"));
+        Date date = null;
+        try {
+            date = inputFormat.parse(timeStamp);
+        } catch (ParseException e) {
+            DateFormat inputFormat2 = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+            try {
+                date = inputFormat2.parse(timeStamp);
+            } catch (ParseException e1) {
+                e1.printStackTrace();
+            }
+        }
+
+        String outputText = outputFormat.format(date);
+        return outputText;
+    }
+
 
     private static WritableImage convertToJavaFXImage(byte[] raw, final double width, final double height) {
         WritableImage image = new WritableImage(Integer.parseInt(String.valueOf(width)), Integer.parseInt(String.valueOf(height)));
@@ -1050,7 +1268,7 @@ public class EmailDashController implements Initializable {
     }
 
     private JFXComboBox sortBy, ascDesc;
-    private JFXCheckBox solved, unSolved, locked, unLocked, lockedByMe, hideReminders, archived;
+    private JFXCheckBox solved, unSolved, locked, unLocked, lockedByMe, hideReminders, archived, isResolved;
 
     private int filterChoice = 0; //1 == tickets 2 == general
 
@@ -1108,6 +1326,11 @@ public class EmailDashController implements Initializable {
         setUpCheck(archived);
         archived.selectedProperty().addListener((observable, oldValue, newValue) -> saveFilters());
         archived.setSelected(filter.isArchived());
+
+        isResolved = new JFXCheckBox("Pending Emails");
+        setUpCheck(isResolved);
+        isResolved.selectedProperty().addListener((observable, oldValue, newValue) -> saveFilters());
+        isResolved.setSelected(filter.isResolve());
     }
 
     private void populateMenuBar() {
@@ -1183,6 +1406,7 @@ public class EmailDashController implements Initializable {
             filter.setLockedByMe(lockedByMe.isSelected());
             filter.setHideReminders(hideReminders.isSelected());
             filter.setArchived(archived.isSelected());
+            filter.setResolve(isResolved.isSelected());
             filter.writeToFile();
 
             loadEmailsStatic();
@@ -1225,35 +1449,111 @@ public class EmailDashController implements Initializable {
             imgLoader.setVisible(false);
         } else if (i == 2) {    //If email is solved
             title_locked.setText("Solved By: ");
-
+            tittle_solveTime.setText("Solved Time: ");
             btn_lock.setDisable(true);
             btn_lock.setVisible(true);
             btn_unlock.setDisable(true);
             btn_unlock.setVisible(false);
             btn_solv.setDisable(true);
-
+            btn_resolve.setVisible(false);
+            selectUser.setVisible(false);
             combo_respond.setDisable(true);
         } else if (i == 3) {    //If email is locked by you
+            tittle_solveTime.setText("Locked Time: ");
             btn_lock.setVisible(false);
             btn_unlock.setVisible(true);
             btn_unlock.setDisable(false);
             btn_solv.setDisable(false);     //Only someone who has locked the email can solve it.
-
+            btn_resolve.setVisible(false); // new
+            selectUser.setDisable(true);
             combo_respond.setDisable(false);
         } else if (i == 4) {    //If email is locked but not by you
+
             btn_unlock.setVisible(false);
             btn_lock.setVisible(true);
             btn_lock.setDisable(true);
             btn_solv.setDisable(true);
-
+            btn_resolve.setVisible(false);
+            selectUser.setVisible(false); // new
             combo_respond.setDisable(true);
         } else if (i == 5) {    //If email is not locked
+            label_solveTime.setText("");
+            tittle_solveTime.setText("");
             btn_lock.setDisable(false);
             btn_lock.setVisible(true);
             btn_unlock.setVisible(false);
             btn_solv.setDisable(true);
-
+            btn_resolve.setVisible(false); // new
             combo_respond.setDisable(true);
+        } else if (i == 6) {    //Resolve button display for same user
+            tittle_solveTime.setText("Allocate Time: ");
+            btn_lock.setDisable(false);
+            btn_lock.setVisible(false);
+            btn_unlock.setVisible(false);
+            btn_solv.setVisible(false);
+            btn_solv.setDisable(true);
+            selectUser.setVisible(false);
+            btn_resolve.setVisible(true);
+            btn_resolve.setDisable(false);
+            combo_respond.setDisable(true);
+        } else if (i == 7) {    // email is resolved the user end expect admin the resolved button is disable
+            tittle_solveTime.setText("Resolved Time: ");
+            btn_lock.setDisable(false);
+            btn_lock.setVisible(false);
+            btn_unlock.setVisible(false);
+            btn_solv.setDisable(false);
+            btn_solv.setVisible(false);
+            selectUser.setVisible(false);
+            btn_resolve.setVisible(true);
+            btn_resolve.setDisable(true);
+            combo_respond.setDisable(true);
+        } else if (i == 8) {    // email solved button enable for admin
+            tittle_solveTime.setText("Resolved Time: ");
+            btn_lock.setDisable(false);
+            btn_lock.setVisible(false);
+            btn_unlock.setVisible(false);
+            btn_solv.setDisable(false);
+            btn_solv.setVisible(true);
+            selectUser.setVisible(false);
+            btn_resolve.setVisible(false);
+            btn_resolve.setDisable(true);
+            combo_respond.setDisable(true);
+        } else if (i == 9) { // email is not locked and display for admin select user and lock button
+            label_solveTime.setText("");
+            tittle_solveTime.setText("");
+            btn_lock.setDisable(false);
+            btn_lock.setVisible(true);
+            btn_unlock.setVisible(false);
+            btn_solv.setDisable(true);
+            selectUser.setDisable(false);
+            btn_resolve.setVisible(false); // new
+            combo_respond.setDisable(true);
+        } else if (i == 10) { //if email is locked and it can be unlocked by same admin
+            tittle_solveTime.setText("Allocate Time: ");
+            btn_lock.setVisible(false);
+            btn_unlock.setVisible(true);
+            btn_unlock.setDisable(false);
+            btn_solv.setVisible(true);
+            btn_solv.setDisable(true);     //
+            btn_resolve.setVisible(false); // new
+            combo_respond.setDisable(false);
         }
     }
+
+    public void onResolve(ActionEvent actionEvent) throws IOException {
+        Email email = selectedEmail;
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION, "Are you sure you want to mark this as Resolve?\n" +
+                "This action cannot be taken back.",
+                ButtonType.YES, ButtonType.NO);
+        alert.showAndWait();
+
+        if (alert.getResult() == ButtonType.YES) {
+            RequestHandler.run("ticket/resolve?code=" + email.getCode() + "&userCode=" + user.getUserCode() + "&status=" + 4).close();
+            loadEmailsStatic();
+            reloadInstances();
+        } else {
+            return;
+        }
+    }
+
 }

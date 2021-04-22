@@ -1,12 +1,13 @@
 package activity.event;
 
+import ApiHandler.RequestHandler;
 import JCode.CommonTasks;
+import JCode.FileHelper;
 import JCode.Toast;
 import JCode.mysql.mySqlConn;
 import activity.ActivityDashController;
 import activity.view.ActivityViewController;
 import client.dash.clientView.clientViewController;
-import client.dash.contactView.contactViewController;
 import com.jfoenix.controls.*;
 import gui.EventsConstructor;
 import javafx.fxml.FXML;
@@ -19,7 +20,6 @@ import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
 import lead.view.LeadViewController;
 import objects.*;
-import product.view.ProductViewController;
 
 import java.io.IOException;
 import java.net.URL;
@@ -61,14 +61,15 @@ public class NewEventController implements Initializable {
 
     private Event currEvent;
 
-    private ClientProperty client;
+    //    private ClientProperty client;
+    private Client client;
     private Lead lead;
     private ProductProperty product;
 
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        sql = new mySqlConn();
+//        sql = new mySqlConn();
 
         relation_type.getItems().addAll("Contact", "Client", "Lead", "Product");
 
@@ -95,7 +96,7 @@ public class NewEventController implements Initializable {
                 btn_save.setText("Update");
 
                 currEvent = ActivityViewController.staticEvent;
-                System.out.println(currEvent);
+
                 populateFields(currEvent);
                 break;
             }
@@ -117,12 +118,12 @@ public class NewEventController implements Initializable {
                 }
             }
         } else {
-            if (currEvent.getClient() != 0) {
+            if (currEvent.getClientID() != 0) {
                 relation_type.getSelectionModel().select("Client");
-                txt_name.setText(currEvent.getRelationName());
-            } else if (currEvent.getLead() != 0) {
+                txt_name.setText(currEvent.getUsers().getFullName());
+            } else if (currEvent.getLeadsId() != 0) {
                 relation_type.getSelectionModel().select("Lead");
-                txt_name.setText(currEvent.getRelationName());
+                txt_name.setText(currEvent.getUsers().getFullName());
             }
         }
 
@@ -144,11 +145,6 @@ public class NewEventController implements Initializable {
             if (to_time.getValue() != null)
                 toTime = to_time.getValue().toString();
             boolean allDay = check_allDay.isSelected();
-
-//            System.out.println("FDATE: " + fromDate + "\n" +
-//                    "FTIME: " + fromTime + "\n" +
-//                    "TDATE: " + toDate + "\n" +
-//                    "TTIME: " + toTime);
 
             if (title.equals("") || loc.equals("") || desc.equals("") || fromDate == null || toDate == null) {
                 Toast.makeText((Stage) btn_save.getScene().getWindow(), "Required Fields Are Empty");
@@ -177,35 +173,48 @@ public class NewEventController implements Initializable {
                         toTime = "00:00";
                     if (fromTime == null)
                         fromTime = "00:00";
-                    currEvent.setTitle(title);
+                    currEvent.setTittle(title);
                     currEvent.setLocation(loc);
-                    currEvent.setFromDate(fromDate);
-                    currEvent.setToDate(toDate);
-                    currEvent.setFromTime(fromTime);
-                    currEvent.setToTime(toTime);
-                    currEvent.setDesc(desc);
-                    currEvent.isAllDay();
+                    currEvent.setFrom(fromDate);
+                    currEvent.setTo(toDate);
+                    currEvent.setCreatedBy(FileHelper.ReadUserApiDetails().getUserCode());
+//                    currEvent.setFrom(fromTime);
+//                    currEvent.setTo(toTime);
+                    currEvent.setDescription(desc);
+                    currEvent.getEventAllDay();
 
                     switch (stInstance) {
                         case 'N': {
                             try {
                                 if (type.equals("Client")) {
-                                    currEvent.setClient(client.getCode());
+                                    currEvent.setClientID(client.getClientID());
+//                                    currEvent.setClient(client.getCode());
                                 } else if (type.equals("Lead")) {
-                                    currEvent.setLead(lead.getCode());
+                                    currEvent.setLeadsId(lead.getCode());
                                 }
                             } catch (NullPointerException e) {
                                 System.out.println(e);
                             }
-                            sql.addEvent(currEvent);
+                            String responseMessage = "";
+                            try {
+                                responseMessage = RequestHandler.basicRequestHandler(RequestHandler.postOfReturnResponse("event/addEvent", RequestHandler.writeJSON(currEvent)));
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
+                            Toast.makeText((Stage) btn_save.getScene().getWindow(), responseMessage);
+//                            sql.addEvent(currEvent);
                             break;
                         }
-                        case 'U': {
-                            sql.updateEvent(currEvent);
-                            break;
-                        }
+                        case 'U':
                         case 'D': {
-                            sql.updateEvent(currEvent);
+                            String responseMessage = "";
+                            try {
+                                responseMessage = RequestHandler.basicRequestHandler(RequestHandler.postOfReturnResponse("event/addEvent", RequestHandler.writeJSON(currEvent)));
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
+                            Toast.makeText((Stage) btn_save.getScene().getWindow(), responseMessage);
+//                            sql.updateEvent(currEvent);
                             break;
                         }
                         default: {
@@ -252,25 +261,30 @@ public class NewEventController implements Initializable {
     }
 
     private void populateFields(Event event) {
-        txt_title.setText(event.getTitle());
+        txt_title.setText(event.getTittle());
         txt_location.setText(event.getLocation());
-        txt_desc.setText(event.getDesc());
+        txt_desc.setText(event.getDescription());
         //Dates
-        if (event.getFromDate() != null)
-            from_date.setValue(CommonTasks.createLocalDate(event.getFromDate()));
+        if (event.getFrom() != null)
+            from_date.setValue(CommonTasks.createLocalDate(event.getFrom()));
 
-        if (event.getToDate() != null)
-            to_date.setValue(CommonTasks.createLocalDate(event.getToDate()));
+        if (event.getTo() != null)
+            to_date.setValue(CommonTasks.createLocalDate(event.getTo()));
 
         //Times
-        if (event.getFromTime() != null)
-            from_time.setValue(CommonTasks.createLocalTime(event.getFromTime()));
+        if (event.getFrom() != null)
+            from_time.setValue(CommonTasks.getTimeFormat(event.getFrom()));
 
-        if (event.getToTime() != null)
-            to_time.setValue(CommonTasks.createLocalTime(event.getToTime()));
-        check_allDay.setSelected(event.isAllDay());
+        if (event.getTo() != null)
+            to_time.setValue(CommonTasks.getTimeFormat(event.getTo()));
+        if (event.getEventAllDay() == 1) {
+            check_allDay.setSelected(true);
+        } else {
+            check_allDay.setSelected(false);
+        }
 
-        check_allDay.setSelected(event.isAllDay());
+//
+//        check_allDay.setSelected(event.isAllDay());
     }
 
 }

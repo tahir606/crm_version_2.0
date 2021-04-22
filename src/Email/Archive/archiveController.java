@@ -42,7 +42,7 @@ public class archiveController implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
 
-        sql = new mySqlConn();
+//        sql = new mySqlConn();
 
         check_all.selectedProperty().addListener((observable, oldValue, newValue) -> {
             if (newValue) {
@@ -94,7 +94,7 @@ public class archiveController implements Initializable {
         alert2.showAndWait();
 
         if (alert2.getResult() == ButtonType.YES) {
-            RequestHandler.run("ticket/archiveAll?freeze=" + freeze + "&beforeDate=" + beforeDate + "&ticketFrom="+ticketFrom+"&ticketTo="+ticketTo);
+            RequestHandler.run("ticket/archiveAll?freeze=" + freeze + "&beforeDate=" + beforeDate + "&ticketFrom="+ticketFrom+"&ticketTo="+ticketTo).close();
 
 //            sql.ArchiveEmail(EmailDashController.Email_Type, where);
             EmailDashController.loadEmailsStatic();

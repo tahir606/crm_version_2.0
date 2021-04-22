@@ -270,7 +270,21 @@
                                         <Font size="11.0" />
                                     </font>
                                 </Label>
-                                <Label fx:id="label_locked" prefWidth="200.0" styleClass="solvedText" text="Locked By">
+                                <Label fx:id="label_locked" prefHeight="16.0" prefWidth="247.0" styleClass="solvedText" text="Locked By">
+                                    <font>
+                                        <Font size="11.0" />
+                                    </font>
+                                </Label>
+                            </children>
+                        </HBox>
+                        <HBox>
+                            <children>
+                                <Label fx:id="tittle_solveTime" prefHeight="16.0" prefWidth="90.0" styleClass="blackText" text="Solved Time:">
+                                    <font>
+                                        <Font size="11.0" />
+                                    </font>
+                                </Label>
+                                <Label fx:id="label_solveTime" prefWidth="200.0" styleClass="normalText" text="Solved Time">
                                     <font>
                                         <Font size="11.0" />
                                     </font>
@@ -336,49 +350,6 @@
                                 </font>
                             </TextArea>
                         </HBox>
-                        <!--                            <HBox fx:id="hbox_contacts" prefHeight="80.0" prefWidth="327.0">-->
-                        <!--                                <children>-->
-                        <!--                                    <Label fx:id="label_from1" layoutX="14.0" layoutY="57.0" prefHeight="17.0" prefWidth="70.0" styleClass="blackText" text="Contacts:">-->
-                        <!--                                        <font>-->
-                        <!--                                            <Font size="11.0" />-->
-                        <!--                                        </font>-->
-                        <!--                                    </Label>-->
-                        <!--                                    <ScrollPane layoutX="94.0" layoutY="58.0" minHeight="60.0" prefHeight="60.0" prefWidth="275.0" AnchorPane.leftAnchor="94.0" AnchorPane.rightAnchor="13.0">-->
-                        <!--                                        <content>-->
-                        <!--                                            <VBox fx:id="vbox_contacts" prefHeight="48.0" prefWidth="270.0" styleClass="blackText" />-->
-                        <!--                                        </content>-->
-                        <!--                                        <styleClass>-->
-                        <!--                                            <String fx:value="scroll-view" />-->
-                        <!--                                            <String fx:value="hbox_border" />-->
-                        <!--                                        </styleClass>-->
-                        <!--                                    </ScrollPane>-->
-                        <!--                                </children>-->
-                        <!--                            </HBox>-->
-                        <!--                            <HBox fx:id="hbox_clients" prefHeight="80.0" prefWidth="327.0">-->
-                        <!--                                <children>-->
-                        <!--                                    <Label fx:id="label_cc1" layoutX="14.0" layoutY="104.0" prefHeight="17.0" prefWidth="70.0" styleClass="blackText" text="Clients:">-->
-                        <!--                                        <font>-->
-                        <!--                                            <Font size="11.0" />-->
-                        <!--                                        </font>-->
-                        <!--                                    </Label>-->
-                        <!--                                    <ScrollPane layoutX="94.0" layoutY="99.0" minHeight="60.0" prefHeight="65.0" prefWidth="275.0" AnchorPane.leftAnchor="94.0" AnchorPane.rightAnchor="13.0">-->
-                        <!--                                        <content>-->
-                        <!--                                            <VBox fx:id="vbox_clients" prefHeight="48.0" prefWidth="270.0" styleClass="blackText" />-->
-                        <!--                                        </content>-->
-                        <!--                                        <styleClass>-->
-                        <!--                                            <String fx:value="scroll-view" />-->
-                        <!--                                            <String fx:value="hbox_border" />-->
-                        <!--                                        </styleClass>-->
-                        <!--                                    </ScrollPane>-->
-                        <!--                                </children>-->
-                        <!--                            </HBox>-->
-                        <!--                            <HBox prefHeight="8" />-->
-                        <!--                            <Label fx:id="label_related_emails" styleClass="blackText" text="Related Emails:" />-->
-                        <!--                            <HBox fx:id="hbox_related" prefHeight="80.0" prefWidth="327.0">-->
-                        <!--                                <children>-->
-                        <!--                                    <ListView fx:id="relatedEmails" minHeight="60.0" prefHeight="60.0" prefWidth="381.0" />-->
-                        <!--                                </children>-->
-                        <!--                            </HBox>-->
                     </VBox>
                 </ScrollPane>
                 <AnchorPane fx:id="anchor_remarks" minHeight="100.0" prefHeight="175.0" prefWidth="326.0" AnchorPane.bottomAnchor="70.0" AnchorPane.leftAnchor="15.0" AnchorPane.topAnchor="230.0">
@@ -389,17 +360,17 @@
                 </AnchorPane>
                 <JFXButton fx:id="btn_lock" buttonType="RAISED" layoutX="28.0" layoutY="386.0" onAction="#onLock" styleClass="emailDetailsButton" text="Lock" AnchorPane.bottomAnchor="11.0" />
                 <JFXButton fx:id="btn_solv" buttonType="RAISED" layoutX="95.0" layoutY="386.0" onAction="#onSolv" styleClass="emailDetailsButton" text="Solved" AnchorPane.bottomAnchor="11.0" />
-                <JFXComboBox fx:id="combo_attach" layoutX="106.0" layoutY="374.0" prefHeight="25.0" prefWidth="188.0" AnchorPane.bottomAnchor="45.0" />
+                <JFXButton fx:id="btn_resolve" buttonType="RAISED" layoutX="95.0" layoutY="386.0" onAction="#onResolve" styleClass="emailDetailsButton" text="Resolve" AnchorPane.bottomAnchor="11.0" />
+                <JFXComboBox fx:id="combo_attach" layoutX="145.0" layoutY="405.0" prefHeight="25.0" prefWidth="188.0" AnchorPane.bottomAnchor="45.0" />
                 <JFXComboBox fx:id="combo_respond" layoutX="244.0" layoutY="383.0" prefHeight="24.0" prefWidth="89.0" AnchorPane.bottomAnchor="11.0" />
                 <JFXButton fx:id="btn_unlock" buttonType="RAISED" layoutX="28.0" layoutY="386.0" onAction="#onUnlock" styleClass="emailUnlockButton" text="Unlock" visible="false" AnchorPane.bottomAnchor="11.0" />
-                <!--<Label fx:id="label_cc2" layoutX="10.0" layoutY="234.0" prefHeight="17.0" prefWidth="82.0"-->
-                <!--text="BCC:"/>-->
+                <JFXComboBox fx:id="selectUser" layoutX="28.0" layoutY="405.0" prefHeight="25.0" prefWidth="89.0" AnchorPane.bottomAnchor="45.0" />
             </children>
         </AnchorPane>
         <AnchorPane prefWidth="270.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0" BorderPane.alignment="CENTER">
             <children>
                 <ListView fx:id="list_emails" layoutY="1.0" prefWidth="270.0" style="-fx-font-size: 11;" styleClass="emailListview" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
-                <!--<StyledListView fx:id="list_emails" prefHeight="425.0" prefWidth="259.0" styleClass="emailListview" />-->
+
             </children>
         </AnchorPane>
     </AnchorPane>

@@ -43,7 +43,7 @@ public class CommonTasks {
 
     public static String getTimeFormatted(String timeStamp) {
         // Note, MM is months, not mm
-        DateFormat inputFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.S");
+        DateFormat inputFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.S");
         DateFormat outputFormat = new SimpleDateFormat("dd-MMM-yyyy hh:mm a");
 
         Date date = null;
@@ -57,6 +57,63 @@ public class CommonTasks {
         }
         String outputText = outputFormat.format(date);
         return outputText;
+    }
+    public static String getDateFormat(String timeStamp) {
+        // Note, MM is months, not mm
+        DateFormat inputFormat = new SimpleDateFormat("yyyy-MM-dd");
+        DateFormat outputFormat = new SimpleDateFormat("dd-MMM-yyyy hh:mm a");
+
+        Date date = null;
+        try {
+            date = inputFormat.parse(timeStamp);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        } catch (NullPointerException e) {
+            System.out.println(e);
+            return null;
+        }
+        String outputText = outputFormat.format(date);
+        return outputText;
+    }
+    public static String getDateTimeFormat(String timeStamp) {
+        // Note, MM is months, not mm
+        DateFormat inputFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+        DateFormat outputFormat = new SimpleDateFormat("dd-MMM-yyyy hh:mm a");
+
+        Date date = null;
+        try {
+            date = inputFormat.parse(timeStamp);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        } catch (NullPointerException e) {
+
+            return null;
+        }
+        String outputText = outputFormat.format(date);
+        return outputText;
+    }
+
+    public static LocalTime createLocalTime(String timeStamp) {
+        LocalTime localTime = LocalTime.of(Integer.parseInt(timeStamp.split(":")[0]), Integer.parseInt(timeStamp.split(":")[1]));
+        return localTime;
+    }
+
+    public static LocalTime getTimeFormat(String timeStamp) {
+        // Note, MM is months, not mm
+        DateFormat inputFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+        DateFormat outputFormat = new SimpleDateFormat("hh:mm:ss");
+
+        Date date = null;
+        try {
+            date = inputFormat.parse(timeStamp);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        } catch (NullPointerException e) {
+            System.out.println(e);
+            return null;
+        }
+        LocalTime localTime = LocalTime.of(Integer.parseInt(outputFormat.format(date).split(":")[0]), Integer.parseInt(outputFormat.format(date).split(":")[1]));
+        return localTime;
     }
 
     public static String getDateFormatted(String timeStamp) {
@@ -94,7 +151,7 @@ public class CommonTasks {
     public static String getAge(String timeStamp) {
 
         // Note, MM is months, not mm
-        DateFormat inputFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.S");
+        DateFormat inputFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
 
         Date date = null;
         try {
@@ -180,10 +237,6 @@ public class CommonTasks {
         return localDate;
     }
 
-    public static LocalTime createLocalTime(String timeStamp) {
-        LocalTime localTime = LocalTime.of(Integer.parseInt(timeStamp.split(":")[0]), Integer.parseInt(timeStamp.split(":")[1]));
-        return localTime;
-    }
 
     public static void inflateDialog(String title, URL path) {
         try {
@@ -232,7 +285,7 @@ public class CommonTasks {
 
 
     public static String getTimeDuration(String locktime, String solvtime) throws ParseException {
-        SimpleDateFormat inputFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.S");
+        SimpleDateFormat inputFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.S");
         Date date1 = null;
         Date date2 = null;
         long diff = 0;
