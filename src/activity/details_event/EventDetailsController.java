@@ -117,13 +117,17 @@ public class EventDetailsController implements Initializable {
         buttonArchive.setPrefWidth(84);
         buttonArchive.setPrefHeight(34);
         buttonArchive.setOnAction(event -> {
-            this.event.setFreeze(1);
             String responseMessage = "";
             try {
-                responseMessage = RequestHandler.basicRequestHandler(RequestHandler.postOfReturnResponse("event/addEvent", RequestHandler.writeJSON(this.event)));
+                responseMessage = RequestHandler.basicRequestHandler(RequestHandler.run("event/deleteEvent/"+this.event.getEventID()));
             } catch (IOException e) {
                 e.printStackTrace();
             }
+        /*    try {
+                responseMessage = RequestHandler.basicRequestHandler(RequestHandler.postOfReturnResponse("event/addEvent", RequestHandler.writeJSON(this.event)));
+            } catch (IOException e) {
+                e.printStackTrace();
+            }*/
             Toast.makeText((Stage) buttonArchive.getScene().getWindow(), responseMessage);
 //            sql.archiveEvent(this.event);
             CommonTasks.loadInPane(ActivityDashController.main_paneF, "activity/view/activity_view.fxml");

@@ -49,8 +49,6 @@ public class sentController implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
 
-//        sql = new mySqlConn();
-
         list_emails.getItems().clear();
         list_emails.getItems().addAll(sql.readAllEmailsSent(null));
 

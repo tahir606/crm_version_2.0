@@ -59,7 +59,8 @@ public class contactViewController implements Initializable {
 
         try {
             contacts = RequestHandler.listRequestHandler(RequestHandler.run("contact/contactList"), Contact.class);
-           } catch (IOException e) {
+
+        } catch (IOException e) {
             e.printStackTrace();
         }
         toolbar_contacts.setVisible(false);
@@ -71,7 +72,7 @@ public class contactViewController implements Initializable {
         col_mobile.setCellValueFactory(new PropertyValueFactory<>("mobile"));
         col_city.setCellValueFactory(new PropertyValueFactory<>("city"));
         col_country.setCellValueFactory(new PropertyValueFactory<>("country"));
-        System.out.println(contacts);
+
         table_contact.getItems().setAll(contacts);
 
         table_contact.addEventHandler(javafx.scene.input.MouseEvent.MOUSE_CLICKED, event -> {
@@ -110,8 +111,11 @@ public class contactViewController implements Initializable {
 
         String email = "";
         for (Contact contact : selectedContacts) {
-            if (contact.getCoEmailLists().get(0).getAddress() != null || contact.getCoEmailLists().get(0).getAddress().equals(""))
-                email = email + contact.getCoEmailLists().get(0).getAddress() + ",";
+            if (!contact.getCoEmailLists().isEmpty()) {
+                if (contact.getCoEmailLists().get(0).getAddress() != null || contact.getCoEmailLists().get(0).getAddress().equals(""))
+                    email = email + contact.getCoEmailLists().get(0).getAddress() + ",";
+            }
+
         }
 
 
@@ -125,7 +129,14 @@ public class contactViewController implements Initializable {
     private void inflateEResponse(int i) {
         try {
             EResponseController.choice = i;
-            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("../../../Email/EResponse/EResponse.fxml"));
+            FXMLLoader fxmlLoader;
+            if (getClass().getResource("../../../Email/EResponse/EResponse.fxml") == null) {
+                fxmlLoader = new FXMLLoader(getClass().getResource("/Email/EResponse/EResponse.fxml"));
+            } else {
+                fxmlLoader = new FXMLLoader(getClass().getResource("../../../Email/EResponse/EResponse.fxml"));
+            }
+
+
             Parent root1 = (Parent) fxmlLoader.load();
             Stage stage2 = new Stage();
             stage2.setTitle("New Email");

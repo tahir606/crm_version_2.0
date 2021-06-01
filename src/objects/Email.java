@@ -263,7 +263,7 @@ public class Email implements Serializable {
         }
 
         e = e + "\n" +
-                getTimestamp() + "\n" +
+                (getTimestamp())+ "\n" +
                 getSubject();
         return e;
     }

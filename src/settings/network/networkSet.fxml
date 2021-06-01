@@ -8,21 +8,16 @@
 
 
 <?import com.jfoenix.controls.JFXButton?>
+<?import com.jfoenix.controls.JFXComboBox?>
 <AnchorPane prefHeight="400.0" prefWidth="600.0" stylesheets="@../../styles/settings.css" xmlns="http://javafx.com/javafx/9" xmlns:fx="http://javafx.com/fxml/1"
             fx:controller="settings.network.networkSetController">
     <children>
-        <VBox layoutX="53.0" layoutY="31.0" prefHeight="334.0" prefWidth="261.0" spacing="5.0">
+        <VBox layoutX="53.0" layoutY="31.0" prefHeight="334.0" prefWidth="461.0" spacing="5.0">
             <children>
-                <HBox prefHeight="40.0" prefWidth="261.0" spacing="10.0">
+                <HBox prefHeight="40.0" prefWidth="461.0" spacing="10.0">
                     <children>
                         <Label prefHeight="46.0" prefWidth="28.0" text="IP:"/>
-                        <JFXTextField focusColor="#006e0e" fx:id="txt_ip" prefHeight="25.0" prefWidth="200.0"/>
-                    </children>
-                </HBox>
-                <HBox prefHeight="40.0" prefWidth="261.0" spacing="10.0">
-                    <children>
-                        <Label prefHeight="46.0" prefWidth="28.0" text="Port:"/>
-                        <JFXTextField focusColor="#006e0e" fx:id="txt_port" prefHeight="25.0" prefWidth="200.0"/>
+                        <JFXComboBox fx:id="selectIp" prefHeight="25.0" prefWidth="200.0"/>
                     </children>
                 </HBox>
             </children>

@@ -1,12 +1,16 @@
 package Home;
 
 import ApiHandler.RequestHandler;
+import JCode.CommonTasks;
 import JCode.FileHelper;
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXComboBox;
+import com.jfoenix.controls.JFXDatePicker;
 import dashboard.dController;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Insets;
@@ -17,14 +21,17 @@ import javafx.scene.control.SplitPane;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
-import objects.ProductModule;
-import objects.Users;
+import objects.*;
+import org.joda.time.LocalDate;
+import product.details.UnlockDialogController;
 
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
+
+import static JCode.CommonTasks.getDateFormattedOnly;
 
 public class HomeSplitController implements Initializable {
 
@@ -53,7 +60,7 @@ public class HomeSplitController implements Initializable {
             pane_fourS;
     private static Users user;
     private static FileHelper fHelper;
-//    private static mySqlConn sql;
+
 
     public static ProductModule sModule;
 //    private static ArrayList<ProductModule> lockedModules;
@@ -83,7 +90,7 @@ public class HomeSplitController implements Initializable {
         setAddButton(pane_four, 4);
 
         fHelper = new FileHelper();
-//        sql = new mySqlConn();
+
 
         user = FileHelper.ReadUserApiDetails();
         try {
@@ -190,8 +197,14 @@ public class HomeSplitController implements Initializable {
 
         AnchorPane.setLeftAnchor(scrollPane, 20.0);
         AnchorPane.setTopAnchor(scrollPane, 20.0);
+        List<Task> taskList = new ArrayList<>();
+        try {
 
-//        List<TaskOld> openTaskOlds = sql.getAllTasks(" AND TS_STATUS = 0 ");
+            taskList = RequestHandler.listRequestHandler(RequestHandler.run("task/getAllTask"), Task.class);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
 
         HBox hBox = new HBox();
         hBox.getChildren().addAll(inflateTraditionalLabel("Subject", "headingText", 120),
@@ -201,34 +214,34 @@ public class HomeSplitController implements Initializable {
 
         vBox.getChildren().addAll(hBox);
 
-//        for (TaskOld taskOld : openTaskOlds) {
-//            HBox hbox = new HBox();
-//            hbox.setSpacing(5);
-//
-//            Label subjectLabel = new Label(taskOld.getSubject()),
-//                    dueDateLabel = new Label(taskOld.getDueDateFormatted()),
-//                    createdByLabel = new Label(taskOld.getCreatedBy()),
-//                    createdOnLabel = new Label(taskOld.getCreatedOn());
-//
-//            subjectLabel.getStyleClass().add("dataText");
-//            dueDateLabel.getStyleClass().add("dataText");
-//            createdByLabel.getStyleClass().add("dataText");
-//            createdOnLabel.getStyleClass().add("dataText");
-//
-//            subjectLabel.setMinWidth(90);
-//            subjectLabel.setMaxWidth(90);
-//            dueDateLabel.setMinWidth(90);
-//            dueDateLabel.setMaxWidth(90);
-//            createdByLabel.setMinWidth(90);
-//            createdByLabel.setMaxWidth(90);
-//            createdOnLabel.setMinWidth(160);
-//            createdOnLabel.setMaxWidth(160);
-//
-//            hbox.getChildren().addAll(subjectLabel, dueDateLabel, createdByLabel, createdOnLabel);
-//            hbox.getStyleClass().add("moduleDetails");
-//
-//            vBox.getChildren().add(hbox);
-//        }
+        for (Task task : taskList) {
+            HBox hbox = new HBox();
+            hbox.setSpacing(5);
+
+            Label subjectLabel = new Label(task.getSubject()),
+                    dueDateLabel = new Label(task.getDueDate()),
+                    createdByLabel = new Label(task.getUsers().getFullName()),
+                    createdOnLabel = new Label(task.getCreatedOn());
+
+            subjectLabel.getStyleClass().add("dataText");
+            dueDateLabel.getStyleClass().add("dataText");
+            createdByLabel.getStyleClass().add("dataText");
+            createdOnLabel.getStyleClass().add("dataText");
+
+            subjectLabel.setMinWidth(90);
+            subjectLabel.setMaxWidth(90);
+            dueDateLabel.setMinWidth(90);
+            dueDateLabel.setMaxWidth(90);
+            createdByLabel.setMinWidth(90);
+            createdByLabel.setMaxWidth(90);
+            createdOnLabel.setMinWidth(160);
+            createdOnLabel.setMaxWidth(160);
+
+            hbox.getChildren().addAll(subjectLabel, dueDateLabel, createdByLabel, createdOnLabel);
+            hbox.getStyleClass().add("moduleDetails");
+
+            vBox.getChildren().add(hbox);
+        }
 
         scrollPane.setContent(vBox);
 
@@ -243,8 +256,31 @@ public class HomeSplitController implements Initializable {
 
         AnchorPane.setLeftAnchor(vBox, 20.0);
         AnchorPane.setTopAnchor(vBox, 20.0);
+        List<Product> productList = new ArrayList<>();
+        List<Product> productList2 = new ArrayList<>();
+        List<ProductModule> productModuleList = new ArrayList<>();
+        try {
+            productList = RequestHandler.listRequestHandler(RequestHandler.run("product/getAllProducts"), Product.class);
 
-//        lockedModules = sql.getLockedModules();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        if (!productList.isEmpty()) {
+            for (Product product : productList) {
+                for (ProductModule productModule : product.getPdProductModule()) {
+                    if (productModule.getPmModuleLockingList().isEmpty()) {
+                        continue;
+                    }
+                    if (productModule.getPmModuleLockingList().get(0).getUnLockedTime() == null) {
+                        productModuleList.add(productModule);
+                        productList2.add(new Product(product.getName(), productModuleList));
+                    } else {
+                        continue;
+                    }
+                }
+            }
+        }
 
         HBox hBox = new HBox();
         hBox.getChildren().addAll(inflateTraditionalLabel("Module", "headingText", 90),
@@ -253,43 +289,43 @@ public class HomeSplitController implements Initializable {
                 inflateTraditionalLabel("Locked On", "headingText", 160));
 
         vBox.getChildren().addAll(hBox);
+        for (Product product : productList2) {
+            HBox hbox = new HBox();
+            hbox.setSpacing(5);
+            for (ProductModule productModule : product.getPdProductModule()) {
+                Label moduleLabel = new Label(productModule.getName()),
+                        productLabel = new Label(product.getName()),
+                        lockedByLabel = new Label(productModule.getPmModuleLockingList().get(0).getUsers().getFullName()),
+                        lockedTimeLabel = new Label(CommonTasks.getTimeFormatted(productModule.getPmModuleLockingList().get(0).getLockedTime()));
 
-//        for (ProductModule module : lockedModules) {
-//            HBox hbox = new HBox();
-//            hbox.setSpacing(5);
-//
-//            Label moduleLabel = new Label(module.getName()),
-//                    productLabel = new Label(module.getProductName()),
-//                    lockedByLabel = new Label(module.getLockedByName()),
-//                    lockedTimeLabel = new Label(CommonTasks.getTimeFormatted(module.getLockedTime()));
-//
-//            moduleLabel.getStyleClass().add("dataText");
-//            productLabel.getStyleClass().add("dataText");
-//            lockedByLabel.getStyleClass().add("dataText");
-//            lockedTimeLabel.getStyleClass().add("dataText");
-//
-//            moduleLabel.setMinWidth(90);
-//            moduleLabel.setMaxWidth(90);
-//            productLabel.setMinWidth(90);
-//            productLabel.setMaxWidth(90);
-//            lockedByLabel.setMinWidth(90);
-//            lockedByLabel.setMaxWidth(90);
-//            lockedTimeLabel.setMinWidth(160);
-//            lockedTimeLabel.setMaxWidth(160);
-//
-//            JFXButton btn_lock = new JFXButton("Unlock");
-//            btn_lock.setStyle("-fx-font-weight: bold;");
-//            btn_lock.setOnAction(event -> {
-//                UnlockDialogController.fromPane = 'H';
-//                sModule = module;
-//                CommonTasks.inflateDialog("Unlock Module", "/product/details/unlock_dialog.fxml");
-//            });
-//
-//            hbox.getChildren().addAll(moduleLabel, productLabel, lockedByLabel, lockedTimeLabel, btn_lock);
-//            hbox.getStyleClass().add("moduleDetails");
-//
-//            vBox.getChildren().add(hbox);
-//        }
+                moduleLabel.getStyleClass().add("dataText");
+                productLabel.getStyleClass().add("dataText");
+                lockedByLabel.getStyleClass().add("dataText");
+                lockedTimeLabel.getStyleClass().add("dataText");
+
+                moduleLabel.setMinWidth(90);
+                moduleLabel.setMaxWidth(90);
+                productLabel.setMinWidth(90);
+                productLabel.setMaxWidth(90);
+                lockedByLabel.setMinWidth(90);
+                lockedByLabel.setMaxWidth(90);
+                lockedTimeLabel.setMinWidth(160);
+                lockedTimeLabel.setMaxWidth(160);
+
+                JFXButton btn_lock = new JFXButton("Unlock");
+                btn_lock.setStyle("-fx-font-weight: bold;");
+                btn_lock.setOnAction(event -> {
+                    UnlockDialogController.fromPane = 'H';
+                    sModule = productModule;
+                    CommonTasks.inflateDialog("Unlock Module", "/product/details/unlock_dialog.fxml");
+                });
+
+                hbox.getChildren().addAll(moduleLabel, productLabel, lockedByLabel, lockedTimeLabel, btn_lock);
+                hbox.getStyleClass().add("moduleDetails");
+
+                vBox.getChildren().add(hbox);
+            }
+        }
 
         pane.getChildren().clear();
         pane.getChildren().addAll(vBox);
@@ -333,57 +369,158 @@ public class HomeSplitController implements Initializable {
         inflateClearButton(pane, panel);
     }
 
-    private static void inflateTicketsPerUser(AnchorPane pane, int panel) {
+    static String reportFilterFrom = "", reportFilterTo = "";
 
+    private static void inflateTicketsPerUser(AnchorPane pane, int panel) {
+        JFXDatePicker from = new JFXDatePicker();
+        JFXDatePicker to = new JFXDatePicker();
 
         JFXComboBox<String> filters = new JFXComboBox<>();
-
         filters.setPromptText("Select Filter");
-        filters.getItems().addAll("Today", "Last 7 Days", "Last 30 Days", "All Time"); //"Custom"  //"Last 365 Days",
-        AnchorPane.setLeftAnchor(filters, 5.0);
-        AnchorPane.setTopAnchor(filters, 2.0);
+        filters.getItems().addAll("Today", "Last 7 Days", "Last 30 Days", "Custom Date"); //"Custom"  //"Last 365 Days",
+        HBox hBox = new HBox(filters, from, to);
+
+        hBox.setPadding(new Insets(0, 12, 0, 12));
+        hBox.setSpacing(10);
+        AnchorPane.setLeftAnchor(hBox, 5.0);
+        AnchorPane.setTopAnchor(hBox, 2.0);
+
+        from.setVisible(false);
+        to.setVisible(false);
+
         filters.valueProperty().addListener((observable, oldValue, newValue) -> {
             switch (newValue) {
                 case "Today": {
-                    ticketsFilter = "Today";
+                    reportFilterFrom = CommonTasks.getCurrentDate();
+                    reportFilterTo = CommonTasks.getCurrentDate();
                     break;
                 }
                 case "Last 7 Days": {
-                    ticketsFilter = "Last 7 Days";
+                    LocalDate now = new LocalDate();
+                    LocalDate beforeDate = now.minusDays(7);
+                    reportFilterFrom = String.valueOf(beforeDate);
+                    reportFilterTo = String.valueOf(now);
                     break;
                 }
                 case "Last 30 Days": {
-                    ticketsFilter = "Last 30 Days";
+                    LocalDate now = new LocalDate();
+                    LocalDate beforeDate = now.minusDays(30);
+                    reportFilterFrom = String.valueOf(beforeDate);
+                    reportFilterTo = String.valueOf(now);
                     break;
                 }
-                case "All Time": {
-                    ticketsFilter = "All Time";
+                case "Custom Date": {
+                    reportFilterFrom = "";
+                    reportFilterTo = "";
                     break;
                 }
                 default:
                     break;
             }
-            pane.getChildren().clear();
-            pane.getChildren().addAll(inflatePieChart(newValue), filters);
+            if (newValue.equals("Custom Date")) {
+                from.setVisible(true);
+                to.setVisible(true);
 
-            inflateClearButton(pane, panel);
+                fHelper.writeDashFiltersText(newValue, panel);
+                from.setOnAction(new EventHandler<ActionEvent>() {
+                    @Override
+                    public void handle(ActionEvent event) {
 
-            fHelper.writeDashFilters(newValue);
-            //Change focus so that combo box can be used again
-            split_mainS.requestFocus();
+                        if (from.getValue() != null && to.getValue() != null) {
+                            pane.getChildren().clear();
+                            pane.getChildren().addAll(inflatePieChart(from.getValue().toString(), to.getValue().toString()), hBox);
+
+                            inflateClearButton(pane, panel);
+
+
+                            fHelper.writeDashFilters(from.getValue().toString(), to.getValue().toString(), panel);
+                            //Change focus so that combo box can be used again
+                            split_mainS.requestFocus();
+                        }
+                    }
+                });
+                to.setOnAction(new EventHandler<ActionEvent>() {
+                    @Override
+                    public void handle(ActionEvent event) {
+
+                        if (from.getValue() != null && to.getValue() != null) {
+                            pane.getChildren().clear();
+                            pane.getChildren().addAll(inflatePieChart(from.getValue().toString(), to.getValue().toString()), hBox);
+
+                            inflateClearButton(pane, panel);
+
+                            fHelper.writeDashFilters(from.getValue().toString(), to.getValue().toString(), panel);
+                            //Change focus so that combo box can be used again
+                            split_mainS.requestFocus();
+                        }
+                    }
+                });
+
+
+            } else {
+                from.setVisible(false);
+                to.setVisible(false);
+                pane.getChildren().clear();
+                pane.getChildren().addAll(inflatePieChart(reportFilterFrom, reportFilterTo), hBox);
+
+                inflateClearButton(pane, panel);
+
+                fHelper.writeDashFiltersText(newValue, panel);
+                fHelper.writeDashFilters(reportFilterFrom, reportFilterTo, panel);
+                //Change focus so that combo box can be used again
+                split_mainS.requestFocus();
+            }
         });
-        String filter = fHelper.readDashFilters();
-        if (filter == null)
-            filters.getSelectionModel().select("All Time");
-        else
-            filters.getSelectionModel().select(filter);
+
+        List<DashFilters> filtersListText = fHelper.readDashFiltersText();
+
+        if (!filtersListText.isEmpty()) {
+            for (DashFilters dashFilters : filtersListText) {
+                if (dashFilters.getPanel() == panel) {
+                    if (dashFilters.getFilterText().equals("null")) {
+                        filters.getSelectionModel().select("All Time");
+                    } else {
+                        filters.getSelectionModel().select(dashFilters.getFilterText());
+                    }
+                }
+            }
+
+            List<DashFilters> filtersList = fHelper.readDashFilters();
+
+            if (!filtersList.isEmpty()) {
+
+                for (DashFilters dashFilters : filtersList) {
+                    if (dashFilters.getPanel() == panel) {
+                        reportFilterFrom = dashFilters.getFrom();
+                        reportFilterTo = dashFilters.getTo();
+                        from.setValue(CommonTasks.createLocalDateForFilter(reportFilterFrom));
+                        to.setValue(CommonTasks.createLocalDateForFilter(reportFilterTo));
+                        pane.getChildren().clear();
+                        pane.getChildren().addAll(inflatePieChart(reportFilterFrom, reportFilterTo), hBox);
+
+                        inflateClearButton(pane, panel);
+                    }
+                }
+            }
+        }
+        if (reportFilterTo.equals("") && reportFilterFrom.equals("")) {
+            pane.getChildren().clear();
+            pane.getChildren().addAll(hBox);
+        } else {
+            pane.getChildren().clear();
+            pane.getChildren().addAll(inflatePieChart(reportFilterFrom, reportFilterTo), hBox);
+        }
+        inflateClearButton(pane, panel);
+
+        //Change focus so that combo box can be used again
+        split_mainS.requestFocus();
 
     }
 
-    private static PieChart inflatePieChart(String title) {
+    private static PieChart inflatePieChart(String reportFilterFrom, String reportFilterTo) {
         List<Users> users = null;
         try {
-            users = RequestHandler.listRequestHandler(RequestHandler.run("users/getSolvedEmailsByUsers?filter=" + ticketsFilter), Users.class);
+            users = RequestHandler.listRequestHandler(RequestHandler.run("users/getSolvedEmailsByUsers?from=" + reportFilterFrom + "&to=" + reportFilterTo), Users.class);
 
         } catch (IOException e) {
             e.printStackTrace();
@@ -402,7 +539,7 @@ public class HomeSplitController implements Initializable {
         ObservableList<PieChart.Data> pieChartData =
                 FXCollections.observableArrayList(list);
         PieChart chart = new PieChart(pieChartData);
-        chart.setTitle("Tickets Per User - " + title);
+        chart.setTitle("Tickets Per User - (" + getDateFormattedOnly(reportFilterFrom) + " - " + getDateFormattedOnly(reportFilterTo) + " )");
         chart.getStyleClass().add("pieChartStyle");
         chart.setLegendVisible(false);
         AnchorPane.setTopAnchor(chart, 40.0);
@@ -446,6 +583,7 @@ public class HomeSplitController implements Initializable {
             pane.getChildren().clear();
 
             dashBoardDets[panel - 1] = "null";
+
             fHelper.writeDashboardPanels(dashBoardDets);
 
             setAddButton(pane, panel);

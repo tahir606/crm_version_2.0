@@ -4,7 +4,7 @@ import java.io.Serializable;
 import java.util.List;
 
 public class Client implements Serializable {
-    private int type, fromLead, createdBy, clientID;
+    private int type, createdBy, clientID;
     private String name, owner, email, phoneNo, address, city, country,website;
     private String joinDate, bicycle,createdOn;
     private List<EmailList> clEmailLists;
@@ -12,10 +12,12 @@ public class Client implements Serializable {
     private List<Note> clNoteList;
     private List<Task> clTaskList;
     private List<Event> clEventList;
+
     private Users users;
+    private Integer fromLead;
     private int countOfEmail;
     private long availableCount;
-
+    private Lead leadsClientList;
     public long getAvailableCount() {
         return availableCount;
     }
@@ -32,7 +34,21 @@ public class Client implements Serializable {
         }
     }
 
+    public Integer getFromLead() {
+        return fromLead;
+    }
 
+    public void setFromLead(Integer fromLead) {
+        this.fromLead = fromLead;
+    }
+
+    public Lead getLeadsClientList() {
+        return leadsClientList;
+    }
+
+    public void setLeadsClientList(Lead leadsClientList) {
+        this.leadsClientList = leadsClientList;
+    }
 
     public List<Task> getClTaskList() {
         return clTaskList;
@@ -74,13 +90,6 @@ public class Client implements Serializable {
         this.type = type;
     }
 
-    public int getFromLead() {
-        return fromLead;
-    }
-
-    public void setFromLead(int fromLead) {
-        this.fromLead = fromLead;
-    }
 
     public int getCreatedBy() {
         return createdBy;
@@ -186,8 +195,6 @@ public class Client implements Serializable {
         this.createdOn = createdOn;
     }
 
-
-
     public List<EmailList> getClEmailLists() {
         return clEmailLists;
     }
@@ -206,6 +213,6 @@ public class Client implements Serializable {
 
     @Override
     public String toString() {
-        return  name;
+        return  name ;
     }
 }

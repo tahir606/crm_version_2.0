@@ -267,7 +267,7 @@ public class TaskQueries {
 //        return tasks;
 //    }
 
-    public List<TaskOld> getTasks(Lead lead) {
+    public List<TaskOld> getTasks(LeadOld leadOld) {
         String query = "SELECT TS_ID, TS_SUBJECT, TS_DESC, TS_EDATE, TS_DDATE, TS_REPEAT, TS_STATUS, NS.CREATEDON AS CREATEDON, FNAME, LS_CNAME " +
                 " FROM TASK_STORE AS NS, LEAD_STORE AS CS, USERS AS US " +
                 " WHERE NS.LS_ID = ? " +
@@ -279,7 +279,7 @@ public class TaskQueries {
 
         try {
             PreparedStatement statement = static_con.prepareStatement(query);
-            statement.setInt(1, lead.getCode());
+            statement.setInt(1, leadOld.getCode());
             ResultSet set = statement.executeQuery();
             //-------------Creating Task-------------
             while (set.next()) {

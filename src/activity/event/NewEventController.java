@@ -25,6 +25,8 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
+import static JCode.CommonTasks.setDateTimeFormatForEvent;
+
 public class NewEventController implements Initializable {
 
     @FXML
@@ -61,7 +63,6 @@ public class NewEventController implements Initializable {
 
     private Event currEvent;
 
-    //    private ClientProperty client;
     private Client client;
     private Lead lead;
     private ProductProperty product;
@@ -69,8 +70,8 @@ public class NewEventController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-//        sql = new mySqlConn();
 
+        currEvent = new Event();
         relation_type.getItems().addAll("Contact", "Client", "Lead", "Product");
 
         choice = EventsConstructor.choice;
@@ -82,22 +83,19 @@ public class NewEventController implements Initializable {
             case 'N': {
                 btn_save.setText("Add");
 
-                currEvent = new Event();
+
                 break;
             }
             case 'U': {
                 btn_save.setText("Update");
 
-                currEvent = EventsConstructor.updatingEvent;
-                populateFields(currEvent);
+                populateFields(EventsConstructor.updatingEvent);
                 break;
             }
             case 'D': { //D for from details
                 btn_save.setText("Update");
 
-                currEvent = ActivityViewController.staticEvent;
-
-                populateFields(currEvent);
+                populateFields(ActivityViewController.staticEvent);
                 break;
             }
         }
@@ -113,14 +111,14 @@ public class NewEventController implements Initializable {
                 case 3: {
                     lead = LeadViewController.staticLead;
                     relation_type.getSelectionModel().select("Lead");
-                    txt_name.setText(lead.getFullNameProperty().toString());
+                    txt_name.setText(lead.getFullName().toString());
                     break;
                 }
             }
         } else {
             if (currEvent.getClientID() != 0) {
                 relation_type.getSelectionModel().select("Client");
-                txt_name.setText(currEvent.getUsers().getFullName());
+               txt_name.setText(ActivityViewController.staticEvent.getUsers().getFullName());
             } else if (currEvent.getLeadsId() != 0) {
                 relation_type.getSelectionModel().select("Lead");
                 txt_name.setText(currEvent.getUsers().getFullName());
@@ -175,11 +173,14 @@ public class NewEventController implements Initializable {
                         fromTime = "00:00";
                     currEvent.setTittle(title);
                     currEvent.setLocation(loc);
-                    currEvent.setFrom(fromDate);
-                    currEvent.setTo(toDate);
+                    currEvent.setFrom(setDateTimeFormatForEvent(fromDate + " " + fromTime));
+                    currEvent.setTo(setDateTimeFormatForEvent(toDate + " " + toTime));
                     currEvent.setCreatedBy(FileHelper.ReadUserApiDetails().getUserCode());
-//                    currEvent.setFrom(fromTime);
-//                    currEvent.setTo(toTime);
+                    if (allDay) {
+                        currEvent.setEventAllDay(1);
+                    } else {
+                        currEvent.setEventAllDay(0);
+                    }
                     currEvent.setDescription(desc);
                     currEvent.getEventAllDay();
 
@@ -188,9 +189,8 @@ public class NewEventController implements Initializable {
                             try {
                                 if (type.equals("Client")) {
                                     currEvent.setClientID(client.getClientID());
-//                                    currEvent.setClient(client.getCode());
                                 } else if (type.equals("Lead")) {
-                                    currEvent.setLeadsId(lead.getCode());
+                                    currEvent.setLeadsId(lead.getLeadsId());
                                 }
                             } catch (NullPointerException e) {
                                 System.out.println(e);
@@ -202,7 +202,7 @@ public class NewEventController implements Initializable {
                                 e.printStackTrace();
                             }
                             Toast.makeText((Stage) btn_save.getScene().getWindow(), responseMessage);
-//                            sql.addEvent(currEvent);
+
                             break;
                         }
                         case 'U':
@@ -214,7 +214,6 @@ public class NewEventController implements Initializable {
                                 e.printStackTrace();
                             }
                             Toast.makeText((Stage) btn_save.getScene().getWindow(), responseMessage);
-//                            sql.updateEvent(currEvent);
                             break;
                         }
                         default: {
@@ -260,31 +259,31 @@ public class NewEventController implements Initializable {
         }
     }
 
-    private void populateFields(Event event) {
-        txt_title.setText(event.getTittle());
-        txt_location.setText(event.getLocation());
-        txt_desc.setText(event.getDescription());
-        //Dates
-        if (event.getFrom() != null)
-            from_date.setValue(CommonTasks.createLocalDate(event.getFrom()));
+    private void populateFields(Event event1) {
+        currEvent.setEventID(event1.getEventID());
+        currEvent.setClientID(event1.getClientID());
 
-        if (event.getTo() != null)
-            to_date.setValue(CommonTasks.createLocalDate(event.getTo()));
+        txt_title.setText(event1.getTittle());
+        txt_location.setText(event1.getLocation());
+        txt_desc.setText(event1.getDescription());
+        //Dates
+        if (event1.getFrom() != null)
+            from_date.setValue(CommonTasks.createLocalDateForEventTask(event1.getFrom()));
+
+        if (event1.getTo() != null)
+            to_date.setValue(CommonTasks.createLocalDateForEventTask(event1.getTo()));
 
         //Times
-        if (event.getFrom() != null)
-            from_time.setValue(CommonTasks.getTimeFormat(event.getFrom()));
+        if (event1.getFrom() != null)
+            from_time.setValue(CommonTasks.getTimeFormat(event1.getFrom()));
 
-        if (event.getTo() != null)
-            to_time.setValue(CommonTasks.getTimeFormat(event.getTo()));
-        if (event.getEventAllDay() == 1) {
+        if (event1.getTo() != null)
+            to_time.setValue(CommonTasks.getTimeFormat(event1.getTo()));
+        if (event1.getEventAllDay() == 1) {
             check_allDay.setSelected(true);
         } else {
             check_allDay.setSelected(false);
         }
-
-//
-//        check_allDay.setSelected(event.isAllDay());
     }
 
 }

@@ -36,6 +36,8 @@ import java.net.URL;
 import java.util.Collections;
 import java.util.ResourceBundle;
 
+import static JCode.CommonTasks.getSimpleDate;
+
 public class clientDetailsController implements Initializable {
 
     @FXML
@@ -54,7 +56,7 @@ public class clientDetailsController implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
 
-        sql = new mySqlConn();
+
 
         Image image = new Image(this.getClass().getResourceAsStream("/res/img/left-arrow.png"));
         btn_back.setGraphic(new ImageView(image));
@@ -92,7 +94,8 @@ public class clientDetailsController implements Initializable {
         txt_fname.setText(client.getName());
         txt_website.setText(client.getWebsite());
         txt_owner.setText(client.getOwner());
-        txt_joinDate.setText(client.getJoinDate());
+        txt_joinDate.setText(getSimpleDate(client.getJoinDate()));
+//        txt_joinDate.setText(convertFormatWithOutTimeZone(client.getJoinDate()));
         txt_city.setText(client.getCity());
         txt_country.setText(client.getCountry());
 
@@ -128,7 +131,13 @@ public class clientDetailsController implements Initializable {
     private void inflateEResponse(int i) {
         try {
             EResponseController.choice = i;
-            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("../../../../Email/EResponse/EResponse.fxml"));
+            FXMLLoader fxmlLoader;
+            if (getClass().getResource("../../../Email/EResponse/EResponse.fxml") == null) {
+                fxmlLoader = new FXMLLoader(getClass().getResource("/Email/EResponse/EResponse.fxml"));
+            } else {
+                fxmlLoader = new FXMLLoader(getClass().getResource("../../../Email/EResponse/EResponse.fxml"));
+            }
+
             Parent root1 = (Parent) fxmlLoader.load();
             Stage stage2 = new Stage();
             stage2.setTitle("New Email");

@@ -11,7 +11,7 @@ import javafx.scene.control.Label;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
-import objects.ProductModule;
+import objects.ProductModuleOld;
 import objects.Users;
 
 import java.io.IOException;
@@ -39,7 +39,7 @@ public class HomeController implements Initializable {
     private Users user;
     private FileHelper fHelper;
     private mySqlConn sql;
-    private ArrayList<ProductModule> lockedModules;
+    private ArrayList<ProductModuleOld> lockedModules;
     
     public HomeController() {
     
@@ -78,7 +78,7 @@ public class HomeController implements Initializable {
     private void populatLockedModules() {
         vbox_modules.setSpacing(8);
         
-        for (ProductModule module : lockedModules) {
+        for (ProductModuleOld module : lockedModules) {
             HBox hbox = new HBox();
             hbox.setSpacing(5);
             

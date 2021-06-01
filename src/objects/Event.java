@@ -1,12 +1,57 @@
 package objects;
 
+import JCode.CommonTasks;
+
 import java.io.Serializable;
 
 public class Event implements Serializable {
-    private int eventID, eventAllDay, notified, leadsId, productID, createdBy, freeze, status, clientID;
+    private int eventID, eventAllDay, notified, createdBy, freeze, status;
+    Integer leadsId, productID, clientID;
     private String tittle, location, createdOn, closedOn, from, to, description;
     private Client clientEventList;
     private Users users;
+    private Product productEventList;
+    private Lead leadsEventList;
+
+    public Product getProductEventList() {
+        return productEventList;
+    }
+
+    public void setProductEventList(Product productEventList) {
+        this.productEventList = productEventList;
+    }
+
+    public Lead getLeadsEventList() {
+        return leadsEventList;
+    }
+
+    public void setLeadsEventList(Lead leadsEventList) {
+        this.leadsEventList = leadsEventList;
+    }
+
+    public Integer getLeadsId() {
+        return leadsId;
+    }
+
+    public void setLeadsId(Integer leadsId) {
+        this.leadsId = leadsId;
+    }
+
+    public Integer getProductID() {
+        return productID;
+    }
+
+    public void setProductID(Integer productID) {
+        this.productID = productID;
+    }
+
+    public Integer getClientID() {
+        return clientID;
+    }
+
+    public void setClientID(Integer clientID) {
+        this.clientID = clientID;
+    }
 
     public Users getUsers() {
         return users;
@@ -40,21 +85,6 @@ public class Event implements Serializable {
         this.notified = notified;
     }
 
-    public int getLeadsId() {
-        return leadsId;
-    }
-
-    public void setLeadsId(int leadsId) {
-        this.leadsId = leadsId;
-    }
-
-    public int getProductID() {
-        return productID;
-    }
-
-    public void setProductID(int productID) {
-        this.productID = productID;
-    }
 
     public int getCreatedBy() {
         return createdBy;
@@ -80,14 +110,6 @@ public class Event implements Serializable {
         this.status = status;
     }
 
-    public int getClientID() {
-        return clientID;
-    }
-
-    public void setClientID(int clientID) {
-        this.clientID = clientID;
-    }
-
     public String getTittle() {
         return tittle;
     }
@@ -105,7 +127,7 @@ public class Event implements Serializable {
     }
 
     public String getCreatedOn() {
-        return createdOn;
+        return CommonTasks.convertFormatWithOutTimeZone(createdOn);
     }
 
     public void setCreatedOn(String createdOn) {
@@ -121,7 +143,7 @@ public class Event implements Serializable {
     }
 
     public String getFrom() {
-        return from;
+        return CommonTasks.convertFormatWithOutTimeZone(from);
     }
 
     public void setFrom(String from) {
@@ -129,7 +151,7 @@ public class Event implements Serializable {
     }
 
     public String getTo() {
-        return to;
+        return CommonTasks.convertFormatWithOutTimeZone(to);
     }
 
     public void setTo(String to) {

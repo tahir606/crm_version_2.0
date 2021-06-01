@@ -3,16 +3,70 @@ package objects;
 import java.io.Serializable;
 
 public class Note implements Serializable {
-    private int noteCode, psID,leadsId,freeze;
-    private Integer contactID , clientID , emailId ,createdBy;
-    private String text;
-    private String createdOn;
+    private int noteCode, freeze;
+    private Integer contactID, clientID, emailId, createdBy, psID, leadsId;
+    private String text, createdOn;
     private Users users;
     private Email emailTickets;
     private Contact contactNoteList;
     private Client clientNoteList;
+    private Product productNoteList;
+    private Lead leadsNoteList;
 
     public Note() {
+    }
+
+    public Note(int noteCode, Integer clientID) {
+        this.noteCode = noteCode;
+        this.clientID = clientID;
+    }
+
+    public void setContactID(Integer contactID) {
+        this.contactID = contactID;
+    }
+
+    public void setClientID(Integer clientID) {
+        this.clientID = clientID;
+    }
+
+    public void setEmailId(Integer emailId) {
+        this.emailId = emailId;
+    }
+
+    public void setCreatedBy(Integer createdBy) {
+        this.createdBy = createdBy;
+    }
+
+    public Integer getPsID() {
+        return psID;
+    }
+
+    public void setPsID(Integer psID) {
+        this.psID = psID;
+    }
+
+    public Integer getLeadsId() {
+        return leadsId;
+    }
+
+    public void setLeadsId(Integer leadsId) {
+        this.leadsId = leadsId;
+    }
+
+    public Product getProductNoteList() {
+        return productNoteList;
+    }
+
+    public void setProductNoteList(Product productNoteList) {
+        this.productNoteList = productNoteList;
+    }
+
+    public Lead getLeadsNoteList() {
+        return leadsNoteList;
+    }
+
+    public void setLeadsNoteList(Lead leadsNoteList) {
+        this.leadsNoteList = leadsNoteList;
     }
 
     public int getNoteCode() {
@@ -23,21 +77,6 @@ public class Note implements Serializable {
         this.noteCode = noteCode;
     }
 
-    public int getPsID() {
-        return psID;
-    }
-
-    public void setPsID(int psID) {
-        this.psID = psID;
-    }
-
-    public int getLeadsId() {
-        return leadsId;
-    }
-
-    public void setLeadsId(int leadsId) {
-        this.leadsId = leadsId;
-    }
 
     public int getFreeze() {
         return freeze;
@@ -130,11 +169,13 @@ public class Note implements Serializable {
 
     @Override
     public String toString() {
-        if (emailTickets ==null){
-            return "  "+text + "      " + createdOn + "      " + users.getFullName();
-        }else{
-            return "  "+text + "      " + createdOn + "      " + noteCode+ "      " + emailTickets.getCode() + "    " + users.getUserCode();
+        if (emailTickets == null) {
+            return "  " + text + "      " + createdOn + "      " + users.getFullName();
+        } else {
+            return "  " + text + "      " + createdOn + "      " + noteCode + "      " + emailTickets.getCode() + "    " + users.getUserCode();
         }
 
     }
+
+
 }

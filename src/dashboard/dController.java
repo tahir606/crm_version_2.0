@@ -4,11 +4,7 @@ import ApiHandler.RequestHandler;
 import Home.HomeSplitController;
 import JCode.FileHelper;
 import JCode.NotifyActivities;
-import JCode.emailControl;
-import JCode.mysql.mySqlConn;
 import JCode.trayHelper;
-import JSockets.JClient;
-import JSockets.JServer;
 import SplashScreen.SplashScreenThread;
 import com.jfoenix.controls.JFXButton;
 import javafx.application.Platform;
@@ -27,7 +23,10 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
-import objects.*;
+import objects.Network;
+import objects.RightChart;
+import objects.RightsList;
+import objects.Users;
 
 import java.io.IOException;
 import java.net.URL;
@@ -284,15 +283,15 @@ public class dController implements Initializable {
                     e.printStackTrace();
                 }
 
-                if (isServer == true) {
-                    JServer.closeThread();
-                } else {
-                    try {
-                        JClient.socket.close();
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                }
+//                if (isServer == true) {
+//                    JServer.closeThread();
+//                } else {
+//                    try {
+//                        JClient.socket.close();
+//                    } catch (IOException e) {
+//                        e.printStackTrace();
+//                    }
+//                }
 
                 Stage dash = (Stage) menu_pane.getScene().getWindow();
                 dash.close();
@@ -336,56 +335,56 @@ public class dController implements Initializable {
 
     Thread emailThread;
 
-    private void emailCtrl() {
-
-        emailControl ec = new emailControl();
-
-        emailThread = new Thread(() -> {
-
-            int dbFirst = 0, connFirst = 0;
-
-            while (true) {
-                if (!mySqlConn.pingHost(network.getHost(), network.getPort(), 2000)) {          //MySQL Database Not Found!!
-                    if (dbFirst < 2) {
-                        tHelper.displayNotification("Error!", "Database Not Found!\n" +
-                                "Email Receiving has been stopped!\n" +
-                                "Will try again every 10 seconds");
-                        dbFirst++;
-                    }
-                    try {
-                        Thread.sleep(10000);    //Wait for ten seconds before trying again
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                    continue;
-                } else {
-                    if (!emailControl.checkConnection()) {          //Internet Not Working!!
-                        if (connFirst < 2) {
-                            tHelper.displayNotification("Error!", "Internet Not Working!\n" +
-                                    "Will try again every 10 seconds!");
-                            connFirst++;
-                        }
-                        try {
-                            Thread.sleep(10000);    //Wait for ten seconds before trying again
-                        } catch (InterruptedException e) {
-                            e.printStackTrace();
-                        }
-                        continue;
-                    } else {
-//                        ec.receiveEmail();
-                        try {
-                            Thread.sleep(60000);
-                        } catch (InterruptedException e) {
-                            e.printStackTrace();
-                        }
-                    }
-                }
-
-            }
-
-        });
-        emailThread.start();
-    }
+//    private void emailCtrl() {
+//
+//        emailControl ec = new emailControl();
+//
+//        emailThread = new Thread(() -> {
+//
+//            int dbFirst = 0, connFirst = 0;
+//
+//            while (true) {
+//                if (!mySqlConn.pingHost(network.getHost(), network.getPort(), 2000)) {          //MySQL Database Not Found!!
+//                    if (dbFirst < 2) {
+//                        tHelper.displayNotification("Error!", "Database Not Found!\n" +
+//                                "Email Receiving has been stopped!\n" +
+//                                "Will try again every 10 seconds");
+//                        dbFirst++;
+//                    }
+//                    try {
+//                        Thread.sleep(10000);    //Wait for ten seconds before trying again
+//                    } catch (InterruptedException e) {
+//                        e.printStackTrace();
+//                    }
+//                    continue;
+//                } else {
+//                    if (!emailControl.checkConnection()) {          //Internet Not Working!!
+//                        if (connFirst < 2) {
+//                            tHelper.displayNotification("Error!", "Internet Not Working!\n" +
+//                                    "Will try again every 10 seconds!");
+//                            connFirst++;
+//                        }
+//                        try {
+//                            Thread.sleep(10000);    //Wait for ten seconds before trying again
+//                        } catch (InterruptedException e) {
+//                            e.printStackTrace();
+//                        }
+//                        continue;
+//                    } else {
+////                        ec.receiveEmail();
+//                        try {
+//                            Thread.sleep(60000);
+//                        } catch (InterruptedException e) {
+//                            e.printStackTrace();
+//                        }
+//                    }
+//                }
+//
+//            }
+//
+//        });
+//        emailThread.start();
+//    }
 
     private void changeSelection(JFXButton btn, String path, int pane) {
 

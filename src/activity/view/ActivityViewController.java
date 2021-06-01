@@ -1,7 +1,6 @@
 package activity.view;
 
 import ApiHandler.RequestHandler;
-import JCode.mysql.mySqlConn;
 import activity.ActivityDashController;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -47,7 +46,7 @@ public class ActivityViewController implements Initializable {
     @FXML
     private TableColumn<Event, String> col_status_event;
 
-    private mySqlConn sql = new mySqlConn();
+//    private mySqlConn sql = new mySqlConn();
     List<Task> taskList;
     List<Event> eventList;
     public static Task staticTask;
@@ -64,6 +63,7 @@ public class ActivityViewController implements Initializable {
 //        table_activity.getItems().setAll(sql.getAllTasks(null));
         try {
             taskList= RequestHandler.listRequestHandler(RequestHandler.run("task/getAllTask"),Task.class);
+
             table_activity.getItems().setAll(taskList);
         } catch (IOException e) {
             e.printStackTrace();

@@ -1,10 +1,12 @@
 package product.details;
 
+import ApiHandler.RequestHandler;
 import JCode.CommonTasks;
-import gui.TasksConstructor;
-import gui.NotesConstructor;
+import JCode.FileHelper;
 import JCode.mysql.mySqlConn;
 import com.jfoenix.controls.JFXButton;
+import gui.NotesConstructor;
+import gui.TasksConstructor;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -19,8 +21,9 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import objects.ModuleLocking;
+import objects.Product;
 import objects.ProductModule;
-import objects.ProductProperty;
 import product.ProductDashController;
 import product.newProduct.NewProductController;
 import product.view.ProductViewController;
@@ -55,7 +58,7 @@ public class ProductDetailsController implements Initializable {
     private VBox vbox_modules;
     private static VBox vbox_modulesS;
 
-    private static ProductProperty product;
+    private static Product product;
     public static ProductModule selectedModule;
     private static mySqlConn sql;
 
@@ -92,42 +95,45 @@ public class ProductDetailsController implements Initializable {
         });
 
         populateDetails();
-        init(this.getClass().getResource("unlock_dialog.fxml"));
-
+//        init(this.getClass().getResource("unlock_dialog.fxml"));
+        populateModules(this.getClass().getResource("unlock_dialog.fxml"));
     }
 
     public static void init(URL path) {
-        ProductProperty prod = sql.getProductModuleStates(product);
-        populateModules(prod, path);
+//        ProductProperty prod = sql.getProductModuleStates(product);
+//        populateModules(prod, path);
+
     }
 
     private void populateDetails() {
         product = ProductViewController.staticProduct;
         txt_pname.setText(product.getName());
         txt_price.setText(String.valueOf(product.getPrice()));
-        txt_desc.setText(product.getDesc());
-        txt_startedOn.setText(product.getFormattedDate());
+        txt_desc.setText(product.getDescription());
+        txt_startedOn.setText(product.getStarted());
 
         vbox_modules.setSpacing(10);
-    
+
         TabPane tabPane = new TabPane();
         tabPane.setMinWidth(600);
-        new NotesConstructor(tabPane, sql, product).generalConstructor(4);
+        new NotesConstructor(tabPane, product).generalConstructor(4);
         new TasksConstructor(tabPane, product).generalConstructor(4);
 
         tabPane.setTabClosingPolicy(TabPane.TabClosingPolicy.UNAVAILABLE);
-    
+
         AnchorPane.setBottomAnchor(tabPane, 0.0);
         AnchorPane.setTopAnchor(tabPane, 0.0);
         AnchorPane.setRightAnchor(tabPane, 0.0);
         AnchorPane.setLeftAnchor(tabPane, 0.0);
-    
+
         vbox_main.getChildren().add(tabPane);
     }
 
-    private static void populateModules(ProductProperty product, URL path) {
+    static int state = 0;
+
+    private static void populateModules(URL path) {
         vbox_modulesS.getChildren().clear();
-        for (ProductModule module : product.getProductModules()) {
+        for (ProductModule module : product.getPdProductModule()) {
             HBox box = new HBox();
             box.setSpacing(10);
             box.setPadding(new Insets(5, 5, 5, 5));
@@ -141,14 +147,23 @@ public class ProductDetailsController implements Initializable {
             desc.setMaxHeight(60);
             desc.setWrapText(true);
             desc.setEditable(false);
-            desc.setText(module.getDesc());
+            desc.setText(module.getDescription());
             desc.getStyleClass().add("scroll-view");
-
+            ModuleLocking moduleLocking1 = new ModuleLocking();
             JFXButton btnState = new JFXButton();
-            if (module.getState() == '\0')
-                module.setState(0);
 
-            switch (module.getState()) {
+            if (module.getPmModuleLockingList().isEmpty()) {
+                moduleLocking1.setState(0);
+            } else if (module.getPmModuleLockingList().get(0).getCreatedBy() != FileHelper.ReadUserApiDetails().getUserCode()) {
+                moduleLocking1.setState(2);
+            } else if (module.getPmModuleLockingList().get(0).getState() == 0) {
+                moduleLocking1.setState(0);
+            } else if (module.getPmModuleLockingList().get(0).getState() == 1) {
+                moduleLocking1.setState(1);
+
+            }
+
+            switch (moduleLocking1.getState()) {
                 case 0: {
                     btnState.getStyleClass().removeAll();
                     btnState.setStyle("-fx-background-color: #feffe0;");
@@ -169,13 +184,19 @@ public class ProductDetailsController implements Initializable {
                 }
             }
 
-            btnState.setText((module.getState() == 0 ? "LOCK" : "UNLOCK"));
+            btnState.setText((state == 0 ? "LOCK" : "UNLOCK"));
             btnState.setMinWidth(60);
             btnState.setOnAction(event -> {
                 selectedModule = module;
-                switch (module.getState()) {
+                switch (moduleLocking1.getState()) {
                     case 0: {
-                        sql.lockModule(module);
+                        ModuleLocking moduleLocking = new ModuleLocking(module.getPmID(), FileHelper.ReadUserApiDetails().getUserCode(), CommonTasks.getCurrentTimeStamp(), 1, module.getDescription());
+                        String responseMessage = "";
+                        try {
+                            responseMessage = RequestHandler.basicRequestHandler(RequestHandler.postOfReturnResponse("moduleLocking/addModuleLocking", RequestHandler.writeJSON(moduleLocking)));
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
                         init(path);
                         break;
                     }

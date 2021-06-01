@@ -56,7 +56,7 @@ public class ProductDashController implements Initializable {
             public void run() {
                 Platform.runLater(() -> {
                     try {
-                        main_pane.setCenter(FXMLLoader.load(getClass().getResource(pane)));
+                       main_pane.setCenter(FXMLLoader.load(getClass().getResource(pane)));
                     } catch (IOException e) {
                         e.printStackTrace();
                     }

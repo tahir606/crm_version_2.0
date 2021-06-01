@@ -623,7 +623,7 @@ public class EmailQueries {
                 emailOld.setSolvedTime(set.getString("SOLVTIME"));
                 emailOld.setManualEmail(set.getInt("MANUAL"));
                 if (emailOld.getManualEmail() != '\0') {
-                    if (sql == null) sql = new mySqlConn();
+//                    if (sql == null) sql = new mySqlConn();
                     emailOld.setCreatedBy(sql.getUserName(emailOld.getManualEmail()));
                 }
                 if (set.getInt("LOCKD") == '\0') {
@@ -1216,7 +1216,7 @@ public class EmailQueries {
                 emailOld.setSolvedTime(set.getString("SOLVTIME"));
                 emailOld.setManualEmail(set.getInt("MANUAL"));
                 if (emailOld.getManualEmail() != '\0') {
-                    if (sql == null) sql = new mySqlConn();
+//                    if (sql == null) sql = new mySqlConn();
                     emailOld.setCreatedBy(sql.getUserName(emailOld.getManualEmail()));
                 }
                 if (set.getInt("LOCKD") == '\0') {

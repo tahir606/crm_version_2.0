@@ -1,5 +1,6 @@
 package product.view;
 
+import ApiHandler.RequestHandler;
 import JCode.mysql.mySqlConn;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -10,27 +11,29 @@ import javafx.scene.control.TableRow;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.AnchorPane;
-import objects.ProductProperty;
+import objects.Product;
 import product.ProductDashController;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.ResourceBundle;
 
 public class ProductViewController implements Initializable {
 
     @FXML
-    private TableView<ProductProperty> table_product;
+    private TableView<Product> table_product;
     @FXML
-    private TableColumn<ProductProperty, String> col_name;
+    private TableColumn<Product, String> col_name;
     @FXML
-    private TableColumn<ProductProperty, String> col_price;
+    private TableColumn<Product, String> col_price;
     @FXML
-    private TableColumn<ProductProperty, String> col_started_on;
+    private TableColumn<Product, String> col_started_on;
     @FXML
-    private TableColumn<ProductProperty, String> col_status;
+    private TableColumn<Product, String> col_status;
     @FXML
-    private TableColumn<ProductProperty, String> col_type;
+    private TableColumn<Product, String> col_type;
     @FXML
     private AnchorPane toolbar_products;
     @FXML
@@ -38,26 +41,33 @@ public class ProductViewController implements Initializable {
 
 //    List<ProductProperty> selectedProducts;
 
-    public static ProductProperty staticProduct;
+    public static Product staticProduct;
 
     private mySqlConn sql;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        sql = new mySqlConn();
+//        sql = new mySqlConn();
 
         toolbar_products.setVisible(false);
 
         col_name.setCellValueFactory(new PropertyValueFactory<>("name"));
         col_price.setCellValueFactory(new PropertyValueFactory<>("price"));
-        col_started_on.setCellValueFactory(new PropertyValueFactory<>("formattedDate"));
+        col_started_on.setCellValueFactory(new PropertyValueFactory<>("started"));
         col_status.setCellValueFactory(new PropertyValueFactory<>("status"));
         col_type.setCellValueFactory(new PropertyValueFactory<>("type"));
-
-        table_product.getItems().setAll(sql.getAllProducts(null));
+        List<Product> productList=new ArrayList<>();
+        try {
+            productList= RequestHandler.listRequestHandler(RequestHandler.run("product/getAllProducts"), Product.class);
+            table_product.getItems().setAll(productList);
+//            table_product.getItems().setAll(sql.getAllLeads(null));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+//        table_product.getItems().setAll(sql.getAllProducts(null));
         
         table_product.setRowFactory(tv -> {
-            TableRow<ProductProperty> row = new TableRow<>();
+            TableRow<Product> row = new TableRow<>();
             row.setOnMouseClicked(event -> {
                 if (event.getClickCount() == 2 && (!row.isEmpty())) {
                     staticProduct = row.getItem();

@@ -112,7 +112,7 @@ public class newClientController implements Initializable {
             case 'U': {      //Update
                 txt_heading.setText("Update Client");
                 btn_save.setText("Update");
-                populateDetails();
+                populateDetails(clientViewController.staticClient);
                 break;
             }
             default:
@@ -122,7 +122,7 @@ public class newClientController implements Initializable {
 
     private void init() {
 
-        clientSel.setName(" + Create New");
+        clientSel.setName("");
         clientSel.setOwner("");
         clientSel.setWebsite("");
         clientSel.setAddress("");
@@ -133,32 +133,30 @@ public class newClientController implements Initializable {
         clientSel.setClPhoneLists(new ArrayList<>());
 
         combo_type.getSelectionModel().select(0);
-
+        populateDetails(clientSel);
     }
 
-    private void populateDetails() {
-        Client newValue = clientViewController.staticClient;
-        if (newValue == null)
+    private void populateDetails(Client client) {
+        if (client == null)
             return;
-        else if (newValue.getName().equals(" + Create New"))
+        else if (client.getName().equals(" + Create New"))
             txt_name.setText("");
         else
-            txt_name.setText(newValue.getName());
+            txt_name.setText(client.getName());
 
-        txt_owner.setText(newValue.getOwner());
-        txt_website.setText(newValue.getWebsite());
-        txt_addr.setText(newValue.getAddress());
-        txt_city.setText(newValue.getCity());
-        txt_country.setText(newValue.getCountry());
-        if (newValue.getJoinDate() != null)
-            joining_date.setValue(CommonTasks.createLocalDate(newValue.getJoinDate()));
+        txt_owner.setText(client.getOwner());
+        txt_website.setText(client.getWebsite());
+        txt_addr.setText(client.getAddress());
+        txt_city.setText(client.getCity());
+        txt_country.setText(client.getCountry());
+        if (client.getJoinDate() != null)
+            joining_date.setValue(CommonTasks.createLocalDate(client.getJoinDate()));
         else
             joining_date.setValue(null);
 
-        combo_type.getSelectionModel().select(newValue.getType() - 1);  //Types in database start from 1
+        combo_type.getSelectionModel().select(client.getType() - 1);  //Types in database start from 1
 
     }
-
 
 
     public void saveChanges(ActionEvent actionEvent) throws IOException {
@@ -210,6 +208,7 @@ public class newClientController implements Initializable {
                 clientSel.setCreatedOn(String.valueOf(formatter.format(date)));
                 int userId = FileHelper.ReadUserApiDetails().getUserCode();
                 clientSel.setCreatedBy(userId);
+
                 if (!emailLists.isEmpty()) {
                     clientSel.setEmail(emailLists.get(0).getAddress());
                 }
@@ -238,23 +237,18 @@ public class newClientController implements Initializable {
                         clientSel.setClientID(clientViewController.staticClient.getClientID());
                         Client client = (Client) RequestHandler.objectRequestHandler(RequestHandler.postOfReturnResponse("client/addClient", RequestHandler.writeJSON(clientSel)), Client.class);
                         if (client != null) {
-                            for (EmailList emailList : clientViewController.staticClient.getClEmailLists()) {
-                                try {
-                                    RequestHandler.run("emailList/deleteEmailList/" + emailList.getEmailID());
-                                } catch (IOException e) {
-                                    e.printStackTrace();
-                                }
+                            try {
+                                RequestHandler.run("emailList/deleteEmailList/" + client.getClientID());
+                            } catch (IOException e) {
+                                e.printStackTrace();
                             }
-                            for (PhoneList phoneList : clientViewController.staticClient.getClPhoneLists()) {
-                                try {
-                                    RequestHandler.run("phoneList/deletePhoneList/" + phoneList.getPhoneID());
-                                } catch (IOException e) {
-                                    e.printStackTrace();
-                                }
+                            try {
+                                RequestHandler.run("phoneList/deletePhoneList/" + client.getClientID());
+                            } catch (IOException e) {
+                                e.printStackTrace();
                             }
                             for (EmailList emailList : emailLists) {
                                 RequestHandler.post("emailList/addEmail", RequestHandler.writeJSON((new EmailList(emailList.getEmailID(), emailList.getAddress(), userId, client.getClientID()))));
-
                             }
                             for (PhoneList phoneList : phoneLists) {
                                 RequestHandler.post("phoneList/addPhone", RequestHandler.writeJSON(new PhoneList(phoneList.getPhoneID(), phoneList.getNumber(), userId, client.getClientID())));
@@ -357,8 +351,7 @@ public class newClientController implements Initializable {
                     if (!t.equals("")) {
                         if (c == 1) {     //Email
                             emailLists.add(new EmailList(t));
-                        }
-                        else if (c == 2) {    //Phone
+                        } else if (c == 2) {    //Phone
                             phoneLists.add(new PhoneList(t));
                         }
                     }

@@ -1,10 +1,13 @@
 package JCode;
 
+import objects.DashFilters;
 import objects.ESetting;
 import objects.Network;
 import objects.Users;
 
 import java.io.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public class FileHelper {
 
@@ -16,6 +19,7 @@ public class FileHelper {
     //File Names
     private static final String DASHBOARD_PANELS = "dashPanels",
             SPLITPANE_DIVIDERS = "splitDividers",
+            DASH_FILTERS_TEXT = "dashFiltersText.txt",
             DASH_FILTERS = "dashFilters.txt",
             TICKET_NUMBER = "ticketNumber.txt",
             GENERAL_NUMBER = "generalNumber.txt";
@@ -57,7 +61,7 @@ public class FileHelper {
 
             text = br.readLine();
             String[] t = text.split("\\^");
-            return new Network(t[0], Integer.parseInt(t[1]));
+            return new Network(t[0],Integer.parseInt(t[1]));
         } catch (FileNotFoundException e) {
             System.out.println(e);
             return null;
@@ -126,6 +130,7 @@ public class FileHelper {
         }
 
     }
+
     public static Users ReadUserApiDetails() {
         String text = "";
         InputStreamReader isReader = null;
@@ -656,8 +661,127 @@ public class FileHelper {
         }
     }
 
-    public boolean writeDashFilters(String filters) {
+    public boolean writeDashFiltersText(String select, int panel) {
+        String filters = "";
+        List<DashFilters> previousDashFilters = readDashFiltersText();
+        List<DashFilters> newDashFilters = new ArrayList<>();
+        if (previousDashFilters.isEmpty()) {
+            filters = filters + select + "*" + panel + "^";
+        } else {
+            for (DashFilters dashFilters : previousDashFilters) {
+                if (dashFilters.getFilterText().equals(select) && dashFilters.getPanel() == panel) {
+                    previousDashFilters.set(previousDashFilters.indexOf(dashFilters), new DashFilters(select, panel));
+                    break;
+                }
+                if (!dashFilters.getFilterText().equals(select) && dashFilters.getPanel() == panel) {
+                    previousDashFilters.set(previousDashFilters.indexOf(dashFilters), new DashFilters(select, panel));
+                    break;
+                } else {
 
+                    if (dashFilters.getPanel() != panel) {
+                        if (containsName(previousDashFilters, panel)) {
+                            continue;
+                        }
+                        newDashFilters.add(new DashFilters(select, panel));
+                        break;
+                    }else{
+                        previousDashFilters.set(previousDashFilters.indexOf(dashFilters), new DashFilters(select, panel));
+                    }
+                }
+
+            }
+            previousDashFilters.addAll(newDashFilters);
+            for (DashFilters dashFilters : previousDashFilters) {
+                filters = filters + dashFilters.getFilterText() + "*" + dashFilters.getPanel() + "^";
+            }
+        }
+
+        PrintWriter writer = null;
+
+        try {
+            writer = new PrintWriter(
+                    new File(FADD_ROOT + DASH_FILTERS_TEXT));
+            writer.write(filters);
+
+            return true;
+
+        } catch (IOException ex) {
+            ex.printStackTrace();
+            return false;
+        } finally {
+            writer.close();
+        }
+    }
+
+    public boolean containsName(final List<DashFilters> list, final int panel) {
+        return list.stream().filter(o -> o.getPanel() == panel).findFirst().isPresent();
+    }
+
+    public List<DashFilters> readDashFiltersText() {
+        String text = "";
+        InputStreamReader isReader = null;
+        List<DashFilters> filtersList = new ArrayList<>();
+        try {
+            isReader =
+                    new InputStreamReader(new FileInputStream(new File(FADD_ROOT + DASH_FILTERS_TEXT)));
+            BufferedReader br = new BufferedReader(isReader);
+            text = br.readLine();
+            if (text == null) {
+                return filtersList;
+            }
+            for (String ts : text.split("\\^")) {
+                String[] u = ts.split("\\*");
+                DashFilters dashFilters = new DashFilters(u[0], Integer.parseInt(u[1]));
+                filtersList.add(dashFilters);
+            }
+
+            return filtersList;
+        } catch (Exception e) {
+            System.out.println(e);
+            System.out.println("Dash Filter Returning Empty : ");
+            writeDashFiltersText("", 0);
+            return filtersList;
+        } finally {
+            try {
+                isReader.close();
+            } catch (Exception ex) {
+                ex.printStackTrace();
+                return filtersList;
+            }
+        }
+    }
+
+    public boolean writeDashFilters(String reportFilterFrom, String reportFilterTo, int panel) {
+        String filters = "";
+        List<DashFilters> previousDashFilters = readDashFilters();
+        List<DashFilters> newDashFilters = new ArrayList<>();
+        if (previousDashFilters.isEmpty()) {
+            filters = filters + reportFilterFrom + "*" + reportFilterTo + "*" + panel + "^";
+        } else {
+            for (DashFilters dashFilters : previousDashFilters) {
+                if (dashFilters.getTo().equals(reportFilterTo) && dashFilters.getFrom().equals(reportFilterFrom) && dashFilters.getPanel() == panel) {
+                    previousDashFilters.set(previousDashFilters.indexOf(dashFilters), new DashFilters(reportFilterFrom, reportFilterTo, panel));
+                    break;
+                }
+                if (!dashFilters.getTo().equals(reportFilterTo) || !dashFilters.getFrom().equals(reportFilterFrom) && dashFilters.getPanel() == panel) {
+                    previousDashFilters.set(previousDashFilters.indexOf(dashFilters), new DashFilters(reportFilterFrom, reportFilterTo, panel));
+                    break;
+                } else {
+                    if (dashFilters.getPanel() != panel) {
+                        if (containsName(previousDashFilters, panel)) {
+                            continue;
+                        }
+                        newDashFilters.add(new DashFilters(reportFilterFrom, reportFilterTo, panel));
+                        break;
+                    }
+
+                }
+            }
+        }
+        previousDashFilters.addAll(newDashFilters);
+        for (DashFilters dashFilters : previousDashFilters) {
+            filters = filters + dashFilters.getFrom() + "*" + dashFilters.getTo() + "*" + dashFilters.getPanel() + "^";
+        }
         PrintWriter writer = null;
 
         try {
@@ -676,29 +800,37 @@ public class FileHelper {
         }
     }
 
-    public String readDashFilters() {
+    public List<DashFilters> readDashFilters() {
         String text = "";
         InputStreamReader isReader = null;
+        List<DashFilters> filtersList = new ArrayList<>();
         try {
             isReader =
                     new InputStreamReader(new FileInputStream(new File(FADD_ROOT + DASH_FILTERS)));
             BufferedReader br = new BufferedReader(isReader);
             text = br.readLine();
             if (text == null) {
-                return null;
+                return filtersList;
             }
-            return text;
+            for (String ts : text.split("\\^")) {
+
+                String[] u = ts.split("\\*");
+                DashFilters dashFilters = new DashFilters(u[0], u[1], Integer.parseInt(u[2]));
+                filtersList.add(dashFilters);
+            }
+
+            return filtersList;
         } catch (Exception e) {
             System.out.println(e);
             System.out.println("Returning empty");
-            writeDashFilters("");
-            return "";
+            writeDashFilters("", "", 0);
+            return filtersList;
         } finally {
             try {
                 isReader.close();
             } catch (Exception ex) {
                 ex.printStackTrace();
-                return "";
+                return filtersList;
             }
         }
     }

@@ -54,10 +54,11 @@ public class clientViewController implements Initializable {
     public static Client staticClient;
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        sql = new mySqlConn();
+
 
         try {
             clients = RequestHandler.listRequestHandler(RequestHandler.run("client/clientList"), Client.class);
+
           } catch (IOException e) {
             e.printStackTrace();
         }
@@ -123,7 +124,13 @@ public class clientViewController implements Initializable {
     private void inflateEResponse(int i) {
         try {
             EResponseController.choice = i;
-            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("../../../Email/EResponse/EResponse.fxml"));
+            FXMLLoader fxmlLoader;
+            if (getClass().getResource("../../../Email/EResponse/EResponse.fxml") == null) {
+                fxmlLoader = new FXMLLoader(getClass().getResource("/Email/EResponse/EResponse.fxml"));
+            } else {
+                fxmlLoader = new FXMLLoader(getClass().getResource("../../../Email/EResponse/EResponse.fxml"));
+            }
+
             Parent root1 = (Parent) fxmlLoader.load();
             Stage stage2 = new Stage();
             stage2.setTitle("New Email");

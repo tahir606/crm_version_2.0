@@ -6,9 +6,6 @@ import javafx.scene.control.ButtonType;
 import objects.*;
 
 import javax.mail.Message;
-import java.io.IOException;
-import java.net.InetSocketAddress;
-import java.net.Socket;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -75,13 +72,13 @@ public class mySqlConn {
     private Connection getConnection() {
         int times = 1;
 
-//        if (static_con != null) {
-//            try {
-//                static_con.close();
-//            } catch (SQLException e) {
-//                e.printStackTrace();
-//            }
-//        }
+        if (static_con != null) {
+            try {
+                static_con.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
 
         while (true) {
             try {
@@ -351,15 +348,15 @@ public class mySqlConn {
         return productQueries.getParticularProduct(product);
     }
 
-    public void insertProductModule(ProductModule productModule) {
-        productQueries.insertProductModule(productModule);
+    public void insertProductModule(ProductModuleOld productModuleOld) {
+        productQueries.insertProductModule(productModuleOld);
     }
 
-    public void updateProductModule(ProductModule productModule) {
-        productQueries.updateProductModule(productModule);
+    public void updateProductModule(ProductModuleOld productModuleOld) {
+        productQueries.updateProductModule(productModuleOld);
     }
 
-    public List<ProductModule> getAllProductModules(int productCode) {
+    public List<ProductModuleOld> getAllProductModules(int productCode) {
         return productQueries.getAllProductModules(productCode);
     }
 
@@ -367,7 +364,7 @@ public class mySqlConn {
         return productQueries.getProductModuleStates(product);
     }
 
-    public ArrayList<ProductModule> getLockedModules() {
+    public ArrayList<ProductModuleOld> getLockedModules() {
         return productQueries.getLockedModules();
     }
 
@@ -379,11 +376,11 @@ public class mySqlConn {
         return productQueries.getNewProductCode();
     }
 
-    public boolean lockModule(ProductModule module) {
+    public boolean lockModule(ProductModuleOld module) {
         return productQueries.lockModule(module);
     }
 
-    public void unlockModule(ProductModule module, String desc) {
+    public void unlockModule(ProductModuleOld module, String desc) {
         productQueries.unlockModule(module, desc);
     }
 
@@ -391,20 +388,20 @@ public class mySqlConn {
         return leadQueries.getNewLeadCode();
     }
 
-    public void insertLead(Lead lead) {
-        leadQueries.insertLead(lead);
+    public void insertLead(LeadOld leadOld) {
+        leadQueries.insertLead(leadOld);
     }
 
-    public void updateLead(Lead lead) {
-        leadQueries.updateLead(lead);
+    public void updateLead(LeadOld leadOld) {
+        leadQueries.updateLead(leadOld);
     }
 
-    public List<Lead> getAllLeads(String where) {
+    public List<LeadOld> getAllLeads(String where) {
         return leadQueries.getAllLeads(where);
     }
 
-    public Lead getParticularLead(Lead lead) {
-        return leadQueries.getParticularLead(lead);
+    public LeadOld getParticularLead(LeadOld leadOld) {
+        return leadQueries.getParticularLead(leadOld);
     }
 
     public void checkAndPopulateSourcesOnCreation() {
@@ -415,12 +412,12 @@ public class mySqlConn {
         return leadQueries.getAllSources(null);
     }
 
-    public void markLeadAsClient(Lead lead) {
-        leadQueries.markLeadAsClient(lead);
+    public void markLeadAsClient(LeadOld leadOld) {
+        leadQueries.markLeadAsClient(leadOld);
     }
 
-    public void archiveLead(Lead lead) {
-        leadQueries.archiveLead(lead);
+    public void archiveLead(LeadOld leadOld) {
+        leadQueries.archiveLead(leadOld);
     }
 
     public void addNote(String text, Contact contact) {
@@ -431,8 +428,8 @@ public class mySqlConn {
         noteQueries.addNewNote(text, client);
     }
 
-    public void addNote(String text, Lead lead) {
-        noteQueries.addNewNote(text, lead);
+    public void addNote(String text, LeadOld leadOld) {
+        noteQueries.addNewNote(text, leadOld);
     }
 
     public void addNote(String text, ProductProperty product) {
@@ -447,8 +444,8 @@ public class mySqlConn {
         noteQueries.updateNote(noteOld, client);
     }
 
-    public void updateNote(NoteOld noteOld, Lead lead) {
-        noteQueries.updateNote(noteOld, lead);
+    public void updateNote(NoteOld noteOld, LeadOld leadOld) {
+        noteQueries.updateNote(noteOld, leadOld);
     }
 
     public void updateNote(NoteOld noteOld, ProductProperty product) {
@@ -467,8 +464,8 @@ public class mySqlConn {
         noteQueries.deleteNote(noteOld, client);
     }
 
-    public void deleteNote(NoteOld noteOld, Lead lead) {
-        noteQueries.deleteNote(noteOld, lead);
+    public void deleteNote(NoteOld noteOld, LeadOld leadOld) {
+        noteQueries.deleteNote(noteOld, leadOld);
     }
 
     public void deleteNote(NoteOld noteOld, ProductProperty product) {
@@ -503,7 +500,7 @@ public class mySqlConn {
         return taskQueries.getTasks(obj);
     }
 
-    public List<TaskOld> getTasks(Lead obj) {
+    public List<TaskOld> getTasks(LeadOld obj) {
         return taskQueries.getTasks(obj);
     }
 
@@ -523,7 +520,7 @@ public class mySqlConn {
         return eventQueries.getEvents(obj);
     }
 
-    public List<EventOld> getEvents(Lead obj) {
+    public List<EventOld> getEvents(LeadOld obj) {
         return eventQueries.getEvents(obj);
     }
 
@@ -607,14 +604,14 @@ public class mySqlConn {
     }
 
 
-    public static boolean pingHost(String host, int port, int timeout) {
-        try (Socket socket = new Socket()) {
-            socket.connect(new InetSocketAddress(host, port), timeout);
-            return true;
-        } catch (IOException e) {
-            return false; // Either timeout or unreachable or failed DNS lookup.
-        }
-    }
+//    public static boolean pingHost(String host, int port, int timeout) {
+//        try (Socket socket = new Socket()) {
+//            socket.connect(new InetSocketAddress(host, port), timeout);
+//            return true;
+//        } catch (IOException e) {
+//            return false; // Either timeout or unreachable or failed DNS lookup.
+//        }
+//    }
 
     private void showAlertDialog() {
         Alert alert2 = new Alert(Alert.AlertType.ERROR, "Cannot Connect to the Database!",

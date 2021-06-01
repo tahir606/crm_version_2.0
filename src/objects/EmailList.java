@@ -4,14 +4,11 @@ import java.io.Serializable;
 
 public class EmailList implements Serializable {
     private int emailID;
-    private String name;
-    private String address;
-    private Integer clientID;
-    private Integer userCode;
-    private Integer contactID;
-    private int leadsID;
+    private String name, address;
+    private Integer clientID, userCode, contactID, leadsID;
     private Client clientEmailList;
     private Contact contactEmailList;
+    private Lead leadsEmailList;
     private Users users;
 
     public EmailList() {
@@ -41,11 +38,24 @@ public class EmailList implements Serializable {
     }
 
     public EmailList(String email, int userCode, int clientID, int contactID) {
-        ;
         this.address = email;
         this.userCode = userCode;
         this.clientID = clientID;
         this.contactID = contactID;
+    }
+
+    public EmailList(String email, int userCode, int clientID, int contactID, int leadsID) {
+        if (clientID != 0) {
+            this.clientID = clientID;
+        }
+        if (contactID != 0) {
+            this.contactID = contactID;
+        }
+        if (leadsID != 0) {
+            this.leadsID = leadsID;
+        }
+        this.address = email;
+        this.userCode = userCode;
     }
 
     public EmailList(int emailID, String email, int userCode, int clientID, int contactID) {
@@ -120,13 +130,6 @@ public class EmailList implements Serializable {
         this.contactID = contactID;
     }
 
-    public int getLeadsID() {
-        return leadsID;
-    }
-
-    public void setLeadsID(int leadsID) {
-        this.leadsID = leadsID;
-    }
 
     public Contact getContactEmailList() {
         return contactEmailList;
@@ -134,6 +137,34 @@ public class EmailList implements Serializable {
 
     public void setContactEmailList(Contact contactEmailList) {
         this.contactEmailList = contactEmailList;
+    }
+
+    public void setClientID(Integer clientID) {
+        this.clientID = clientID;
+    }
+
+    public void setUserCode(Integer userCode) {
+        this.userCode = userCode;
+    }
+
+    public void setContactID(Integer contactID) {
+        this.contactID = contactID;
+    }
+
+    public Integer getLeadsID() {
+        return leadsID;
+    }
+
+    public void setLeadsID(Integer leadsID) {
+        this.leadsID = leadsID;
+    }
+
+    public Lead getLeadsEmailList() {
+        return leadsEmailList;
+    }
+
+    public void setLeadsEmailList(Lead leadsEmailList) {
+        this.leadsEmailList = leadsEmailList;
     }
 
     @Override

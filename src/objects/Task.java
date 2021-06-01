@@ -1,12 +1,49 @@
 package objects;
 
+import JCode.CommonTasks;
+
 import java.io.Serializable;
 
 public class Task implements Serializable {
-    private int taskID, repeat, status,notified,contactID, psID, leadsId, createdBy, freeze, clientID;
+    private int taskID, repeat, status,notified,  createdBy, freeze;
     private String subject, entryDate, dueDate,closedOn,description,createdOn;
     private Users users;
     private Client clientTaskList;
+    private Lead leadsTaskList;
+    private Product productTaskList;
+    Integer contactID, psID,leadsId,clientID;
+
+    public Integer getContactID() {
+        return contactID;
+    }
+
+    public void setContactID(Integer contactID) {
+        this.contactID = contactID;
+    }
+
+    public Integer getPsID() {
+        return psID;
+    }
+
+    public void setPsID(Integer psID) {
+        this.psID = psID;
+    }
+
+    public Integer getLeadsId() {
+        return leadsId;
+    }
+
+    public void setLeadsId(Integer leadsId) {
+        this.leadsId = leadsId;
+    }
+
+    public Integer getClientID() {
+        return clientID;
+    }
+
+    public void setClientID(Integer clientID) {
+        this.clientID = clientID;
+    }
 
     public Users getUsers() {
         return users;
@@ -48,28 +85,22 @@ public class Task implements Serializable {
         this.notified = notified;
     }
 
-    public int getContactID() {
-        return contactID;
+
+
+    public Lead getLeadsTaskList() {
+        return leadsTaskList;
     }
 
-    public void setContactID(int contactID) {
-        this.contactID = contactID;
+    public void setLeadsTaskList(Lead leadsTaskList) {
+        this.leadsTaskList = leadsTaskList;
     }
 
-    public int getPsID() {
-        return psID;
+    public Product getProductTaskList() {
+        return productTaskList;
     }
 
-    public void setPsID(int psID) {
-        this.psID = psID;
-    }
-
-    public int getLeadsId() {
-        return leadsId;
-    }
-
-    public void setLeadsId(int leadsId) {
-        this.leadsId = leadsId;
+    public void setProductTaskList(Product productTaskList) {
+        this.productTaskList = productTaskList;
     }
 
     public int getCreatedBy() {
@@ -88,13 +119,7 @@ public class Task implements Serializable {
         this.freeze = freeze;
     }
 
-    public int getClientID() {
-        return clientID;
-    }
 
-    public void setClientID(int clientID) {
-        this.clientID = clientID;
-    }
 
     public String getSubject() {
         return subject;
@@ -105,7 +130,7 @@ public class Task implements Serializable {
     }
 
     public String getEntryDate() {
-        return entryDate;
+        return CommonTasks.convertFormatWithOutTimeZone(entryDate);
     }
 
     public void setEntryDate(String entryDate) {
@@ -113,7 +138,7 @@ public class Task implements Serializable {
     }
 
     public String getDueDate() {
-        return dueDate;
+        return CommonTasks.convertFormatWithOutTimeZone(dueDate);
     }
 
     public void setDueDate(String dueDate) {
@@ -137,7 +162,7 @@ public class Task implements Serializable {
     }
 
     public String getCreatedOn() {
-        return createdOn;
+        return CommonTasks.convertFormatWithOutTimeZone(createdOn);
     }
 
     public void setCreatedOn(String createdOn) {
@@ -171,6 +196,7 @@ public class Task implements Serializable {
                 ", closedOn='" + closedOn + '\'' +
                 ", description='" + description + '\'' +
                 ", createdOn='" + createdOn + '\'' +
+                ", users=" + users +
                 ", clientTaskList=" + clientTaskList +
                 '}';
     }

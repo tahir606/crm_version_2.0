@@ -81,7 +81,7 @@ public class SolvedDialogController implements Initializable {
             }
 
             loadEmailsStatic();
-            reloadInstances();
+//            reloadInstances();
             Stage stage = (Stage) btn_solved.getScene().getWindow();
             stage.close();
         });

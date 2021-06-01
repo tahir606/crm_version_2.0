@@ -3,38 +3,60 @@ package objects;
 import java.io.Serializable;
 
 public class PhoneList implements Serializable {
-    private int phoneID,  leadsId;
-    private Integer clientID,contactID,userCode;
+    private int phoneID;
+    private Integer clientID, contactID, userCode, leadsId;
     private Client clientPhoneList;
     private String number;
     private Contact contactPhoneList;
+    private Lead leadsPhoneList;
     private Users users;
+
     public PhoneList(String mobile) {
-        this.number=mobile;
+        this.number = mobile;
     }
-    public PhoneList(int phoneID,String mobile,int userCode,int clientID) {
-        this.phoneID=phoneID;
-        this.number=mobile;
+
+    public PhoneList(int phoneID, String mobile, int userCode, int clientID) {
+        this.phoneID = phoneID;
+        this.number = mobile;
         this.userCode = userCode;
         this.clientID = clientID;
     }
-    public PhoneList(String mobile,int userCode,int clientID) {
-        this.number=mobile;
+
+    public PhoneList(String mobile, int userCode, int clientID) {
+        this.number = mobile;
         this.userCode = userCode;
         this.clientID = clientID;
     }
-    public PhoneList(String mobile,int userCode,int clientID,int contactID) {
-        this.number=mobile;
+
+    public PhoneList(String mobile, int userCode, int clientID, int contactID, int leadsId) {
+        if (contactID != 0) {
+            this.contactID = contactID;
+        }
+        if (clientID != 0) {
+            this.clientID = clientID;
+        }
+        if (leadsId != 0) {
+            this.leadsId = leadsId;
+        }
+        this.number = mobile;
         this.userCode = userCode;
-        this.clientID = clientID;
-        this.contactID=contactID;
+
+
     }
-    public PhoneList(int phoneID,String mobile,int userCode,int clientID,int contactID) {
-        this.phoneID=phoneID;
-        this.number=mobile;
+
+    public PhoneList(String mobile, int userCode, int clientID, int contactID) {
+        this.number = mobile;
         this.userCode = userCode;
         this.clientID = clientID;
-        this.contactID=contactID;
+        this.contactID = contactID;
+    }
+
+    public PhoneList(int phoneID, String mobile, int userCode, int clientID, int contactID) {
+        this.phoneID = phoneID;
+        this.number = mobile;
+        this.userCode = userCode;
+        this.clientID = clientID;
+        this.contactID = contactID;
     }
 
     public Users getUsers() {
@@ -85,12 +107,32 @@ public class PhoneList implements Serializable {
         this.contactID = contactID;
     }
 
-    public int getLeadsId() {
+    public void setClientID(Integer clientID) {
+        this.clientID = clientID;
+    }
+
+    public void setContactID(Integer contactID) {
+        this.contactID = contactID;
+    }
+
+    public void setUserCode(Integer userCode) {
+        this.userCode = userCode;
+    }
+
+    public Integer getLeadsId() {
         return leadsId;
     }
 
-    public void setLeadsId(int leadsId) {
+    public void setLeadsId(Integer leadsId) {
         this.leadsId = leadsId;
+    }
+
+    public Lead getLeadsPhoneList() {
+        return leadsPhoneList;
+    }
+
+    public void setLeadsPhoneList(Lead leadsPhoneList) {
+        this.leadsPhoneList = leadsPhoneList;
     }
 
     public Client getClientPhoneList() {
@@ -98,10 +140,9 @@ public class PhoneList implements Serializable {
     }
 
     public void setClientPhoneList(Client clientPhoneList) {
+
         this.clientPhoneList = clientPhoneList;
     }
-
-
 
     public String getNumber() {
         return number;

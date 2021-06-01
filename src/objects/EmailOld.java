@@ -5,7 +5,7 @@ import java.io.File;
 import java.io.Serializable;
 import java.util.List;
 
-import static Email.EmailDashController.convertFormat;
+import static JCode.CommonTasks.convertFormat;
 
 public class EmailOld implements Serializable {
 

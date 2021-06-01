@@ -13,7 +13,7 @@ public class ProductProperty {
     private SimpleIntegerProperty code, price, status, type, createdBy, priority;
     private SimpleStringProperty name, desc, startedtimeStmp, formattedDate, createdOn;
     private SimpleBooleanProperty freeze;
-    private List<ProductModule> productModules;
+    private List<ProductModuleOld> productModuleOlds;
     private List<Note> noteOlds;
 
     public ProductProperty() {
@@ -33,7 +33,7 @@ public class ProductProperty {
 
         freeze = new SimpleBooleanProperty();
         
-        productModules = new ArrayList<>();
+        productModuleOlds = new ArrayList<>();
     }
 
     @Override
@@ -169,12 +169,12 @@ public class ProductProperty {
         this.createdOn.set(createdOn);
     }
     
-    public List<ProductModule> getProductModules() {
-        return productModules;
+    public List<ProductModuleOld> getProductModules() {
+        return productModuleOlds;
     }
     
-    public void setProductModules(List<ProductModule> productModules) {
-        this.productModules = productModules;
+    public void setProductModules(List<ProductModuleOld> productModuleOlds) {
+        this.productModuleOlds = productModuleOlds;
     }
     
     public boolean isFreeze() {

@@ -1,108 +1,93 @@
 package objects;
 
-public class ProductModule {
-    
-    int code, productCode, createdBy, state, lockedBy;
-    String name, desc, productName, createdOn, lockedByName, lockedTime;
-    
+import java.io.Serializable;
+import java.util.List;
+
+public class ProductModule implements Serializable {
+
+    private int pmID,createdBy;
+    private String name, description, createdOn;
+
+    private Integer psID;
+    private Product productModuleList;
+    private List<ModuleLocking> pmModuleLockingList;
     public ProductModule() {
     }
-    
-    @Override
-    public String toString() {
-        return "ProductModule{" +
-                "code=" + code +
-                ", productCode=" + productCode +
-                ", name='" + name + '\'' +
-                ", desc='" + desc + '\'' +
-                '}';
+
+    public List<ModuleLocking> getPmModuleLockingList() {
+        return pmModuleLockingList;
     }
-    
-    public int getCode() {
-        return code;
+
+    public void setPmModuleLockingList(List<ModuleLocking> pmModuleLockingList) {
+        this.pmModuleLockingList = pmModuleLockingList;
     }
-    
-    public void setCode(int code) {
-        this.code = code;
+
+    public int getPmID() {
+        return pmID;
     }
-    
-    public int getProductCode() {
-        return productCode;
+
+    public void setPmID(int pmID) {
+        this.pmID = pmID;
     }
-    
-    public void setProductCode(int productCode) {
-        this.productCode = productCode;
-    }
-    
-    public String getProductName() {
-        return productName;
-    }
-    
-    public void setProductName(String productName) {
-        this.productName = productName;
-    }
-    
-    public String getName() {
-        return name;
-    }
-    
-    public void setName(String name) {
-        this.name = name;
-    }
-    
-    public String getDesc() {
-        return desc;
-    }
-    
-    public void setDesc(String desc) {
-        this.desc = desc;
-    }
-    
-    public int getState() {
-        return state;
-    }
-    
-    public void setState(int state) {
-        this.state = state;
-    }
-    
-    public int getLockedBy() {
-        return lockedBy;
-    }
-    
-    public void setLockedBy(int lockedBy) {
-        this.lockedBy = lockedBy;
-    }
-    
-    public String getLockedByName() {
-        return lockedByName;
-    }
-    
-    public void setLockedByName(String lockedByName) {
-        this.lockedByName = lockedByName;
-    }
-    
-    public String getLockedTime() {
-        return lockedTime;
-    }
-    
-    public void setLockedTime(String lockedTime) {
-        this.lockedTime = lockedTime;
-    }
-    
+
     public int getCreatedBy() {
         return createdBy;
     }
-    
+
     public void setCreatedBy(int createdBy) {
         this.createdBy = createdBy;
     }
-    
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
     public String getCreatedOn() {
         return createdOn;
     }
-    
+
     public void setCreatedOn(String createdOn) {
         this.createdOn = createdOn;
+    }
+
+    public Integer getPsID() {
+        return psID;
+    }
+
+    public void setPsID(Integer psID) {
+        this.psID = psID;
+    }
+
+    public Product getProductModuleList() {
+        return productModuleList;
+    }
+
+    public void setProductModuleList(Product productModuleList) {
+        this.productModuleList = productModuleList;
+    }
+
+    @Override
+    public String toString() {
+        return "ProductModule{" +
+                "pmID=" + pmID +
+                ", createdBy=" + createdBy +
+                ", name='" + name + '\'' +
+                ", description='" + description + '\'' +
+                ", createdOn='" + createdOn + '\'' +
+                ", psID=" + psID +
+                ", productModuleList=" + productModuleList +
+                '}';
     }
 }

@@ -1,11 +1,15 @@
 package reports;
 
 import ApiHandler.RequestHandler;
+import JCode.CommonTasks;
 import JCode.mysql.mySqlConn;
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXComboBox;
+import com.jfoenix.controls.JFXDatePicker;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Label;
@@ -15,12 +19,18 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
-import objects.*;
+import objects.Client;
+import objects.Email;
+import objects.EmailProperty;
+import objects.Users;
+import org.joda.time.LocalDate;
 
 import java.io.IOException;
 import java.net.URL;
 import java.util.List;
 import java.util.ResourceBundle;
+
+import static JCode.CommonTasks.getDateFormattedOnly;
 
 public class ReportsDashController implements Initializable {
 
@@ -29,9 +39,15 @@ public class ReportsDashController implements Initializable {
     @FXML
     private VBox vbox_reports;
     @FXML
+    private HBox hbox_DatePicker;
+    @FXML
     private HBox hbox_filters;
     @FXML
     private HBox hbox_User;
+    @FXML
+    private JFXDatePicker from, to;
+    //    @FXML
+//    private Button btn_Filter;
     //
     private List<Users> usersList = null;
     private List<Client> clientList = null;
@@ -42,13 +58,13 @@ public class ReportsDashController implements Initializable {
     private Label txt_Count;
     private mySqlConn sql;
 
-    private String reportFilter = "";
+    private String reportFilterFrom = "", reportFilterTo = "";
     private int reportSelected = 0;
     final ObservableList<EmailProperty> data = FXCollections.observableArrayList();
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-//        sql = new mySqlConn();
+        hbox_DatePicker.setVisible(false);
         txt_reportName.setVisible(false);
         txt_Count.setVisible(false);
         populateReports();
@@ -91,8 +107,12 @@ public class ReportsDashController implements Initializable {
 
     public void ticketsSolvedByUser() {
         if (reportSelected != 1) {
-            reportFilter = "";
+            reportFilterFrom = "";
+            reportFilterTo = "";
             hbox_User.setVisible(false);
+            from.setValue(null);
+            to.setValue(null);
+            hbox_DatePicker.setVisible(false);
         }
 
         reportSelected = 1;
@@ -114,13 +134,10 @@ public class ReportsDashController implements Initializable {
         durationFilter();
         List<Users> user = null;
         try {
-
-            user = RequestHandler.listRequestHandler(RequestHandler.run("users/getSolvedEmailsByUsers?filter=" + reportFilter), Users.class);
-
+            user = RequestHandler.listRequestHandler(RequestHandler.run("users/getSolvedEmailsByUsers?from=" + reportFilterFrom + "&to=" + reportFilterTo), Users.class);
         } catch (IOException e) {
             e.printStackTrace();
         }
-//        List<Users> user = sql.ticketsSolvedByUser(reportFilter);
         txt_Count.setText("Displaying " + (user == null ? 0 : user.size()) + " Records");
         tableView.getItems().setAll(user);
         tableView.setPrefHeight(200);
@@ -135,8 +152,12 @@ public class ReportsDashController implements Initializable {
 
     public void emailsPerClient() {
         if (reportSelected != 2) {
-            reportFilter = "";
+            reportFilterFrom = "";
+            reportFilterTo = "";
             hbox_User.setVisible(false);
+            from.setValue(null);
+            to.setValue(null);
+            hbox_DatePicker.setVisible(false);
         }
         reportSelected = 2;
 
@@ -156,11 +177,10 @@ public class ReportsDashController implements Initializable {
         durationFilter();
         List<Client> clients = null;
         try {
-            clients = RequestHandler.listRequestHandler(RequestHandler.run("client/emailsPerClient?filter=" + reportFilter), Client.class);
+            clients = RequestHandler.listRequestHandler(RequestHandler.run("client/emailsPerClient?from=" + reportFilterFrom + "&to=" + reportFilterTo), Client.class);
         } catch (IOException e) {
             e.printStackTrace();
         }
-//        List<ClientProperty> clientProperties = sql.emailsPerClient(reportFilter);
         txt_Count.setText("Displaying " + (clients == null ? 0 : clients.size()) + " Records");
         tableView.getItems().setAll(clients);
         tableView.setPrefHeight(200);
@@ -178,9 +198,12 @@ public class ReportsDashController implements Initializable {
 
     private void ticketsSolvedByUser_Details() {
         if (reportSelected != 3) {
-            reportFilter = "";
             hbox_User.setVisible(true);
+            hbox_DatePicker.setVisible(false);
+            from.setValue(null);
+            to.setValue(null);
             hbox_filters.setVisible(false);
+            hbox_DatePicker.setVisible(false);
         }
         reportSelected = 3;
         txt_reportName.setVisible(true);
@@ -205,7 +228,6 @@ public class ReportsDashController implements Initializable {
         } catch (IOException e) {
             e.printStackTrace();
         }
-//        usersList = sql.getAllUsers();
         user_filters.getItems().addAll(usersList);
         user_filters.valueProperty().addListener((observable, oldValue, newValue) -> {
             users = newValue;
@@ -217,7 +239,7 @@ public class ReportsDashController implements Initializable {
         List<Email> emails = null;
         try {
 
-            emails = RequestHandler.jsonListRequestHandler(RequestHandler.run("ticket/ticketsSolvedByUserDetails/" + users.getUserCode() + "?filter=" + reportFilter));
+            emails = RequestHandler.jsonListRequestHandler(RequestHandler.run("ticket/ticketsSolvedByUserDetails/" + users.getUserCode() + "?from=" + reportFilterFrom + "&to=" + reportFilterTo));
 
         } catch (IOException e) {
             e.printStackTrace();
@@ -245,8 +267,10 @@ public class ReportsDashController implements Initializable {
 
     private void averageTime() {
         if (reportSelected != 4) {
-            reportFilter = "";
+            reportFilterFrom = "";
+            reportFilterTo = "";
             hbox_User.setVisible(false);
+            hbox_DatePicker.setVisible(false);
             hbox_filters.setVisible(false);
         }
         reportSelected = 4;
@@ -261,12 +285,11 @@ public class ReportsDashController implements Initializable {
         List<Users> emails = null;
         try {
 
-            emails = RequestHandler.jsonListUserRequestHandler(RequestHandler.run("users/averageCalculate" ));
+            emails = RequestHandler.jsonListUserRequestHandler(RequestHandler.run("users/averageCalculate"));
 
         } catch (IOException e) {
             e.printStackTrace();
         }
-//        List<EmailProperty> averageTime = sql.average_Calculate();
         tableView.getItems().setAll(emails);
         tableView.setPrefHeight(200);
         AnchorPane.setTopAnchor(tableView, 40.0);
@@ -282,9 +305,14 @@ public class ReportsDashController implements Initializable {
 
     public void clientReport() {
         if (reportSelected != 5) {
-            reportFilter = "";
+            reportFilterFrom = "";
+            reportFilterTo = "";
             hbox_User.setVisible(true);
+            hbox_DatePicker.setVisible(false);
             hbox_filters.setVisible(false);
+            from.setValue(null);
+            to.setValue(null);
+
         }
         reportSelected = 5;
         txt_reportName.setVisible(true);
@@ -309,8 +337,6 @@ public class ReportsDashController implements Initializable {
         } catch (IOException e) {
             e.printStackTrace();
         }
-
-//        clientList = sql.clientName();
         client_filters.getItems().addAll(clientList);
         client_filters.valueProperty().addListener((observable, oldValue, newValue) -> {
             clientName = newValue;
@@ -321,12 +347,11 @@ public class ReportsDashController implements Initializable {
         hbox_User.getChildren().add(client_filters);
         List<Email> emails = null;
         try {
-            emails = RequestHandler.jsonListRequestHandler(RequestHandler.run("ticket/clientReportWithDomain/" + clientName.getClientID() + "?filter=" + reportFilter));
+            emails = RequestHandler.jsonListRequestHandler(RequestHandler.run("ticket/clientReportWithDomain/" + clientName.getClientID() + "?from=" + reportFilterFrom + "&to=" + reportFilterTo));
 
         } catch (IOException e) {
             e.printStackTrace();
         }
-//        List<EmailProperty> clientReport = sql.clientReportWithDomain(clientName, reportFilter);
         txt_Count.setText("Displaying " + (emails == null ? 0 : emails.size()) + " Records");
 
         tableView.getColumns().clear();
@@ -350,84 +375,96 @@ public class ReportsDashController implements Initializable {
         anchor_center.getChildren().add(tableView);
     }
 
-    String column = "";
 
     private void durationFilter() {
         hbox_filters.getChildren().clear();
-        if (reportSelected < 3 || reportSelected > 3) {
-            column = "TSTMP";
-        } else if (reportSelected == 3) {
-            column = "SOLVTIME";
-        }
-
         hbox_filters.setVisible(true);
+
         JFXComboBox<String> filters = new JFXComboBox<>();
         filters.setPromptText("Select Filter");
-        filters.getItems().addAll("Today", "Last 7 Days", "Last 30 Days", "All Time"); //"Custom"  //"Last 30 Days",
+        filters.getItems().addAll("Today", "Last 7 Days", "Last 30 Days", "Custom Date"); //"Custom"  //"Last 30 Days",
         filters.valueProperty().addListener((observable, oldValue, newValue) -> {
-//            if (reportSelected == 1 && reportSelected == 2) {
             switch (newValue) {
                 case "Today": {
-                    reportFilter = "Today";
+                    reportFilterFrom = CommonTasks.getCurrentDate();
+                    reportFilterTo = CommonTasks.getCurrentDate();
                     break;
                 }
                 case "Last 7 Days": {
-                    reportFilter = "Last 7 Days";
+                    LocalDate now = new LocalDate();
+                    LocalDate beforeDate = now.minusDays(7);
+                    reportFilterFrom = String.valueOf(beforeDate);
+                    reportFilterTo = String.valueOf(now);
                     break;
                 }
                 case "Last 30 Days": {
-                    reportFilter = "Last 30 Days";
+                    LocalDate now = new LocalDate();
+                    LocalDate beforeDate = now.minusDays(30);
+                    reportFilterFrom = String.valueOf(beforeDate);
+                    reportFilterTo = String.valueOf(now);
                     break;
                 }
-                case "All Time": {
-                    reportFilter = "All Time";
+                case "Custom Date": {
+                    reportFilterFrom = "";
+                    reportFilterTo = "";
                     break;
                 }
                 default:
                     break;
-//                case "Today": {
-//                    reportFilter = " AND " + column + " BETWEEN '" + CommonTasks.getCurrentDate() + "' AND '" + CommonTasks.getCurrentDate() + " 23:59:59'";
-//                    break;
-//                }
-//                case "Last 7 Days": {
-//                    LocalDate now = new LocalDate();
-//                    LocalDate beforeDate = now.minusDays(7);
-//                    reportFilter = " AND " + column + " BETWEEN '" + beforeDate + "' AND '" + now + " 23:59:59'";
-//                    break;
-//                }
-//                case "Last 30 Days": {
-//                    LocalDate now = new LocalDate();
-//                    LocalDate beforeDate = now.minusDays(30);
-//                    reportFilter = " AND " + column + " BETWEEN '" + beforeDate + "' AND '" + now + " 23:59:59'";
-//                    break;
-//                }
-//                case "All Time": {
-//                    reportFilter = "";
-//                    break;
-//                }
-//                default:
-//                    break;
             }
-            if (reportSelected == 1) {
-                ticketsSolvedByUser();
-                txt_reportName.setText("Tickets Solved by User - " + newValue);
-            } else if (reportSelected == 2) {
-                emailsPerClient();
-                txt_reportName.setText("Emails Received Per User - " + newValue);
-            } else if (reportSelected == 3) {
-                ticketsSolvedByUser_Details();
-                txt_reportName.setText("Ticket Solved By " + users + ": Details" + " in " + newValue);
-                filter = newValue;
-            } else if (reportSelected == 5) {
-                clientReport();
-                txt_reportName.setText("Tickets Details by Clients Reports: " + clientName + " in " + newValue);
-                filter = newValue;
+            if (newValue.equals("Custom Date")) {
+                hbox_DatePicker.setVisible(true);
+                from.setValue(null);
+                to.setValue(null);
+                from.setOnAction(new EventHandler<ActionEvent>() {
+                    @Override
+                    public void handle(ActionEvent event) {
+
+                        if (from.getValue() != null && to.getValue() != null) {
+                            reportFilterFrom = from.getValue().toString();
+                            reportFilterTo = to.getValue().toString();
+                            populate();
+                        }
+                    }
+                });
+                to.setOnAction(new EventHandler<ActionEvent>() {
+                    @Override
+                    public void handle(ActionEvent event) {
+
+                        if (from.getValue() != null && to.getValue() != null) {
+                            reportFilterFrom = from.getValue().toString();
+                            reportFilterTo = to.getValue().toString();
+                            populate();
+                        }
+                    }
+                });
+
+
             } else {
-                txt_reportName.setText("Average Time For Each User To Solve a Ticket");
+                hbox_DatePicker.setVisible(false);
+                populate();
             }
         });
         hbox_filters.getChildren().add(filters);
     }
 
-
+    public void populate() {
+        if (reportSelected == 1) {
+            ticketsSolvedByUser();
+            txt_reportName.setText("Tickets Solved by User - " + "From : " + getDateFormattedOnly(reportFilterFrom) + " To :  " + getDateFormattedOnly(reportFilterTo));
+        } else if (reportSelected == 2) {
+            emailsPerClient();
+            txt_reportName.setText("Emails Received Per User - " + "From : " + getDateFormattedOnly(reportFilterFrom) + " To :  " + getDateFormattedOnly(reportFilterTo));
+        } else if (reportSelected == 3) {
+            ticketsSolvedByUser_Details();
+            txt_reportName.setText("Ticket Solved By " + users + ": Details" + " in " + "From : " + getDateFormattedOnly(reportFilterFrom) + " To :  " + getDateFormattedOnly(reportFilterTo));
+            filter = "From : " + reportFilterFrom + " To :  " + reportFilterTo;
+        } else if (reportSelected == 5) {
+            clientReport();
+            txt_reportName.setText("Tickets Details by Clients Reports: " + clientName + " in " + "From : " + getDateFormattedOnly(reportFilterFrom) + " To :  " + getDateFormattedOnly(reportFilterTo));
+            filter = "From : " + reportFilterFrom + " To :  " + reportFilterTo;
+        } else {
+            txt_reportName.setText("Average Time For Each User To Solve a Ticket");
+        }
+    }
 }

@@ -164,7 +164,7 @@ public class EventQueries {
         return eventOlds;
     }
 
-    public List<EventOld> getEvents(Lead lead) {
+    public List<EventOld> getEvents(LeadOld leadOld) {
         String query = "SELECT ES_ID, ES_TITLE, ES_DESC, ES_LOCATION, ES_ALLDAY, ES_STATUS, ES_FROM, ES_TO, FNAME, LS_CNAME, NS.CREATEDON " +
                 " FROM EVENT_STORE AS NS, LEAD_STORE AS CS, USERS AS US " +
                 " WHERE NS.LS_ID = ? " +
@@ -176,7 +176,7 @@ public class EventQueries {
 
         try {
             PreparedStatement statement = static_con.prepareStatement(query);
-            statement.setInt(1, lead.getCode());
+            statement.setInt(1, leadOld.getCode());
             ResultSet set = statement.executeQuery();
             //-------------Creating Task-------------
             while (set.next()) {

@@ -24,6 +24,7 @@ import objects.*;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
 
@@ -57,8 +58,6 @@ public class newContactController implements Initializable {
     @FXML
     private JFXComboBox client_list;
 
-
-    //    static ContactProperty contact;
     Contact contact;
     private List<ClientProperty> allClients;
 
@@ -68,7 +67,6 @@ public class newContactController implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
 
-//        contact = new ContactProperty();
         contact = new Contact();
         Image image = new Image(this.getClass().getResourceAsStream("/res/img/left-arrow.png"));
         btn_back.setGraphic(new ImageView(image));
@@ -86,8 +84,6 @@ public class newContactController implements Initializable {
         });
         try {
             clients = RequestHandler.listRequestHandler(RequestHandler.run("client/clientList"), Client.class);
-
-
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -117,7 +113,7 @@ public class newContactController implements Initializable {
                 txt_heading.setText("Update Contact");
                 contact.setClientID(contactViewController.staticContact.getClientID());
                 btn_save.setText("Update");
-                populateContact();
+                populateContact(contactViewController.staticContact);
                 break;
             }
             default:
@@ -126,25 +122,54 @@ public class newContactController implements Initializable {
 
     }
 
-    public void populateContact() {
-        Contact contact = contactViewController.staticContact;
+    public void populateContact(Contact contact) {
         txt_fname.setText(contact.getFirstName());
         txt_lname.setText(contact.getLastName());
-        txt_email.setText(contact.getCoEmailLists().get(0).getAddress());
-        txt_mobile.setText(contact.getCoPhoneLists().get(0).getNumber());
+        if (contact.getCoEmailLists()!=null) {
+            if (contact.getCoEmailLists().isEmpty()){
+                txt_email.setText("");
+            }else{
+                txt_email.setText(contact.getCoEmailLists().get(0).getAddress());
+            }
+        }
+        if (contact.getCoPhoneLists()!=null) {
+            if (contact.getCoPhoneLists().isEmpty()){
+                txt_mobile.setText("");
+            }else {
+                txt_mobile.setText(contact.getCoPhoneLists().get(0).getNumber());
+            }
+        }
+
         txt_addr.setText(contact.getAddress());
         txt_city.setText(contact.getCity());
         txt_country.setText(contact.getCountry());
         txt_note.setText(contact.getNote());
+        if (contact.getDateOfBirth() != null) {
+            date_of_birth.setValue(CommonTasks.createLocalDate(contact.getDateOfBirth()));
+        }
 
-        date_of_birth.setValue(CommonTasks.createLocalDate(contact.getDateOfBirth()));
 
         for (Client c : clients) {
+            if (c==null){
+                return;
+            }
             if (c.getClientID() == contact.getClientID()) {
                 client_list.getSelectionModel().select(c);
                 break;
             }
         }
+    }
+
+    private void init() {
+        contact.setFirstName("");
+        contact.setLastName("");
+        contact.setAddress("");
+        contact.setCity("");
+        contact.setCountry("");
+        contact.setNote("");
+        contact.setCoEmailLists(new ArrayList<>());
+        contact.setCoPhoneLists(new ArrayList<>());
+        populateContact(contact);
     }
 
     public void saveChanges(ActionEvent actionEvent) throws IOException {
@@ -163,9 +188,9 @@ public class newContactController implements Initializable {
         if (fname.equals("") || lname.equals("") || city.equals("") || country.equals("") || c == null || email.equals("") || note.equals("") || jdate.equals("") || addr.equals("")) {
             Toast.makeText((Stage) btn_save.getScene().getWindow(), "Required Fields Are Empty");
             return;
-        }  else {
+        } else {
             if (!email.equals("")) {
-               if (!EResponseController.validateAddress(email)){
+                if (!EResponseController.validateAddress(email)) {
                     Toast.makeText((Stage) btn_save.getScene().getWindow(), "Required Email is Not Correct");
                     return;
                 }
@@ -220,7 +245,7 @@ public class newContactController implements Initializable {
                     case 'N': {
                         try {
                             Contact contact1 = (Contact) RequestHandler.objectRequestHandler(RequestHandler.postOfReturnResponse("contact/addContact", RequestHandler.writeJSON(contact)), Contact.class);
-                           if (contact1 != null) {
+                            if (contact1 != null) {
                                 RequestHandler.post("emailList/addEmail", RequestHandler.writeJSON(new EmailList(email, userId, clientId, contact1.getContactID())));
                                 RequestHandler.post("phoneList/addPhone", RequestHandler.writeJSON(new PhoneList(mobile, userId, clientId, contact1.getContactID())));
                             }
@@ -247,10 +272,11 @@ public class newContactController implements Initializable {
                         break;
                     }
                 }
-
+                init();
             } else {
                 return;
             }
+
         }
 
     }

@@ -1,5 +1,6 @@
 package activity.details;
 
+import ApiHandler.RequestHandler;
 import JCode.CommonTasks;
 import JCode.mysql.mySqlConn;
 import activity.ActivityDashController;
@@ -16,8 +17,8 @@ import javafx.scene.control.Tooltip;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
+import objects.Client;
 import objects.Task;
-import objects.TaskOld;
 
 import java.io.IOException;
 import java.net.URL;
@@ -35,16 +36,13 @@ public class ActivityDetailsController implements Initializable {
     private JFXButton btn_back, btn_edit, btn_close;
     @FXML
     private HBox hbox_tools;
-//    @FXML
-//    private VBox notes_list;
 
     private mySqlConn sql;
 
-    private TaskOld taskOld;
     private Task task;
+
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-//        sql = new mySqlConn();
 
         Image image = new Image(this.getClass().getResourceAsStream("/res/img/left-arrow.png"));
         btn_back.setGraphic(new ImageView(image));
@@ -60,43 +58,55 @@ public class ActivityDetailsController implements Initializable {
                 e.printStackTrace();
             }
         });
-
         task = ActivityViewController.staticTask;
+
         populateDetails();
     }
 
     private void populateDetails() {
-        txt_subject.setText(taskOld.getSubject());
-        txt_entryDate.setText(taskOld.getEntryDate() == null ? " - " : CommonTasks.getDateFormatted(taskOld.getEntryDate()));
-        txt_dueDate.setText(CommonTasks.getDateFormatted(taskOld.getDueDate()));
-        txt_createdOn.setText(taskOld.getCreatedOn());
-        txt_createdBy.setText(taskOld.getCreatedBy());
-        txt_desc.setText(taskOld.getDesc());
+        txt_subject.setText(task.getSubject());
+       txt_entryDate.setText(task.getEntryDate() == null ? " - " : task.getEntryDate());
+        txt_dueDate.setText(task.getDueDate());
+        txt_createdOn.setText(task.getCreatedOn());
+        txt_createdBy.setText(task.getUsers().getFullName());
+        txt_desc.setText(task.getDescription());
 
         txt_type.setVisible(true);
         txt_name.setVisible(true);
 
-        if (taskOld.getClient() != 0) {
+        if (task.getClientID() != 0) {
             txt_type.setText("Client");
-            txt_name.setText(taskOld.getClientName());
-        } else if (taskOld.getLead() != 0) {
+            try {
+                Client client = (Client) RequestHandler.objectRequestHandler(RequestHandler.run("client/" + task.getClientID()), Client.class);
+                if (client != null) {
+
+                    txt_name.setText(client.getName());
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        } else if (task.getLeadsId() != 0) {
             txt_type.setText("Lead");
-            txt_name.setText(taskOld.getLeadName());
-        } else if (taskOld.getProduct() != 0) {
+            txt_name.setText("");
+        } else if (task.getPsID() != 0) {
             txt_type.setText("Product");
-            txt_name.setText(taskOld.getProductName());
+            txt_name.setText("");
         } else {
             txt_type.setVisible(false);
             txt_name.setVisible(false);
         }
 
-        if (!taskOld.isStatus())
+        if (task.getStatus()==0)
             btn_close.setDisable(false);
         else
             btn_close.setDisable(true);
 
         btn_close.setOnAction(event -> {
-            sql.closeTask(taskOld);
+            try {
+                RequestHandler.run("task/closeTask/"+task.getTaskID());
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
             btn_close.setDisable(true);
         });
 
@@ -110,13 +120,16 @@ public class ActivityDetailsController implements Initializable {
         buttonArchive.setPrefWidth(84);
         buttonArchive.setPrefHeight(34);
         buttonArchive.setOnAction(event -> {
-            sql.archiveTask(taskOld);
+            try {
+                RequestHandler.run("task/archiveTask/"+task.getTaskID());
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
             CommonTasks.loadInPane(ActivityDashController.main_paneF, "activity/view/activity_view.fxml");
         });
         hbox_tools.getChildren().add(buttonArchive);
 
-//        new NotesConstructor(notes_list, sql, lead).generalConstructor(3);
-//        new TasksConstructor(open_activities_list, closed_activities_list, lead).generalConstructor(3);
+
     }
 }
 

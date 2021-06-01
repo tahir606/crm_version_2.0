@@ -17,10 +17,10 @@ import javafx.scene.layout.VBox;
 import lead.view.LeadViewController;
 import objects.Client;
 import objects.Event;
-import objects.EventOld;
 import objects.Lead;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 public class EventsConstructor {
@@ -34,7 +34,6 @@ public class EventsConstructor {
 
     private static mySqlConn sql;
 
-    //Which property is selected
     public static int choice;
     public static Event updatingEvent;
 
@@ -46,17 +45,15 @@ public class EventsConstructor {
         this.closed_events_list = new VBox();
         this.client = client;
 
-        sql = new mySqlConn();
     }
 
-    public EventsConstructor(TabPane tabPane, Lead lead) {
+    public EventsConstructor(TabPane tabPane, Lead leadOld) {
         this.tabPane = tabPane;
         this.tab = new Tab("Events");
         this.open_events_list = new VBox();
         this.closed_events_list = new VBox();
-        this.lead = lead;
+        this.lead = leadOld;
 
-        sql = new mySqlConn();
     }
 
     private static void constructClientActivities() {
@@ -72,13 +69,24 @@ public class EventsConstructor {
         label2.setStyle(labelCss);
         closed_events_list.getChildren().addAll(returnSpaceHbox(), label2, returnSpaceHbox());
 
-        List<EventOld> eventOlds = sql.getEvents(clientViewController.staticClient);
-        for (Event event : clientViewController.staticClient.getClEventList()) {
-            if (event.getStatus()==0)
-                constructingOpenEvent(event);
-            else
-                constructingCloseEvent(event);
+        if (clientViewController.staticClient != null) {
+            List<Event> eventList = new ArrayList<>();
+            try {
+                eventList = RequestHandler.listRequestHandler(RequestHandler.run("event/getEventsByClientId/" + clientViewController.staticClient.getClientID()), Event.class);
+                if (eventList == null) {
+                    eventList = new ArrayList<>();
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            for (Event event : eventList) {
+                if (event.getStatus()==0)
+                    constructingOpenEvent(event);
+                else
+                    constructingCloseEvent(event);
+            }
         }
+
     }
 
     private static void constructLeadActivities() {
@@ -93,14 +101,24 @@ public class EventsConstructor {
         Label label2 = new Label("Closed Activities");
         label2.setStyle(labelCss);
         closed_events_list.getChildren().addAll(label2);
+        if (LeadViewController.staticLead != null) {
+            List<Event> eventList = new ArrayList<>();
+            try {
+                eventList = RequestHandler.listRequestHandler(RequestHandler.run("event/getEventsByLeadId/" + LeadViewController.staticLead.getLeadsId()), Event.class);
+                if (eventList == null) {
+                    eventList = new ArrayList<>();
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            for (Event event : eventList) {
+                if (event.getStatus()==0)
+                    constructingOpenEvent(event);
+                else
+                    constructingCloseEvent(event);
+            }
+        }
 
-        List<EventOld> eventOlds = sql.getEvents(LeadViewController.staticLead);
-//        for (EventOld eventOld : eventOlds) {
-//            if (!eventOld.isStatus())
-//                constructingOpenEvent(eventOld);
-//            else
-//                constructingCloseEvent(eventOld);
-//        }
     }
 
     private static void constructingButtons() {
@@ -175,18 +193,16 @@ public class EventsConstructor {
                 e.printStackTrace();
             }
 
-//            sql.closeEvent(event);
             generalConstructor(choice);
         });
         delItem.setOnAction(t -> {
-            event.setFreeze(1);
+//            event.setFreeze(1);
             String responseMessage = "";
             try {
-                responseMessage = RequestHandler.basicRequestHandler(RequestHandler.postOfReturnResponse("event/addEvent", RequestHandler.writeJSON(event)));
+                responseMessage = RequestHandler.basicRequestHandler(RequestHandler.run("event/deleteEvent/"+event.getEventID()));
             } catch (IOException e) {
                 e.printStackTrace();
             }
-//            sql.archiveEvent(event);
             generalConstructor(choice);
         });
         contextMenu.getItems().addAll(editItem, closeItem, delItem);
@@ -232,7 +248,7 @@ public class EventsConstructor {
         details.setMaxHeight(25);
         details.setPadding(new Insets(3));
         Label createdBy = new Label(event.getUsers().getFullName()),
-                createdOn = new Label(CommonTasks.getTimeFormatted(event.getFrom() + " -> " + CommonTasks.getTimeFormatted(event.getTo()) ));
+                createdOn = new Label(CommonTasks.getDateFormat(event.getFrom() + " -> " + CommonTasks.getDateFormat(event.getTo()) ));
         createdOn.setMinWidth(150);
         createdBy.setMinWidth(280);
 

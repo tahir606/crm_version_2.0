@@ -213,7 +213,7 @@ public class NoteQueries {
     }
 
     //Lead Notes------------------------------------------------------------------------------------------------------
-    public void addNewNote(String text, Lead lead) {
+    public void addNewNote(String text, LeadOld leadOld) {
         String query = "INSERT INTO NOTE_STORE(N_ID, N_TEXT, LS_ID, CREATEDON, CREATEDBY) " +
                 " SELECT IFNULL(max(N_ID),0)+1,?,?,?,? from NOTE_STORE WHERE LS_ID =?";
 
@@ -223,10 +223,10 @@ public class NoteQueries {
         try {
             statement = static_con.prepareStatement(query);
             statement.setString(1, text);
-            statement.setInt(2, lead.getCode());
+            statement.setInt(2, leadOld.getCode());
             statement.setString(3, CommonTasks.getCurrentTimeStamp());
             statement.setInt(4, FileHelper.ReadUserApiDetails().getUserCode());
-            statement.setInt(5, lead.getCode());
+            statement.setInt(5, leadOld.getCode());
 
             statement.executeUpdate();
 
@@ -235,7 +235,7 @@ public class NoteQueries {
         }
     }
 
-    public void updateNote(NoteOld noteOld, Lead lead) {
+    public void updateNote(NoteOld noteOld, LeadOld leadOld) {
         String query = " UPDATE NOTE_STORE SET N_TEXT = ? " +
                 " WHERE LS_ID =?  " +
                 " AND N_ID =? "+createdByQuery;
@@ -246,7 +246,7 @@ public class NoteQueries {
         try {
             statement = static_con.prepareStatement(query);
             statement.setString(1, noteOld.getText());
-            statement.setInt(2, lead.getCode());
+            statement.setInt(2, leadOld.getCode());
             statement.setInt(3, noteOld.getCode());
             statement.setInt(4 ,FileHelper.ReadUserApiDetails().getUserCode());
             statement.executeUpdate();
@@ -256,7 +256,7 @@ public class NoteQueries {
         }
     }
 
-    public List<Note> getNotes(Lead lead) {
+    public List<Note> getNotes(LeadOld leadOld) {
         String query = "SELECT N_ID, N_TEXT, LS_CNAME, NS.CREATEDON AS CREATEDON, FNAME,NS.CREATEDBY " +
                 " FROM NOTE_STORE AS NS, LEAD_STORE AS LS, USERS AS US " +
                 " WHERE NS.LS_ID = ? " +
@@ -267,7 +267,7 @@ public class NoteQueries {
 
         try {
             PreparedStatement statement = static_con.prepareStatement(query);
-            statement.setInt(1, lead.getCode());
+            statement.setInt(1, leadOld.getCode());
             ResultSet set = statement.executeQuery();
             //-------------Creating Email-------------
             while (set.next()) {
@@ -286,7 +286,7 @@ public class NoteQueries {
         return noteOlds;
     }
 
-    public void deleteNote(NoteOld noteOld, Lead lead) {
+    public void deleteNote(NoteOld noteOld, LeadOld leadOld) {
         String query = "DELETE FROM NOTE_STORE " +
                 " WHERE N_ID = ? " +
                 " AND LS_ID = ? "+createdByQuery;
@@ -297,7 +297,7 @@ public class NoteQueries {
         try {
             statement = static_con.prepareStatement(query);
             statement.setInt(1, noteOld.getCode());
-            statement.setInt(2, lead.getCode());
+            statement.setInt(2, leadOld.getCode());
             statement.setInt(3 ,FileHelper.ReadUserApiDetails().getUserCode());
             statement.executeUpdate();
 

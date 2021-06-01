@@ -31,6 +31,8 @@ import java.net.URL;
 import java.util.Collections;
 import java.util.ResourceBundle;
 
+import static JCode.CommonTasks.getSimpleDate;
+
 public class
 contactDetailsController implements Initializable {
 
@@ -66,7 +68,6 @@ contactDetailsController implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
 
-//        sql = new mySqlConn();
 
         Image image = new Image(this.getClass().getResourceAsStream("/res/img/left-arrow.png"));
         btn_back.setGraphic(new ImageView(image));
@@ -82,7 +83,6 @@ contactDetailsController implements Initializable {
             }
         });
         Contact contact = contactViewController.staticContact;
-//        ContactProperty contact = contactViewController.staticContact;
         populateDetails(contact);
 
         TabPane tabPane = new TabPane();
@@ -103,7 +103,13 @@ contactDetailsController implements Initializable {
     private void inflateEResponse(int i) {
         try {
             EResponseController.choice = i;
-            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("../../../../Email/EResponse/EResponse.fxml"));
+            FXMLLoader fxmlLoader;
+            if (getClass().getResource("../../../Email/EResponse/EResponse.fxml") == null) {
+                fxmlLoader = new FXMLLoader(getClass().getResource("/Email/EResponse/EResponse.fxml"));
+            } else {
+                fxmlLoader = new FXMLLoader(getClass().getResource("../../../Email/EResponse/EResponse.fxml"));
+            }
+
             Parent root1 = (Parent) fxmlLoader.load();
             Stage stage2 = new Stage();
             stage2.setTitle("New Email");
@@ -117,17 +123,26 @@ contactDetailsController implements Initializable {
         }
     }
 
-    //    private void populateDetails(ContactProperty contact) {
     private void populateDetails(Contact contact) {
         txt_fname.setText(contact.getFirstName());
-        txt_email.setText(contact.getCoEmailLists().get(0).getAddress());
-        txt_mobile.setText(contact.getCoPhoneLists().get(0).getNumber());
+        if (!contact.getCoEmailLists().isEmpty()){
+            txt_email.setText(contact.getCoEmailLists().get(0).getAddress());
+
+        }
+        if (!contact.getCoPhoneLists().isEmpty()){
+            txt_mobile.setText(contact.getCoPhoneLists().get(0).getNumber());
+        }
         txt_client.setText(contact.getClient12().getName());
-        txt_dob.setText(contact.getDateOfBirth());
+        txt_dob.setText(getSimpleDate(contact.getDateOfBirth()));
         txt_age.setText(CommonTasks.getAge(contact.getDateOfBirth()));
 
         btn_email.setOnAction(event -> {
-            EResponseController.stTo = Collections.singletonList(contact.getCoEmailLists().get(0).getAddress());
+            if (contact.getCoEmailLists().isEmpty()){
+                EResponseController.stTo = Collections.singletonList("");
+            }else{
+                EResponseController.stTo = Collections.singletonList(contact.getCoEmailLists().get(0).getAddress());
+
+            }
             EResponseController.stInstance = 'N';
             inflateEResponse(1);
         });
@@ -143,8 +158,6 @@ contactDetailsController implements Initializable {
                 e.printStackTrace();
             }
         });
-
-//        new NotesConstructor(, sql, contact).generalConstructor(1);
     }
 
 }

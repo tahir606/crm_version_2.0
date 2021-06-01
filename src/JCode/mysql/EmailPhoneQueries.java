@@ -2,7 +2,7 @@ package JCode.mysql;
 
 import objects.ClientProperty;
 import objects.ContactProperty;
-import objects.Lead;
+import objects.LeadOld;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -176,7 +176,7 @@ public class EmailPhoneQueries {
         }
     }
 
-    public void emailsPhoneInsertion(PreparedStatement statement, Lead lead) {
+    public void emailsPhoneInsertion(PreparedStatement statement, LeadOld leadOld) {
 
         String deleteEmails = "DELETE FROM EMAIL_LIST WHERE LS_ID = ?";
 
@@ -192,29 +192,29 @@ public class EmailPhoneQueries {
             //Delete Email
             statement = null;
             statement = static_con.prepareStatement(deleteEmails);
-            statement.setInt(1, lead.getCode());
+            statement.setInt(1, leadOld.getCode());
             statement.executeUpdate();
             //Add Email
             statement = null;
             statement = static_con.prepareStatement(emailList);
-            statement.setString(1, lead.getEmail());
-            statement.setInt(2, lead.getCode());
+            statement.setString(1, leadOld.getEmail());
+            statement.setInt(2, leadOld.getCode());
             statement.executeUpdate();
 
             //Delete Phone
             statement = null;
             statement = static_con.prepareStatement(deletePhones);
-            statement.setInt(1, lead.getCode());
+            statement.setInt(1, leadOld.getCode());
             statement.executeUpdate();
             //Add Phone
             statement = null;
             statement = static_con.prepareStatement(phoneList);
-            statement.setString(1, lead.getPhone());
-            statement.setInt(2, lead.getCode());
+            statement.setString(1, leadOld.getPhone());
+            statement.setInt(2, leadOld.getCode());
             statement.executeUpdate();
 
 
-            String[] t = lead.getEmail().split("\\@");
+            String[] t = leadOld.getEmail().split("\\@");
             insertDomainsWhitelist(t[1]);
 
             if (statement != null)

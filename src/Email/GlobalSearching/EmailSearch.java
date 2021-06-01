@@ -3,7 +3,6 @@ package Email.GlobalSearching;
 import ApiHandler.RequestHandler;
 import Email.EmailDashController;
 import JCode.FileDev;
-import JCode.mysql.mySqlConn;
 import ZipFile.ZipFileUtility;
 import com.jfoenix.controls.JFXComboBox;
 import com.jfoenix.controls.JFXTextField;
@@ -20,7 +19,6 @@ import javafx.scene.layout.VBox;
 import javafx.scene.web.WebView;
 import objects.Email;
 import objects.History;
-import objects.Users;
 
 import javax.mail.Address;
 import java.awt.*;
@@ -45,13 +43,11 @@ public class EmailSearch implements Initializable {
     private VBox vbox_from, vbox_cc;
     @FXML
     private JFXComboBox<FileDev> combo_attach;
-    private Users user;
-    private mySqlConn sql;
+
     EmailDashController emailDashController;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-//        sql = new mySqlConn();
         searchEmail();
         //Attaching listener to attaching combo box
         combo_attach.valueProperty().addListener((observable, oldValue, newValue) -> {

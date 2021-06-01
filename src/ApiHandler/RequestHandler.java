@@ -101,6 +101,7 @@ public class RequestHandler {
     //~What a beautiful peace of code!
     //~Maashaallah
     public static List convertJSONtoArray(String jsonString, Class className) throws JSONException {
+
         JSONObject json = new JSONObject(jsonString);
         JSONObject obj;
         if (json.has(FIRST_KEY))
@@ -131,12 +132,11 @@ public class RequestHandler {
         }
     }
 
-
-    public static Response run(String endPoint) throws IOException {
+    public static Response checkIp(String endPoint,String ip) throws IOException {
         try {
             Request request = new Request.Builder()
 
-                    .url("http://" + FileHelper.getNetworkDetails().getHost() + port + endPoint)
+                    .url("http://" + ip + port + endPoint)
                     .build();
             return client.newCall(request).execute();
         } catch (ConnectException connectException) {
@@ -146,6 +146,20 @@ public class RequestHandler {
         } catch (SocketTimeoutException exception) {
             exception.getLocalizedMessage();
             showAlertDialog();
+        }
+        return null;
+    }
+    public static Response run(String endPoint) throws IOException {
+        try {
+            Request request = new Request.Builder()
+
+                    .url("http://" + FileHelper.getNetworkDetails().getHost() + port + endPoint)
+                    .build();
+            return client.newCall(request).execute();
+        } catch (ConnectException | SocketTimeoutException connectException) {
+            connectException.getLocalizedMessage();
+            showAlertDialog();
+
         }
         return null;
     }
@@ -171,7 +185,7 @@ public class RequestHandler {
             inputStream = client.newCall(request).execute().body().byteStream();
 
         } catch (ConnectException e) {
-            e.printStackTrace();
+            e.getLocalizedMessage();
             showAlertDialog();
             return false;
         } finally {

@@ -1,6 +1,7 @@
 package gui;
 
 import ApiHandler.RequestHandler;
+import JCode.CommonTasks;
 import JCode.mysql.mySqlConn;
 import JCode.trayHelper;
 import activity.task.NewTaskController;
@@ -24,6 +25,7 @@ import objects.*;
 import product.view.ProductViewController;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 public class TasksConstructor {
@@ -34,7 +36,7 @@ public class TasksConstructor {
 
     private Client client;
     private Lead lead;
-    private ProductProperty product;
+    private Product product;
 
     private static mySqlConn sql;
 
@@ -48,7 +50,7 @@ public class TasksConstructor {
         TasksConstructor.closed_activities_list = closed_activities_list;
         this.client = client;
 
-        sql = new mySqlConn();
+
     }
 
     public TasksConstructor(TabPane tabPane, Client client) {
@@ -58,7 +60,6 @@ public class TasksConstructor {
         closed_activities_list = new VBox();
         this.client = client;
 
-//        sql = new mySqlConn();
     }
 
     public TasksConstructor(TabPane tabPane, Lead lead) {
@@ -68,17 +69,17 @@ public class TasksConstructor {
         closed_activities_list = new VBox();
         this.lead = lead;
 
-        sql = new mySqlConn();
+//        sql = new mySqlConn();
     }
 
-    public TasksConstructor(TabPane tabPane, ProductProperty product) {
+    public TasksConstructor(TabPane tabPane, Product product) {
         TasksConstructor.tabPane = tabPane;
         tab = new Tab("Tasks");
         open_activities_list = new VBox();
         closed_activities_list = new VBox();
         this.product = product;
 
-        sql = new mySqlConn();
+//        sql = new mySqlConn();
     }
 
     private static void constructClientActivities() {
@@ -93,14 +94,24 @@ public class TasksConstructor {
         Label label2 = new Label("Closed Activities");
         label2.setStyle(labelCss);
         closed_activities_list.getChildren().addAll(returnSpaceHbox(), label2, returnSpaceHbox());
-
-        List<Task> taskList = clientViewController.staticClient.getClTaskList();
-        for (Task task : taskList) {
-            if (task.getStatus() != 1)
-                constructingOpenTask(task);
-            else
-                constructingCloseTask(task);
+        if (clientViewController.staticClient != null) {
+            List<Task> taskList = new ArrayList<>();
+            try {
+                taskList = RequestHandler.listRequestHandler(RequestHandler.run("task/getTaskByClientId/" + clientViewController.staticClient.getClientID()), Task.class);
+                if (taskList == null) {
+                    taskList = new ArrayList<>();
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            for (Task task : taskList) {
+                if (task.getStatus() != 1)
+                    constructingOpenTask(task);
+                else
+                    constructingCloseTask(task);
+            }
         }
+
     }
 
     private static void constructLeadActivities() {
@@ -116,13 +127,31 @@ public class TasksConstructor {
         label2.setStyle(labelCss);
         closed_activities_list.getChildren().addAll(label2);
 
-        List<TaskOld> taskList = sql.getTasks(LeadViewController.staticLead);
-        for (TaskOld taskOld : taskList) {
+        if (LeadViewController.staticLead != null) {
+            List<Task> taskList = new ArrayList<>();
+            try {
+                taskList = RequestHandler.listRequestHandler(RequestHandler.run("task/getTaskByLeadId/" + LeadViewController.staticLead.getLeadsId()), Task.class);
+
+                if (taskList == null) {
+                    taskList = new ArrayList<>();
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            for (Task task : taskList) {
+                if (task.getStatus() != 1)
+                    constructingOpenTask(task);
+                else
+                    constructingCloseTask(task);
+            }
+        }
+//        List<TaskOld> taskList = sql.getTasks(LeadViewController.staticLead);
+//        for (TaskOld taskOld : taskList) {
 //            if (!taskOld.isStatus())
 //                constructingOpenTask(taskOld);
 //            else
 //                constructingCloseTask(taskOld);
-        }
+//        }
     }
 
     private static void constructProductActivities() {
@@ -138,13 +167,31 @@ public class TasksConstructor {
         label2.setStyle(labelCss);
         closed_activities_list.getChildren().addAll(label2);
 
-        List<TaskOld> taskOlds = sql.getTasks(ProductViewController.staticProduct);
-        for (TaskOld taskOld : taskOlds) {
+        if (ProductViewController.staticProduct != null) {
+            List<Task> taskList = new ArrayList<>();
+            try {
+                taskList = RequestHandler.listRequestHandler(RequestHandler.run("task/getTaskByProductId/" + ProductViewController.staticProduct.getPsID()), Task.class);
+                if (taskList == null) {
+                    taskList = new ArrayList<>();
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            for (Task task : taskList) {
+                if (task.getStatus() != 1)
+                    constructingOpenTask(task);
+                else
+                    constructingCloseTask(task);
+            }
+        }
+
+//        List<TaskOld> taskOlds = sql.getTasks(ProductViewController.staticProduct);
+//        for (TaskOld taskOld : taskOlds) {
 //            if (!taskOld.isStatus())
 //                constructingOpenTask(taskOld);
 //            else
 //                constructingCloseTask(taskOld);
-        }
+//        }
     }
 
     private static void constructingButtons() {
@@ -213,20 +260,36 @@ public class TasksConstructor {
             inflateNewTask("Update Task");
         });
         closeItem.setOnAction(t -> {
+            task.setStatus(1);
+            task.setClosedOn(CommonTasks.getCurrentTimeStamp());
+            String responseMessage = "";
             try {
-                RequestHandler.run("task/closeTask/"+task.getTaskID());
+                responseMessage = RequestHandler.basicRequestHandler(RequestHandler.postOfReturnResponse("task/addTask", RequestHandler.writeJSON(task)));
             } catch (IOException e) {
                 e.printStackTrace();
             }
+//            Toast.makeText((Stage) contextMenu..getScene().getWindow(), responseMessage);
+//            try {
+//                RequestHandler.run("task/closeTask/"+task.getTaskID());
+//            } catch (IOException e) {
+//                e.printStackTrace();
+//            }
 //            sql.closeTask(task);
             generalConstructor(choice);
         });
         delItem.setOnAction(t -> {
+            String responseMessage = "";
             try {
-                RequestHandler.run("task/archiveTask/"+task.getTaskID());
+                responseMessage = RequestHandler.basicRequestHandler(RequestHandler.run("task/archiveTask/" + task.getTaskID()));
             } catch (IOException e) {
                 e.printStackTrace();
             }
+//            Toast.makeText((Stage) contextMenu.getScene().getWindow(), responseMessage);
+//            try {
+//                RequestHandler.run("task/archiveTask/"+task.getTaskID());
+//            } catch (IOException e) {
+//                e.printStackTrace();
+//            }
 //            sql.archiveTask(task);
             generalConstructor(choice);
         });
