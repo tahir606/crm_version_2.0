@@ -82,7 +82,7 @@ Sun Microsystems, Inc. is the initial license steward and may publish revised an
 You may always continue to use, distribute or otherwise make the Covered Software available under the terms of the version of the License under which You originally received the Covered Software. If the Initial Developer includes a notice in the Original Software prohibiting it from being distributed or otherwise made available under any subsequent version of the License, You must distribute and make the Covered Software available under the terms of the version of the License under which You originally received the Covered Software. Otherwise, You may also choose to use, distribute or otherwise make the Covered Software available under the terms of any subsequent version of the License published by the license steward.
 4.3. Modified Versions.
 
-When You are an Initial Developer and You want to create a new license for Your Original Software, You may create and use a modified version of this License if You: (a)�rename the license and remove any references to the name of the license steward (except to note that the license differs from this License); and (b)�otherwise make it clear that the license contains terms which differ from this License.
+When You are an Initial Developer and You want to create a new license for Your Original Software, You may create and use a modified version of this License if You: (a)�rename the license and remove any references to the name of the license steward (except to noteOld that the license differs from this License); and (b)�otherwise make it clear that the license contains terms which differ from this License.
 
 5. DISCLAIMER OF WARRANTY.
 
@@ -94,7 +94,7 @@ COVERED SOFTWARE IS PROVIDED UNDER THIS LICENSE ON AN AS IS BASIS, WITHOUT WARRA
 
 6.2. If You assert a patent infringement claim (excluding declaratory judgment actions) against Initial Developer or a Contributor (the Initial Developer or Contributor against whom You assert such claim is referred to as Participant) alleging that the Participant Software (meaning the Contributor Version where the Participant is a Contributor or the Original Software where the Participant is the Initial Developer) directly or indirectly infringes any patent, then any and all rights granted directly or indirectly to You by such Participant, the Initial Developer (if the Initial Developer is not the Participant) and all Contributors under Sections�2.1 and/or 2.2 of this License shall, upon 60 days notice from Participant terminate prospectively and automatically at the expiration of such 60 day notice period, unless if within such 60 day period You withdraw Your claim with respect to the Participant Software against such Participant either unilaterally or pursuant to a written agreement with Participant.
 
-6.3. In the event of termination under Sections�6.1 or 6.2 above, all end user licenses that have been validly granted by You or any distributor hereunder prior to termination (excluding licenses granted to You by any distributor) shall survive termination.
+6.3. In the eventOld of termination under Sections�6.1 or 6.2 above, all end user licenses that have been validly granted by You or any distributor hereunder prior to termination (excluding licenses granted to You by any distributor) shall survive termination.
 
 7. LIMITATION OF LIABILITY.
 

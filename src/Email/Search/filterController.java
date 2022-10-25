@@ -34,7 +34,8 @@ public class filterController implements Initializable {
 
     public filterController() {
         fHelper = new FileHelper();
-        user = fHelper.ReadUserDetails();
+//        user = fHelper.ReadUserDetails();
+        user = FileHelper.ReadUserApiDetails();
     }
 
     @Override
@@ -65,7 +66,7 @@ public class filterController implements Initializable {
                     emailType.setSpacing(10);
 
                     JFXComboBox<String> types = new JFXComboBox<>();
-                    types.getItems().addAll("All", "My Emails", "Solved", "UnSolved", "Locked", "Unlocked", "Archived");
+                    types.getItems().addAll("All", "My Emails", "Solved", "UnSolved", "Locked", "Unlocked", "Archived","isResolved");
                     types.setMinWidth(219);
                     types.setPromptText("Set Email Type");
                     types.setAccessibleText("emailType");
@@ -142,20 +143,6 @@ public class filterController implements Initializable {
                         HBox.setMargin(del, inset);
 
                     } catch (Exception e) {
-//                        DatePicker fromDate = new DatePicker();
-//                        fromDate.setPromptText("From");
-//                        fromDate.setAccessibleText("fromDate");
-//
-//                        DatePicker toDate = new DatePicker();
-//                        toDate.setPromptText("To");
-//                        toDate.setAccessibleText("toDate");
-//
-//                        JFXButton del = deleteButton(btwDates, newValue);
-//                        btwDates.getChildren().addAll(fromDate, toDate, del);
-//
-//                        HBox.setMargin(fromDate, inset);
-//                        HBox.setMargin(toDate, inset);
-//                        HBox.setMargin(del, inset);
                     }
 
                     btwDates.setAccessibleText(newValue);
@@ -164,67 +151,12 @@ public class filterController implements Initializable {
                     date = true;
                     break;
                 }
-//                    case "Between TimeStamps": {
-//                        if (time == true) {
-//                            makeToast();
-//                            break;
-//                        }
-//
-//                        HBox btwTime = new HBox();
-//                        btwTime.setSpacing(10);
-//
-//                        JFXTimePicker fromTime = new JFXTimePicker();
-//                        fromTime.setPromptText("From");
-//                        fromTime.setAccessibleText("fromTime");
-//
-//                        JFXTimePicker toTime = new JFXTimePicker();
-//                        toTime.setPromptText("To");
-//                        toTime.setAccessibleText("toTime");
-//
-//                        JFXButton del = deleteButton(btwTime, newValue);
-//                        btwTime.getChildren().addAll(fromTime, toTime, del);
-//
-//                        HBox.setMargin(fromTime, inset);
-//                        HBox.setMargin(toTime, inset);
-//                        HBox.setMargin(del, inset);
-//
-//                        btwTime.setAccessibleText(newValue);
-//
-//                        filters_vbox.getChildren().add(btwTime);
-//                        time = true;
-//                        break;
-//                    }
-//                    case "Between Tickets": {
-//                        HBox btwTicks = new HBox();
-//                        btwTicks.setSpacing(10);
-//
-//                        JFXTextField fromTicket = new JFXTextField();
-//                        fromTicket.setMinWidth(100);
-//                        fromTicket.setPromptText("From");
-//
-//                        JFXTextField toTicket = new JFXTextField();
-//                        toTicket.setMinWidth(98);
-//                        toTicket.setPromptText("To");
-//
-//                        JFXButton del = deleteButton(btwTicks, newValue);
-//                        btwTicks.getChildren().addAll(fromTicket, toTicket, del);
-//
-//                        HBox.setMargin(fromTicket, inset);
-//                        HBox.setMargin(toTicket, inset);
-//                        HBox.setMargin(del, inset);
-//
-//                        btwTicks.setAccessibleText(newValue);
-//
-//                        filters_vbox.getChildren().add(btwTicks);
-//                        break;
-//                    }
                 default:
                     break;
             }
 //            try {
 //                combo_filter.getSelectionModel().select(0);
 //            } catch (NullPointerException e) {
-//                System.out.println("BS");
 //            }
         });
     }
@@ -272,8 +204,10 @@ public class filterController implements Initializable {
                                         break;
                                     }
                                     case "My Emails": {
-                                        emailClause = " SOLVBY = " + user.getUCODE() + " " +
-                                                " OR LOCKD = " + user.getUCODE();
+//                                        emailClause = " SOLVBY = " + user.getUCODE() + " " +
+//                                                " OR LOCKD = " + user.getUCODE();
+                                        emailClause = " SOLVBY = " + user.getUserCode() + " " +
+                                                " OR LOCKD = " + user.getUserCode();
                                         break;
                                     }
                                     case "Solved": {
@@ -295,6 +229,11 @@ public class filterController implements Initializable {
                                     case "Archived": {
                                         a = true;
                                         emailClause = " FREZE = 1 ";
+                                        break;
+                                    }
+                                    case "isResolved": {
+                                        a = true;
+                                        emailClause = " resolve ";
                                         break;
                                     }
                                 }

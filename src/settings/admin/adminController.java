@@ -1,7 +1,8 @@
 package settings.admin;
 
-import JCode.Toast;
+import ApiHandler.RequestHandler;
 import JCode.FileHelper;
+import JCode.Toast;
 import JCode.mysql.mySqlConn;
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXCheckBox;
@@ -19,8 +20,11 @@ import javafx.scene.control.Label;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+import objects.RightChart;
+import objects.RightsList;
 import objects.Users;
 
+import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
@@ -48,8 +52,8 @@ public class adminController implements Initializable {
     private ImageView imm_load = dController.img_load;
 
     private List<Users> usersList = null;
-    private List<Users.uRights> rightsList = null;
 
+    private List<RightsList> rightsList = new ArrayList<>();
     private Users userSel;
 
     private int nUcode = 0;
@@ -58,31 +62,28 @@ public class adminController implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
 
-        sql = new mySqlConn();
+//        sql = new mySqlConn();
 
         init();
 
         vbox_rights.setSpacing(10);
         vbox_rights.setPadding(new Insets(5, 10, 5, 2));
 
-//        btn_archive.setOnAction(event -> {
-//            if (userSel != null) {
-//                sql.archiveUser(userSel);
-//                init();
-//            }
-//        });
 
         btn_log_out_user.setVisible(false);
         btn_log_out_user.setOnAction(event -> {
             if (fileHelper == null)
                 fileHelper = new FileHelper();
 
-            if (userSel.getUCODE() == fileHelper.ReadUserDetails().getUCODE()) {
+            if (userSel.getUserCode() == FileHelper.ReadUserApiDetails().getUserCode()) {
                 Toast.makeText((Stage) btn_save.getScene().getWindow(), "You can't log yourself out.");
                 return;
             }
-
-            sql.logUserOut(userSel);
+            try {
+                RequestHandler.objectRequestHandler(RequestHandler.run("users/updateUser/" + userSel.getUserCode() + "?isLog=" + 0), Users.class); // log out user
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
             Toast.makeText((Stage) btn_save.getScene().getWindow(), "User will be logged out the next time he/she opens KiT");
             populateDetails(userSel);
 
@@ -91,20 +92,28 @@ public class adminController implements Initializable {
 
     private void init() {
         combo_users.getItems().clear();
+        try {
+            try {
+                usersList = RequestHandler.listRequestHandler(RequestHandler.run("users/getALlUsers"), Users.class);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
 
-        usersList = sql.getAllUsers();
-        rightsList = sql.getAllUserRights();
+            rightsList = RequestHandler.listRequestHandler(RequestHandler.run("rights_list/getRightList"), RightsList.class);
 
-        nUcode = usersList.get(usersList.size() - 1).getUCODE() + 1;    //Get Ucode for new User
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        nUcode = usersList.get(usersList.size() - 1).getUserCode() + 1;    //Get Ucode for new User
         UcodeisEmail = getIsEmail((ArrayList<Users>) usersList);        //Check if this user is receiving email
-
         Users u = new Users();
-        u.setUCODE(nUcode);
-        u.setFNAME(" + Create New");
-        u.setUright("New");
+        u.setUserCode(nUcode);
+        u.setFullName(" + Create New");
+        u.setUserRight("New");
         combo_users.getItems().add(u);
 
         combo_users.getItems().addAll(usersList);
+
         comboListener();
         combo_users.getSelectionModel().select(0);
     }
@@ -116,9 +125,29 @@ public class adminController implements Initializable {
         });
     }
 
-    private void populateDetails(Users newValue) {
+    public static boolean checkIfUserIsLoggedInn(Users userLoggedIn) {
+        if (userLoggedIn == null) {
+            return false;
+        }
+        Users users = null;
+        try {
+            users = (Users) RequestHandler.objectRequestHandler(RequestHandler.run("users/getUser/" + userLoggedIn.getUserCode()), Users.class);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        if (users == null) {
+            return false;
+        }
+        if (users.getIsLog() == 1)
+            return true;
+        return false;
+    }
 
-        boolean isLoggedIn = sql.checkIfUserIsLoggedIn(newValue);
+    private void populateDetails(Users newValue) {
+        if (newValue == null) {
+            return;
+        }
+        boolean isLoggedIn = checkIfUserIsLoggedInn(newValue);
         if (isLoggedIn) {
             label_message.setVisible(true);
             btn_log_out_user.setVisible(true);
@@ -134,91 +163,119 @@ public class adminController implements Initializable {
         if (newValue == null)
             return;
 
-        if (newValue.getUright().equals("Admin")) {
+        if (newValue.getUserRight().equals("Admin")) {
             f.setSelected(true);
         }
 
         vbox_rights.getChildren().add(f);
 
-        for (Users.uRights ur : rightsList) {
-            JFXCheckBox cb = new JFXCheckBox(ur.getRNAME());
-            if (newValue.getUright().equals("Admin")) {
+        List<RightChart> rightCharts = new ArrayList<>();
+        try {
+            rightCharts = RequestHandler.listRequestHandler(RequestHandler.run("rights_chart/getChartList/" + newValue.getUserCode()), RightChart.class);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        for (RightsList ur : rightsList) {
+            JFXCheckBox cb = new JFXCheckBox(ur.getName());
+            if (newValue.getUserRight().equals("Admin")) {
                 cb.setSelected(false);
             } else {
-                for (Users.uRights u : newValue.getRights()) {
-                    if (u.getRCODE() == ur.getRCODE()) {
+                for (RightChart u : rightCharts) {
+                    if (u.getRightsCode() == ur.getRightsCode()) {
                         cb.setSelected(true);
                     }
                 }
             }
             vbox_rights.getChildren().add(cb);
         }
+        if (newValue.getUserName() == null) {
+            txt_uname.setText("");
+        } else {
+            txt_uname.setText(newValue.getUserName());
+        }
 
-        txt_uname.setText(newValue.getUNAME());
-        txt_fname.setText(newValue.getFNAME());
-        if (newValue.getFNAME().equals(" + Create New")) {
+        txt_fname.setText(newValue.getFullName());
+        if (newValue.getFullName().equals(" + Create New")) {
             txt_fname.setText("");
         }
-        txt_email.setText(newValue.getEmail());
-        txt_password.setText(newValue.getPassword());
+        if (newValue.getEmail() == null) {
+            txt_email.setText("");
+        } else {
+            txt_email.setText(newValue.getEmail());
+        }
+
+        if (newValue.getPassword() == null) {
+            txt_password.setText("");
+        } else {
+            txt_password.setText(newValue.getPassword());
+        }
+
 
         if (UcodeisEmail == 0) {
             check_email.setDisable(false);
         } else {
-            if (UcodeisEmail != newValue.getUCODE()) {
+            if (UcodeisEmail != newValue.getUserCode()) {
                 check_email.setDisable(true);
             } else {
                 check_email.setDisable(false);
             }
         }
+        boolean isEmail, isFreeze;
+        if (newValue.getIsEmail() == 0) {
+            isEmail = false;
+        } else {
+            isEmail = true;
+        }
+        if (newValue.getFreeze() == 0) {
+            isFreeze = false;
+        } else {
+            isFreeze = true;
+        }
+        check_email.setSelected(isEmail);
+        check_freeze.setSelected(isFreeze);
 
-        check_email.setSelected(newValue.isEmail());
-        check_freeze.setSelected(newValue.isFreeze());
-
-//        check_email.selectedProperty().addListener(new ChangeListener<Boolean>() {
-//            @Override
-//            public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
-//                if(newValue == true) {
-//
-//                } else {
-//                    nUcode = 0;
-//                }
-//            }
-//        });
     }
+
 
     private int getIsEmail(ArrayList<Users> users) {
         for (Users u : users) {
-            if (u.isEmail() == true) {
-                return u.getUCODE();
+            if (u.getIsEmail() == 1) {
+                return u.getUserCode();
             }
         }
         return 0;
     }
 
-
     @FXML
     void saveChanges(ActionEvent event) {
 
-        System.out.println("Updating user: " + userSel);
+        System.out.println("Updating user: " + userSel.getUserCode());
 
         String uname, fname, email, password;
-        boolean isEmail, isFreeze;
+        int isEmail, isFreeze;
+
 
         uname = txt_uname.getText();
         fname = txt_fname.getText();
         email = txt_email.getText();
         password = txt_password.getText();
-        isEmail = check_email.isSelected();
-        isFreeze = check_freeze.isSelected();
-
-
+        if (check_email.isSelected()) {
+            isEmail = 1;
+        } else {
+            isEmail = 0;
+        }
+        if (check_freeze.isSelected()) {
+            isFreeze = 1;
+        } else {
+            isFreeze = 0;
+        }
+        System.out.println(password);
         if (uname.equals("") || fname.equals("") || email.equals("") || password.equals("")) {
             Toast.makeText((Stage) btn_save.getScene().getWindow(), "Required fields are empty");
             return;
         }
-
-        ArrayList<Users.uRights> rights = new ArrayList<>();
+        ArrayList<Integer> rights = new ArrayList<>();
 
         int index = -1;
         for (Node node : vbox_rights.getChildren()) {
@@ -226,39 +283,54 @@ public class adminController implements Initializable {
             index++;
             if (index == 0) {
                 if (jf.isSelected()) {
-                    userSel.setUright("Admin");
+                    userSel.setUserRight("Admin");
                     break;
                 } else {
-                    userSel.setUright("Not Admin");
+                    userSel.setUserRight("Not Admin");
                 }
                 continue;
             }
             if (jf.isSelected())
-                rights.add(new Users.uRights(index, ""));
+                rights.add(index);
         }
 
-        if (rights.size() == 0 && !userSel.getUright().equals("Admin")) {
+        if (rights.size() == 0 && !userSel.getUserRight().equals("Admin")) {
             Toast.makeText((Stage) btn_save.getScene().getWindow(), "You need to allot at least one right.");
             return;
         }
 
-        userSel.setUNAME(uname);
-        userSel.setFNAME(fname);
+        userSel.setUserName(uname);
+        userSel.setFullName(fname);
         userSel.setEmail(email);
         userSel.setPassword(password);
-        userSel.setEmailBool(isEmail);
+        userSel.setIsEmail(isEmail);
         userSel.setFreeze(isFreeze);
-        userSel.setuRightsList(rights);
 
         Alert alert2 = new Alert(Alert.AlertType.CONFIRMATION, "Are you sure you want to save changes?",
                 ButtonType.YES, ButtonType.NO);
         alert2.showAndWait();
 
+
         if (alert2.getResult() == ButtonType.YES) {
-            if (userSel.getUCODE() == nUcode)
-                sql.insertUpdateUser(userSel, 0);   //New
-            else
-                sql.insertUpdateUser(userSel, 1);   //Old
+            if (userSel.getUserCode() == nUcode) {
+                try {
+
+                    RequestHandler.post("users/addUser", RequestHandler.writeJSON(userSel)).close();                //New
+                    RequestHandler.post("rights_chart/insertChartList/" + userSel.getUserCode(), RequestHandler.writeJSONIntegerList(rights)).close();
+
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            } else {
+                try {
+                    RequestHandler.post("users/addUser", RequestHandler.writeJSON(userSel)).close();                //       odl
+                    RequestHandler.post("rights_chart/insertChartList/" + userSel.getUserCode(), RequestHandler.writeJSONIntegerList(rights)).close();
+
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+
 
             Toast.makeText((Stage) btn_save.getScene().getWindow(), "Your changes will be made after you re-login");
 
@@ -270,10 +342,8 @@ public class adminController implements Initializable {
     }
 
     public void deleteUser(ActionEvent actionEvent) {
-
-        System.out.println(userSel.getUCODE());
-        System.out.println(nUcode);
-        if (userSel.getUCODE() == nUcode) {
+        System.out.println("Delete User : " + userSel.getUserName());
+        if (userSel.getUserCode() == nUcode) {
             return;
         }
 
@@ -283,7 +353,12 @@ public class adminController implements Initializable {
         alert2.showAndWait();
 
         if (alert2.getResult() == ButtonType.YES) {
-            sql.deleteUser(userSel);
+            try {
+
+                RequestHandler.run("users/delete/" + userSel.getUserCode()).close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
 
             init();
         } else {

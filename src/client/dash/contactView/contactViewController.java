@@ -1,10 +1,10 @@
 package client.dash.contactView;
 
+import ApiHandler.RequestHandler;
 import Email.EResponse.EResponseController;
-import JCode.mysql.mySqlConn;
 import JCode.trayHelper;
 import client.dashBaseController;
-import com.jfoenix.controls.*;
+import com.jfoenix.controls.JFXButton;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -16,16 +16,16 @@ import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
+import objects.Contact;
 import objects.ContactProperty;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.Collections;
 import java.util.List;
 import java.util.ResourceBundle;
 
 public class contactViewController implements Initializable {
-
-    mySqlConn sql;
 
     @FXML
     AnchorPane contactAnchor;
@@ -36,7 +36,7 @@ public class contactViewController implements Initializable {
     @FXML
     JFXButton btn_email;
     @FXML
-    TableView<ContactProperty> table_contact;
+    TableView<Contact> table_contact;
     @FXML
     TableColumn<ContactProperty, String> col_name;
     @FXML
@@ -50,30 +50,33 @@ public class contactViewController implements Initializable {
     @FXML
     TableColumn<ContactProperty, String> col_country;
 
-    List<ContactProperty> selectedContacts;
-
-    public static ContactProperty staticContact;
+    List<Contact> selectedContacts;
+    public static Contact staticContact;
+    List<Contact> contacts;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        sql = new mySqlConn();
 
+        try {
+            contacts = RequestHandler.listRequestHandler(RequestHandler.run("contact/contactList"), Contact.class);
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         toolbar_contacts.setVisible(false);
-
         table_contact.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
 
         col_name.setCellValueFactory(new PropertyValueFactory<>("fullName"));
-        col_age.setCellValueFactory(new PropertyValueFactory<>("age"));
+        col_age.setCellValueFactory(new PropertyValueFactory<>("Age"));
         col_email.setCellValueFactory(new PropertyValueFactory<>("email"));
         col_mobile.setCellValueFactory(new PropertyValueFactory<>("mobile"));
         col_city.setCellValueFactory(new PropertyValueFactory<>("city"));
         col_country.setCellValueFactory(new PropertyValueFactory<>("country"));
 
-        table_contact.getItems().setAll(sql.getAllContactsProperty(null));
+        table_contact.getItems().setAll(contacts);
 
         table_contact.addEventHandler(javafx.scene.input.MouseEvent.MOUSE_CLICKED, event -> {
             selectedContacts = table_contact.getSelectionModel().getSelectedItems();
-
             if (selectedContacts == null || selectedContacts.size() == 0) {
                 toolbar_contacts.setVisible(false);
                 return;
@@ -85,7 +88,7 @@ public class contactViewController implements Initializable {
         });
 
         table_contact.setRowFactory(tv -> {
-            TableRow<ContactProperty> row = new TableRow<>();
+            TableRow<Contact> row = new TableRow<>();
             row.setOnMouseClicked(event -> {
                 if (event.getClickCount() == 2 && (!row.isEmpty())) {
                     staticContact = row.getItem();
@@ -107,15 +110,16 @@ public class contactViewController implements Initializable {
     public void onEmailSending(ActionEvent actionEvent) {
 
         String email = "";
+        for (Contact contact : selectedContacts) {
+            if (!contact.getCoEmailLists().isEmpty()) {
+                if (contact.getCoEmailLists().get(0).getAddress() != null || contact.getCoEmailLists().get(0).getAddress().equals(""))
+                    email = email + contact.getCoEmailLists().get(0).getAddress() + ",";
+            }
 
-        for (ContactProperty contact : selectedContacts) {
-            if (contact.getEmail() != null || contact.getEmail().equals(""))
-                email = email + contact.getEmail() + ",";
         }
 
-        System.out.println(email);
 
-        EResponseController.stTo = email;
+        EResponseController.stTo = Collections.singletonList(email);
         EResponseController.stInstance = 'R';
 
         inflateEResponse(1);
@@ -125,7 +129,14 @@ public class contactViewController implements Initializable {
     private void inflateEResponse(int i) {
         try {
             EResponseController.choice = i;
-            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("../../../Email/EResponse/EResponse.fxml"));
+            FXMLLoader fxmlLoader;
+            if (getClass().getResource("../../../Email/EResponse/EResponse.fxml") == null) {
+                fxmlLoader = new FXMLLoader(getClass().getResource("/Email/EResponse/EResponse.fxml"));
+            } else {
+                fxmlLoader = new FXMLLoader(getClass().getResource("../../../Email/EResponse/EResponse.fxml"));
+            }
+
+
             Parent root1 = (Parent) fxmlLoader.load();
             Stage stage2 = new Stage();
             stage2.setTitle("New Email");

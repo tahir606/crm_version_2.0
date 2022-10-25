@@ -25,7 +25,7 @@ public class SettingsQueries {
         if (user == null)
             return false;
 
-        String query = "SELECT ISLOG FROM users WHERE UCODE = " + user.getUCODE();
+        String query = "SELECT ISLOG FROM users WHERE UCODE = " + user.getUserCode();
 
         try {
             PreparedStatement statement = static_con.prepareStatement(query);
@@ -57,7 +57,7 @@ public class SettingsQueries {
 
         try {
             statement = static_con.prepareStatement(query);
-            statement.setInt(1, user.getUCODE());
+            statement.setInt(1, user.getUserCode());
             statement.executeUpdate();
 
             statement.close();
@@ -80,11 +80,11 @@ public class SettingsQueries {
                 eSetting = new ESetting(set.getString("HOST"), set.getString("EMAIL"),
                         set.getString("PASS"), set.getString("FSPATH"), set.getBoolean("AUTOCHK"),
                         set.getBoolean("DISCCHK"));
-                eSetting.setSolv(set.getBoolean("SOLVCHK"));
-                eSetting.setAutotext(set.getString("AUTOTXT"));
-                eSetting.setDisctext(set.getString("DISCTXT"));
-                eSetting.setSolvRespText(set.getString("SOLVTXT"));
-                eSetting.setGenerated_reply_email(set.getString("ES_GEN_EMAIL"));
+                eSetting.setSolvt(set.getBoolean("SOLVCHK"));
+                eSetting.setAutotextt(set.getString("AUTOTXT"));
+                eSetting.setDisctextt(set.getString("DISCTXT"));
+                eSetting.setSolvRespTextt(set.getString("SOLVTXT"));
+                eSetting.setGenerated_reply_emailt(set.getString("ES_GEN_EMAIL"));
                 return eSetting;
             }
 
@@ -108,17 +108,17 @@ public class SettingsQueries {
 
         try {
             statement = static_con.prepareStatement(query);
-            statement.setString(1, eSetting.getHost());
-            statement.setString(2, eSetting.getEmail());
-            statement.setString(3, eSetting.getPass());
-            statement.setString(4, eSetting.getFspath());
-            statement.setBoolean(5, eSetting.isAuto());
-            statement.setBoolean(6, eSetting.isDisc());
-            statement.setString(7, eSetting.getAutotext());
-            statement.setString(8, eSetting.getDisctext());
-            statement.setString(9, eSetting.getSolvRespText());
-            statement.setBoolean(10, eSetting.isSolv());
-            statement.setString(11, eSetting.getGenerated_reply_email());
+            statement.setString(1, eSetting.getHostt());
+            statement.setString(2, eSetting.getEmailt());
+            statement.setString(3, eSetting.getPasst());
+            statement.setString(4, eSetting.getFspatht());
+            statement.setBoolean(5, eSetting.isAutot());
+            statement.setBoolean(6, eSetting.isDisct());
+            statement.setString(7, eSetting.getAutotextt());
+            statement.setString(8, eSetting.getDisctextt());
+            statement.setString(9, eSetting.getSolvRespTextt());
+            statement.setBoolean(10, eSetting.isSolvt());
+            statement.setString(11, eSetting.getGenerated_reply_emailt());
             statement.executeUpdate();
 
             statement.close();
@@ -227,7 +227,7 @@ public class SettingsQueries {
         try {
             // Connection con = getConnection();
             PreparedStatement statement = static_con.prepareStatement(query);
-//            System.out.println(query);
+
             ResultSet set = statement.executeQuery();
             while (set.next()) {
                 replacedKeyword = set.getString("REPLACEMENT_KEYWORD");

@@ -11,7 +11,8 @@ public class Filters {
             unlocked,
             lockedByMe,
             hideReminders,
-            archived;
+            archived,
+            isResolve;
     private static FileHelper fHelper;
 
     public Filters() {
@@ -24,43 +25,42 @@ public class Filters {
         String filters = "";
 
         if (solved) {
-            filters = filters +"," + "solved";
+            filters = filters + "," + "solved";
         }
         if (unsolved) {
-            filters = filters +","+ "unsolved";
+            filters = filters + "," + "unsolved";
         }
         if (locked) {
-            filters = filters+","+ "locked";
+            filters = filters + "," + "locked";
         }
         if (unlocked) {
-            filters = filters +","+ "unlocked";
+            filters = filters + "," + "unlocked";
         }
 
         if (lockedByMe) {
-            filters = filters+"," + "lockedByMe";
-//            filters = filters + "locked = :" + fHelper.ReadUserDetails().getUCODE();
+            filters = filters + "," + "lockedByMe";
         }
 
         if (hideReminders) {
-            filters = filters +","+ "subject";
-//            filters = filters + "AND subject NOT LIKE '%reminder%' ";
+            filters = filters + "," + "subject";
         }
 
         if (archived) {
-            filters = filters +","+ "freeze";
+            filters = filters + "," + "freeze";
+        } else {
+            filters = filters + "," + "unfreeze";
         }
-        else {
-            filters = filters +","+ "unfreeze";
+        if (isResolve) {
+            filters = filters + "," + "resolve";
         }
 
-//        filters = filters + " ORDER BY " + sortBy + " " + ascDesc;
 
         return filters;
     }
 
     public void writeToFile() {
         String filter;
-        filter = getSortBy() + "," + ascDesc + "," + solved + "," + unsolved + "," + locked + "," + unlocked + "," + lockedByMe + "," + hideReminders + "," + archived;
+        filter = getSortBy() + "," + ascDesc + "," + solved + "," + unsolved + "," + locked + "," + unlocked + "," + lockedByMe + "," + hideReminders + "," + archived+ "," + isResolve;
         fHelper.WriteFilter(filter);
     }
 
@@ -82,7 +82,7 @@ public class Filters {
             filter.setLockedByMe(Boolean.parseBoolean(filters[6]));//false
             filter.setHideReminders(Boolean.parseBoolean(filters[7]));//false
             filter.setArchived(Boolean.parseBoolean(filters[8]));//false
-
+            filter.setResolve(Boolean.parseBoolean(filters[9]));
             return filter;
         } catch (Exception e) {
             e.printStackTrace();
@@ -94,6 +94,7 @@ public class Filters {
             ft.setLocked(false);
             ft.setUnlocked(false);
             ft.setArchived(false);
+            ft.setResolve(false);
             return ft;
         }
     }
@@ -129,6 +130,14 @@ public class Filters {
                 this.sortBy = "SBJCT";
                 break;
         }
+    }
+
+    public boolean isResolve() {
+        return isResolve;
+    }
+
+    public void setResolve(boolean resolve) {
+        isResolve = resolve;
     }
 
     public String getAscDesc() {

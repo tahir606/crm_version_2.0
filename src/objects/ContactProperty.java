@@ -12,7 +12,7 @@ public class ContactProperty {
     SimpleIntegerProperty code, clID;
     SimpleStringProperty firstName, lastName, fullName, address, city, country, age, email, mobile, dob, note, clientName;
     SimpleBooleanProperty isFreeze;
-    List<Note> contactNotes;
+    List<NoteOld> contactNoteOlds;
 
     public ContactProperty() {
 
@@ -34,7 +34,7 @@ public class ContactProperty {
         clientName = new SimpleStringProperty();
         clID = new SimpleIntegerProperty();
         
-        contactNotes = new ArrayList<>();
+        contactNoteOlds = new ArrayList<>();
         
     }
 
@@ -215,11 +215,11 @@ public class ContactProperty {
         this.clientName.set(clientName);
     }
     
-    public List<Note> getContactNotes() {
-        return contactNotes;
+    public List<NoteOld> getContactNotes() {
+        return contactNoteOlds;
     }
     
-    public void setContactNotes(List<Note> contactNotes) {
-        this.contactNotes = contactNotes;
+    public void setContactNotes(List<NoteOld> contactNoteOlds) {
+        this.contactNoteOlds = contactNoteOlds;
     }
 }

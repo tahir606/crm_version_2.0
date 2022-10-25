@@ -1,10 +1,11 @@
 package lead.newLead;
 
+import ApiHandler.RequestHandler;
+import JCode.FileHelper;
 import JCode.Toast;
 import JCode.mysql.mySqlConn;
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXComboBox;
-import com.jfoenix.controls.JFXDatePicker;
 import com.jfoenix.controls.JFXTextField;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -15,17 +16,20 @@ import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import lead.LeadDashController;
 import lead.view.LeadViewController;
+import objects.EmailList;
 import objects.Lead;
-import objects.ProductProperty;
-import product.ProductDashController;
-import product.view.ProductViewController;
+import objects.PhoneList;
+import objects.Source;
 
 import java.io.IOException;
 import java.net.URL;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 import java.util.ResourceBundle;
 
 public class NewLeadController implements Initializable {
@@ -37,7 +41,7 @@ public class NewLeadController implements Initializable {
     @FXML
     private JFXButton btn_back, btn_save;
     @FXML
-    private JFXComboBox<String> combo_source;
+    private JFXComboBox<Source> combo_source;
     @FXML
     private HBox hbox_other;
     @FXML
@@ -52,10 +56,11 @@ public class NewLeadController implements Initializable {
 
     private TextArea otherTextArea;
 
+
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        sql = new mySqlConn();
-
+//        sql = new mySqlConn();
+        lead = new Lead();
         Image image = new Image(this.getClass().getResourceAsStream("/res/img/left-arrow.png"));
         btn_back.setGraphic(new ImageView(image));
         btn_back.setAlignment(Pos.CENTER_LEFT);
@@ -70,11 +75,18 @@ public class NewLeadController implements Initializable {
                 e.printStackTrace();
             }
         });
+        List<Source> sourceList = new ArrayList<>();
+        try {
+            sourceList = RequestHandler.listRequestHandler(RequestHandler.run("source/getAllSource"), Source.class);
 
-        combo_source.getItems().addAll(sql.getAllSources());
-        combo_source.getItems().add("Other");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        combo_source.getItems().addAll(sourceList);
+
         combo_source.valueProperty().addListener((observable, oldValue, newValue) -> {
-            if (newValue.equalsIgnoreCase("Other")) {
+            if (newValue.getName().equalsIgnoreCase("Other")) {
                 otherTextArea = new TextArea();
                 otherTextArea.setPromptText("Other Source");
                 hbox_other.getChildren().add(otherTextArea);
@@ -86,34 +98,46 @@ public class NewLeadController implements Initializable {
 
         if (stInstance == 'N') {
             btn_save.setText("Add");
-            lead = new Lead();
-            lead.setCode(sql.getNewLeadCode());
+//            lead = new Lead();
+//            lead.setCode(sql.getNewLeadCode());
+            populateLead(new Lead());
             txt_heading.setText("New Lead");
         } else if (stInstance == 'U') {
             btn_save.setText("Update");
-            populateLead();
+            populateLead(LeadViewController.staticLead);
             txt_heading.setText("Update Lead");
         }
     }
 
-    private void populateLead() {
-        lead = LeadViewController.staticLead;
-
-        txt_fname.setText(lead.getFirstName());
-        txt_lname.setText(lead.getLastName());
-        txt_website.setText(lead.getWebsite());
-        txt_company.setText(lead.getCompany());
-        txt_email.setText(lead.getEmail());
-        txt_mobile.setText(lead.getPhone());
-        txt_city.setText(lead.getCity());
-        txt_country.setText(lead.getCountry());
-        txt_note.setText(lead.getNote());
-
-        if (lead.getOtherText() == null) {
-            combo_source.getSelectionModel().select(lead.getSource() - 1);
+    private void populateLead(Lead lead1) {
+//        lead = LeadViewController.staticLead;
+        lead.setLeadsId(lead1.getLeadsId());
+        txt_fname.setText(lead1.getFirstName());
+        txt_lname.setText(lead1.getLastName());
+        txt_website.setText(lead1.getWebsite());
+        txt_company.setText(lead1.getCompanyName());
+        if (lead1.getLdEmailLists() != null) {
+            if (lead1.getLdEmailLists().isEmpty()) {
+                txt_email.setText("");
+            } else {
+                txt_email.setText(lead1.getLdEmailLists().get(0).getAddress());
+            }
+        }
+        if (lead1.getLdPhoneLists() != null) {
+            if (lead1.getLdPhoneLists().isEmpty()) {
+                txt_mobile.setText("");
+            } else {
+                txt_mobile.setText(lead1.getLdPhoneLists().get(0).getNumber());
+            }
+        }
+        txt_city.setText(lead1.getCity());
+        txt_country.setText(lead1.getCountry());
+        txt_note.setText(lead1.getNote());
+        if (lead1.getsOther() == null) {
+            combo_source.getSelectionModel().select(new Source("Other"));
         } else {
-            combo_source.getSelectionModel().select("Other");
-            otherTextArea.setText(lead.getOtherText());
+            combo_source.getSelectionModel().select(lead1.getSourceID() - 1);
+            otherTextArea.setText(lead1.getsOther());
         }
     }
 
@@ -157,37 +181,53 @@ public class NewLeadController implements Initializable {
 
                 fname = fname.substring(0, 1).toUpperCase() + fname.substring(1);   //Make First Letter to Uppercase
                 lname = lname.substring(0, 1).toUpperCase() + lname.substring(1);
-
+//                List<EmailList> emailLists = new ArrayList<>();
+//                List<PhoneList> phoneLists = new ArrayList<>();
                 lead.setFirstName(fname);
                 lead.setLastName(lname);
-                lead.setCompany(company);
+                lead.setCompanyName(company);
                 lead.setCity(city);
                 lead.setCountry(country);
                 lead.setNote(desc);
-                lead.setEmail(email);
-                lead.setPhone(phone);
+//                emailLists.add(new EmailList(email));
+//                lead.setLdEmailLists(emailLists);
+//                phoneLists.add(new PhoneList(phone));
+//                lead.setLdPhoneLists(phoneLists);
                 lead.setWebsite(website);
-                lead.setSource(combo_source.getSelectionModel().getSelectedIndex() + 1);
-                if (combo_source.getSelectionModel().getSelectedItem().equalsIgnoreCase("Other")) {
+                SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+                Date date = new Date();
+                lead.setCreatedOn(String.valueOf(formatter.format(date)));
+                int userId = FileHelper.ReadUserApiDetails().getUserCode();
+                lead.setCreatedBy(userId);
+                lead.setSourceID(combo_source.getSelectionModel().getSelectedIndex() + 1);
+                if (combo_source.getSelectionModel().getSelectedItem().getName().equalsIgnoreCase("Other")) {
                     if (otherTextArea.getText().toString().trim().length() < 1) {
                         Toast.makeText((Stage) btn_save.getScene().getWindow(), "Other source text cannot be empty");
                         return;
                     } else {
-                        lead.setOtherText(otherTextArea.getText().toString());
+                        lead.setsOther(otherTextArea.getText().toString());
                     }
                 } else {
-                    lead.setOtherText(null);
+                    lead.setsOther(null);
                 }
 
                 switch (stInstance) {
-                    case 'N': {
-                        sql.insertLead(lead);
-                        break;
-                    }
+                    case 'N':
                     case 'U': {
-                        sql.updateLead(lead);
+                        Lead lead1;
+                        try {
+                            lead1 = (Lead) RequestHandler.objectRequestHandler(RequestHandler.postOfReturnResponse("leads/addLead", RequestHandler.writeJSON(lead)), Lead.class);
+                            if (lead1 != null) {
+                                RequestHandler.post("emailList/addEmail", RequestHandler.writeJSON(new EmailList(email, userId, 0, 0, lead1.getLeadsId())));
+                                RequestHandler.post("phoneList/addPhone", RequestHandler.writeJSON(new PhoneList(phone, userId, 0, 0, lead1.getLeadsId())));
+                            }
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+
+//                        sql.insertLead(lead);
                         break;
-                    }
+                    }//                        sql.updateLead(lead);
                     default: {
                         break;
                     }

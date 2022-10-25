@@ -1,5 +1,6 @@
 package lead.view;
 
+import ApiHandler.RequestHandler;
 import JCode.mysql.mySqlConn;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -12,10 +13,10 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.AnchorPane;
 import lead.LeadDashController;
 import objects.Lead;
-import objects.Lead;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.List;
 import java.util.ResourceBundle;
 
 public class LeadViewController implements Initializable {
@@ -36,25 +37,33 @@ public class LeadViewController implements Initializable {
     private AnchorPane toolbar_products;
     @FXML
     private Label txt_no;
-    
+    List<Lead> leadList;
     public static Lead staticLead;
     private mySqlConn sql;
     
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        sql = new mySqlConn();
+//        sql = new mySqlConn();
     
         toolbar_products.setVisible(false);
 
 //        table_contact.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
         
-        col_name.setCellValueFactory(new PropertyValueFactory<>("fullNameProperty"));
-        col_cname.setCellValueFactory(new PropertyValueFactory<>("company"));
+        col_name.setCellValueFactory(new PropertyValueFactory<>("fullName"));
+        col_cname.setCellValueFactory(new PropertyValueFactory<>("companyName"));
         col_website.setCellValueFactory(new PropertyValueFactory<>("website"));
         col_city.setCellValueFactory(new PropertyValueFactory<>("city"));
         col_country.setCellValueFactory(new PropertyValueFactory<>("country"));
-        
-        table_product.getItems().setAll(sql.getAllLeads(null));
+
+        try {
+            leadList= RequestHandler.listRequestHandler(RequestHandler.run("leads/getAllLeads"), Lead.class);
+            table_product.getItems().setAll(leadList);
+//            table_product.getItems().setAll(sql.getAllLeads(null));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+
 
 //        table_contact.addEventHandler(javafx.scene.input.MouseEvent.MOUSE_CLICKED, event -> {
 //            selectedContacts = table_contact.getSelectionModel().getSelectedItems();

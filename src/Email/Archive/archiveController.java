@@ -3,7 +3,6 @@ package Email.Archive;
 import ApiHandler.RequestHandler;
 import Email.EmailDashController;
 import JCode.Toast;
-import JCode.mysql.mySqlConn;
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXDatePicker;
 import javafx.event.ActionEvent;
@@ -37,13 +36,8 @@ public class archiveController implements Initializable {
     @FXML
     private JFXButton btn_move;
 
-    private mySqlConn sql;
-
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-
-        sql = new mySqlConn();
-
         check_all.selectedProperty().addListener((observable, oldValue, newValue) -> {
             if (newValue) {
                 before_date.setDisable(true);
@@ -82,8 +76,8 @@ public class archiveController implements Initializable {
             }
 
             if (!tF.equals("") && !tT.equals("")) {
-                ticketFrom=tF;
-                ticketTo=tT;
+                ticketFrom = tF;
+                ticketTo = tT;
                 where = where + " AND EMNO >= " + tF + " AND EMNO <= " + tT;
             }
 
@@ -94,7 +88,7 @@ public class archiveController implements Initializable {
         alert2.showAndWait();
 
         if (alert2.getResult() == ButtonType.YES) {
-            RequestHandler.run("ticket/archiveAll?freeze=" + freeze + "&beforeDate=" + beforeDate + "&ticketFrom="+ticketFrom+"&ticketTo="+ticketTo);
+            RequestHandler.run("ticket/archiveAll?freeze=" + freeze + "&beforeDate=" + beforeDate + "&ticketFrom=" + ticketFrom + "&ticketTo=" + ticketTo).close();
 
 //            sql.ArchiveEmail(EmailDashController.Email_Type, where);
             EmailDashController.loadEmailsStatic();

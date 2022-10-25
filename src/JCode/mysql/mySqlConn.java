@@ -6,9 +6,6 @@ import javafx.scene.control.ButtonType;
 import objects.*;
 
 import javax.mail.Message;
-import java.io.IOException;
-import java.net.InetSocketAddress;
-import java.net.Socket;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -49,7 +46,8 @@ public class mySqlConn {
         if (network == null)
             return;
         URL = "jdbc:mysql://" + network.getHost() + ":" + network.getPort() + "/" + DBNAME + "?allowMultiQueries=true&autoReconnect=true";
-        user = fHelper.ReadUserDetails();
+
+        user =FileHelper.ReadUserApiDetails();
         if (static_con == null)
             static_con = getConnection();
 
@@ -74,20 +72,19 @@ public class mySqlConn {
     private Connection getConnection() {
         int times = 1;
 
-//        if (static_con != null) {
-//            try {
-//                static_con.close();
-//            } catch (SQLException e) {
-//                e.printStackTrace();
-//            }
-//        }
+        if (static_con != null) {
+            try {
+                static_con.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
 
         while (true) {
             try {
                 System.out.println("Trying: " + times);
                 Class.forName("com.mysql.jdbc.Driver");
-//                System.out.println(URL + "\n" + USER + "\n" + PASSWORD);
-                Connection con = DriverManager.getConnection(
+               Connection con = DriverManager.getConnection(
                         URL, USER, PASSWORD);
                 return con;
             } catch (SQLException | ClassNotFoundException e) {
@@ -116,7 +113,7 @@ public class mySqlConn {
         userQueries.setLogin(ucode, log);
     }
 
-    public boolean getRights(Users user) {
+    public boolean getRights(UsersOld user) {
         return userQueries.getRights(user);
     }
 
@@ -124,13 +121,13 @@ public class mySqlConn {
         return userQueries.getUserName(ucode);
     }
 
-    public Users getUserDetails(Users user) {
+    public UsersOld getUserDetails(UsersOld user) {
         return userQueries.getUserDetails(user);
     }
 
-    public Users getUserDetails(int ucode) {
-        Users user = new Users();
-        user.setUCODE(ucode);
+    public UsersOld getUserDetails(int ucode) {
+        UsersOld user = new UsersOld();
+        user.setUserCode(ucode);
         return userQueries.getUserDetails(user);
     }
 
@@ -138,15 +135,15 @@ public class mySqlConn {
         return userQueries.getAllUsers();
     }
 
-    public List<Users.uRights> getAllUserRights() {
+    public List<UsersOld.uRights> getAllUserRights() {
         return userQueries.getAllUserRights();
     }
 
-    public void insertUpdateUser(Users user, int choice) {
+    public void insertUpdateUser(UsersOld user, int choice) {
         userQueries.insertUpdateUser(user, choice);
     }
 
-    public void deleteUser(Users u) {
+    public void deleteUser(UsersOld u) {
         userQueries.deleteUser(u);
     }
 
@@ -166,23 +163,23 @@ public class mySqlConn {
         return emailQueries.getLatestEmailNo(email_type);
     }
 
-    public Users getNoOfSolvedEmails(Users user) {
+    public UsersOld getNoOfSolvedEmails(UsersOld user) {
         return emailQueries.getNoOfSolvedEmails(user);
     }
 
-    public void createEmailRelations(Email email) {
-        emailQueries.createEmailRelations(email);
+    public void createEmailRelations(EmailOld emailOld) {
+        emailQueries.createEmailRelations(emailOld);
     }
 
-    public List<ContactProperty> getEmailContactRelations(Email email) {
-        return emailQueries.getEmailContactRelations(email);
+    public List<ContactProperty> getEmailContactRelations(EmailOld emailOld) {
+        return emailQueries.getEmailContactRelations(emailOld);
     }
 
-    public List<ClientProperty> getEmailClientRelations(Email email) {
-        return emailQueries.getEmailClientRelations(email);
+    public List<ClientProperty> getEmailClientRelations(EmailOld emailOld) {
+        return emailQueries.getEmailClientRelations(emailOld);
     }
 
-    public int getNoOfLocked(Users user) {
+    public int getNoOfLocked(UsersOld user) {
         return emailQueries.getNoOfLocked(user);
     }
 
@@ -194,48 +191,48 @@ public class mySqlConn {
         return emailQueries.getNoOfUnlocked();
     }
 
-    public void insertEmail(Email email, Message message) {
-        emailQueries.insertEmail(email, message);
+    public void insertEmail(EmailOld emailOld, Message message) {
+        emailQueries.insertEmail(emailOld, message);
     }
 
-    public void insertEmailManual(Email email) {
-        emailQueries.insertEmailManual(email);
+    public void insertEmailManual(EmailOld emailOld) {
+        emailQueries.insertEmailManual(emailOld);
     }
 //help
-    public List<Email> readAllEmails(Filters filters) {
+    public List<EmailOld> readAllEmails(Filters filters) {
         return emailQueries.readAllEmails(filters, userQueries);
     }
 
-    public void insertEmailGeneral(Email email) {
-        emailQueries.insertEmailGeneral(email);
+    public void insertEmailGeneral(EmailOld emailOld) {
+        emailQueries.insertEmailGeneral(emailOld);
     }
 
-    public List<Email> readAllEmailsGeneral(String where) {
+    public List<EmailOld> readAllEmailsGeneral(String where) {
         return emailQueries.readAllEmailsGeneral(where);
     }
 
-    public void insertEmailSent(Email email) {
-        emailQueries.insertEmailSent(email);
+    public void insertEmailSent(EmailOld emailOld) {
+        emailQueries.insertEmailSent(emailOld);
     }
 
-    public List<Email> readAllEmailsSent(String where) {
+    public List<EmailOld> readAllEmailsSent(String where) {
         return emailQueries.readAllEmailsSent(where);
     }
 
-    public void lockEmail(Email email, int op) {
-        emailQueries.lockEmail(email, op);
+    public void lockEmail(EmailOld emailOld, int op) {
+        emailQueries.lockEmail(emailOld, op);
     }
 
-    public void solvEmail(Email email, String flag, Users user, boolean choice, String msg) {
-        emailQueries.solvEmail(email, flag, user, choice, msg);
+    public void solvEmail(EmailOld emailOld, String flag, UsersOld user, boolean choice, String msg) {
+        emailQueries.solvEmail(emailOld, flag, user, choice, msg);
     }
 
     public void ArchiveEmail(int type, String where) {    //Verb
         emailQueries.ArchiveEmail(type, where);
     }
 
-    public void markAsSent(Email email) {
-        emailQueries.markAsSent(email);
+    public void markAsSent(EmailOld emailOld) {
+        emailQueries.markAsSent(emailOld);
     }
 
     public boolean checkIfUserIsLoggedIn(Users user) {
@@ -299,7 +296,7 @@ public class mySqlConn {
         return clientQueries.getAllClients(where);
     }
 
-    public ClientProperty getParticularClient(ClientProperty client) {
+    public ClientProperty getParticularClient(Client client) {
         return clientQueries.getParticularClient(client);
     }
 
@@ -331,7 +328,7 @@ public class mySqlConn {
         return contactQueries.getNewContactCode();
     }
 
-    public ContactProperty getParticularContact(ContactProperty contact) {
+    public ContactProperty getParticularContact(Contact contact) {
         return contactQueries.getParticularContact(contact);
     }
 
@@ -351,15 +348,15 @@ public class mySqlConn {
         return productQueries.getParticularProduct(product);
     }
 
-    public void insertProductModule(ProductModule productModule) {
-        productQueries.insertProductModule(productModule);
+    public void insertProductModule(ProductModuleOld productModuleOld) {
+        productQueries.insertProductModule(productModuleOld);
     }
 
-    public void updateProductModule(ProductModule productModule) {
-        productQueries.updateProductModule(productModule);
+    public void updateProductModule(ProductModuleOld productModuleOld) {
+        productQueries.updateProductModule(productModuleOld);
     }
 
-    public List<ProductModule> getAllProductModules(int productCode) {
+    public List<ProductModuleOld> getAllProductModules(int productCode) {
         return productQueries.getAllProductModules(productCode);
     }
 
@@ -367,7 +364,7 @@ public class mySqlConn {
         return productQueries.getProductModuleStates(product);
     }
 
-    public ArrayList<ProductModule> getLockedModules() {
+    public ArrayList<ProductModuleOld> getLockedModules() {
         return productQueries.getLockedModules();
     }
 
@@ -379,11 +376,11 @@ public class mySqlConn {
         return productQueries.getNewProductCode();
     }
 
-    public boolean lockModule(ProductModule module) {
+    public boolean lockModule(ProductModuleOld module) {
         return productQueries.lockModule(module);
     }
 
-    public void unlockModule(ProductModule module, String desc) {
+    public void unlockModule(ProductModuleOld module, String desc) {
         productQueries.unlockModule(module, desc);
     }
 
@@ -391,20 +388,20 @@ public class mySqlConn {
         return leadQueries.getNewLeadCode();
     }
 
-    public void insertLead(Lead lead) {
-        leadQueries.insertLead(lead);
+    public void insertLead(LeadOld leadOld) {
+        leadQueries.insertLead(leadOld);
     }
 
-    public void updateLead(Lead lead) {
-        leadQueries.updateLead(lead);
+    public void updateLead(LeadOld leadOld) {
+        leadQueries.updateLead(leadOld);
     }
 
-    public List<Lead> getAllLeads(String where) {
+    public List<LeadOld> getAllLeads(String where) {
         return leadQueries.getAllLeads(where);
     }
 
-    public Lead getParticularLead(Lead lead) {
-        return leadQueries.getParticularLead(lead);
+    public LeadOld getParticularLead(LeadOld leadOld) {
+        return leadQueries.getParticularLead(leadOld);
     }
 
     public void checkAndPopulateSourcesOnCreation() {
@@ -415,135 +412,135 @@ public class mySqlConn {
         return leadQueries.getAllSources(null);
     }
 
-    public void markLeadAsClient(Lead lead) {
-        leadQueries.markLeadAsClient(lead);
+    public void markLeadAsClient(LeadOld leadOld) {
+        leadQueries.markLeadAsClient(leadOld);
     }
 
-    public void archiveLead(Lead lead) {
-        leadQueries.archiveLead(lead);
+    public void archiveLead(LeadOld leadOld) {
+        leadQueries.archiveLead(leadOld);
     }
 
-    public void addNote(String text, ContactProperty contact) {
+    public void addNote(String text, Contact contact) {
         noteQueries.addNewNote(text, contact);
     }
 
-    public void addNote(String text, ClientProperty client) {
+    public void addNote(String text, Client client) {
         noteQueries.addNewNote(text, client);
     }
 
-    public void addNote(String text, Lead lead) {
-        noteQueries.addNewNote(text, lead);
+    public void addNote(String text, LeadOld leadOld) {
+        noteQueries.addNewNote(text, leadOld);
     }
 
     public void addNote(String text, ProductProperty product) {
         noteQueries.addNewNote(text, product);
     }
 
-    public void updateNote(Note note, ContactProperty contact) {
-        noteQueries.updateNote(note, contact);
+    public void updateNote(NoteOld noteOld, Contact contact) {
+        noteQueries.updateNote(noteOld, contact);
     }
 
-    public void updateNote(Note note, ClientProperty client) {
-        noteQueries.updateNote(note, client);
+    public void updateNote(NoteOld noteOld, Client client) {
+        noteQueries.updateNote(noteOld, client);
     }
 
-    public void updateNote(Note note, Lead lead) {
-        noteQueries.updateNote(note, lead);
+    public void updateNote(NoteOld noteOld, LeadOld leadOld) {
+        noteQueries.updateNote(noteOld, leadOld);
     }
 
-    public void updateNote(Note note, ProductProperty product) {
-        noteQueries.updateNote(note, product);
+    public void updateNote(NoteOld noteOld, ProductProperty product) {
+        noteQueries.updateNote(noteOld, product);
     }
 
-    public List<Note> getContactNotes(ContactProperty contact) {
+    public List<NoteOld> getContactNotes(ContactProperty contact) {
         return noteQueries.getNotes(contact);
     }
 
-    public void deleteNote(Note note, ContactProperty contact) {
-        noteQueries.deleteNote(note, contact);
+    public void deleteNote(NoteOld noteOld, Contact contact) {
+        noteQueries.deleteNote(noteOld, contact);
     }
 
-    public void deleteNote(Note note, ClientProperty client) {
-        noteQueries.deleteNote(note, client);
+    public void deleteNote(NoteOld noteOld, Client client) {
+        noteQueries.deleteNote(noteOld, client);
     }
 
-    public void deleteNote(Note note, Lead lead) {
-        noteQueries.deleteNote(note, lead);
+    public void deleteNote(NoteOld noteOld, LeadOld leadOld) {
+        noteQueries.deleteNote(noteOld, leadOld);
     }
 
-    public void deleteNote(Note note, ProductProperty product) {
-        noteQueries.deleteNote(note, product);
+    public void deleteNote(NoteOld noteOld, ProductProperty product) {
+        noteQueries.deleteNote(noteOld, product);
     }
 
-    public void addTask(Task task) {
-        taskQueries.addTask(task);
+    public void addTask(TaskOld taskOld) {
+        taskQueries.addTask(taskOld);
     }
 
-    public void updateTask(Task task) {
-        taskQueries.updateTask(task);
+    public void updateTask(TaskOld taskOld) {
+        taskQueries.updateTask(taskOld);
     }
 
-    public void closeTask(Task task) {
-        taskQueries.closeTask(task);
+    public void closeTask(TaskOld taskOld) {
+        taskQueries.closeTask(taskOld);
     }
 
-    public void archiveTask(Task task) {
-        taskQueries.archiveTask(task);
+    public void archiveTask(TaskOld taskOld) {
+        taskQueries.archiveTask(taskOld);
     }
 
-    public List<Task> getAllTasks(String where) {
+    public List<TaskOld> getAllTasks(String where) {
         return taskQueries.getAlLTasks(where);
     }
 
-    public List<Task> getTasks(ContactProperty obj) {
+    public List<TaskOld> getTasks(Client obj) {
         return taskQueries.getTasks(obj);
     }
 
-    public List<Task> getTasks(ClientProperty obj) {
+    public List<TaskOld> getTasks(ContactProperty obj) {
         return taskQueries.getTasks(obj);
     }
 
-    public List<Task> getTasks(Lead obj) {
+    public List<TaskOld> getTasks(LeadOld obj) {
         return taskQueries.getTasks(obj);
     }
 
-    public List<Task> getTasks(ProductProperty obj) {
+    public List<TaskOld> getTasks(ProductProperty obj) {
         return taskQueries.getTasks(obj);
     }
 
-    public void markNotified(Task obj) {
+    public void markNotified(TaskOld obj) {
         taskQueries.markNotified(obj);
     }
 
-    public void addEvent(Event event) {
-        eventQueries.addEvent(event);
+    public void addEvent(EventOld eventOld) {
+        eventQueries.addEvent(eventOld);
     }
 
-    public List<Event> getEvents(ClientProperty obj) {
+    public List<EventOld> getEvents(Client obj) {
         return eventQueries.getEvents(obj);
     }
 
-    public List<Event> getEvents(Lead obj) {
+    public List<EventOld> getEvents(LeadOld obj) {
         return eventQueries.getEvents(obj);
     }
 
-    public List<Event> getAllEvents(String where) {
+    public List<EventOld> getAllEvents(String where) {
         return eventQueries.getAlLEvents(where);
     }
 
-    public void updateEvent(Event event) {
-        eventQueries.updateEvent(event);
+    public void updateEvent(EventOld eventOld) {
+        eventQueries.updateEvent(eventOld);
     }
 
-    public void closeEvent(Event event) {
-        eventQueries.closeEvent(event);
+    public void closeEvent(EventOld eventOld) {
+        eventQueries.closeEvent(eventOld);
     }
 
-    public void archiveEvent(Event event) {
-        eventQueries.archiveEvent(event);
+    public void archiveEvent(EventOld eventOld) {
+        eventQueries.archiveEvent(eventOld);
     }
 
-    public void markNotified(Event obj) {
+    public void markNotified(EventOld obj) {
         eventQueries.markNotified(obj);
     }
 
@@ -607,14 +604,14 @@ public class mySqlConn {
     }
 
 
-    public static boolean pingHost(String host, int port, int timeout) {
-        try (Socket socket = new Socket()) {
-            socket.connect(new InetSocketAddress(host, port), timeout);
-            return true;
-        } catch (IOException e) {
-            return false; // Either timeout or unreachable or failed DNS lookup.
-        }
-    }
+//    public static boolean pingHost(String host, int port, int timeout) {
+//        try (Socket socket = new Socket()) {
+//            socket.connect(new InetSocketAddress(host, port), timeout);
+//            return true;
+//        } catch (IOException e) {
+//            return false; // Either timeout or unreachable or failed DNS lookup.
+//        }
+//    }
 
     private void showAlertDialog() {
         Alert alert2 = new Alert(Alert.AlertType.ERROR, "Cannot Connect to the Database!",
@@ -643,16 +640,16 @@ public class mySqlConn {
         return emailQueries.average_Calculate();
     }
 
-    public int getManualTicketNo(Email em) {
+    public int getManualTicketNo(EmailOld em) {
         return emailQueries.getManualTicketNo(em);
     }
 
 
-    public void updateResendEmail(Email email) {
-         emailQueries.updateResendEmail(email);
+    public void updateResendEmail(EmailOld emailOld) {
+         emailQueries.updateResendEmail(emailOld);
     }
 
-    public Email readSearchEmail(int emailNo) {
+    public EmailOld readSearchEmail(int emailNo) {
         return emailQueries.readSearchEmail(emailNo, userQueries);
     }
 
@@ -676,20 +673,20 @@ public class mySqlConn {
         settingsQueries.removeKeyword(selectedItem);
     }
 
-    public Email getParticularEmail(Email email) {
-        return emailQueries.getParticularEmail(email);
+    public EmailOld getParticularEmail(EmailOld emailOld) {
+        return emailQueries.getParticularEmail(emailOld);
     }
 
-    public void addNote(String note, Email email) {
-        noteQueries.addNewNote(note, email);
+    public void addNote(String note, EmailOld emailOld) {
+        noteQueries.addNewNote(note, emailOld);
     }
 
-    public void deleteNote(Note note, Email email) {
-        noteQueries.deleteNote(note, email);
+    public void deleteNote(NoteOld noteOld, EmailOld emailOld) {
+        noteQueries.deleteNote(noteOld, emailOld);
     }
 
-    public void updateNote(Note note, Email email) {
-        noteQueries.updateNote(note, email);
+    public void updateNote(NoteOld noteOld, EmailOld emailOld) {
+        noteQueries.updateNote(noteOld, emailOld);
     }
 
     public List<EmailProperty> clientReportWithDomain(ClientProperty clientProperty, String reportFilter) {
@@ -698,5 +695,10 @@ public class mySqlConn {
 
     public List<ClientProperty> clientName() {
         return clientQueries.clientName();
+    }
+
+    public String getUserRight(int code) {
+        return userQueries.getUserRight(code);
+
     }
 }

@@ -1,160 +1,24 @@
 package objects;
 
+import JCode.CommonTasks;
 
-import javax.mail.Address;
-import java.io.File;
 import java.io.Serializable;
+import java.text.ParseException;
 import java.util.List;
 
 public class Email implements Serializable {
 
-    private int code, messageNo, locked = 0, solvedBy, freeze = 0, emailStoreNo, manualEmail = 0, sent, ticketNo;
-    private String toAddress, fromAddress, ccAddress, bccAddress;
-    private String subject, timestamp, timeFormatted, body, attachment, userCode, type, uploadedDocumentsString, lockedByName, disclaimer, solvedByName, createdBy, lockTime, solveTime, status;
+    private int code, messageNo, freeze = 0, manualEmail = 0, sent, ticketNo,userCode,esno,isAllocatedBy;
+    private String subject, timestamp, body,  type, status,upload_Attach,lockedTime,solvedTime,duration;
     private Users users;
-    private Address[] toAddresses, fromAddresses, ccAddresses, bccAddresses;
-    private List<File> attachments;
-    private List<Document> documents;
-    private List<ContactProperty> relatedContacts;
-    private List<ClientProperty> relatedClients;
-    private char solved = 'N';
+    List<String> toAddress, fromAddress, ccAddress, bccAddress, attachment;
+    private boolean sendAsEmail = false;
+    private List<Note> eNoteList;
     public static boolean isEmailTypeSent = false;
-    private String rawContent;
-    private List<Note> notes;
     private List<History> history;
 
+
     public Email() {
-    }
-
-    public Address[] getToAddresses() {
-        return toAddresses;
-    }
-
-    public String getToAddressString() {
-        String s = "";
-        for (Address ad : toAddresses) {
-            if (ad != null) // my change
-                s = s + "^" + ad;
-        }
-        return s;
-    }
-
-    public int getTicketNo() {
-        return ticketNo;
-    }
-
-    public void setTicketNo(int ticketNo) {
-        this.ticketNo = ticketNo;
-    }
-
-    public void setToAddresses(Address[] toAddresses) {
-        this.toAddresses = toAddresses;
-    }
-
-    public Address[] getFromAddresses() {
-        return fromAddresses;
-    }
-
-    public void setFromAddresses(Address[] fromAddresses) {
-        this.fromAddresses = fromAddresses;
-    }
-
-    public Address[] getCcAddresses() {
-        return ccAddresses;
-    }
-
-    public String getCcAddressString() {
-        String s = "";
-        for (Address ad : ccAddresses) {
-            if (ad != null) // my change
-                s = s + "^" + ad;
-        }
-        return s;
-    }
-
-    public void setCcAddresses(Address[] ccAddresses) {
-        this.ccAddresses = ccAddresses;
-    }
-
-    public Address[] getBccAddresses() {
-        return bccAddresses;
-    }
-
-    public String getBccAddressString() {
-        String s = "";
-        for (Address ad : bccAddresses) {
-            if (ad != null) // my change
-                s = s + "^" + ad;
-        }
-        return s;
-    }
-
-    public void setBccAddresses(Address[] bccAddresses) {
-        this.bccAddresses = bccAddresses;
-    }
-
-    public List<History> getHistory() {
-        return history;
-    }
-
-    public void setHistory(List<History> history) {
-        this.history = history;
-    }
-
-    public String getStatus() {
-        return status;
-    }
-
-    public void setStatus(String status) {
-        this.status = status;
-    }
-
-    public Users getUsers() {
-        return users;
-    }
-
-    public void setUsers(Users users) {
-        this.users = users;
-    }
-
-    public void setType(String type) {
-        this.type = type;
-    }
-
-    public String getToAddress() {
-        return toAddress;
-    }
-
-    public void setToAddress(String toAddress) {
-        this.toAddress = toAddress;
-    }
-
-    public String getFromAddress() {
-        return fromAddress;
-    }
-
-    public void setFromAddress(String fromAddress) {
-        this.fromAddress = fromAddress;
-    }
-
-    public String getCcAddress() {
-        return ccAddress;
-    }
-
-    public void setCcAddress(String ccAddress) {
-        this.ccAddress = ccAddress;
-    }
-
-    public String getBccAddress() {
-        return bccAddress;
-    }
-
-    public void setBccAddress(String bccAddress) {
-        this.bccAddress = bccAddress;
-    }
-
-    public String getType() {
-        return type;
     }
 
     public int getCode() {
@@ -173,21 +37,68 @@ public class Email implements Serializable {
         this.messageNo = messageNo;
     }
 
-
-    public List<ContactProperty> getRelatedContacts() {
-        return relatedContacts;
+    public int getFreeze() {
+        return freeze;
     }
 
-    public void setRelatedContacts(List<ContactProperty> relatedContacts) {
-        this.relatedContacts = relatedContacts;
+    public void setFreeze(int freeze) {
+        this.freeze = freeze;
     }
 
-    public List<ClientProperty> getRelatedClients() {
-        return relatedClients;
+    public String getDuration() throws ParseException {
+        return CommonTasks.getTimeDuration(lockedTime,solvedTime);
     }
 
-    public void setRelatedClients(List<ClientProperty> relatedClients) {
-        this.relatedClients = relatedClients;
+    public void setDuration(String duration) {
+        this.duration = duration;
+    }
+
+    public int getManualEmail() {
+        return manualEmail;
+    }
+
+    public void setManualEmail(int manualEmail) {
+        this.manualEmail = manualEmail;
+    }
+
+    public int getSent() {
+        return sent;
+    }
+
+    public void setSent(int sent) {
+        this.sent = sent;
+    }
+
+    public int getTicketNo() {
+        return ticketNo;
+    }
+
+    public void setTicketNo(int ticketNo) {
+        this.ticketNo = ticketNo;
+    }
+
+    public int getUserCode() {
+        return userCode;
+    }
+
+    public void setUserCode(int userCode) {
+        this.userCode = userCode;
+    }
+
+    public int getEsno() {
+        return esno;
+    }
+
+    public void setEsno(int esno) {
+        this.esno = esno;
+    }
+
+    public int getIsAllocatedBy() {
+        return isAllocatedBy;
+    }
+
+    public void setIsAllocatedBy(int isAllocatedBy) {
+        this.isAllocatedBy = isAllocatedBy;
     }
 
     public String getSubject() {
@@ -199,20 +110,11 @@ public class Email implements Serializable {
     }
 
     public String getTimestamp() {
-        return timestamp;
+        return CommonTasks.getDateTimeFormat(timestamp);
     }
 
     public void setTimestamp(String timestamp) {
         this.timestamp = timestamp;
-    }
-
-
-    public String getTimeFormatted() {
-        return timeFormatted;
-    }
-
-    public void setTimeFormatted(String timeFormatted) {
-        this.timeFormatted = timeFormatted;
     }
 
     public String getBody() {
@@ -223,167 +125,125 @@ public class Email implements Serializable {
         this.body = body;
     }
 
-    public String getDisclaimer() {
-        return disclaimer;
+    public String getType() {
+        return type;
     }
 
-    public void setDisclaimer(String disclaimer) {
-        this.disclaimer = disclaimer;
+    public void setType(String type) {
+        this.type = type;
     }
 
-    public List<Document> getDocuments() {
-        return documents;
+    public String getStatus() {
+        return status;
     }
 
-    public void setDocuments(List<Document> documents) {
-        this.documents = documents;
+    public void setStatus(String status) {
+        this.status = status;
     }
 
-    public String getAttachment() {
+    public String getUpload_Attach() {
+        return upload_Attach;
+    }
+
+    public void setUpload_Attach(String upload_Attach) {
+        this.upload_Attach = upload_Attach;
+    }
+
+    public String getLockedTime() {
+        return CommonTasks.getDateTimeFormat(lockedTime);
+    }
+
+    public void setLockedTime(String lockedTime) {
+        this.lockedTime = lockedTime;
+    }
+
+    public String getSolvedTime() {
+        return CommonTasks.getDateTimeFormat(solvedTime);
+    }
+
+    public void setSolvedTime(String solvedTime) {
+        this.solvedTime = solvedTime;
+    }
+
+    public Users getUsers() {
+        return users;
+    }
+
+    public void setUsers(Users users) {
+        this.users = users;
+    }
+
+    public List<String> getToAddress() {
+        return toAddress;
+    }
+
+    public void setToAddress(List<String> toAddress) {
+        this.toAddress = toAddress;
+    }
+
+    public List<String> getFromAddress() {
+        return fromAddress;
+    }
+
+    public void setFromAddress(List<String> fromAddress) {
+        this.fromAddress = fromAddress;
+    }
+
+    public List<String> getCcAddress() {
+        return ccAddress;
+    }
+
+    public void setCcAddress(List<String> ccAddress) {
+        this.ccAddress = ccAddress;
+    }
+
+    public List<String> getBccAddress() {
+        return bccAddress;
+    }
+
+    public void setBccAddress(List<String> bccAddress) {
+        this.bccAddress = bccAddress;
+    }
+
+    public List<String> getAttachment() {
         return attachment;
     }
 
-    public void setAttachment(String attachment) {
+    public void setAttachment(List<String> attachment) {
         this.attachment = attachment;
     }
 
-    public String getUploadedDocumentsString() {
-        return uploadedDocumentsString;
+    public boolean isSendAsEmail() {
+        return sendAsEmail;
     }
 
-    public void setUploadedDocumentsString(String uploadedDocumentsString) {
-        this.uploadedDocumentsString = uploadedDocumentsString;
+    public void setSendAsEmail(boolean sendAsEmail) {
+        this.sendAsEmail = sendAsEmail;
     }
 
-    public List<File> getAttachments() {
-        return attachments;
+    public List<Note> geteNoteList() {
+        return eNoteList;
     }
 
-    public void setAttachments(List<File> attachments) {
-        this.attachments = attachments;
+    public void seteNoteList(List<Note> eNoteList) {
+        this.eNoteList = eNoteList;
     }
 
-
-    public char getSolved() {
-        return solved;
+    public static boolean isIsEmailTypeSent() {
+        return isEmailTypeSent;
     }
 
-    public void setSolved(char solved) {
-        this.solved = solved;
+    public static void setIsEmailTypeSent(boolean isEmailTypeSent) {
+        Email.isEmailTypeSent = isEmailTypeSent;
     }
 
-    public int getLocked() {
-        return locked;
+    public List<History> getHistory() {
+        return history;
     }
 
-    public void setLocked(int locked) {
-        this.locked = locked;
+    public void setHistory(List<History> history) {
+        this.history = history;
     }
-
-    public String getLockedByName() {
-        return lockedByName;
-    }
-
-    public void setLockedByName(String lockedByName) {
-        this.lockedByName = lockedByName;
-    }
-
-    public String getLockTime() {
-        return lockTime;
-    }
-
-    public void setLockTime(String lockTime) {
-        this.lockTime = lockTime;
-    }
-
-    public String getSolveTime() {
-        return solveTime;
-    }
-
-    public void setSolveTime(String solveTime) {
-        this.solveTime = solveTime;
-    }
-
-    public int getManualEmail() {
-        return manualEmail;
-    }
-
-    public void setManualEmail(int manualEmail) {
-        this.manualEmail = manualEmail;
-    }
-
-    public String getCreatedBy() {
-        return createdBy;
-    }
-
-    public void setCreatedBy(String createdBy) {
-        this.createdBy = createdBy;
-    }
-
-    public int getSolvedBy() {
-        return solvedBy;
-    }
-
-    public void setSolvedBy(int solvedBy) {
-        this.solvedBy = solvedBy;
-    }
-
-    public String getSolvedByName() {
-        return solvedByName;
-    }
-
-    public void setSolvedByName(String solvedByName) {
-        this.solvedByName = solvedByName;
-    }
-
-    public int getEmailStoreNo() {
-        return emailStoreNo;
-    }
-
-    public void setEmailStoreNo(int emailStoreNo) {
-        this.emailStoreNo = emailStoreNo;
-    }
-
-    public List<Note> getNotes() {
-        return notes;
-    }
-
-    public void setNotes(List<Note> notes) {
-        this.notes = notes;
-    }
-
-    public int getFreeze() {
-        return freeze;
-    }
-
-    public void setFreeze(int freeze) {
-        this.freeze = freeze;
-    }
-
-    public String getUserCode() {
-        return userCode;
-    }
-
-    public void setUserCode(String userCode) {
-        this.userCode = userCode;
-    }
-
-    public int getSent() {
-        return sent;
-    }
-
-    public void setSent(int sent) {
-        this.sent = sent;
-    }
-
-    public String getRawContent() {
-        return rawContent;
-    }
-
-    public void setRawContent(String rawContent) {
-        this.rawContent = rawContent;
-    }
-
 
     @Override
     public String toString() {
@@ -403,7 +263,7 @@ public class Email implements Serializable {
         }
 
         e = e + "\n" +
-                getTimestamp() + "\n" +
+                (getTimestamp())+ "\n" +
                 getSubject();
         return e;
     }

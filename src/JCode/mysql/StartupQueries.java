@@ -1,11 +1,15 @@
 package JCode.mysql;
 
+import ApiHandler.RequestHandler;
 import objects.Users;
 
+import java.io.IOException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class StartupQueries {
 
@@ -26,35 +30,31 @@ public class StartupQueries {
     }
 
     private boolean checkForUsers() {
-
-        String query = "SELECT UCODE " +
-                " FROM USERS ";
-
+        List<Users> usersList =new ArrayList<>();
         try {
-            PreparedStatement statement = static_con.prepareStatement(query);
-            ResultSet set = statement.executeQuery();
-
-            if (!set.next()) {
-                return false;
-            } else {
-                return true;
-            }
-
-        } catch (SQLException e) {
+           usersList = RequestHandler.listRequestHandler(RequestHandler.run("users/getALlUsers"), Users.class);
+        } catch (IOException e) {
             e.printStackTrace();
-            return false;
         }
-
+        if (usersList.isEmpty()){
+            return false;
+        }else{
+            return true;
+        }
     }
 
     private void createFirstUser() {
         Users user = new Users();
-        user.setFNAME("Auto Created User");
-        user.setUNAME("first_user");
+        user.setFullName("Auto Created User");
+        user.setUserName("first_user");
         user.setPassword("auto123");
-        user.setUright("Admin");
-        user.setEmailBool(true);
-        userQueries.insertUpdateUser(user, 0);
+        user.setUserRight("Admin");
+        user.setIsEmail(1);
+        try {
+            RequestHandler.post("users/addUser", RequestHandler.writeJSON(user)).close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     public boolean checkAndPopulateRights() {

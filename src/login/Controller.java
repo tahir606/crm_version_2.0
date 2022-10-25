@@ -1,5 +1,7 @@
 package login;
 
+import ApiHandler.RequestHandler;
+import JCode.FileHelper;
 import JCode.mysql.mySqlConn;
 import JCode.trayHelper;
 import SplashScreen.SplashScreenThread;
@@ -19,6 +21,8 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
+import objects.StartupCRM;
+import objects.Users;
 
 import java.io.IOException;
 import java.net.URL;
@@ -38,20 +42,22 @@ public class Controller implements Initializable {
     private ImageView img_loader;
 
     trayHelper tHelper = new trayHelper();
-    mySqlConn sql;
+        mySqlConn sql;
+    StartupCRM startupCRM;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        sql = new mySqlConn();
-
+//        sql = new mySqlConn();
+        startupCRM = new StartupCRM();
         //First time opening the CRM creates automatic admin user.
-        sql.checkAndCreateUser();
+        startupCRM.checkAndCreateUser();
+//        sql.checkAndCreateUser();
         //And populate the rights list
-        sql.checkAndPopulateRights();
+        startupCRM.checkAndPopulateRights();
         //And populate sources
-        sql.checkAndPopulateSourcesOnCreation();
+//        sql.checkAndPopulateSourcesOnCreation();
         //And populate Notification Settings
-        sql.checkOnNotificationSettings();
+//        sql.checkOnNotificationSettings();
 
         SplashScreenThread.hideSplashScreen();
 
@@ -97,14 +103,23 @@ public class Controller implements Initializable {
         }
     }
 
-    private void authenticateLogin(String username, String password) {
+    boolean success = false;
 
-        boolean succ = sql.authenticateLogin(username, password);
+    private void authenticateLogin(String username, String password) {
+        try {
+            Users users = (Users) RequestHandler.objectRequestHandler(RequestHandler.run("users/authentication?userName=" + username + "&userPass=" + password), Users.class);
+            if (users != null) {
+                FileHelper.DeleteUserApiDetails();
+                success = FileHelper.WriteUserApiDetails(users);
+            }
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
         Platform.runLater(
                 () -> {
-                    // Update UI here. Running on main Thread
-                    if (succ == false) {     //Unsuccessful Login
+                    if (success == false) {     //Unsuccessful Login
                         error_message.setText("Incorrect ID or Password");
                         img_loader.setVisible(false);
                     } else {                //Successful Login
@@ -126,6 +141,7 @@ public class Controller implements Initializable {
                         tHelper.createTrayIcon(stage);
                         tHelper.createIcon(stage);
                         stage.show();
+
                     }
 
                 }

@@ -15,10 +15,7 @@ import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.Period;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.GregorianCalendar;
-import java.util.Locale;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 
 public class CommonTasks {
@@ -28,7 +25,7 @@ public class CommonTasks {
 
     public static String getCurrentTimeStamp() {
         SimpleDateFormat dateFormat = new SimpleDateFormat(
-                "yyyy-MM-dd HH:mm:ss", Locale.getDefault());
+                "yyyy-MM-dd'T'HH:mm:ss");
         Date date = new Date();
         return dateFormat.format(date);
     }
@@ -40,10 +37,91 @@ public class CommonTasks {
         return dateFormat.format(date);
     }
 
+    public static String getDateTimeFormat(String timeStamp) {
+        // Note, MM is months, not mm
+        DateFormat inputFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+        DateFormat outputFormat = new SimpleDateFormat("dd-MMM-yyyy hh:mm a");
+        inputFormat.setTimeZone(TimeZone.getTimeZone("UTC+5"));
+        Date date = null;
+        try {
+            date = inputFormat.parse(timeStamp);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        } catch (NullPointerException e) {
+
+            return null;
+        }
+        String outputText = outputFormat.format(date);
+        return outputText;
+    }
+
+    public static String convertFormat(String timeStamp) {
+        if (timeStamp.equals("") || timeStamp == null) {
+            return "";
+        }
+        // Note, MM is months, not mm
+        DateFormat inputFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+        DateFormat outputFormat = new SimpleDateFormat("dd-MMM-yyyy hh:mm:ss");
+        inputFormat.setTimeZone(TimeZone.getTimeZone("UTC+5"));
+        Date date = null;
+        try {
+            date = inputFormat.parse(timeStamp);
+        } catch (ParseException e) {
+            DateFormat inputFormat2 = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+            try {
+                date = inputFormat2.parse(timeStamp);
+            } catch (ParseException e1) {
+                e1.printStackTrace();
+            }
+        }
+
+        String outputText = outputFormat.format(date);
+        return outputText;
+    }
+
+    public static String convertFormatWithOutTimeZone(String timeStamp) {
+        if (timeStamp == null || timeStamp.equals("")) {
+            return "";
+        }
+        // Note, MM is months, not mm
+        DateFormat inputFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+        DateFormat outputFormat = new SimpleDateFormat("dd-MMM-yyyy hh:mm:ss");
+        Date date = null;
+        try {
+            date = inputFormat.parse(timeStamp);
+        } catch (ParseException e) {
+            DateFormat inputFormat2 = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+            try {
+                date = inputFormat2.parse(timeStamp);
+            } catch (ParseException e1) {
+                e1.printStackTrace();
+            }
+        }
+
+        String outputText = outputFormat.format(date);
+        return outputText;
+    }
+    public static String getSimpleDate(String timeStamp) {
+        if (timeStamp == null || timeStamp.equals("")) {
+            return "";
+        }
+        // Note, MM is months, not mm
+        DateFormat inputFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+        DateFormat outputFormat = new SimpleDateFormat("dd-MMM-yyyy");
+        Date date = null;
+        try {
+            date = inputFormat.parse(timeStamp);
+        } catch (ParseException e) {
+            e.getLocalizedMessage();
+        }
+
+        return outputFormat.format(date);
+    }
+
 
     public static String getTimeFormatted(String timeStamp) {
         // Note, MM is months, not mm
-        DateFormat inputFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.S");
+        DateFormat inputFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.S");
         DateFormat outputFormat = new SimpleDateFormat("dd-MMM-yyyy hh:mm a");
 
         Date date = null;
@@ -57,6 +135,45 @@ public class CommonTasks {
         }
         String outputText = outputFormat.format(date);
         return outputText;
+    }
+
+    public static String getDateFormat(String timeStamp) {
+        DateFormat inputFormat = new SimpleDateFormat("dd-MMM-yyyy hh:mm:ss");
+        DateFormat outputFormat = new SimpleDateFormat("dd-MMM-yyyy hh:mm");
+        Date date = null;
+        try {
+            date = inputFormat.parse(timeStamp);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        } catch (NullPointerException e) {
+            System.out.println(e);
+            return null;
+        }
+        String outputText = outputFormat.format(date);
+        return outputText;
+    }
+
+    public static LocalTime createLocalTime(String timeStamp) {
+        LocalTime localTime = LocalTime.of(Integer.parseInt(timeStamp.split(":")[0]), Integer.parseInt(timeStamp.split(":")[1]));
+        return localTime;
+    }
+
+    public static LocalTime getTimeFormat(String timeStamp) {
+        // Note, MM is months, not mm
+        DateFormat inputFormat = new SimpleDateFormat("dd-MMM-yy HH:mm:ss");
+        DateFormat outputFormat = new SimpleDateFormat("hh:mm:ss");
+
+        Date date = null;
+        try {
+            date = inputFormat.parse(timeStamp);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        } catch (NullPointerException e) {
+            System.out.println(e);
+            return null;
+        }
+        LocalTime localTime = LocalTime.of(Integer.parseInt(outputFormat.format(date).split(":")[0]), Integer.parseInt(outputFormat.format(date).split(":")[1]));
+        return localTime;
     }
 
     public static String getDateFormatted(String timeStamp) {
@@ -73,13 +190,14 @@ public class CommonTasks {
             return "";
         }
         String outputText = outputFormat.format(date);
+
         return outputText;
     }
 
     public static String getDateFormattedOnly(String timeStamp) {
         // Note, MM is months, not mm
         DateFormat inputFormat = new SimpleDateFormat("yyyy-MM-dd");
-        DateFormat outputFormat = new SimpleDateFormat("dd-MMM-yyyy");
+        DateFormat outputFormat = new SimpleDateFormat("dd-MMM-yy");
 
         Date date = null;
         try {
@@ -94,7 +212,7 @@ public class CommonTasks {
     public static String getAge(String timeStamp) {
 
         // Note, MM is months, not mm
-        DateFormat inputFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.S");
+        DateFormat inputFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
 
         Date date = null;
         try {
@@ -156,9 +274,7 @@ public class CommonTasks {
     }
 
     public static LocalDate createLocalDate(String timeStamp) {
-
-//        DateFormat inputFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.S");
-        DateFormat inputFormat = new SimpleDateFormat("yyyy-MM-dd");
+        DateFormat inputFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
         Date date = null;
         try {
             date = inputFormat.parse(timeStamp);
@@ -180,9 +296,57 @@ public class CommonTasks {
         return localDate;
     }
 
-    public static LocalTime createLocalTime(String timeStamp) {
-        LocalTime localTime = LocalTime.of(Integer.parseInt(timeStamp.split(":")[0]), Integer.parseInt(timeStamp.split(":")[1]));
-        return localTime;
+    public static LocalDate createLocalDateForEventTask(String timeStamp) {
+
+        DateFormat inputFormat = new SimpleDateFormat("dd-MMM-yy HH:mm:ss");
+        Date date = null;
+        try {
+            date = inputFormat.parse(timeStamp);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
+        Calendar calendar = new GregorianCalendar();
+        if (date == null)
+            return null;
+        calendar.setTime(date);
+        int year = calendar.get(Calendar.YEAR);
+        //Add one to month {0 - 11}
+        int month = calendar.get(Calendar.MONTH) + 1;
+        int day = calendar.get(Calendar.DAY_OF_MONTH);
+
+        LocalDate localDate = LocalDate.of(year, month, day);
+
+        return localDate;
+    }
+
+    public static LocalDate createLocalDateForFilter(String timeStamp) {
+
+        DateFormat inputFormat = new SimpleDateFormat("yyyy-MM-dd");
+        Date date = null;
+        try {
+            date = inputFormat.parse(timeStamp);
+        } catch (ParseException e) {
+            DateFormat inputFormat2 = new SimpleDateFormat("dd-MMM-yyyy");
+            try {
+                date=inputFormat2.parse(timeStamp);
+            } catch (ParseException parseException) {
+                parseException.printStackTrace();
+            }
+        }
+
+        Calendar calendar = new GregorianCalendar();
+        if (date == null)
+            return null;
+        calendar.setTime(date);
+        int year = calendar.get(Calendar.YEAR);
+        //Add one to month {0 - 11}
+        int month = calendar.get(Calendar.MONTH) + 1;
+        int day = calendar.get(Calendar.DAY_OF_MONTH);
+
+
+
+        return  LocalDate.of(year, month, day);
     }
 
     public static void inflateDialog(String title, URL path) {
@@ -230,18 +394,33 @@ public class CommonTasks {
         }
     }
 
+    public static String setDateTimeFormatForEvent(String timeStamp) {
+        // Note, MM is months, not mm
+        DateFormat inputFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+        DateFormat outputFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.S");
 
-    public static String getTimeDuration(String locktime, String solvtime) throws ParseException {
-        SimpleDateFormat inputFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.S");
+        Date date = null;
+        try {
+            date = inputFormat.parse(timeStamp);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        String outputText = outputFormat.format(date);
+        return outputText;
+    }
+
+
+    public static String getTimeDuration(String lockTime, String solveTime) throws ParseException {
+        SimpleDateFormat inputFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.S");
         Date date1 = null;
         Date date2 = null;
         long diff = 0;
         String str;
-        if (solvtime == null || locktime == null) {
+        if (solveTime == null || lockTime == null) {
             str = "";
         } else {
-            date1 = inputFormat.parse(locktime);
-            date2 = inputFormat.parse(solvtime);
+            date1 = inputFormat.parse(lockTime);
+            date2 = inputFormat.parse(solveTime);
             diff = date2.getTime() - date1.getTime();
             int diffDays = (int) (diff / (24 * 60 * 60 * 1000));
             int diffHours = (int) (diff / (60 * 60 * 1000));

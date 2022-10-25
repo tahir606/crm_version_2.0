@@ -18,7 +18,7 @@
 }
 
 .unreadEmail {
-    -fx-background-color: #f7e0c0;
+    -fx-background-color: #add8e6;
 }
 
 /*, .list-cell:filled:selected*/
@@ -27,13 +27,52 @@
     -fx-text-fill: white;
     -fx-background-insets: 1;
 }
-
 .unlockedEmail {
-    -fx-background-color: #d9e5f9;
+    -fx-background-color: #ff8c69;
 }
 
 /*, .list-cell:filled:selected*/
 .unlockedEmail:filled:selected:focused {
+    -fx-background-color: linear-gradient(#328BDB 0%, #207BCF 25%, #1973C9 75%, #0A65BF 100%);
+    -fx-text-fill: white;
+    -fx-background-insets: 1;
+}
+.lockedEmail {
+    -fx-background-color: #d9e5f9;
+}
+
+/*, .list-cell:filled:selected*/
+.lockedEmail:filled:selected:focused {
+    -fx-background-color: linear-gradient(#328BDB 0%, #207BCF 25%, #1973C9 75%, #0A65BF 100%);
+    -fx-text-fill: white;
+    -fx-background-insets: 1;
+}
+.solvedEmail {
+    -fx-background-color: #90EE90;
+}
+
+/*, .list-cell:filled:selected*/
+.solvedEmail:filled:selected:focused {
+    -fx-background-color: linear-gradient(#328BDB 0%, #207BCF 25%, #1973C9 75%, #0A65BF 100%);
+    -fx-text-fill: white;
+    -fx-background-insets: 1;
+}
+.allocatedEmail {
+    -fx-background-color: #FFFFCC;
+}
+
+/*, .list-cell:filled:selected*/
+.allocatedEmail:filled:selected:focused {
+    -fx-background-color: linear-gradient(#328BDB 0%, #207BCF 25%, #1973C9 75%, #0A65BF 100%);
+    -fx-text-fill: white;
+    -fx-background-insets: 1;
+}
+.resolvedEmail {
+    -fx-background-color: #00FF00;
+}
+
+/*, .list-cell:filled:selected*/
+.resolvedEmail:filled:selected:focused {
     -fx-background-color: linear-gradient(#328BDB 0%, #207BCF 25%, #1973C9 75%, #0A65BF 100%);
     -fx-text-fill: white;
     -fx-background-insets: 1;

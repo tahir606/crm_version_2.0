@@ -1,16 +1,16 @@
 package client.dash.clientView.clientDetails;
 
 import Email.EResponse.EResponseController;
-import com.jfoenix.controls.JFXTextArea;
-import gui.EventsConstructor;
-import gui.TasksConstructor;
-import gui.NotesConstructor;
 import JCode.mysql.mySqlConn;
 import JCode.trayHelper;
 import client.dash.clientView.clientViewController;
 import client.dashBaseController;
 import client.newClient.newClientController;
 import com.jfoenix.controls.JFXButton;
+import com.jfoenix.controls.JFXTextArea;
+import gui.EventsConstructor;
+import gui.NotesConstructor;
+import gui.TasksConstructor;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -27,11 +27,16 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
-import objects.ClientProperty;
+import objects.Client;
+import objects.EmailList;
+import objects.PhoneList;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.Collections;
 import java.util.ResourceBundle;
+
+import static JCode.CommonTasks.getSimpleDate;
 
 public class clientDetailsController implements Initializable {
 
@@ -51,7 +56,7 @@ public class clientDetailsController implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
 
-        sql = new mySqlConn();
+
 
         Image image = new Image(this.getClass().getResourceAsStream("/res/img/left-arrow.png"));
         btn_back.setGraphic(new ImageView(image));
@@ -68,10 +73,9 @@ public class clientDetailsController implements Initializable {
             }
         });
 
-        ClientProperty client = clientViewController.staticClient;
-
+        Client client = clientViewController.staticClient;
         btn_email.setOnAction(event -> {
-            EResponseController.stTo = client.getEmailsString();
+            EResponseController.stTo = Collections.singletonList(client.getClEmailLists().get(0).getAddress());
             EResponseController.stInstance = 'N';
             inflateEResponse(1);
         });
@@ -90,25 +94,26 @@ public class clientDetailsController implements Initializable {
         txt_fname.setText(client.getName());
         txt_website.setText(client.getWebsite());
         txt_owner.setText(client.getOwner());
-        txt_joinDate.setText(client.getJoinDate());
+        txt_joinDate.setText(getSimpleDate(client.getJoinDate()));
+//        txt_joinDate.setText(convertFormatWithOutTimeZone(client.getJoinDate()));
         txt_city.setText(client.getCity());
         txt_country.setText(client.getCountry());
 
-        txt_address.setText(client.getAddr());
+        txt_address.setText(client.getAddress());
 
-        for (String email : client.getEmails()) {
+        for (EmailList email : client.getClEmailLists()) {
             if (email != null)
-                email_list.getItems().add(email);
+                email_list.getItems().add(email.getAddress());
         }
 
-        for (String phone : client.getPhones()) {
+        for (PhoneList phone : client.getClPhoneLists()) {
             if (phone != null)
-                phone_list.getItems().add(phone);
+                phone_list.getItems().add(phone.getNumber());
         }
         
         TabPane tabPane = new TabPane();
         tabPane.setMinWidth(600);
-        new NotesConstructor(tabPane, sql, client).generalConstructor(2);
+        new NotesConstructor(tabPane, client).generalConstructor(2);
         new TasksConstructor(tabPane, client).generalConstructor(2);
         new EventsConstructor(tabPane, client).generalConstructor(2);
 
@@ -126,7 +131,13 @@ public class clientDetailsController implements Initializable {
     private void inflateEResponse(int i) {
         try {
             EResponseController.choice = i;
-            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("../../../../Email/EResponse/EResponse.fxml"));
+            FXMLLoader fxmlLoader;
+            if (getClass().getResource("../../../Email/EResponse/EResponse.fxml") == null) {
+                fxmlLoader = new FXMLLoader(getClass().getResource("/Email/EResponse/EResponse.fxml"));
+            } else {
+                fxmlLoader = new FXMLLoader(getClass().getResource("../../../Email/EResponse/EResponse.fxml"));
+            }
+
             Parent root1 = (Parent) fxmlLoader.load();
             Stage stage2 = new Stage();
             stage2.setTitle("New Email");

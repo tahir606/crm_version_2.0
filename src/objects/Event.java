@@ -2,79 +2,120 @@ package objects;
 
 import JCode.CommonTasks;
 
-public class Event {
+import java.io.Serializable;
 
-    private int code, client, lead, createdByCode;
-    private String title, location, desc, fromDate, toDate, fromTime, toTime, relationName, createdOn, createdBy, fromDateTime, toDateTime, statusString;
-    private boolean isAllDay, status;
+public class Event implements Serializable {
+    private int eventID, eventAllDay, notified, createdBy, freeze, status;
+    Integer leadsId, productID, clientID;
+    private String tittle, location, createdOn, closedOn, from, to, description;
+    private Client clientEventList;
+    private Users users;
+    private Product productEventList;
+    private Lead leadsEventList;
 
-    public Event() {
+    public Product getProductEventList() {
+        return productEventList;
     }
 
-    @Override
-    public String toString() {
-        return "Event{" +
-                "code=" + code +
-                ", client=" + client +
-                ", lead=" + lead +
-                ", createdBy=" + createdBy +
-                ", title='" + title + '\'' +
-                ", location='" + location + '\'' +
-                ", desc='" + desc + '\'' +
-                ", fromDate='" + fromDate + '\'' +
-                ", toDate='" + toDate + '\'' +
-                ", relationName='" + relationName + '\'' +
-                ", createdOn='" + createdOn + '\'' +
-                ", isAllDay=" + isAllDay +
-                '}';
+    public void setProductEventList(Product productEventList) {
+        this.productEventList = productEventList;
     }
 
-    public int getCode() {
-        return code;
+    public Lead getLeadsEventList() {
+        return leadsEventList;
     }
 
-    public void setCode(int code) {
-        this.code = code;
+    public void setLeadsEventList(Lead leadsEventList) {
+        this.leadsEventList = leadsEventList;
     }
 
-    public int getClient() {
-        return client;
+    public Integer getLeadsId() {
+        return leadsId;
     }
 
-    public void setClient(int client) {
-        this.client = client;
+    public void setLeadsId(Integer leadsId) {
+        this.leadsId = leadsId;
     }
 
-    public int getLead() {
-        return lead;
+    public Integer getProductID() {
+        return productID;
     }
 
-    public void setLead(int lead) {
-        this.lead = lead;
+    public void setProductID(Integer productID) {
+        this.productID = productID;
     }
 
-    public int getCreatedByCode() {
-        return createdByCode;
+    public Integer getClientID() {
+        return clientID;
     }
 
-    public void setCreatedByCode(int createdByCode) {
-        this.createdByCode = createdByCode;
+    public void setClientID(Integer clientID) {
+        this.clientID = clientID;
     }
 
-    public String getCreatedBy() {
+    public Users getUsers() {
+        return users;
+    }
+
+    public void setUsers(Users users) {
+        this.users = users;
+    }
+
+    public int getEventID() {
+        return eventID;
+    }
+
+    public void setEventID(int eventID) {
+        this.eventID = eventID;
+    }
+
+    public int getEventAllDay() {
+        return eventAllDay;
+    }
+
+    public void setEventAllDay(int eventAllDay) {
+        this.eventAllDay = eventAllDay;
+    }
+
+    public int getNotified() {
+        return notified;
+    }
+
+    public void setNotified(int notified) {
+        this.notified = notified;
+    }
+
+
+    public int getCreatedBy() {
         return createdBy;
     }
 
-    public void setCreatedBy(String createdBy) {
+    public void setCreatedBy(int createdBy) {
         this.createdBy = createdBy;
     }
 
-    public String getTitle() {
-        return title;
+    public int getFreeze() {
+        return freeze;
     }
 
-    public void setTitle(String title) {
-        this.title = title;
+    public void setFreeze(int freeze) {
+        this.freeze = freeze;
+    }
+
+    public int getStatus() {
+        return status;
+    }
+
+    public void setStatus(int status) {
+        this.status = status;
+    }
+
+    public String getTittle() {
+        return tittle;
+    }
+
+    public void setTittle(String tittle) {
+        this.tittle = tittle;
     }
 
     public String getLocation() {
@@ -85,83 +126,74 @@ public class Event {
         this.location = location;
     }
 
-    public String getDesc() {
-        return desc;
-    }
-
-    public void setDesc(String desc) {
-        this.desc = desc;
-    }
-
-    public String getFromDate() {
-        return fromDate;
-    }
-
-    public void setFromDate(String fromDate) {
-        this.fromDate = fromDate;
-    }
-
-    public String getToDate() {
-        return toDate;
-    }
-
-    public void setToDate(String toDate) {
-        this.toDate = toDate;
-    }
-
-    public String getFromTime() {
-        return fromTime;
-    }
-
-    public void setFromTime(String fromTime) {
-        this.fromTime = fromTime;
-    }
-
-    public String getToTime() {
-        return toTime;
-    }
-
-    public void setToTime(String toTime) {
-        this.toTime = toTime;
-    }
-
-    public String getRelationName() {
-        return relationName;
-    }
-
-    public void setRelationName(String relationName) {
-        this.relationName = relationName;
-    }
-
     public String getCreatedOn() {
-        return createdOn;
+        return CommonTasks.convertFormatWithOutTimeZone(createdOn);
     }
 
     public void setCreatedOn(String createdOn) {
-        this.createdOn = CommonTasks.getTimeFormatted(createdOn);
+        this.createdOn = createdOn;
     }
 
-    public boolean isAllDay() {
-        return isAllDay;
+    public String getClosedOn() {
+        return closedOn;
     }
 
-    public void setAllDay(boolean allDay) {
-        isAllDay = allDay;
+    public void setClosedOn(String closedOn) {
+        this.closedOn = closedOn;
     }
 
-    public boolean isStatus() {
-        return status;
+    public String getFrom() {
+        return CommonTasks.convertFormatWithOutTimeZone(from);
     }
 
-    public void setStatus(boolean status) {
-        this.status = status;
-        if (status)
-            statusString = "Closed";
-        else
-            statusString = "Open";
+    public void setFrom(String from) {
+        this.from = from;
     }
 
-    public String getStatusString() {
-        return statusString;
+    public String getTo() {
+        return CommonTasks.convertFormatWithOutTimeZone(to);
+    }
+
+    public void setTo(String to) {
+        this.to = to;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public Client getClientEventList() {
+        return clientEventList;
+    }
+
+    public void setClientEventList(Client clientEventList) {
+        this.clientEventList = clientEventList;
+    }
+
+    @Override
+    public String toString() {
+        return "Event{" +
+                "eventID=" + eventID +
+                ", eventAllDay=" + eventAllDay +
+                ", notified=" + notified +
+                ", leadsId=" + leadsId +
+                ", productID=" + productID +
+                ", createdBy=" + createdBy +
+                ", freeze=" + freeze +
+                ", status=" + status +
+                ", clientID=" + clientID +
+                ", tittle='" + tittle + '\'' +
+                ", location='" + location + '\'' +
+                ", createdOn='" + createdOn + '\'' +
+                ", closedOn='" + closedOn + '\'' +
+                ", from='" + from + '\'' +
+                ", to='" + to + '\'' +
+                ", description='" + description + '\'' +
+                ", clientEventList=" + clientEventList +
+                '}';
     }
 }

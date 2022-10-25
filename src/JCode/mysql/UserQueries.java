@@ -2,6 +2,7 @@ package JCode.mysql;
 
 import JCode.FileHelper;
 import objects.Users;
+import objects.UsersOld;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -30,7 +31,7 @@ public class UserQueries {
 
 //        // Connection con = getConnection();
 
-        Users user = new Users();
+        UsersOld user = new UsersOld();
 
         try {
             PreparedStatement statement = static_con.prepareStatement(query);
@@ -40,7 +41,7 @@ public class UserQueries {
             ResultSet set = statement.executeQuery();
 
             while (set.next()) {
-                user.setUCODE(set.getInt(1));
+                user.setUserCode(set.getInt(1));
                 user.setFNAME(set.getString(2));
                 user.setUright(set.getString(3));
                 if (set.getString(4).equals("Y")) {
@@ -50,14 +51,13 @@ public class UserQueries {
                 }
             }
 
-            if (user.getUCODE() == '\0') {
+            if (user.getUserCode() == 0) {
                 return false;
             } else {
-                setLogin(user.getUCODE(), true);
+                setLogin(user.getUserCode(), true);
             }
 
             user.setUNAME(username);
-
             return getRights(user);
 
         } catch (SQLException e) {
@@ -96,7 +96,7 @@ public class UserQueries {
         }
     }
 
-    public boolean getRights(Users user) {
+    public boolean getRights(UsersOld user) {
 
         String query1 = "SELECT  RL.RCODE, RL.RNAME FROM RIGHTS_CHART RC, RIGHTS_LIST RL" +
                 " WHERE RC.UCODE = ?" +
@@ -106,7 +106,7 @@ public class UserQueries {
         String query2 = "SELECT RCODE, RNAME FROM RIGHTS_LIST" +
                 " WHERE FREZE = 'N'";
 
-        ArrayList<Users.uRights> userRights = new ArrayList<>();
+        ArrayList<UsersOld.uRights> userRights = new ArrayList<>();
 
         PreparedStatement statement;
         ResultSet set = null;
@@ -117,16 +117,16 @@ public class UserQueries {
                 set = statement.executeQuery();
             } else {
                 statement = static_con.prepareStatement(query1);
-                statement.setInt(1, user.getUCODE());
+                statement.setInt(1, user.getUserCode());
                 set = statement.executeQuery();
             }
 
 
             while (set.next()) {
-                userRights.add(new Users.uRights(set.getString(1), set.getString(2)));
+                userRights.add(new UsersOld.uRights(set.getString(1), set.getString(2)));
             }
-
-            return fHelper.WriteUserDetails(user, userRights);
+//
+//            return fHelper.WriteUserDetails(user, userRights);
 
 
         } catch (SQLException e) {
@@ -165,7 +165,7 @@ public class UserQueries {
 
     }
 
-    public Users getUserDetails(Users user) {
+    public UsersOld getUserDetails(UsersOld user) {
         String query = " SELECT FNAME, EMAIL FROM USERS " +
                 " WHERE UCODE = ?";
 
@@ -175,12 +175,12 @@ public class UserQueries {
 
         try {
             statement = static_con.prepareStatement(query);
-            statement.setInt(1, user.getUCODE());
+            statement.setInt(1, user.getUserCode());
             set = statement.executeQuery();
 
             while (set.next()) {
                 user.setFNAME(set.getString("FNAME"));
-                user.setEmail(set.getString("EMAIL"));
+                user.setEmaill(set.getString("EMAIL"));
             }
 
         } catch (SQLException e) {
@@ -208,35 +208,35 @@ public class UserQueries {
 
             while (set.next()) {
                 Users user = new Users();
-                user.setUCODE(set.getInt("UCODE"));
-                user.setUNAME(set.getString("UNAME"));
-                user.setFNAME(set.getString("FNAME"));
+                user.setUserCode(set.getInt("UCODE"));
+                user.setUserName(set.getString("UNAME"));
+                user.setFullName(set.getString("FNAME"));
                 user.setEmail(set.getString("EMAIL"));
                 user.setPassword(set.getString("UPASS"));
-                if (set.getString("FREZE").equals("Y")) {
-                    user.setFreeze(true);
-                } else {
-                    user.setFreeze(false);
-                }
+//                if (set.getString("FREZE").equals("Y")) {
+//                    user.setFreezee(true);
+//                } else {
+//                    user.setFreezee(false);
+//                }
 
-                if (set.getString("ISEMAIL").equals("Y")) {
-                    user.setEmailBool(true);
-                } else {
-                    user.setEmailBool(false);
-                }
-                user.setUright(set.getString("URIGHT"));
-
-                if (!user.getUright().equalsIgnoreCase("Admin")) {
-                    ArrayList<Users.uRights> rights = new ArrayList<>();
-                    PreparedStatement statement1 = static_con.prepareStatement(query2);
-                    statement1.setInt(1, user.getUCODE());
-                    ResultSet set1 = statement1.executeQuery();
-                    while (set1.next()) {
-                        Users.uRights r = new Users.uRights(set1.getInt("RCODE"), "");
-                        rights.add(r);
-                    }
-                    user.setuRightsList(rights);
-                }
+//                if (set.getString("ISEMAIL").equals("Y")) {
+//                    user.setEmailBool(true);
+//                } else {
+//                    user.setEmailBool(false);
+//                }
+//                user.setUright(set.getString("URIGHT"));
+//
+//                if (!user.getUright().equalsIgnoreCase("Admin")) {
+//                    ArrayList<UsersOld.uRights> rights = new ArrayList<>();
+//                    PreparedStatement statement1 = static_con.prepareStatement(query2);
+//                    statement1.setInt(1, user.getUserCode());
+//                    ResultSet set1 = statement1.executeQuery();
+//                    while (set1.next()) {
+//                        UsersOld.uRights r = new UsersOld.uRights(set1.getInt("RCODE"), "");
+//                        rights.add(r);
+//                    }
+//                    user.setuRightsList(rights);
+//                }
 
                 userList.add(user);
             }
@@ -250,9 +250,9 @@ public class UserQueries {
         return userList;
     }
 
-    public List<Users.uRights> getAllUserRights() {
+    public List<UsersOld.uRights> getAllUserRights() {
 
-        List<Users.uRights> rightsList = new ArrayList<>();
+        List<UsersOld.uRights> rightsList = new ArrayList<>();
         String query = "SELECT RCODE, RNAME FROM RIGHTS_LIST ";
 //        String query = "SELECT RCODE, RNAME FROM RIGHTS_LIST WHERE FREZE = 'N'";
 
@@ -266,7 +266,7 @@ public class UserQueries {
             set = statement.executeQuery();
 
             while (set.next()) {
-                Users.uRights r = new Users.uRights();
+                UsersOld.uRights r = new UsersOld.uRights();
                 r.setRCODE(set.getInt("RCODE"));
                 r.setRNAME(set.getString("RNAME"));
                 rightsList.add(r);
@@ -282,7 +282,7 @@ public class UserQueries {
         return rightsList;
     }
 
-    public void insertUpdateUser(Users user, int choice) {
+    public void insertUpdateUser(UsersOld user, int choice) {
         String query = "";
 
         if (choice == 0) {          //New
@@ -302,21 +302,21 @@ public class UserQueries {
             PreparedStatement statement = static_con.prepareStatement(query);
             statement.setString(1, user.getFNAME());
             statement.setString(2, user.getUNAME());
-            statement.setString(3, user.getEmail());
-            statement.setString(4, user.getPassword());
+            statement.setString(3, user.getEmaill());
+            statement.setString(4, user.getPasswordd());
             statement.setString(5, user.getUright());
-            if (user.isFreeze()) {
+            if (user.isFreezee()) {
                 statement.setString(6, "Y");
             } else {
                 statement.setString(6, "N");
             }
-            if (user.isEmail()) {
+            if (user.isEmaill()) {
                 statement.setString(7, "Y");
             } else {
                 statement.setString(7, "N");
             }
             if (choice == 1)
-                statement.setInt(8, user.getUCODE());
+                statement.setInt(8, user.getUserCode());
             else
                 statement.setBoolean(8, false);
 
@@ -325,14 +325,14 @@ public class UserQueries {
 
             if (!user.getUright().equals("Admin")) {
                 statement = static_con.prepareStatement(delete);
-                statement.setInt(1, user.getUCODE());
+                statement.setInt(1, user.getUserCode());
                 statement.executeUpdate();
 
-                for (Users.uRights u : user.getRights()) {
+                for (UsersOld.uRights u : user.getRightss()) {
                     statement = null;
                     statement = static_con.prepareStatement(insert);
                     statement.setInt(1, u.getRCODE());
-                    statement.setInt(2, user.getUCODE());
+                    statement.setInt(2, user.getUserCode());
                     statement.executeUpdate();
                 }
             }
@@ -345,7 +345,7 @@ public class UserQueries {
 
     }
 
-    public void deleteUser(Users u) {
+    public void deleteUser(UsersOld u) {
 
         String query = "DELETE FROM USERS WHERE UCODE = ?";
 
@@ -354,7 +354,7 @@ public class UserQueries {
 
         try {
             statement = static_con.prepareStatement(query);
-            statement.setInt(1, u.getUCODE());
+            statement.setInt(1, u.getUserCode());
             statement.executeUpdate();
 
             statement.close();
@@ -366,26 +366,24 @@ public class UserQueries {
         }
 
     }
-//
-//    public void archiveUser(Users u) {
-//
-//        String query = "UPDATE USERS SET FREZE = 'Y' WHERE UCODE = ?";
-//
-//        // Connection con = getConnection();
-//        PreparedStatement statement = null;
-//
-//        try {
-//            statement = static_con.prepareStatement(query);
-//            statement.setInt(1, u.getUCODE());
-//            statement.executeUpdate();
-//
-//            statement.close();
-//
-//        } catch (SQLException e) {
-//            e.printStackTrace();
-//        } finally {
-//            // // doRelease(con);
-//        }
-//
-//    }
+
+    public String getUserRight(int code) {
+        String query = "SELECT  URIGHT FROM USERS WHERE UCODE = ? ";
+        PreparedStatement statement = null;
+        ResultSet set = null;
+        String userRight = null;
+        try {
+            statement = static_con.prepareStatement(query);
+            statement.setInt(1, code);
+            set = statement.executeQuery();
+            while (set.next()) {
+                userRight=set.getString("URIGHT");
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return userRight;
+    }
+
 }

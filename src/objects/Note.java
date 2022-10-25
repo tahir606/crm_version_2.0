@@ -1,39 +1,72 @@
 package objects;
 
-import JCode.CommonTasks;
-
 import java.io.Serializable;
 
 public class Note implements Serializable {
-    
-    private int code,noteCode, createdBy, contact,contactID,clientID,psID,leadsID, emailId, client,emailNo,freeze;
-    private String text, createdOn, createdByName, contactName;
+    private int noteCode, freeze;
+    private Integer contactID, clientID, emailId, createdBy, psID, leadsId;
+    private String text, createdOn;
     private Users users;
     private Email emailTickets;
+    private Contact contactNoteList;
+    private Client clientNoteList;
+    private Product productNoteList;
+    private Lead leadsNoteList;
+
     public Note() {
     }
 
-
-
-    @Override
-    public String toString() {
-        return "  "+text + "      " + createdOn + "      " + noteCode+ "      " + emailTickets.getCode() + "    " + users.getUserCode();
+    public Note(int noteCode, Integer clientID) {
+        this.noteCode = noteCode;
+        this.clientID = clientID;
     }
 
-    public Users getUsers() {
-        return users;
+    public void setContactID(Integer contactID) {
+        this.contactID = contactID;
     }
 
-    public void setUsers(Users users) {
-        this.users = users;
+    public void setClientID(Integer clientID) {
+        this.clientID = clientID;
     }
 
-    public Email getEmail() {
-        return emailTickets;
+    public void setEmailId(Integer emailId) {
+        this.emailId = emailId;
     }
 
-    public void setEmail(Email email) {
-        this.emailTickets = email;
+    public void setCreatedBy(Integer createdBy) {
+        this.createdBy = createdBy;
+    }
+
+    public Integer getPsID() {
+        return psID;
+    }
+
+    public void setPsID(Integer psID) {
+        this.psID = psID;
+    }
+
+    public Integer getLeadsId() {
+        return leadsId;
+    }
+
+    public void setLeadsId(Integer leadsId) {
+        this.leadsId = leadsId;
+    }
+
+    public Product getProductNoteList() {
+        return productNoteList;
+    }
+
+    public void setProductNoteList(Product productNoteList) {
+        this.productNoteList = productNoteList;
+    }
+
+    public Lead getLeadsNoteList() {
+        return leadsNoteList;
+    }
+
+    public void setLeadsNoteList(Lead leadsNoteList) {
+        this.leadsNoteList = leadsNoteList;
     }
 
     public int getNoteCode() {
@@ -42,6 +75,23 @@ public class Note implements Serializable {
 
     public void setNoteCode(int noteCode) {
         this.noteCode = noteCode;
+    }
+
+
+    public int getFreeze() {
+        return freeze;
+    }
+
+    public void setFreeze(int freeze) {
+        this.freeze = freeze;
+    }
+
+    public int getCreatedBy() {
+        return createdBy;
+    }
+
+    public void setCreatedBy(int createdBy) {
+        this.createdBy = createdBy;
     }
 
     public int getContactID() {
@@ -60,30 +110,6 @@ public class Note implements Serializable {
         this.clientID = clientID;
     }
 
-    public int getPsID() {
-        return psID;
-    }
-
-    public void setPsID(int psID) {
-        this.psID = psID;
-    }
-
-    public int getLeadsID() {
-        return leadsID;
-    }
-
-    public void setLeadsID(int leadsID) {
-        this.leadsID = leadsID;
-    }
-
-    public int getFreeze() {
-        return freeze;
-    }
-
-    public void setFreeze(int freeze) {
-        this.freeze = freeze;
-    }
-
     public int getEmailId() {
         return emailId;
     }
@@ -92,77 +118,64 @@ public class Note implements Serializable {
         this.emailId = emailId;
     }
 
-
-
-    public int getEmailNo() {
-        return emailNo;
-    }
-
-    public void setEmailNo(int emailNo) {
-        this.emailNo = emailNo;
-    }
-
-    public int getCode() {
-        return code;
-    }
-    
-    public void setCode(int code) {
-        this.code = code;
-    }
-    
-    public int getCreatedBy() {
-        return createdBy;
-    }
-    
-    public void setCreatedBy(int createdBy) {
-        this.createdBy = createdBy;
-    }
-    
-    public int getContact() {
-        return contact;
-    }
-    
-    public void setContact(int contact) {
-        this.contact = contact;
-    }
-    
-    public int getClient() {
-        return client;
-    }
-    
-    public void setClient(int client) {
-        this.client = client;
-    }
-    
     public String getText() {
         return text;
     }
-    
+
     public void setText(String text) {
         this.text = text;
     }
-    
+
     public String getCreatedOn() {
         return createdOn;
     }
-    
+
     public void setCreatedOn(String createdOn) {
-        this.createdOn = CommonTasks.getTimeFormatted(createdOn);
+        this.createdOn = createdOn;
     }
-    
-    public String getCreatedByName() {
-        return createdByName;
+
+    public Users getUsers() {
+        return users;
     }
-    
-    public void setCreatedByName(String createdByName) {
-        this.createdByName = createdByName;
+
+    public void setUsers(Users users) {
+        this.users = users;
     }
-    
-    public String getContactName() {
-        return contactName;
+
+    public Email getEmailTickets() {
+        return emailTickets;
     }
-    
-    public void setContactName(String contactName) {
-        this.contactName = contactName;
+
+    public void setEmailTickets(Email emailTickets) {
+        this.emailTickets = emailTickets;
     }
+
+    public Contact getContactNoteList() {
+        return contactNoteList;
+    }
+
+    public void setContactNoteList(Contact contactNoteList) {
+        this.contactNoteList = contactNoteList;
+    }
+
+    public Client getClientNoteList() {
+        return clientNoteList;
+    }
+
+    public void setClientNoteList(Client clientNoteList) {
+        this.clientNoteList = clientNoteList;
+    }
+
+
+    @Override
+    public String toString() {
+        if (emailTickets == null) {
+            return "  " + text + "      " + createdOn + "      " + users.getFullName();
+        } else {
+            return "  " + text + "      " + createdOn + "      " + noteCode + "      " + emailTickets.getCode() + "    " + users.getUserCode();
+        }
+
+    }
+
+
 }

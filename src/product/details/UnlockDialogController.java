@@ -1,26 +1,25 @@
 package product.details;
 
+import ApiHandler.RequestHandler;
 import Home.HomeSplitController;
-import JCode.Toast;
+import JCode.CommonTasks;
 import JCode.mysql.mySqlConn;
 import com.jfoenix.controls.JFXButton;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.TextArea;
 import javafx.stage.Stage;
+import objects.ModuleLocking;
 import objects.ProductModule;
 
+import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
 public class UnlockDialogController implements Initializable {
 
     ProductModule module;
-
+ModuleLocking moduleLocking;
     @FXML
     private TextArea txt_desc;
     @FXML
@@ -32,22 +31,20 @@ public class UnlockDialogController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        sql = new mySqlConn();
+//        sql = new mySqlConn();
 
         switch (fromPane) {
             case 'P': {
                 module = ProductDetailsController.selectedModule;
+                moduleLocking=module.getPmModuleLockingList().get(0);
                 break;
             }
             case 'H': {
                 module = HomeSplitController.sModule;
+                moduleLocking=module.getPmModuleLockingList().get(0);
                 break;
             }
         }
-
-        System.out.println(module);
-
-//        btn_unlock.setDisable(true);
 
         txt_desc.textProperty().addListener((observable, oldValue, newValue) -> {
             if (newValue.length() <= 0)
@@ -58,7 +55,14 @@ public class UnlockDialogController implements Initializable {
 
         btn_unlock.setOnAction(event -> {
             String desc = txt_desc.getText().toString();
-            sql.unlockModule(module, desc);
+            moduleLocking.setDescription(desc);
+            moduleLocking.setUnLockedTime(CommonTasks.getCurrentTimeStamp());
+            String responseMessage = "";
+            try {
+                responseMessage = RequestHandler.basicRequestHandler(RequestHandler.postOfReturnResponse("moduleLocking/updateModuleLocking", RequestHandler.writeJSON(moduleLocking)));
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
             switch (fromPane) {
                 case 'P': {
                     ProductDetailsController.init(this.getClass().getResource("unlock_dialog.fxml"));

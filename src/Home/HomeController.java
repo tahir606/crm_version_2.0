@@ -1,5 +1,6 @@
 package Home;
 
+import ApiHandler.RequestHandler;
 import JCode.CommonTasks;
 import JCode.FileHelper;
 import JCode.mysql.mySqlConn;
@@ -10,9 +11,10 @@ import javafx.scene.control.Label;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
-import objects.ProductModule;
+import objects.ProductModuleOld;
 import objects.Users;
 
+import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.ResourceBundle;
@@ -37,7 +39,7 @@ public class HomeController implements Initializable {
     private Users user;
     private FileHelper fHelper;
     private mySqlConn sql;
-    private ArrayList<ProductModule> lockedModules;
+    private ArrayList<ProductModuleOld> lockedModules;
     
     public HomeController() {
     
@@ -49,18 +51,25 @@ public class HomeController implements Initializable {
         main_anchor.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
         
         fHelper = new FileHelper();
-        sql = new mySqlConn();
+//        sql = new mySqlConn();
         
-        user = fHelper.ReadUserDetails();
-        user = sql.getNoOfSolvedEmails(user);
+//        user = fHelper.ReadUserDetails();
+        user =FileHelper.ReadUserApiDetails();
         
-        lockedModules = sql.getLockedModules();
+
+//        user = sql.getNoOfSolvedEmails(user);
         
-        txt_fname.setText(user.getFNAME());
-        txt_solved.setText(String.valueOf(user.getSolved()));
-        txt_unlocked.setText(String.valueOf(sql.getNoOfUnlocked()));
-        txt_unsolved.setText(String.valueOf(sql.getNoOfUnsolved()));
+//        lockedModules = sql.getLockedModules();
         
+        txt_fname.setText(user.getFullName());
+        try {
+            txt_solved.setText(String.valueOf(Integer.parseInt(RequestHandler.run("ticket/CountOfSolvedOrLockedEmails?status=" + 3 + "&userCode=" + user.getUserCode()).body().string())));
+            txt_unlocked.setText(String.valueOf(Integer.parseInt(RequestHandler.run("ticket/CountOfUnLockedEmails").body().string())));
+            txt_unsolved.setText(String.valueOf(Integer.parseInt(RequestHandler.run("ticket/CountOfUnSolvedEmails").body().string())));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
         populatLockedModules();
 
         dController.img_load.setVisible(false);
@@ -69,7 +78,7 @@ public class HomeController implements Initializable {
     private void populatLockedModules() {
         vbox_modules.setSpacing(8);
         
-        for (ProductModule module : lockedModules) {
+        for (ProductModuleOld module : lockedModules) {
             HBox hbox = new HBox();
             hbox.setSpacing(5);
             

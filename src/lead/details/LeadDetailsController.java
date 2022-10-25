@@ -1,11 +1,12 @@
 package lead.details;
 
-import JCode.Toast;
-import gui.EventsConstructor;
-import gui.TasksConstructor;
-import gui.NotesConstructor;
+import ApiHandler.RequestHandler;
+import JCode.FileHelper;
 import JCode.mysql.mySqlConn;
 import com.jfoenix.controls.JFXButton;
+import gui.EventsConstructor;
+import gui.NotesConstructor;
+import gui.TasksConstructor;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -15,16 +16,13 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
-import javafx.stage.Stage;
 import lead.LeadDashController;
 import lead.newLead.NewLeadController;
 import lead.view.LeadViewController;
-import objects.ClientProperty;
-import objects.Lead;
+import objects.*;
 
 import java.io.IOException;
 import java.net.URL;
-import java.util.List;
 import java.util.ResourceBundle;
 
 public class LeadDetailsController implements Initializable {
@@ -44,7 +42,7 @@ public class LeadDetailsController implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
 
-        sql = new mySqlConn();
+//        sql = new mySqlConn();
 
         Image image = new Image(this.getClass().getResourceAsStream("/res/img/left-arrow.png"));
         btn_back.setGraphic(new ImageView(image));
@@ -62,19 +60,39 @@ public class LeadDetailsController implements Initializable {
             alert2.showAndWait();
 
             if (alert2.getResult() == ButtonType.YES) {
-                ClientProperty client = new ClientProperty();
-                client.setName(lead.getCompany());
-                client.setOwner(lead.getFullNameProperty().toString());
+                Client client = new Client();
+                client.setName(lead.getCompanyName());
+                client.setOwner(lead.getFullName().toString());
                 client.setWebsite(lead.getWebsite());
-                client.setNote(lead.getNote());
-                client.setEmails(new String[]{lead.getEmail()});
-                client.setPhones(new String[]{lead.getPhone()});
                 client.setCity(lead.getCity());
                 client.setCountry(lead.getCountry());
-                client.setFromLead(lead.getCode());
+                client.setFromLead(lead.getLeadsId());
+                int userId= FileHelper.ReadUserApiDetails().getUserCode();
+                client.setCreatedBy(userId);
 
-                if (sql.insertFromLead(client))
-                    sql.markLeadAsClient(lead);
+                Client client1 = null;
+                try {
+                    client1 = (Client) RequestHandler.objectRequestHandler(RequestHandler.postOfReturnResponse("client/addClient", RequestHandler.writeJSON(client)), Client.class);
+                    if (client1 != null) {
+                        for (EmailList emailList : lead.getLdEmailLists()) {
+                            RequestHandler.post("emailList/updateEmailList", RequestHandler.writeJSON((new EmailList(emailList.getEmailID(), emailList.getAddress(), userId, client1.getClientID()))));
+                        }
+                        for (PhoneList phoneList : lead.getLdPhoneLists()) {
+                            RequestHandler.post("phoneList/updatePhoneList", RequestHandler.writeJSON(new PhoneList(phoneList.getPhoneID(), phoneList.getNumber(), userId, client1.getClientID())));
+                        }
+
+                        for (Note note : lead.getLdNoteList()) {
+                            RequestHandler.post("note/updateNoteLeadList", RequestHandler.writeJSON(new Note(note.getNoteCode(), client1.getClientID())));
+                        }
+
+                        RequestHandler.run("leads/updateLead/" + lead.getLeadsId());
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+
+//                if (sql.insertFromLead(client))
+//                    sql.markLeadAsClient(lead);
 
                 returnToHomePage();
             } else {
@@ -96,11 +114,15 @@ public class LeadDetailsController implements Initializable {
     }
 
     private void populateDetails() {
-        txt_fname.setText(lead.getFullNameProperty());
-        txt_company.setText(lead.getCompany());
+        txt_fname.setText(lead.getFullName());
+        txt_company.setText(lead.getCompanyName());
         txt_website.setText(lead.getWebsite());
-        txt_email.setText(lead.getEmail());
-        txt_mobile.setText(lead.getPhone());
+        if (!lead.getLdEmailLists().isEmpty()) {
+            txt_email.setText(lead.getLdEmailLists().get(0).getAddress());
+        }
+        if (!lead.getLdPhoneLists().isEmpty()) {
+            txt_mobile.setText(lead.getLdPhoneLists().get(0).getNumber());
+        }
 
         populateSource();
 
@@ -127,7 +149,7 @@ public class LeadDetailsController implements Initializable {
         TabPane tabPane = new TabPane();
         tabPane.setMinWidth(600);
         int CHOICE = 3;
-        new NotesConstructor(tabPane, sql, lead).generalConstructor(CHOICE);
+        new NotesConstructor(tabPane, lead).generalConstructor(CHOICE);
         new TasksConstructor(tabPane, lead).generalConstructor(CHOICE);
         new EventsConstructor(tabPane, lead).generalConstructor(CHOICE);
 
@@ -144,12 +166,15 @@ public class LeadDetailsController implements Initializable {
 
     private void populateSource() {
 //        new Thread(() -> {
-        List<String> sources = sql.getAllSources();
-        if (lead.getSource() == 0)
-            txt_sourceText.setText(lead.getOtherText());
+//        List<String> sources = sql.getAllSources();
+
+        if (lead.getSourceID() == 0)
+            txt_sourceText.setText(lead.getsOther());
         else {
-            txt_sourceText.setText(sources.get(lead.getSource() - 1));
+            txt_sourceText.setText(lead.getSource().getName());
         }
+
+
 //        }).start();
     }
 }

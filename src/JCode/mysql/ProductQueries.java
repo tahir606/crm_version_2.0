@@ -2,7 +2,7 @@ package JCode.mysql;
 
 import JCode.CommonTasks;
 import JCode.FileHelper;
-import objects.ProductModule;
+import objects.ProductModuleOld;
 import objects.ProductProperty;
 
 import java.sql.Connection;
@@ -43,12 +43,12 @@ public class ProductQueries {
             statement.setString(6, product.getStartedtimeStmp());
             statement.setInt(7, product.getPriority());
             statement.setString(8, CommonTasks.getCurrentTimeStamp());
-            statement.setInt(9, fHelper.ReadUserDetails().getUCODE());
+            statement.setInt(9,FileHelper.ReadUserApiDetails().getUserCode());
             
             statement.executeUpdate();
             
-            for (ProductModule module : product.getProductModules()) {
-                System.out.println(module);
+            for (ProductModuleOld module : product.getProductModules()) {
+
                 insertProductModule(module);
             }
             
@@ -77,14 +77,14 @@ public class ProductQueries {
             statement.setString(6, product.getStartedtimeStmp());
             statement.setInt(7, product.getPriority());
             statement.setString(8, CommonTasks.getCurrentTimeStamp());
-            statement.setInt(9, fHelper.ReadUserDetails().getUCODE());
+            statement.setInt(9,FileHelper.ReadUserApiDetails().getUserCode());
             statement.setInt(10, product.getCode());
             
             statement.executeUpdate();
             
             deleteAllProductModules(product.getCode());
-            for (ProductModule module : product.getProductModules()) {
-                System.out.println(module);
+            for (ProductModuleOld module : product.getProductModules()) {
+
                 insertProductModule(module);
             }
             
@@ -106,7 +106,7 @@ public class ProductQueries {
         List<ProductProperty> allProducts = new ArrayList<>();
         
         try {
-            System.out.println(query);
+
             PreparedStatement statement = static_con.prepareStatement(query);
             ResultSet set = statement.executeQuery();
             //-------------Creating Email-------------
@@ -141,7 +141,7 @@ public class ProductQueries {
                 " AND PS_ID = ? ";
         
         try {
-//            System.out.println(query);
+
             PreparedStatement statement = static_con.prepareStatement(query);
             statement.setInt(1, where.getCode());
             ResultSet set = statement.executeQuery();
@@ -160,7 +160,7 @@ public class ProductQueries {
                 product.setCreatedBy(set.getInt("CREATEDBY"));
                 
                 product.setProductModules(getAllProductModules(product.getCode()));
-                product.setNotes(noteQueries.getNotes(product));
+//                product.setNotes(noteQueries.getNotes(product));
                 
                 return product;
             }
@@ -173,7 +173,7 @@ public class ProductQueries {
         return null;
     }
     
-    public void insertProductModule(ProductModule productModule) {
+    public void insertProductModule(ProductModuleOld productModuleOld) {
         String query = "INSERT INTO PRODUCT_MODULE(PM_ID, PM_NAME ,PM_DESC, PS_ID, CREATEDON, CREATEDBY) " +
                 " SELECT IFNULL(max(PM_ID),0)+1,?,?,?,?,? from PRODUCT_MODULE WHERE PS_ID =?";
         
@@ -182,12 +182,12 @@ public class ProductQueries {
         
         try {
             statement = static_con.prepareStatement(query);
-            statement.setString(1, productModule.getName());
-            statement.setString(2, productModule.getDesc());
-            statement.setInt(3, productModule.getProductCode());
+            statement.setString(1, productModuleOld.getName());
+            statement.setString(2, productModuleOld.getDesc());
+            statement.setInt(3, productModuleOld.getProductCode());
             statement.setString(4, CommonTasks.getCurrentTimeStamp());
-            statement.setInt(5, fHelper.ReadUserDetails().getUCODE());
-            statement.setInt(6, productModule.getProductCode());
+            statement.setInt(5, FileHelper.ReadUserApiDetails().getUserCode());
+            statement.setInt(6, productModuleOld.getProductCode());
             
             statement.executeUpdate();
         } catch (SQLException e) {
@@ -195,7 +195,7 @@ public class ProductQueries {
         }
     }
     
-    public void updateProductModule(ProductModule productModule) {
+    public void updateProductModule(ProductModuleOld productModuleOld) {
         String query = "UPDATE PRODUCT_MODULE SET PM_ID=? ,PM_NAME=? ,PM_DESC=? ,PS_ID=? ,CREATEDON=? ,CREATEDBY=? " +
                 " WHERE PM_ID=? " +
                 " AND PS_ID=? ";
@@ -205,12 +205,12 @@ public class ProductQueries {
         
         try {
             statement = static_con.prepareStatement(query);
-            statement.setString(1, productModule.getName());
-            statement.setString(2, productModule.getDesc());
-            statement.setInt(3, productModule.getProductCode());
+            statement.setString(1, productModuleOld.getName());
+            statement.setString(2, productModuleOld.getDesc());
+            statement.setInt(3, productModuleOld.getProductCode());
             statement.setString(4, CommonTasks.getCurrentTimeStamp());
-            statement.setInt(5, fHelper.ReadUserDetails().getUCODE());
-            statement.setInt(6, productModule.getProductCode());
+            statement.setInt(5,FileHelper.ReadUserApiDetails().getUserCode());
+            statement.setInt(6, productModuleOld.getProductCode());
             
             statement.executeUpdate();
             
@@ -220,18 +220,18 @@ public class ProductQueries {
         
     }
     
-    public List<ProductModule> getAllProductModules(int productCode) {
+    public List<ProductModuleOld> getAllProductModules(int productCode) {
         String query = " SELECT PM_ID, PM_NAME, PM_DESC, PS_ID, CREATEDBY, CREATEDON  " +
                 " FROM PRODUCT_MODULE " +
                 " WHERE PS_ID = ? ";
         
-        ArrayList<ProductModule> modules = new ArrayList<>();
+        ArrayList<ProductModuleOld> modules = new ArrayList<>();
         try {
             PreparedStatement statement = static_con.prepareStatement(query);
             statement.setInt(1, productCode);
             ResultSet set = statement.executeQuery();
             while (set.next()) {
-                ProductModule module = new ProductModule();
+                ProductModuleOld module = new ProductModuleOld();
                 module.setCode(set.getInt("PM_ID"));
                 module.setName(set.getString("PM_NAME"));
                 module.setDesc(set.getString("PM_DESC"));
@@ -255,7 +255,7 @@ public class ProductQueries {
                 " AND PS_ID = ? " +
                 " AND UNLOCKEDTIME is NULL ";
         
-         for (ProductModule module : product.getProductModules()) {
+         for (ProductModuleOld module : product.getProductModules()) {
             try {
                 PreparedStatement statement = static_con.prepareStatement(query);
                 statement.setInt(1, module.getCode());
@@ -266,7 +266,7 @@ public class ProductQueries {
                     module.setState(0);
                 else {
                     while (set.next()) {
-                        if (set.getInt("UCODE") == fHelper.ReadUserDetails().getUCODE())
+                        if (set.getInt("UCODE") == FileHelper.ReadUserApiDetails().getUserCode())
                             module.setState(1);
                         else
                             module.setState(2);
@@ -283,7 +283,7 @@ public class ProductQueries {
         return product;
     }
     
-    public ArrayList<ProductModule> getLockedModules() {
+    public ArrayList<ProductModuleOld> getLockedModules() {
         String query = "SELECT ML.PM_ID, ML.PS_ID, LOCKEDTIME, FNAME, PM_NAME, PS_NAME " +
                 "FROM MODULE_LOCKING AS ML, PRODUCT_MODULE AS PM, PRODUCT_STORE AS PS, USERS AS U " +
                 "WHERE UNLOCKEDTIME IS NULL " +
@@ -292,12 +292,12 @@ public class ProductQueries {
                 "AND ML.PS_ID = PS.PS_ID " +
                 "AND ML.UCODE = U.UCODE ";
         
-        ArrayList<ProductModule> modules = new ArrayList<>();
+        ArrayList<ProductModuleOld> modules = new ArrayList<>();
         try {
             PreparedStatement statement = static_con.prepareStatement(query);
             ResultSet set = statement.executeQuery();
             while (set.next()) {
-                ProductModule module = new ProductModule();
+                ProductModuleOld module = new ProductModuleOld();
                 module.setCode(set.getInt("PM_ID"));
                 module.setName(set.getString("PM_NAME"));
                 module.setProductCode(set.getInt("PS_ID"));
@@ -348,7 +348,7 @@ public class ProductQueries {
         return 0;
     }
     
-    private int getModuleState(ProductModule module) {
+    private int getModuleState(ProductModuleOld module) {
         String query = " SELECT LOCKEDTIME, UCODE " +
                 " FROM MODULE_LOCKING " +
                 " WHERE PM_ID = ? " +
@@ -366,7 +366,7 @@ public class ProductQueries {
                 return 0;
             else {
                 while (set.next()) {
-                    if (set.getInt("UCODE") == fHelper.ReadUserDetails().getUCODE())
+                    if (set.getInt("UCODE") ==FileHelper.ReadUserApiDetails().getUserCode())
                         return 1;
                     else
                         return 2;
@@ -379,7 +379,7 @@ public class ProductQueries {
         return 1;
     }
     
-    public boolean lockModule(ProductModule module) {
+    public boolean lockModule(ProductModuleOld module) {
         
         if (getModuleState(module) != 0)
             return false;
@@ -391,7 +391,7 @@ public class ProductQueries {
         try {
             statement = static_con.prepareStatement(query);
             statement.setInt(1, module.getCode());
-            statement.setInt(2, fHelper.ReadUserDetails().getUCODE());
+            statement.setInt(2,FileHelper.ReadUserApiDetails().getUserCode());
             statement.setString(3, CommonTasks.getCurrentTimeStamp());
             statement.setInt(4, module.getProductCode());
             
@@ -406,7 +406,7 @@ public class ProductQueries {
         return true;
     }
     
-    public void unlockModule(ProductModule module, String desc) {
+    public void unlockModule(ProductModuleOld module, String desc) {
         String query = " UPDATE MODULE_LOCKING SET UNLOCKEDTIME = ?, DESCRIPTION = ? " +
                 " WHERE LOCKEDTIME IS NOT NULL " +
                 " AND UCODE = ? " +
@@ -418,7 +418,7 @@ public class ProductQueries {
             statement = static_con.prepareStatement(query);
             statement.setString(1, CommonTasks.getCurrentTimeStamp());
             statement.setString(2, desc);
-            statement.setInt(3, fHelper.ReadUserDetails().getUCODE());
+            statement.setInt(3,FileHelper.ReadUserApiDetails().getUserCode());
             statement.setInt(4, module.getCode());
             statement.setInt(5, module.getProductCode());
             

@@ -1,12 +1,16 @@
 package client.newClient;
 
+import ApiHandler.RequestHandler;
 import JCode.CommonTasks;
+import JCode.FileHelper;
 import JCode.Toast;
-import JCode.mysql.mySqlConn;
 import JCode.trayHelper;
 import client.dash.clientView.clientViewController;
 import client.dashBaseController;
-import com.jfoenix.controls.*;
+import com.jfoenix.controls.JFXButton;
+import com.jfoenix.controls.JFXComboBox;
+import com.jfoenix.controls.JFXDatePicker;
+import com.jfoenix.controls.JFXTextField;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -15,7 +19,10 @@ import javafx.fxml.Initializable;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
-import javafx.scene.control.*;
+import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonType;
+import javafx.scene.control.Label;
+import javafx.scene.control.Tooltip;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.VBox;
@@ -23,10 +30,16 @@ import javafx.scene.paint.Paint;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
-import objects.ClientProperty;
+import objects.Client;
+import objects.ClientType;
+import objects.EmailList;
+import objects.PhoneList;
 
 import java.io.IOException;
 import java.net.URL;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.ResourceBundle;
 
@@ -55,25 +68,19 @@ public class newClientController implements Initializable {
     @FXML
     private JFXDatePicker joining_date;
     @FXML
-    private JFXComboBox<String> combo_type;
-    //    @FXML
-//    private JFXComboBox<Client> combo_client;
+    private JFXComboBox<ClientType> combo_type;
     @FXML
     private JFXButton btn_save;
 
-    private mySqlConn sql;
 
-    private List<ClientProperty> clientList;
-    private List<String> types;
-    private int nClient;    //CL_ID for new Client
+    private List<ClientType> types;
 
-    private ClientProperty clientSel;
-
+    private Client clientSel;
     public static char stInstance;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-
+        clientSel = new Client();
         Image image = new Image(this.getClass().getResourceAsStream("/res/img/left-arrow.png"));
         btn_back.setGraphic(new ImageView(image));
         btn_back.setAlignment(Pos.CENTER_LEFT);
@@ -83,29 +90,29 @@ public class newClientController implements Initializable {
                 dashBaseController.main_paneF.setCenter(
                         FXMLLoader.load(
                                 getClass().getClassLoader().getResource("client/dash/clientView/clientView.fxml")));
-
             } catch (IOException e) {
                 e.printStackTrace();
             }
         });
 
-        sql = new mySqlConn();
 
-        types = sql.getClientTypes();
+        try {
+            types = RequestHandler.listRequestHandler(RequestHandler.run("clientType/getClientType"), ClientType.class);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         combo_type.getItems().setAll(types);
 
         switch (stInstance) {
             case 'N': {      //New
                 txt_heading.setText("New Client");
                 btn_save.setText("Create");
-                init();
                 break;
             }
             case 'U': {      //Update
                 txt_heading.setText("Update Client");
-                clientSel = clientViewController.staticClient;
                 btn_save.setText("Update");
-                populateDetails(clientSel);
+                populateDetails(clientViewController.staticClient);
                 break;
             }
             default:
@@ -114,53 +121,46 @@ public class newClientController implements Initializable {
     }
 
     private void init() {
-        clientList = sql.getAllClients(null);
 
-        try {
-            nClient = clientList.get(clientList.size() - 1).getCode() + 1; //Get CL_ID for new client
-        } catch (NullPointerException e) {
-            nClient = 1;
-        }
-
-        clientSel = new ClientProperty();
-        clientSel.setCode(nClient);
-        clientSel.setName(" + Create New");
+        clientSel.setName("");
         clientSel.setOwner("");
         clientSel.setWebsite("");
-        clientSel.setAddr("");
+        clientSel.setAddress("");
         clientSel.setCity("");
         clientSel.setCountry("");
         clientSel.setType(1);
-        clientSel.setEmails(new String[noOfFields]);
-        clientSel.setPhones(new String[noOfFields]);
+        clientSel.setClEmailLists(new ArrayList<>());
+        clientSel.setClPhoneLists(new ArrayList<>());
 
         combo_type.getSelectionModel().select(0);
-
+        populateDetails(clientSel);
     }
 
-    private void populateDetails(ClientProperty newValue) {
-        if (newValue == null)
+    private void populateDetails(Client client) {
+        if (client == null)
             return;
-        else if (newValue.getName().equals(" + Create New"))
+        else if (client.getName().equals(" + Create New"))
             txt_name.setText("");
         else
-            txt_name.setText(newValue.getName());
+            txt_name.setText(client.getName());
 
-        txt_owner.setText(newValue.getOwner());
-        txt_website.setText(newValue.getWebsite());
-        txt_addr.setText(newValue.getAddr());
-        txt_city.setText(newValue.getCity());
-        txt_country.setText(newValue.getCountry());
-        if (newValue.getJoinDate() != null)
-            joining_date.setValue(CommonTasks.createLocalDate(newValue.getJoinDate()));
+        txt_owner.setText(client.getOwner());
+        txt_website.setText(client.getWebsite());
+        txt_addr.setText(client.getAddress());
+        txt_city.setText(client.getCity());
+        txt_country.setText(client.getCountry());
+//        joining_date.setValue(CommonTasks.createLocalDate(client.getJoinDate()));
+        if (client.getJoinDate() != null)
+            joining_date.setValue(CommonTasks.createLocalDateForFilter(client.getJoinDate()));
         else
             joining_date.setValue(null);
 
-        combo_type.getSelectionModel().select(newValue.getType() - 1);  //Types in database start from 1
+        combo_type.getSelectionModel().select(client.getType() - 1);  //Types in database start from 1
 
     }
 
-    public void saveChanges(ActionEvent actionEvent) {
+
+    public void saveChanges(ActionEvent actionEvent) throws IOException {
         String name = txt_name.getText(),
                 owner = txt_owner.getText(),
                 website = txt_website.getText(),
@@ -169,11 +169,10 @@ public class newClientController implements Initializable {
                 country = txt_country.getText(),
                 jdate = String.valueOf(joining_date.getValue());
 
-        System.out.println(owner);
 
         int type = combo_type.getSelectionModel().getSelectedIndex() + 1;
 
-        if (name.equals("") || city.equals("") || country.equals("")) {
+        if (name.equals("") || city.equals("") || country.equals("") || owner.equals("") || website.equals("") || addr.equals("") || jdate.equals("")) {
             Toast.makeText((Stage) btn_save.getScene().getWindow(), "Required Fields Are Empty");
             return;
         } else {
@@ -200,23 +199,69 @@ public class newClientController implements Initializable {
                 clientSel.setName(name);
                 clientSel.setOwner(owner);
                 clientSel.setWebsite(website);
-                clientSel.setAddr(addr);
+                clientSel.setAddress(addr);
                 clientSel.setCity(city);
                 clientSel.setCountry(country);
                 clientSel.setJoinDate(jdate);
                 clientSel.setType(type);
+                SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+                Date date = new Date();
+                clientSel.setCreatedOn(String.valueOf(formatter.format(date)));
+                int userId = FileHelper.ReadUserApiDetails().getUserCode();
+                clientSel.setCreatedBy(userId);
+
+                if (!emailLists.isEmpty()) {
+                    clientSel.setEmail(emailLists.get(0).getAddress());
+                }
+                if (!phoneLists.isEmpty()) {
+                    clientSel.setPhoneNo(phoneLists.get(0).getNumber());
+                }
 
                 switch (stInstance) {
                     case 'N': {
-                        sql.insertClient(clientSel);
+                        System.out.println("new");
+                        try {
+                            Client client = (Client) RequestHandler.objectRequestHandler(RequestHandler.postOfReturnResponse("client/addClient", RequestHandler.writeJSON(clientSel)), Client.class);
+                            if (client != null) {
+                                for (EmailList emailList : emailLists) {
+                                    RequestHandler.post("emailList/addEmail", RequestHandler.writeJSON((new EmailList(emailList.getAddress(), userId, client.getClientID()))));
+                                }
+                                for (PhoneList phoneList : phoneLists) {
+                                    RequestHandler.post("phoneList/addPhone", RequestHandler.writeJSON(new PhoneList(phoneList.getNumber(), userId, client.getClientID())));
+                                }
+                            }
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
                         break;
                     }
                     case 'U': {
-                        sql.updateClient(clientSel);
+                        System.out.println("Update");
+                        clientSel.setClientID(clientViewController.staticClient.getClientID());
+                        Client client = (Client) RequestHandler.objectRequestHandler(RequestHandler.postOfReturnResponse("client/addClient", RequestHandler.writeJSON(clientSel)), Client.class);
+                        if (client != null) {
+                            try {
+                                System.out.println(RequestHandler.run("emailList/deleteEmailList/" + client.getClientID()));
+                                RequestHandler.run("emailList/deleteEmailList/" + client.getClientID());
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
+                            try {
+                                RequestHandler.run("phoneList/deletePhoneList/" + client.getClientID());
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
+                            for (EmailList emailList : emailLists) {
+                                RequestHandler.post("emailList/addEmail", RequestHandler.writeJSON((new EmailList(emailList.getEmailID(), emailList.getAddress(), userId, client.getClientID()))));
+                            }
+                            for (PhoneList phoneList : phoneLists) {
+                                RequestHandler.post("phoneList/addPhone", RequestHandler.writeJSON(new PhoneList(phoneList.getPhoneID(), phoneList.getNumber(), userId, client.getClientID())));
+                            }
+                        }
                         break;
                     }
                 }
-//                init();   //WHere to after
+                init();
 
             } else {
                 return;
@@ -234,21 +279,23 @@ public class newClientController implements Initializable {
     }
 
     public static int noOfFields = 30;
+    List<EmailList> emailLists = new ArrayList<>();
+    List<PhoneList> phoneLists = new ArrayList<>();
 
     private void inflateBOX(int c) {
 
-        String[] Emails = new String[noOfFields];
-        String[] Phones = new String[noOfFields];
+        List<EmailList> Emails = new ArrayList<>();
+        List<PhoneList> Phones = new ArrayList<>();
 
         switch (stInstance) {
             case 'N': {
-                Emails = new String[noOfFields];
-                Phones = new String[noOfFields];
+                Emails = new ArrayList<>();
+                Phones = new ArrayList<>();
                 break;
             }
             case 'U': {
-                Emails = clientSel.getEmails();
-                Phones = clientSel.getPhones();
+                Emails = clientViewController.staticClient.getClEmailLists();
+                Phones = clientViewController.staticClient.getClPhoneLists();
                 break;
             }
             default: {
@@ -273,12 +320,27 @@ public class newClientController implements Initializable {
             pane.getChildren().add(txt_data);
         }
 
-        //On inflating
-        for (int i = 0; i < noOfFields; i++) {
-            if (c == 1)        //Email
-                ((JFXTextField) pane.getChildren().get(i)).setText(Emails[i]);
-            else if (c == 2)    //Phone
-                ((JFXTextField) pane.getChildren().get(i)).setText(Phones[i]);
+        if (c == 1) {        //Email
+            int j = 0;
+            for (EmailList emailList : Emails) {
+                if (Emails.isEmpty()) {
+                    ((JFXTextField) pane.getChildren().get(j)).setText("");
+                } else {
+                    ((JFXTextField) pane.getChildren().get(j)).setText(emailList.getAddress());
+                }
+                j++;
+            }
+        } else if (c == 2) {
+            //Phone
+            int k = 0;
+            for (PhoneList phoneList : Phones) {
+                if (Phones.isEmpty()) {
+                    ((JFXTextField) pane.getChildren().get(k)).setText("");
+                } else {
+                    ((JFXTextField) pane.getChildren().get(k)).setText(phoneList.getNumber());
+                }
+                k++;
+            }
         }
 
         stage.setScene(new Scene(pane));
@@ -287,24 +349,18 @@ public class newClientController implements Initializable {
         Platform.setImplicitExit(true);
 
         stage.setOnHiding(event -> {
-
-            String array[] = new String[noOfFields];
-
             for (int i = 0; i < noOfFields; i++) {
                 String t = ((JFXTextField) pane.getChildren().get(i)).getText();
                 if (t != null) {
                     if (!t.equals("")) {
-                        if (c == 1)        //Email
-                            array[i] = t;
-                        else if (c == 2)    //Phone
-                            array[i] = t;
+                        if (c == 1) {     //Email
+                            emailLists.add(new EmailList(t));
+                        } else if (c == 2) {    //Phone
+                            phoneLists.add(new PhoneList(t));
+                        }
                     }
                 }
             }
-            if (c == 1) {
-                clientSel.setEmails(array);
-            }else if (c == 2)
-                clientSel.setPhones(array);
         });
 
         stage.show();

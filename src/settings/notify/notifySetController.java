@@ -23,7 +23,7 @@ public class notifySetController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        sql = new mySqlConn();
+//        sql = new mySqlConn();
 
         populateDetails();
 

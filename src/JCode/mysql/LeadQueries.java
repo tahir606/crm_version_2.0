@@ -2,7 +2,7 @@ package JCode.mysql;
 
 import JCode.CommonTasks;
 import JCode.FileHelper;
-import objects.Lead;
+import objects.LeadOld;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -25,7 +25,7 @@ public class LeadQueries {
         this.noteQueries = noteQueries;
     }
 
-    public void insertLead(Lead lead) {
+    public void insertLead(LeadOld leadOld) {
 
         String query = "INSERT INTO LEAD_STORE(LS_ID, LS_FNAME ,LS_LNAME ,LS_CNAME ,LS_WEBSITE ,LS_CITY , " +
                 " LS_COUNTRY, LS_NOTE, S_ID, S_OTHER, CREATEDON, CREATEDBY) " +
@@ -35,25 +35,25 @@ public class LeadQueries {
 
         try {
             statement = static_con.prepareStatement(query);
-            statement.setString(1, lead.getFirstName());
-            statement.setString(2, lead.getLastName());
-            statement.setString(3, lead.getCompany());
-            statement.setString(4, lead.getWebsite());
-            statement.setString(5, lead.getCity());
-            statement.setString(6, lead.getCountry());
-            statement.setString(7, lead.getNote());
-            if (lead.getOtherText() == null)
+            statement.setString(1, leadOld.getFirstName());
+            statement.setString(2, leadOld.getLastName());
+            statement.setString(3, leadOld.getCompany());
+            statement.setString(4, leadOld.getWebsite());
+            statement.setString(5, leadOld.getCity());
+            statement.setString(6, leadOld.getCountry());
+            statement.setString(7, leadOld.getNote());
+            if (leadOld.getOtherText() == null)
                 statement.setInt(8, '\0');
             else
-                statement.setInt(8, lead.getSource());
-            System.out.println("Source: " + lead.getSource());
-            statement.setString(9, lead.getOtherText());
-            statement.setString(10, CommonTasks.getCurrentTimeStamp());
-            statement.setInt(11, fHelper.ReadUserDetails().getUCODE());
+                statement.setInt(8, leadOld.getSource());
 
+            statement.setString(9, leadOld.getOtherText());
+            statement.setString(10, CommonTasks.getCurrentTimeStamp());
+//            statement.setInt(11, fHelper.ReadUserDetails().getUCODE());
+            statement.setInt(11, FileHelper.ReadUserApiDetails().getUserCode());
             statement.executeUpdate();
 
-            emailPhoneQueries.emailsPhoneInsertion(statement, lead);
+            emailPhoneQueries.emailsPhoneInsertion(statement, leadOld);
 
         } catch (SQLException e) {
             e.printStackTrace();
@@ -61,7 +61,7 @@ public class LeadQueries {
 
     }
 
-    public void updateLead(Lead lead) {
+    public void updateLead(LeadOld leadOld) {
 
         String query = "UPDATE LEAD_STORE SET LS_FNAME=?,LS_LNAME=?,LS_WEBSITE=?,LS_CNAME=?,LS_CITY=?, " +
                 " LS_COUNTRY=?,LS_NOTE=?,S_ID=?,S_OTHER=?,CREATEDON=?,CREATEDBY=?" +
@@ -72,26 +72,27 @@ public class LeadQueries {
 
         try {
             statement = static_con.prepareStatement(query);
-            statement.setString(1, lead.getFirstName());
-            statement.setString(2, lead.getLastName());
-            statement.setString(3, lead.getWebsite());
-            statement.setString(4, lead.getCompany());
-            statement.setString(5, lead.getCity());
-            statement.setString(6, lead.getCountry());
-            statement.setString(7, lead.getNote());
-            if (lead.getOtherText() != null) {
+            statement.setString(1, leadOld.getFirstName());
+            statement.setString(2, leadOld.getLastName());
+            statement.setString(3, leadOld.getWebsite());
+            statement.setString(4, leadOld.getCompany());
+            statement.setString(5, leadOld.getCity());
+            statement.setString(6, leadOld.getCountry());
+            statement.setString(7, leadOld.getNote());
+            if (leadOld.getOtherText() != null) {
                 statement.setInt(8, '\0');
             } else {
-                statement.setInt(8, lead.getSource());
+                statement.setInt(8, leadOld.getSource());
             }
-            statement.setString(9, lead.getOtherText());
+            statement.setString(9, leadOld.getOtherText());
             statement.setString(10, CommonTasks.getCurrentTimeStamp());
-            statement.setInt(11, fHelper.ReadUserDetails().getUCODE());
-            statement.setInt(12, lead.getCode());
+//            statement.setInt(11, fHelper.ReadUserDetails().getUCODE());
+            statement.setInt(11, FileHelper.ReadUserApiDetails().getUserCode());
+            statement.setInt(12, leadOld.getCode());
 
             statement.executeUpdate();
 
-            emailPhoneQueries.emailsPhoneInsertion(statement, lead);
+            emailPhoneQueries.emailsPhoneInsertion(statement, leadOld);
 
         } catch (SQLException e) {
             e.printStackTrace();
@@ -99,7 +100,7 @@ public class LeadQueries {
 
     }
 
-    public List<Lead> getAllLeads(String where) {
+    public List<LeadOld> getAllLeads(String where) {
 
         String query = " SELECT LS.LS_ID AS LS_ID,LS_FNAME,LS_LNAME,LS_CNAME,LS_CITY,LS_COUNTRY,LS_NOTE,LS_WEBSITE,EM_NAME,PH_NUM,S_ID,S_OTHER " +
                 " FROM LEAD_STORE AS LS, EMAIL_LIST AS EL,  PHONE_LIST AS PL " +
@@ -119,28 +120,27 @@ public class LeadQueries {
         } else {
             query = query + " AND " + where;
         }
-        System.out.println(query);
-        List<Lead> allLeads = new ArrayList<>();
+        List<LeadOld> allLeadOlds = new ArrayList<>();
         try {
 
             PreparedStatement statement = static_con.prepareStatement(query);
             ResultSet set = statement.executeQuery();
             //-------------Creating Email-------------
             while (set.next()) {
-                Lead lead = new Lead();
-                lead.setCode(set.getInt("LS_ID"));
-                lead.setFirstName(set.getString("LS_FNAME"));
-                lead.setLastName(set.getString("LS_LNAME"));
-                lead.setCity(set.getString("LS_CITY"));
-                lead.setCountry(set.getString("LS_COUNTRY"));
-                lead.setWebsite(set.getString("LS_WEBSITE"));
-                lead.setCompany(set.getString("LS_CNAME"));
-                lead.setNote(set.getString("LS_NOTE"));
-                lead.setEmail(set.getString("EM_NAME"));
-                lead.setPhone(set.getString("PH_NUM"));
-                lead.setSource(set.getInt("S_ID"));
-                lead.setOtherText(set.getString("S_OTHER"));
-                allLeads.add(lead);
+                LeadOld leadOld = new LeadOld();
+                leadOld.setCode(set.getInt("LS_ID"));
+                leadOld.setFirstName(set.getString("LS_FNAME"));
+                leadOld.setLastName(set.getString("LS_LNAME"));
+                leadOld.setCity(set.getString("LS_CITY"));
+                leadOld.setCountry(set.getString("LS_COUNTRY"));
+                leadOld.setWebsite(set.getString("LS_WEBSITE"));
+                leadOld.setCompany(set.getString("LS_CNAME"));
+                leadOld.setNote(set.getString("LS_NOTE"));
+                leadOld.setEmail(set.getString("EM_NAME"));
+                leadOld.setPhone(set.getString("PH_NUM"));
+                leadOld.setSource(set.getInt("S_ID"));
+                leadOld.setOtherText(set.getString("S_OTHER"));
+                allLeadOlds.add(leadOld);
             }
 
             // doRelease(con);
@@ -148,10 +148,10 @@ public class LeadQueries {
             ex.printStackTrace();
         }
 
-        return allLeads;
+        return allLeadOlds;
     }
 
-    public Lead getParticularLead(Lead where) {
+    public LeadOld getParticularLead(LeadOld where) {
 
         String query = " SELECT LS.LS_ID AS LS_ID,LS_FNAME,LS_LNAME,LS_CNAME,LS_CITY,LS_COUNTRY,LS_NOTE,LS_WEBSITE,EM_NAME,PH_NUM " +
                 " FROM LEAD_STORE AS LS, EMAIL_LIST AS EL,  PHONE_LIST AS PL  " +
@@ -171,20 +171,20 @@ public class LeadQueries {
             ResultSet set = statement.executeQuery();
             //-------------Creating Email-------------
             while (set.next()) {
-                Lead lead = new Lead();
-                lead.setCode(set.getInt("LS_ID"));
-                lead.setFirstName(set.getString("LS_FNAME"));
-                lead.setLastName(set.getString("LS_LNAME"));
-                lead.setCity(set.getString("LS_CITY"));
-                lead.setCountry(set.getString("LS_COUNTRY"));
-                lead.setWebsite(set.getString("LS_WEBSITE"));
-                lead.setCompany(set.getString("LS_CNAME"));
-                lead.setNote(set.getString("LS_NOTE"));
-                lead.setEmail(set.getString("EM_NAME"));
-                lead.setPhone(set.getString("PH_NUM"));
-                lead.setNotes(noteQueries.getNotes(lead));
-//                System.out.println(lead);
-                return lead;
+                LeadOld leadOld = new LeadOld();
+                leadOld.setCode(set.getInt("LS_ID"));
+                leadOld.setFirstName(set.getString("LS_FNAME"));
+                leadOld.setLastName(set.getString("LS_LNAME"));
+                leadOld.setCity(set.getString("LS_CITY"));
+                leadOld.setCountry(set.getString("LS_COUNTRY"));
+                leadOld.setWebsite(set.getString("LS_WEBSITE"));
+                leadOld.setCompany(set.getString("LS_CNAME"));
+                leadOld.setNote(set.getString("LS_NOTE"));
+                leadOld.setEmail(set.getString("EM_NAME"));
+                leadOld.setPhone(set.getString("PH_NUM"));
+                leadOld.setNotes(noteQueries.getNotes(leadOld));
+
+                return leadOld;
             }
 
             // doRelease(con);
@@ -286,7 +286,7 @@ public class LeadQueries {
         }
     }
 
-    public void markLeadAsClient(Lead lead) {
+    public void markLeadAsClient(LeadOld leadOld) {
         String query = "UPDATE LEAD_STORE SET CONVERTED = 1 WHERE LS_ID = ?";
 
         // Connection con = getConnection();
@@ -294,7 +294,7 @@ public class LeadQueries {
 
         try {
             statement = static_con.prepareStatement(query);
-            statement.setInt(1, lead.getCode());
+            statement.setInt(1, leadOld.getCode());
             statement.executeUpdate();
 
             statement.close();
@@ -306,7 +306,7 @@ public class LeadQueries {
         }
     }
 
-    public void archiveLead(Lead lead) {
+    public void archiveLead(LeadOld leadOld) {
         String query = "UPDATE LEAD_STORE SET FREZE = 1 WHERE LS_ID = ?";
 
         // Connection con = getConnection();
@@ -314,7 +314,7 @@ public class LeadQueries {
 
         try {
             statement = static_con.prepareStatement(query);
-            statement.setInt(1, lead.getCode());
+            statement.setInt(1, leadOld.getCode());
             statement.executeUpdate();
 
             statement.close();

@@ -1,5 +1,6 @@
 package client.dash.clientView;
 
+import ApiHandler.RequestHandler;
 import Email.EResponse.EResponseController;
 import JCode.mysql.mySqlConn;
 import JCode.trayHelper;
@@ -16,10 +17,12 @@ import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
+import objects.Client;
 import objects.ClientProperty;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.Collections;
 import java.util.List;
 import java.util.ResourceBundle;
 
@@ -36,7 +39,7 @@ public class clientViewController implements Initializable {
     @FXML
     JFXButton btn_email;
     @FXML
-    TableView<ClientProperty> table_contact;
+    TableView<Client> table_contact;
     @FXML
     TableColumn<ClientProperty, String> col_name;
     @FXML
@@ -46,40 +49,45 @@ public class clientViewController implements Initializable {
     @FXML
     TableColumn<ClientProperty, String> col_country;
 
-    List<ClientProperty> selectedContacts;
-
-    public static ClientProperty staticClient;
-
+    List<Client> clients;
+    List<Client> selectedClient;
+    public static Client staticClient;
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        sql = new mySqlConn();
+
+
+        try {
+            clients = RequestHandler.listRequestHandler(RequestHandler.run("client/clientList"), Client.class);
+
+          } catch (IOException e) {
+            e.printStackTrace();
+        }
 
         toolbar_contacts.setVisible(false);
 
-//        table_contact.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
 
         col_name.setCellValueFactory(new PropertyValueFactory<>("Name"));
         col_website.setCellValueFactory(new PropertyValueFactory<>("Website"));
         col_city.setCellValueFactory(new PropertyValueFactory<>("City"));
         col_country.setCellValueFactory(new PropertyValueFactory<>("Country"));
 
-        table_contact.getItems().setAll(sql.getAllClientsProperty(null));
+        table_contact.getItems().setAll(clients);
 
         table_contact.addEventHandler(javafx.scene.input.MouseEvent.MOUSE_CLICKED, event -> {
-            selectedContacts = table_contact.getSelectionModel().getSelectedItems();
+            selectedClient = table_contact.getSelectionModel().getSelectedItems();
 
-            if (selectedContacts == null || selectedContacts.size() == 0) {
+            if (selectedClient == null || selectedClient.size() == 0) {
                 toolbar_contacts.setVisible(false);
                 return;
             } else {
                 toolbar_contacts.setVisible(true);
-                txt_no.setText(String.valueOf(selectedContacts.size()));
+                txt_no.setText(String.valueOf(selectedClient.size()));
             }
 
         });
 
-        table_contact.setRowFactory(tv -> {
-            TableRow<ClientProperty> row = new TableRow<>();
+       table_contact.setRowFactory(tv -> {
+           TableRow<Client> row = new TableRow<>();
             row.setOnMouseClicked(event -> {
                 if (event.getClickCount() == 2 && (!row.isEmpty())) {
                     staticClient = row.getItem();
@@ -99,17 +107,14 @@ public class clientViewController implements Initializable {
     }
 
     public void onEmailSending(ActionEvent actionEvent) {
-
         String email = "";
 
-//        for (ClientProperty contact : selectedContacts) {
-//            if (contact.getEmail() != null || contact.getEmail().equals(""))
-//                email = email + contact.getEmail() + ",";
-//        }
+        for (Client contact : selectedClient) {
+            if (contact.getEmail() != null || contact.getEmail().equals(""))
+                email = email + contact.getEmail() + ",";
+        }
 
-        System.out.println(email);
-
-        EResponseController.stTo = email;
+        EResponseController.stTo = Collections.singletonList(email);
         EResponseController.stInstance = 'R';
 
         inflateEResponse(1);
@@ -119,7 +124,13 @@ public class clientViewController implements Initializable {
     private void inflateEResponse(int i) {
         try {
             EResponseController.choice = i;
-            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("../../../Email/EResponse/EResponse.fxml"));
+            FXMLLoader fxmlLoader;
+            if (getClass().getResource("../../../Email/EResponse/EResponse.fxml") == null) {
+                fxmlLoader = new FXMLLoader(getClass().getResource("/Email/EResponse/EResponse.fxml"));
+            } else {
+                fxmlLoader = new FXMLLoader(getClass().getResource("../../../Email/EResponse/EResponse.fxml"));
+            }
+
             Parent root1 = (Parent) fxmlLoader.load();
             Stage stage2 = new Stage();
             stage2.setTitle("New Email");

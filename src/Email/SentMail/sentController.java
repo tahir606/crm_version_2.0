@@ -12,7 +12,7 @@ import javafx.scene.control.ListView;
 import javafx.scene.control.TextArea;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
-import objects.Email;
+import objects.EmailOld;
 
 import javax.mail.Address;
 import java.net.URL;
@@ -39,7 +39,7 @@ public class sentController implements Initializable {
     @FXML
     private AnchorPane anchor_body;
     @FXML
-    private ListView<Email> list_emails;
+    private ListView<EmailOld> list_emails;
     @FXML
     private JFXComboBox combo_attach;
 
@@ -48,8 +48,6 @@ public class sentController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-
-        sql = new mySqlConn();
 
         list_emails.getItems().clear();
         list_emails.getItems().addAll(sql.readAllEmailsSent(null));
@@ -68,10 +66,10 @@ public class sentController implements Initializable {
 
     Address[] to, cc, bcc;
 
-    private void populateDetails(Email email) {
+    private void populateDetails(EmailOld emailOld) {
         new Thread(() -> Platform.runLater(() -> {
 
-            label_time.setText(email.getTimeFormatted());
+            label_time.setText(emailOld.getTimeFormatted());
 
             //----Emails
             vbox_to.getChildren().clear();  //Clearing
@@ -116,17 +114,17 @@ public class sentController implements Initializable {
                 }
             }
 
-            txt_subject.setText(email.getSubject());
+            txt_subject.setText(emailOld.getSubject());
             anchor_details.setVisible(true);
 
             //----Attachments
             combo_attach.getItems().clear();
 
-            if (email.getAttachment() != null) {
+            if (!emailOld.getAttachment().isEmpty()) {
                 combo_attach.setDisable(false);
                 combo_attach.setPromptText("Open Attachment");
                 List<FileDev> attFiles = new ArrayList<>();
-                for (String c : email.getAttachment().split("\\^")) {
+                for (String c : emailOld.getAttachment()) {
                     FileDev file = new FileDev(c);
                     attFiles.add(file);
                 }
@@ -136,10 +134,25 @@ public class sentController implements Initializable {
                 combo_attach.setPromptText("No Attachments");
                 combo_attach.setDisable(true);
             }
+//
+//            if (email.getAttachment() != null) {
+//                combo_attach.setDisable(false);
+//                combo_attach.setPromptText("Open Attachment");
+//                List<FileDev> attFiles = new ArrayList<>();
+//                for (String c : email.getAttachment().split("\\^")) {
+//                    FileDev file = new FileDev(c);
+//                    attFiles.add(file);
+//                }
+//                combo_attach.getItems().addAll(attFiles);
+//
+//            } else {
+//                combo_attach.setPromptText("No Attachments");
+//                combo_attach.setDisable(true);
+//            }
 
             //----Ebody
             anchor_body.getChildren().clear();
-            TextArea eBody = new TextArea(email.getBody());
+            TextArea eBody = new TextArea(emailOld.getBody());
             eBody.setWrapText(true);
             eBody.setPrefSize(anchor_body.getWidth(), anchor_body.getHeight());
             anchor_body.getChildren().add(eBody);

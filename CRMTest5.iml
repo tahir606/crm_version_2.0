@@ -35,5 +35,15 @@
     <orderEntry type="library" name="apache-httpcomponents-httpcore" level="project" />
     <orderEntry type="library" name="httpclient-4.3-beta1" level="project" />
     <orderEntry type="library" name="httpcore-4.0-alpha5" level="project" />
+    <orderEntry type="library" name="commons-lang3-3.1" level="project" />
+    <orderEntry type="library" name="org.apache.commons.lang-2.6" level="project" />
+    <orderEntry type="library" name="spring-beans-5.3.5" level="project" />
+    <orderEntry type="library" name="spring-web-5.3.5" level="project" />
+    <orderEntry type="library" name="spring-jcl-5.3.5" level="project" />
+    <orderEntry type="library" name="spring-core-5.3.5" level="project" />
+    <orderEntry type="library" name="jackson-annotations-2.12.3" level="project" />
+    <orderEntry type="library" name="jackson-core-2.12.3" level="project" />
+    <orderEntry type="library" name="jackson-databind-2.12.3" level="project" />
+    <orderEntry type="library" name="jackson-core-2.12.31" level="project" />
   </component>
 </module>

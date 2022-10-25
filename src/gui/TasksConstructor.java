@@ -1,5 +1,7 @@
 package gui;
 
+import ApiHandler.RequestHandler;
+import JCode.CommonTasks;
 import JCode.mysql.mySqlConn;
 import JCode.trayHelper;
 import activity.task.NewTaskController;
@@ -19,13 +21,11 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import lead.view.LeadViewController;
-import objects.ClientProperty;
-import objects.Lead;
-import objects.ProductProperty;
-import objects.Task;
+import objects.*;
 import product.view.ProductViewController;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 public class TasksConstructor {
@@ -34,9 +34,9 @@ public class TasksConstructor {
     private static Tab tab;
     private static VBox open_activities_list, closed_activities_list;
 
-    private ClientProperty client;
+    private Client client;
     private Lead lead;
-    private ProductProperty product;
+    private Product product;
 
     private static mySqlConn sql;
 
@@ -44,43 +44,42 @@ public class TasksConstructor {
     public static int choice;
     public static Task updatingTask;
 
-    public TasksConstructor(VBox open_activities_list, VBox closed_activities_list, ClientProperty
+    public TasksConstructor(VBox open_activities_list, VBox closed_activities_list, Client
             client) {
-        this.open_activities_list = open_activities_list;
-        this.closed_activities_list = closed_activities_list;
+        TasksConstructor.open_activities_list = open_activities_list;
+        TasksConstructor.closed_activities_list = closed_activities_list;
         this.client = client;
 
-        sql = new mySqlConn();
+
     }
 
-    public TasksConstructor(TabPane tabPane, ClientProperty client) {
-        this.tabPane = tabPane;
-        this.tab = new Tab("Tasks");
-        this.open_activities_list = new VBox();
-        this.closed_activities_list = new VBox();
+    public TasksConstructor(TabPane tabPane, Client client) {
+        TasksConstructor.tabPane = tabPane;
+        tab = new Tab("Tasks");
+        open_activities_list = new VBox();
+        closed_activities_list = new VBox();
         this.client = client;
 
-        sql = new mySqlConn();
     }
 
     public TasksConstructor(TabPane tabPane, Lead lead) {
-        this.tabPane = tabPane;
-        this.tab = new Tab("Tasks");
-        this.open_activities_list = new VBox();
-        this.closed_activities_list = new VBox();
+        TasksConstructor.tabPane = tabPane;
+        tab = new Tab("Tasks");
+        open_activities_list = new VBox();
+        closed_activities_list = new VBox();
         this.lead = lead;
 
-        sql = new mySqlConn();
+//        sql = new mySqlConn();
     }
 
-    public TasksConstructor(TabPane tabPane, ProductProperty product) {
-        this.tabPane = tabPane;
-        this.tab = new Tab("Tasks");
-        this.open_activities_list = new VBox();
-        this.closed_activities_list = new VBox();
+    public TasksConstructor(TabPane tabPane, Product product) {
+        TasksConstructor.tabPane = tabPane;
+        tab = new Tab("Tasks");
+        open_activities_list = new VBox();
+        closed_activities_list = new VBox();
         this.product = product;
 
-        sql = new mySqlConn();
+//        sql = new mySqlConn();
     }
 
     private static void constructClientActivities() {
@@ -95,14 +94,24 @@ public class TasksConstructor {
         Label label2 = new Label("Closed Activities");
         label2.setStyle(labelCss);
         closed_activities_list.getChildren().addAll(returnSpaceHbox(), label2, returnSpaceHbox());
-
-        List<Task> tasks = sql.getTasks(clientViewController.staticClient);
-        for (Task task : tasks) {
-            if (!task.isStatus())
-                constructingOpenTask(task);
-            else
-                constructingCloseTask(task);
+        if (clientViewController.staticClient != null) {
+            List<Task> taskList = new ArrayList<>();
+            try {
+                taskList = RequestHandler.listRequestHandler(RequestHandler.run("task/getTaskByClientId/" + clientViewController.staticClient.getClientID()), Task.class);
+                if (taskList == null) {
+                    taskList = new ArrayList<>();
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            for (Task task : taskList) {
+                if (task.getStatus() != 1)
+                    constructingOpenTask(task);
+                else
+                    constructingCloseTask(task);
+            }
         }
+
     }
 
     private static void constructLeadActivities() {
@@ -118,13 +127,31 @@ public class TasksConstructor {
         label2.setStyle(labelCss);
         closed_activities_list.getChildren().addAll(label2);
 
-        List<Task> tasks = sql.getTasks(LeadViewController.staticLead);
-        for (Task task : tasks) {
-            if (!task.isStatus())
-                constructingOpenTask(task);
-            else
-                constructingCloseTask(task);
+        if (LeadViewController.staticLead != null) {
+            List<Task> taskList = new ArrayList<>();
+            try {
+                taskList = RequestHandler.listRequestHandler(RequestHandler.run("task/getTaskByLeadId/" + LeadViewController.staticLead.getLeadsId()), Task.class);
+
+                if (taskList == null) {
+                    taskList = new ArrayList<>();
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            for (Task task : taskList) {
+                if (task.getStatus() != 1)
+                    constructingOpenTask(task);
+                else
+                    constructingCloseTask(task);
+            }
         }
+//        List<TaskOld> taskList = sql.getTasks(LeadViewController.staticLead);
+//        for (TaskOld taskOld : taskList) {
+//            if (!taskOld.isStatus())
+//                constructingOpenTask(taskOld);
+//            else
+//                constructingCloseTask(taskOld);
+//        }
     }
 
     private static void constructProductActivities() {
@@ -140,13 +167,31 @@ public class TasksConstructor {
         label2.setStyle(labelCss);
         closed_activities_list.getChildren().addAll(label2);
 
-        List<Task> tasks = sql.getTasks(ProductViewController.staticProduct);
-        for (Task task : tasks) {
-            if (!task.isStatus())
-                constructingOpenTask(task);
-            else
-                constructingCloseTask(task);
+        if (ProductViewController.staticProduct != null) {
+            List<Task> taskList = new ArrayList<>();
+            try {
+                taskList = RequestHandler.listRequestHandler(RequestHandler.run("task/getTaskByProductId/" + ProductViewController.staticProduct.getPsID()), Task.class);
+                if (taskList == null) {
+                    taskList = new ArrayList<>();
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            for (Task task : taskList) {
+                if (task.getStatus() != 1)
+                    constructingOpenTask(task);
+                else
+                    constructingCloseTask(task);
+            }
         }
+
+//        List<TaskOld> taskOlds = sql.getTasks(ProductViewController.staticProduct);
+//        for (TaskOld taskOld : taskOlds) {
+//            if (!taskOld.isStatus())
+//                constructingOpenTask(taskOld);
+//            else
+//                constructingCloseTask(taskOld);
+//        }
     }
 
     private static void constructingButtons() {
@@ -175,14 +220,14 @@ public class TasksConstructor {
         //Note Text
         Label title = new Label("Subject: ");
         title.setStyle("-fx-font-weight: bold;");
-        Label sbjct = new Label(task.getSubject());
-        sbjct.setWrapText(true);
-        subject.getChildren().addAll(title, sbjct);
+        Label sub = new Label(task.getSubject());
+        sub.setWrapText(true);
+        subject.getChildren().addAll(title, sub);
         //The First Part
         HBox body = new HBox();
         body.setSpacing(5);
         //Note Text
-        TextArea area = new TextArea(task.getDesc());
+        TextArea area = new TextArea(task.getDescription());
         area.setWrapText(true);
         area.setEditable(false);
         area.setMinHeight(50);
@@ -196,7 +241,7 @@ public class TasksConstructor {
         details.setMinHeight(25);
         details.setMaxHeight(25);
         details.setPadding(new Insets(3));
-        Label createdBy = new Label(task.getCreatedBy()),
+        Label createdBy = new Label(task.getUsers().getFullName()),
                 createdOn = new Label(task.getCreatedOn());
         createdOn.setMinWidth(150);
         createdBy.setMinWidth(280);
@@ -215,11 +260,37 @@ public class TasksConstructor {
             inflateNewTask("Update Task");
         });
         closeItem.setOnAction(t -> {
-            sql.closeTask(task);
+            task.setStatus(1);
+            task.setClosedOn(CommonTasks.getCurrentTimeStamp());
+            String responseMessage = "";
+            try {
+                responseMessage = RequestHandler.basicRequestHandler(RequestHandler.postOfReturnResponse("task/addTask", RequestHandler.writeJSON(task)));
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+//            Toast.makeText((Stage) contextMenu..getScene().getWindow(), responseMessage);
+//            try {
+//                RequestHandler.run("task/closeTask/"+task.getTaskID());
+//            } catch (IOException e) {
+//                e.printStackTrace();
+//            }
+//            sql.closeTask(task);
             generalConstructor(choice);
         });
         delItem.setOnAction(t -> {
-            sql.archiveTask(task);
+            String responseMessage = "";
+            try {
+                responseMessage = RequestHandler.basicRequestHandler(RequestHandler.run("task/archiveTask/" + task.getTaskID()));
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+//            Toast.makeText((Stage) contextMenu.getScene().getWindow(), responseMessage);
+//            try {
+//                RequestHandler.run("task/archiveTask/"+task.getTaskID());
+//            } catch (IOException e) {
+//                e.printStackTrace();
+//            }
+//            sql.archiveTask(task);
             generalConstructor(choice);
         });
         contextMenu.getItems().addAll(editItem, closeItem, delItem);
@@ -250,7 +321,7 @@ public class TasksConstructor {
         HBox body = new HBox();
         body.setSpacing(5);
         //Note Text
-        TextArea area = new TextArea(task.getDesc());
+        TextArea area = new TextArea(task.getDescription());
         area.setWrapText(true);
         area.setEditable(false);
         area.setMinHeight(50);
@@ -264,7 +335,7 @@ public class TasksConstructor {
         details.setMinHeight(25);
         details.setMaxHeight(25);
         details.setPadding(new Insets(3));
-        Label createdBy = new Label(task.getCreatedBy()),
+        Label createdBy = new Label(task.getUsers().getFullName()),
                 createdOn = new Label(task.getCreatedOn());
         createdOn.setMinWidth(150);
         createdBy.setMinWidth(280);

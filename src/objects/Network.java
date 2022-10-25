@@ -9,9 +9,12 @@ public class Network {
     public Network() {
     }
 
-    public Network(String host, int port) {
+    public Network(String host) {
         this.host = host;
-        this.port = port;
+    }
+    public Network(String host,int port) {
+        this.host = host;
+        this.port=port;
     }
 
     public String getHost() {
