@@ -74,6 +74,7 @@ public class SolvedDialogController implements Initializable {
                 if (history.getStatus().equals("RESOLVED") && isAdmin.equals("Admin") && selectedEmail.getIsAllocatedBy() == user.getUserCode()) {
                     RequestHandler.run("ticket/solve?code=" + selectedEmail.getCode() + "&userCode=" + history.getUsers().getUserCode() + "&status=" + 2+"&checkSend="+check_send.isSelected()+"&solvedBody="+txt_body.getText().toString()).close();
                 } else if (history.getUsers().getUserCode() == user.getUserCode() && history.getStatus().equals("LOCKED")) {
+                    System.out.println(check_send.isSelected());
                     RequestHandler.run("ticket/solve?code=" + selectedEmail.getCode() + "&userCode=" + user.getUserCode()+ "&status=" + 2+"&checkSend="+check_send.isSelected()+"&solvedBody="+txt_body.getText().toString()).close();
                 }
             } catch (IOException e) {

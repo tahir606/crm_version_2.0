@@ -149,8 +149,9 @@ public class newClientController implements Initializable {
         txt_addr.setText(client.getAddress());
         txt_city.setText(client.getCity());
         txt_country.setText(client.getCountry());
+//        joining_date.setValue(CommonTasks.createLocalDate(client.getJoinDate()));
         if (client.getJoinDate() != null)
-            joining_date.setValue(CommonTasks.createLocalDate(client.getJoinDate()));
+            joining_date.setValue(CommonTasks.createLocalDateForFilter(client.getJoinDate()));
         else
             joining_date.setValue(null);
 
@@ -218,6 +219,7 @@ public class newClientController implements Initializable {
 
                 switch (stInstance) {
                     case 'N': {
+                        System.out.println("new");
                         try {
                             Client client = (Client) RequestHandler.objectRequestHandler(RequestHandler.postOfReturnResponse("client/addClient", RequestHandler.writeJSON(clientSel)), Client.class);
                             if (client != null) {
@@ -234,10 +236,12 @@ public class newClientController implements Initializable {
                         break;
                     }
                     case 'U': {
+                        System.out.println("Update");
                         clientSel.setClientID(clientViewController.staticClient.getClientID());
                         Client client = (Client) RequestHandler.objectRequestHandler(RequestHandler.postOfReturnResponse("client/addClient", RequestHandler.writeJSON(clientSel)), Client.class);
                         if (client != null) {
                             try {
+                                System.out.println(RequestHandler.run("emailList/deleteEmailList/" + client.getClientID()));
                                 RequestHandler.run("emailList/deleteEmailList/" + client.getClientID());
                             } catch (IOException e) {
                                 e.printStackTrace();

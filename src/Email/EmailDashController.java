@@ -681,6 +681,7 @@ public class EmailDashController implements Initializable {
 
     public void onLock(ActionEvent actionEvent) throws IOException {
         imgLoader.setVisible(true);
+        System.out.println("onLock Call");
         RequestHandler.run("ticket/lock?code=" + selectedEmail.getCode() + "&userCode=" + user.getUserCode() + "&status=" + 1).close();
         loadEmailsStatic();
 
@@ -1126,6 +1127,7 @@ public class EmailDashController implements Initializable {
                     new Thread(() -> Platform.runLater(() -> {
                         try {
                             ZipFileUtility zipFileUtility = new ZipFileUtility();
+                            System.out.println("name : "+ fileNames + " path : "+ finalActualPath + " temp : "+ temp);
                             zipFileUtility.unzip(RequestHandler.downloadZipFile("ticket/download/" , fileNames   ,"?path="+ finalActualPath, temp + "temp.zip"), temp);
 
                         } catch (Exception e) {

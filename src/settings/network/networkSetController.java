@@ -50,7 +50,7 @@ public class networkSetController implements Initializable {
         }));
         Network network = FileHelper.getNetworkDetails();
         if (network != null) {
-            if (network.getHost().equals("103.245.193.156")){
+            if (network.getHost().equals("18.143.65.168")){
                 selectIp.getSelectionModel().select(0);
             }else{
                 selectIp.getSelectionModel().select(1);
@@ -66,9 +66,9 @@ public class networkSetController implements Initializable {
         }
         String ip = "";
         if (selectIp.getSelectionModel().getSelectedItem().equals("Static Ip")) {
-            ip = "103.245.193.156";
+            ip = "18.143.65.168";
         } else if (selectIp.getSelectionModel().getSelectedItem().equals("Local Ip")) {
-            ip = "192.168.100.210";
+            ip = "localhost";
         }
         String response = RequestHandler.basicRequestHandler(RequestHandler.checkIp("users/getALlUsers",ip));
 
